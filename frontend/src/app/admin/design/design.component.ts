@@ -196,7 +196,7 @@ export class DesignComponent implements OnInit {
       temp['description'] = obj.description
     if (obj.source)
       temp['source'] = obj.source == 'total' ? obj.source : obj.source
-    if (obj.sort!= undefined)
+    if (obj.sort != undefined)
       temp['sort'] = obj.sort
 
     if (obj.source)
@@ -239,7 +239,7 @@ export class DesignComponent implements OnInit {
       componentConfigs: temp as ComponentFilterConfigs,
       scroll: obj.scroll ? obj.scroll : null,
       tour: true,
-      sort : obj.sort
+      sort: obj.sort
     }
   }
   createFilter(obj) {
@@ -255,8 +255,17 @@ export class DesignComponent implements OnInit {
     if (obj.border)
       temp['border'] = obj.border
 
-    if (obj.source)
-      temp['source'] = obj.source == 'total' ? obj.source : obj.source + '.keyword'
+    if (obj.source) {
+      if (obj.source == 'total')
+        temp['source'] = obj.source
+      else {
+        if (obj.source.includes('.keyword'))
+          temp['source'] = obj.source
+        else
+          temp['source'] = obj.source + '.keyword'
+      }
+    }
+    // temp['source'] = obj.source == 'total' ? obj.source : obj.source + '.keyword'
 
     if (obj.component == "SearchComponent")
       temp['type'] = searchOptions.allSearch
