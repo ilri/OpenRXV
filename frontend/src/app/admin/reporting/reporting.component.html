@@ -9,7 +9,7 @@
                 <button mat-raised-button [matMenuTriggerFor]="menu" color="primary" style="margin-left: 10px;">Show
                     metadata</button>
                 <mat-menu #menu="matMenu">
-                    <ng-container *ngFor='items of metadata; let i = index'>
+                    <ng-container *ngFor='let items of metadata; let i = index'>
                         <button mat-menu-item matTooltip="copy" (click)="copyMessage(metadata[i])"
                             class="copy">{{metadata[i]}}</button>
                     </ng-container>
@@ -58,3 +58,4 @@
         </mat-card-title>
     </mat-card>
 </div>
+<p>{{reports | json}}</p>

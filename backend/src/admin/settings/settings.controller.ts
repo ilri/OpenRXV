@@ -232,7 +232,7 @@ export class SettingsController {
     }))
     async uploadFile1(@UploadedFile() file) {
         let splited = file.originalname.split('.');
-        let name = splited[0] + '-' + new Date().getTime();
+        let name = splited[0].replace(/\s/g, '-') + '-' + new Date().getTime();
         let response = join(__dirname, '../../../data/files/files/') + name + '.' + splited[splited.length - 1];
         await fs.renameSync(join(__dirname, '../../../data/files/files/') + file.filename, response)
         return { location: response.slice(response.indexOf('files/') + 5) };
