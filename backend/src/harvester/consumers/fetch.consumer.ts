@@ -138,8 +138,16 @@ export class FetchConsumer {
             return value
     }
 
-    capitalizeFirstLetter(string: string) {
-        return string.charAt(0).toUpperCase() + string.toLocaleLowerCase().slice(1);
+    capitalizeFirstLetter(string: any) {
+        string = string.split(" ");
+
+        for (let i = 0, x = string.length; i < x; i++) {
+            string[i] = string[i][0].toUpperCase() + string[i].substr(1);
+        }
+        string = string.join(" ")
+        return string
+        // return string.charAt(0).toUpperCase() + string.toLocaleLowerCase().slice(1);
+
     }
 
     mapIsoToLang = (value: string) => langISO.validate(value) ? langISO.getName(value) : value
