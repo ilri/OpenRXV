@@ -12,7 +12,12 @@ import * as fs from 'fs';
 import * as PizZip from 'pizzip';
 import * as Docxtemplater from 'docxtemplater';
 import * as libre from 'libreoffice-convert'
-
+var expressions = require('angular-expressions');
+var assign = require("lodash/assign");
+expressions.filters.lower = function (input) {
+  if (!input) return input;
+  return input.toLowerCase();
+}
 const ExcelJS = require('exceljs');
 @Injectable()
 export class ExportService {
@@ -112,11 +117,34 @@ export class ExportService {
       }
     }
     try {
-    
+
       const zip = new PizZip(
         await fs.promises.readFile(this.resolvePath(fileName + "", false), 'binary')
       );
-      const doc = new Docxtemplater();
+      function angularParser(tag) {
+        if (tag != undefined && tag != null){
+          if (tag === '.') {
+            return {
+              get: function (s) { return s; }
+            };
+          }
+        const expr = expressions.compile(
+          tag.replace(/(’|‘)/g, "'").replace(/(“|”)/g, '"')
+        );
+        return {
+          get: function (scope, context) {
+            let obj = {};
+            const scopeList = context.scopeList;
+            const num = context.num;
+            for (let i = 0, len = num + 1; i < len; i++) {
+              obj = assign(obj, scopeList[i]);
+            }
+            return expr(scope, obj);
+          }
+        };
+      }
+      }
+      const doc = new Docxtemplater(zip, { parser: angularParser });
       doc.loadZip(zip);
       doc.setData({
         items: hits.hits.map(items => items._source),
@@ -126,7 +154,7 @@ export class ExportService {
         sortingType: sort,
         sortedBy: sortBy,
         total: hits.total.value,
-      });
+            });
       doc.render();
       const buf = doc.getZip().generate({ type: 'nodebuffer' });
       var d = new Date();
@@ -160,7 +188,7 @@ export class ExportService {
         if (!splited[1] && splited[0])
           return _source[splited[0]] ? _source[splited[0]] : ''
         else
-          return _source[splited[0]]? _source[splited[0]][splited[1]] ? _source[splited[0]][splited[1]] : '' : ''
+          return _source[splited[0]] ? _source[splited[0]][splited[1]] ? _source[splited[0]][splited[1]] : '' : ''
       }));
     sourcesMetadata.map((a) => {
       for (let index = 0; index < a.length; index++) {
