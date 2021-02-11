@@ -11,7 +11,7 @@ export class ValuesService {
   constructor(private http: HttpClient) { }
 
   async findByTerm(term = '') {
-    return await this.http.get(environment.api + '/values/term/' + term).pipe(map((data: any) => {
+    return await this.http.get(environment.api + '/values/term/' + decodeURI(term)).pipe(map((data: any) => {
       data.hits = data.hits.map(element => { return { ...{ id: element._id }, ...element._source } })
       return data;
     })).toPromise();
