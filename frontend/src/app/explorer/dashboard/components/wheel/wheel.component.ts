@@ -10,12 +10,15 @@ import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 @ComponentLookup('WheelComponent')
 @Component({
   selector: 'app-wheel',
   templateUrl: './wheel.component.html',
   styleUrls: ['./wheel.component.scss'],
-  providers: [ChartMathodsService],
+  providers: [ChartMathodsService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WheelComponent extends ParentChart implements OnInit {
@@ -23,9 +26,11 @@ export class WheelComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>,
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
 
 
@@ -45,7 +50,7 @@ export class WheelComponent extends ParentChart implements OnInit {
 
     let data = buckets.map((b: Bucket) => (b.related.buckets.filter(d => b.key != d.key).map(d => [b.key.substr(0, 50), d.key.substr(0, 50), d.doc_count]))).flat(1)
     return {
-    
+
       accessibility: {
         point: {
           valueDescriptionFormat: '{index}. From {point.from} to {point.to}: {point.weight}.'

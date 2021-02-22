@@ -11,23 +11,27 @@ import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { BarService } from './../bar/services/bar/bar.service';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
 
 @ComponentLookup('LineComponent')
 @Component({
   selector: 'app-line',
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService],
+  providers: [ChartMathodsService, RangeService, BarService, SelectService],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class LineComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService
-
+    private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
   enabled: boolean;
 

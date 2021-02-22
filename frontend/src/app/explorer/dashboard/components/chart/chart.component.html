@@ -27,6 +27,11 @@
     <div class="prevent-scroll" *ngIf="isMap" (click)="hideClickToEnable()" #clickToEnable>
       <span>Click to enable</span>
     </div>
+    <div class="panel-header-icons">
+      <mat-icon class="mr-2" matTooltip="Reset Filter" matTooltipPosition="after" (click)="notifyFilter()" *ngIf="filterd" >
+        autorenew
+      </mat-icon>
+    </div>
   </div>
 
   <ng-content></ng-content>

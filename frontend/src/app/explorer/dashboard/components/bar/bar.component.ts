@@ -11,13 +11,16 @@ import { RangeService } from 'src/app/explorer/filters/services/range/range.serv
 import { BarService } from './services/bar/bar.service';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
 
 @ComponentLookup('BarComponent')
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService],
+  providers: [ChartMathodsService, RangeService, BarService, SelectService],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class BarComponent extends ParentChart implements OnInit {
@@ -26,8 +29,10 @@ export class BarComponent extends ParentChart implements OnInit {
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
     private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
   colors: string[]
   async ngOnInit() {

@@ -11,13 +11,16 @@ import { RangeService } from 'src/app/explorer/filters/services/range/range.serv
 import { BarService } from './../services/bar/bar.service';
 import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../../store';
 
 @ComponentLookup('SingleBarComponent')
 @Component({
   selector: 'app-rotated-lables',
   templateUrl: './rotated-lables.component.html',
   styleUrls: ['./rotated-lables.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService],
+  providers: [ChartMathodsService, RangeService, BarService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RotatedLablesComponent extends ParentChart implements OnInit {
@@ -25,9 +28,11 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
 
   async ngOnInit() {

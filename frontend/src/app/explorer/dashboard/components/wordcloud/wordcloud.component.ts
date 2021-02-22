@@ -24,7 +24,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private settingsService: SettingsService
   ) {
-    super(cms);
+    super(cms,null,null);
   }
   colors: string[]
   async ngOnInit() {

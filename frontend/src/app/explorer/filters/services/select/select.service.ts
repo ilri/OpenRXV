@@ -66,4 +66,19 @@ export class SelectService {
     this.bodyBuilderService.setAggAttributes = keyVal;
     return this.bodyBuilderService.buildMainQuery();
   }
+  resetValueAttributetoMainQuery(source: string) {
+    return this.addAttributeToMainQuery({
+      [source + '.keyword']: []
+    } as QueryFilterAttribute);
+  }
+  addNewValueAttributetoMainQuery(source: string, value) {
+    const filteredArray = this.bodyBuilderService.getFiltersFromQuery().filter(element => Object.keys(element).indexOf(source + '.keyword') != -1)
+    let filterdValues: Array<any> = [value]
+    filterdValues = [...filterdValues,...filteredArray.map(element => Object.values(element)[0])]
+    filterdValues.filter((v, i, a) => a.indexOf(v) === i); 
+   
+    return this.addAttributeToMainQuery({
+      [source + '.keyword']: filterdValues.length ? filterdValues : []
+    } as QueryFilterAttribute);
+  }
 }

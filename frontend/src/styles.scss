@@ -45,7 +45,18 @@ mat-spinner {
   background: #c2c2c2;
   border-radius: 10px;
 }
-
+.panel-header-icons mat-icon {
+  cursor: pointer;
+}
+.panel-header-icons {
+  text-align: right;
+  flex: auto;
+  z-index: 99999;
+  position: absolute;
+  top: -48px;
+  right: 50px;
+  width: 100px;
+}
 /* Handle on hover */
 
 ::-webkit-scrollbar-thumb:hover {

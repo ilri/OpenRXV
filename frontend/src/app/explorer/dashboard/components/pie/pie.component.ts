@@ -10,21 +10,28 @@ import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
+
 @ComponentLookup('PieComponent')
 @Component({
   selector: 'app-pie',
   templateUrl: './pie.component.html',
   styleUrls: ['./pie.component.scss'],
-  providers: [ChartMathodsService],
+  providers: [ChartMathodsService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>,
+
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
   colors: string[];
 

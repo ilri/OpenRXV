@@ -10,21 +10,26 @@ import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
 @ComponentLookup('PackedBubbleComponent')
 @Component({
   selector: 'app-packed-bubble',
   templateUrl: './packed-bubble.component.html',
   styleUrls: ['./packed-bubble.component.scss'],
-  providers: [ChartMathodsService],
+  providers: [ChartMathodsService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackedBubbleComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>
   ) {
-    super(cms);
+    super(cms, selectService, store);
   }
   colors: string[]
   async ngOnInit(){

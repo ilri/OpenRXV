@@ -10,23 +10,28 @@ import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { Store } from '@ngrx/store';
+import * as fromStore from '../../../store';
 
 @ComponentLookup('PackedBubbleSplitComponent')
 @Component({
   selector: 'app-packed-bubble-split',
   templateUrl: './packed-bubble-split.component.html',
   styleUrls: ['./packed-bubble-split.component.scss'],
-  providers: [ChartMathodsService],
+  providers: [ChartMathodsService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   constructor(
     cms: ChartMathodsService,
     private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    public readonly selectService: SelectService,
+    public readonly store: Store<fromStore.AppState>,
 
   ) {
-    super(cms);
+    super(cms,null,null);
   }
   colors : string[]
 
