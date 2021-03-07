@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   elasticsearch_7:
-    image: elasticsearch:7.6.2
+    image: elasticsearch:7.10.1
     container_name: elasticsearch_7
     restart: always
     ports:
@@ -36,7 +36,7 @@ services:
   kibana:
     container_name: kibana
     restart: always
-    image: kibana:7.6.2
+    image: kibana:7.10.1
     depends_on:
       - elasticsearch_7
     links:
