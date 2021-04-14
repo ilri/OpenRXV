@@ -54,7 +54,7 @@
                     </mat-form-field>
                 </p>
                 <p *ngSwitchCase="'check'">
-                    <mat-checkbox matInput [formControlName]="control.name">{{control.label}}</mat-checkbox>
+                    <mat-checkbox matInput [formControlName]="control.name" matTooltip="when checking this box, it allows you to update the filter with your selected data">{{control.label}}</mat-checkbox>
                 </p>
 
                 <div class="row" *ngSwitchCase="'content'">
