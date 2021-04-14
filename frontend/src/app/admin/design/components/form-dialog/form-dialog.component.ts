@@ -37,6 +37,7 @@ export class FormDialogComponent implements OnInit {
       this.dialogRef.close(value);
   }
   async ngOnInit() {
+    console.log(this.data)
     let FormGroupControls: any = {};
     this.data.form_data.forEach(element => {
       if (this.data.configs.componentConfigs[element.name] != null)

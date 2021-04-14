@@ -29,8 +29,8 @@ export class StructureComponent implements OnInit {
     { name: "Line", value: 'LineComponent', icon: 'bar_chart' }
   ]
   sortoptions = [
-    {name: 'Alphabetical', value: true},
-    {name: 'Doc_count', value: false}
+    { name: 'Alphabetical', value: true },
+    { name: 'Doc_count', value: false }
   ]
   pre
   baseform = [
@@ -90,6 +90,12 @@ export class StructureComponent implements OnInit {
           name: 'source',
           label: 'Data Source',
           type: 'metadata',
+          required: true,
+        },
+        {
+          name: 'allowFilterOnClick',
+          label: 'allow filter on click',
+          type: 'check',
           required: true,
         },
         {
@@ -252,7 +258,7 @@ export class StructureComponent implements OnInit {
           if (index == 0)
             element['scroll'] = { icon: result.icon }
           else
-          element['scroll'] = { linkedWith: this.grid[0].componentConfigs.id }
+            element['scroll'] = { linkedWith: this.grid[0].componentConfigs.id }
         });
 
       }
@@ -273,8 +279,8 @@ export class StructureComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
- 
-      
+
+
       if (result) {
         if (result.component == 'MainListComponent')
           for (let index = 0; index < result.content.filterOptions.length; index++) {

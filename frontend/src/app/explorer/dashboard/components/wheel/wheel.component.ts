@@ -13,6 +13,9 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+
 @ComponentLookup('WheelComponent')
 @Component({
   selector: 'app-wheel',
@@ -29,17 +32,27 @@ export class WheelComponent extends ParentChart implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
+    private readonly bodyBuilderService: BodyBuilderService
   ) {
     super(cms, selectService, store);
   }
 
-
+  filterd = false;
+  resetFilter(value: boolean = false) {
+    this.resetQ()
+  }
   async ngOnInit() {
+    const { source } = this.componentConfigs as ComponentFilterConfigs;
     let appearance = await this.settingsService.readAppearanceSettings()
     this.colors = appearance.chartColors;
     this.init('dependencywheel');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
+        let filters = this.bodyBuilderService.getFiltersFromQuery().filter(element => Object.keys(element).indexOf(source + '.keyword') != -1)
+        if (filters.length)
+          this.filterd = true;
+        else
+          this.filterd = false;
         this.chartOptions = this.setOptions(buckets);
       }
       this.cdr.detectChanges();
@@ -54,6 +67,15 @@ export class WheelComponent extends ParentChart implements OnInit {
       accessibility: {
         point: {
           valueDescriptionFormat: '{index}. From {point.from} to {point.to}: {point.weight}.'
+        }
+      },
+      plotOptions: {
+        series: {
+          point: {
+            events: {
+              click: this.setQ(),
+            }
+          }
         }
       },
       colors: this.colors,
