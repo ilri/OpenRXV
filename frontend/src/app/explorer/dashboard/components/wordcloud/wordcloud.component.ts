@@ -33,10 +33,15 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
+        
         this.chartOptions = this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
+  }
+  filterd = false;
+  resetFilter(value: boolean = false) {
+    this.resetQ()
   }
 
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
@@ -51,6 +56,13 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       },
       colors: this.colors,
       plotOptions: {
+        series: {
+          point: {
+            events: {
+              click: this.componentConfigs.allowFilterOnClick == true? this.setQ() : null,
+            }
+          }
+        },
         wordcloud: {
           tooltip: {
             pointFormat: ' <b>{point.weight}</b>',

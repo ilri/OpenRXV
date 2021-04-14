@@ -13,6 +13,8 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
+import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 
 @ComponentLookup('PieComponent')
 @Component({
@@ -29,24 +31,36 @@ export class PieComponent extends ParentChart implements OnInit {
     private settingsService: SettingsService,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
+    private readonly bodyBuilderService: BodyBuilderService
+
 
   ) {
     super(cms, selectService, store);
   }
   colors: string[];
+  filterd = false;
 
   async ngOnInit() {
+        const { source } = this.componentConfigs as ComponentFilterConfigs;
     let appearance = await this.settingsService.readAppearanceSettings()
     this.colors = appearance.chartColors;
     this.init('pie');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
+      let filters = this.bodyBuilderService.getFiltersFromQuery().filter(element => Object.keys(element).indexOf(source + '.keyword') != -1)
+      if (filters.length)
+        this.filterd = true;
+      else
+        this.filterd = false;
       if (buckets) {
+        console.log(buckets)
         this.chartOptions = this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-
+  resetFilter(value: boolean = false) {
+    this.resetQ()
+  }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
     return {
       chart: {
@@ -63,13 +77,27 @@ export class PieComponent extends ParentChart implements OnInit {
           cursor: 'pointer',
           showInLegend: true,
           tooltip: {
-            pointFormat: ' <b>{point.y}</b>',
+            pointFormat: '<b>{point.y}</b>',
             headerFormat: '{point.key}:',
           },
           dataLabels: {
             enabled: false,
           },
         },
+        // series: {
+        //   point: {
+        //     events: {
+        //       click: this.componentConfigs.allowFilterOnClick == true? this.setQ() : null,
+        //     }
+        //   }
+        // }
+        series: {
+          point: {
+            events: {
+              click: this.setQ()
+            }
+          }
+        }
       },
       series: [
         {

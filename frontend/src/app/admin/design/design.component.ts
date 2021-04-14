@@ -206,7 +206,9 @@ export class DesignComponent implements OnInit {
 
     if (obj.agg_on)
       temp['agg_on'] = obj.agg_on
-
+    
+      if(obj.allowFilterOnClick)
+      temp['allowFilterOnClick'] = obj.allowFilterOnClick
 
     if (obj.source_x && obj.source_y) {
       temp['source'] = [obj.source_x, obj.source_y + '.keyword'];
