@@ -1,0 +1,22 @@
+# Name that shows up in the badge
+name: Build frontend
+
+# Trigger workflow on pushes and pull requests to all branches
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        # Run on current "active" and "maintenance" releases of Node.js
+        # See: https://nodejs.org/en/about/releases/
+        node: [ '12', '14' ]
+    name: Node.js ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: cd frontend; npm install

@@ -1,63 +1,73 @@
 version: '3.1'
 services:
   elasticsearch_7:
-      image: elasticsearch:7.6.2
-      container_name: elasticsearch_7
-      restart: always
-      ports:
-        - 127.0.0.1:9200:9200
-        - 127.0.0.1:9300:9300
-      environment:
-        - discovery.type=single-node 
-      volumes:
-        - ./esData_7:/usr/share/elasticsearch/data:rw            
+    image: elasticsearch:7.6.2
+    container_name: elasticsearch_7
+    restart: always
+    ports:
+      - 127.0.0.1:9200:9200
+      - 127.0.0.1:9300:9300
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1536m -Xmx1536m"
+    volumes:
+      - esData_7:/usr/share/elasticsearch/data:rw
+    networks:
+      - openrxv
   angular_nginx:
-    container_name: angular_nginx 
+    container_name: angular_nginx
     image: angular_nginx
     build: angularBuild
     restart: always
     volumes:
-       - ../frontend:/frontend
-       - ./default.conf:/etc/nginx/sites-available/default 
+      - ../frontend:/frontend
+      - ./default.conf:/etc/nginx/sites-available/default
     ports:
-       - 80:80
+      - 80:80
     depends_on:
-       - elasticsearch_7
-    links:
-       - elasticsearch_7
+      - elasticsearch_7
+    networks:
+      - openrxv
   redis:
-      container_name: redis
-      image: redis
-      restart: always
-      volumes:
-        - ./redisData:/data
-      ports:
-        - 127.0.0.1:6379:6379
+    container_name: redis
+    image: redis:5
+    restart: always
+    volumes:
+      - redisData:/data
+    ports:
+      - 127.0.0.1:6379:6379
+    networks:
+      - openrxv
   kibana:
     container_name: kibana
     restart: always
     image: kibana:7.6.2
     depends_on:
       - elasticsearch_7
-    links:
-      - elasticsearch_7  
     ports:
       - 127.0.0.1:5601:5601
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch_7:9200        
+      - ELASTICSEARCH_HOSTS=http://elasticsearch_7:9200
+    networks:
+      - openrxv
   api:
     container_name: api
     working_dir: /backend
     restart: always
-    image: node:12
+    image: backend
+    build: backendBuild
     command: "npm run install_and_run"
-    ports: 
+    ports:
       - 127.0.0.1:3000:3000
     volumes:
       - ../backend:/backend
     depends_on:
       - elasticsearch_7
       - angular_nginx
-    links:
-      - elasticsearch_7   
-      - angular_nginx
+    networks:
+      - openrxv
+volumes:
+  esData_7:
+  redisData:
+networks:
+  openrxv:

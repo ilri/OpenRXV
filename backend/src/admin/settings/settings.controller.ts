@@ -206,15 +206,22 @@ export class SettingsController {
 
                 return data;
             }
-            else {
-                let data = await this.httpService.get(link).pipe(map((data: any, index) => {
-                    let merged = {
+            else if(response.data.apiVersion == 6){
+                let merged = {
                         base: [],
                         metadata: [],
                     }
-                    data = data.data.forEach((element, index) => {
+                    let base = await this.httpService.get(link + '/items?expand=metadata,parentCommunityList&limit=25').pipe(map((data: any) => {
 
-                        merged.base = Array.from(new Set([].concat.apply(merged.base, Object.keys(element).filter(d => ['fieldId:', 'qualifier', 'description', 'parentSchema', 'expand'].indexOf(d) == -1))));;
+                        data = data.data.forEach(element => {
+                            merged.base = Array.from(new Set([].concat.apply(merged.base, Object.keys(element).filter(d => ['metadata', 'bitstreams', 'expand'].indexOf(d) == -1))));;
+                        });
+                        return merged;
+                    }, error => {
+                    })).toPromise();
+
+                let data = await this.httpService.get(link+'/registries/schema').pipe(map((data: any, index) => {
+                    data = data.data.forEach((element, index) => {
                         merged.metadata = Array.from(new Set([].concat.apply(merged.metadata,
                             element.fields.map(item => {
                                 return item.name

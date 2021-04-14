@@ -54,15 +54,18 @@ export class ElasticService {
 
 
     }
-    async search(query,size = 10) {
+    async search(query, size = 10, scroll: string = null) {
         try {
-            const { body } = await this.elasticsearchService.search({
+            let options: any = {
                 index: process.env.OPENRXV_ALIAS,
                 method: 'POST',
-                size: size,
-                scroll:'10m',
+                // size: size,
+                // scroll:'10m',
                 body: query
-            });
+            };
+            if(scroll) options.scroll = scroll;
+            if(size) options.size = size;
+            const { body } = await this.elasticsearchService.search(options);
             return body;
         } catch (e) {
             return e
