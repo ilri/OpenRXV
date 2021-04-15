@@ -84,20 +84,20 @@ export class PieComponent extends ParentChart implements OnInit {
             enabled: false,
           },
         },
-        // series: {
-        //   point: {
-        //     events: {
-        //       click: this.componentConfigs.allowFilterOnClick == true? this.setQ() : null,
-        //     }
-        //   }
-        // }
         series: {
           point: {
             events: {
-              click: this.setQ()
+              click: this.componentConfigs.allowFilterOnClick == true? this.setQ() : null,
             }
           }
         }
+        // series: {
+        //   point: {
+        //     events: {
+        //       click: this.setQ()
+        //     }
+        //   }
+        // }
       },
       series: [
         {

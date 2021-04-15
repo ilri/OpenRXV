@@ -83,7 +83,7 @@ export class MapComponent extends ParentChart implements OnInit {
         series: {
           point: {
             events: {
-              click: this.setQ(),
+              click: this.componentConfigs.allowFilterOnClick == true? this.setQ() : null,
             }
           }
         }
