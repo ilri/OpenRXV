@@ -200,7 +200,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
     });
   }
 
-  private reset(): void {
+  private reset(): void {   
     this.doNotChange = false;
     this.filterOptions = [];
   }
