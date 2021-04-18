@@ -20,3 +20,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: cd frontend; npm install
+      - name: Lint
+        uses: mooyoul/tslint-actions@v1.1.1
+        with:
+          pattern: '*.ts'
