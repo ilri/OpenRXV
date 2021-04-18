@@ -20,5 +20,3 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: cd frontend; npm install
-      - name: Run ESLint
-        run: eslint -c ./frontend/.eslintrc ./frontend --ext .js,.jsx,.ts,.tsx
