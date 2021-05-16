@@ -16,6 +16,8 @@ import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service'
 import { first } from 'rxjs/operators';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../dynamic/lookup.registry';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 
 /**
  * declare is used to tell TypeScript compiler that the variable has been created elsewhere.
@@ -29,7 +31,7 @@ declare function _altmetric_embed_init(): any;
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
-  providers: [ScrollHelperService],
+  providers: [ScrollHelperService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListComponent extends ParentComponent implements OnInit {
@@ -38,15 +40,23 @@ export class ListComponent extends ParentComponent implements OnInit {
   listData: Bucket[]; // for aggrigiation list
   isPaginatedList: boolean; // determine if we should display the hits or not
   paginationAtt: PageEvent;
-
+  filterd = false;
   constructor(
     public readonly store: Store<fromStore.AppState>,
     public readonly scrollHelperService: ScrollHelperService,
-    public readonly cdr: ChangeDetectorRef
+    public readonly cdr: ChangeDetectorRef,
+    private readonly selectService: SelectService,
+    private readonly bodyBuilderService:BodyBuilderService
   ) {
     super();
   }
-
+  resetQ() {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    this.filterd = false;
+    const query: bodybuilder.Bodybuilder = this.selectService.resetValueAttributetoMainQuery(source as string);
+    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    this.selectService.resetNotification();
+  }
   ngOnInit(): void {
     this.scrollHelperService.storeVal = this.store;
     this.seeIfThisCompInView();
@@ -87,6 +97,12 @@ export class ListComponent extends ParentComponent implements OnInit {
       : this.store
         .select(fromStore.getBuckets, size ? size + '_' + source : '10000_' + source)
         .subscribe((b: Bucket[]) => {
+          const { source } = this.componentConfigs as ComponentDashboardConfigs;
+          let filters = this.bodyBuilderService.getFiltersFromQuery().filter(element => Object.keys(element).indexOf(source +'.keyword') != -1)
+          if (filters.length)
+            this.filterd = true;
+          else
+            this.filterd = false;
           this.listData = b;
           this.cdr.detectChanges();
           this.expandOrStay(this.safeCheckLength(b));

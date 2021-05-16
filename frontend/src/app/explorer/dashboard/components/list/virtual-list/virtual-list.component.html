@@ -11,8 +11,8 @@
     "
     class="viewport w-100"
   >
-    <div *cdkVirtualFor="let item of listData" class="item">
-      <mat-list-item class="p-1">
+    <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)">
+      <mat-list-item class="p-1" >
         <ng-container *ngIf="!isSmall">
           <span class="lists_counts">
             {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}%

@@ -4,6 +4,8 @@ import { ListComponent } from '../list.component';
 import { Store } from '@ngrx/store';
 import { ScrollHelperService } from '../../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../../store';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 @ComponentLookup('MainListComponent')
 @Component({
   selector: 'app-main-list',
@@ -15,9 +17,10 @@ export class MainListComponent extends ListComponent {
 
   constructor(public readonly store: Store<fromStore.AppState>,
     public readonly scrollHelperService: ScrollHelperService,
-    public readonly cdr: ChangeDetectorRef) {
-    super(store, scrollHelperService, cdr);
+    public readonly cdr: ChangeDetectorRef,
+    selectService: SelectService,
+    bodyBuilderService: BodyBuilderService
+  ) {
+    super(store, scrollHelperService, cdr, selectService, bodyBuilderService);
   }
-
-
 }

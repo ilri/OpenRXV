@@ -16,7 +16,6 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
-
 @ComponentLookup('MapComponent')
 @Component({
   selector: 'app-map',
@@ -36,7 +35,6 @@ export class MapComponent extends ParentChart implements OnInit {
     super(cms, selectService, store);
   }
   filterd = false;
-
   ngOnInit(): void {
     this.init('map');
     const { source } = this.componentConfigs as ComponentFilterConfigs;
