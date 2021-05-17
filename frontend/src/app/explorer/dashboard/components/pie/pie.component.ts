@@ -48,7 +48,6 @@ export class PieComponent extends ParentChart implements OnInit {
       else
         this.filterd = false;
       if (buckets) {
-        console.log(buckets)
         this.chartOptions = this.setOptions(buckets);
       }
       this.cdr.detectChanges();
