@@ -179,7 +179,6 @@ export class RangeComponent extends ParentComponent implements OnInit {
     }
     this.max = max;
     this.setFirstMinMax(max, min);
-    console.log(min)
     if(min != this.firstMin && max != this.firstMax)
     this.range = [this.slidermin >= min? this.slidermin : min, this.slidermax <= max? this.slidermax : max];
     else

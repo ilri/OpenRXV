@@ -1,51 +1,33 @@
-<mat-expansion-panel
-  [expanded]="scrollHelperService.expandedStatus"
-  (afterCollapse)="disPatchSetInView(true)"
-  (afterExpand)="disPatchSetInView(false)"
->
-  <div
-    class="prevent-scroll"
-    *ngIf="!isPaginatedList"
-    (click)="hideClickToEnable()"
-    #clickToEnable
-  >
+<mat-expansion-panel [expanded]="scrollHelperService.expandedStatus" (afterCollapse)="disPatchSetInView(true)"
+  (afterExpand)="disPatchSetInView(false)">
+  <div class="prevent-scroll" *ngIf="!isPaginatedList" (click)="hideClickToEnable()" #clickToEnable>
     <span>Click to enable</span>
   </div>
+  <div class="panel-header-icons">
+    <mat-icon class="mr-2" matTooltip="Reset Filter" matTooltipPosition="after" (click)="resetQ()" *ngIf="filterd">
+      autorenew
+    </mat-icon>
+  </div>
   <mat-expansion-panel-header class="border-bottom-muted">
-    <mat-panel-title
-      class="icon-with-text"
-      *ngIf="scrollHelperService.getViewState?.userSeesMe"
-    >
+    <mat-panel-title class="icon-with-text" *ngIf="scrollHelperService.getViewState?.userSeesMe">
       <span class="mr-1">{{ componentConfigs.title }}</span>
-      <mat-icon
-        aria-label="Button that displays
-            a tooltip when focused or hovered over"
-        [mdePopoverTriggerFor]="appPopover"
-        mdePopoverTriggerOn="hover"
-      >
+      <mat-icon aria-label="Button that displays
+            a tooltip when focused or hovered over" [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="hover">
         error
       </mat-icon>
       <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
-        <app-icons-with-text
-          [text]="componentConfigs.description"
-        ></app-icons-with-text>
+        <app-icons-with-text [text]="componentConfigs.description"></app-icons-with-text>
       </mde-popover>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-container *ngIf="!isPaginatedList; else displayPaginatedList">
-    <app-virtual-list [listData]="listData"></app-virtual-list>
+    <app-virtual-list [componentConfigs]="componentConfigs" [listData]="listData"></app-virtual-list>
   </ng-container>
   <ng-template #displayPaginatedList>
-    <app-paginated-list
-      [hits]="hits?.hits"
-      [paginationAtt]="paginationAtt"
-      [loadingHits]="loadingHits"
-      [content]="componentConfigs.content"
-    >
+    <app-paginated-list [hits]="hits?.hits" [paginationAtt]="paginationAtt" [loadingHits]="loadingHits"
+      [content]="componentConfigs.content">
     </app-paginated-list>
   </ng-template>
 
-  <ngx-loading
-    [show]="!loadingHits && scrollHelperService.loading"
-  ></ngx-loading>
+  <ngx-loading [show]="!loadingHits && scrollHelperService.loading"></ngx-loading>
 </mat-expansion-panel>

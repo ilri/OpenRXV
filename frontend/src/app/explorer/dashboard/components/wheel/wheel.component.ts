@@ -15,7 +15,6 @@ import * as fromStore from '../../../store';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
-
 @ComponentLookup('WheelComponent')
 @Component({
   selector: 'app-wheel',
@@ -36,7 +35,6 @@ export class WheelComponent extends ParentChart implements OnInit {
   ) {
     super(cms, selectService, store);
   }
-
   filterd = false;
   resetFilter(value: boolean = false) {
     this.resetQ()
@@ -58,12 +56,9 @@ export class WheelComponent extends ParentChart implements OnInit {
       this.cdr.detectChanges();
     });
   }
-
   private setOptions(buckets: Array<Bucket>): any {
-
     let data = buckets.map((b: Bucket) => (b.related.buckets.filter(d => b.key != d.key).map(d => [b.key.substr(0, 50), d.key.substr(0, 50), d.doc_count]))).flat(1)
     return {
-
       accessibility: {
         point: {
           valueDescriptionFormat: '{index}. From {point.from} to {point.to}: {point.weight}.'

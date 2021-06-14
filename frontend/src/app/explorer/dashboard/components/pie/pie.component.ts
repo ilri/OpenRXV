@@ -15,7 +15,6 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
-
 @ComponentLookup('PieComponent')
 @Component({
   selector: 'app-pie',
@@ -32,14 +31,11 @@ export class PieComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService
-
-
   ) {
     super(cms, selectService, store);
   }
   colors: string[];
   filterd = false;
-
   async ngOnInit() {
         const { source } = this.componentConfigs as ComponentFilterConfigs;
     let appearance = await this.settingsService.readAppearanceSettings()
@@ -91,13 +87,6 @@ export class PieComponent extends ParentChart implements OnInit {
             }
           }
         }
-        // series: {
-        //   point: {
-        //     events: {
-        //       click: this.setQ()
-        //     }
-        //   }
-        // }
       },
       series: [
         {

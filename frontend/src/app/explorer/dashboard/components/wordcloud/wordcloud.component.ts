@@ -57,7 +57,6 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   resetFilter(value: boolean = false) {
     this.resetQ()
   }
-
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
     return {
       chart: {

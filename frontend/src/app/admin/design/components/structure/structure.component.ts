@@ -279,8 +279,6 @@ export class StructureComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-
-
       if (result) {
         if (result.component == 'MainListComponent')
           for (let index = 0; index < result.content.filterOptions.length; index++) {

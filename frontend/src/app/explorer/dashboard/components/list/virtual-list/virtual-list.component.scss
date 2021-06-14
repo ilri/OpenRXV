@@ -6,7 +6,10 @@
     }
   }
 }
-
+.listHover:hover{
+  cursor: pointer;
+  background-color: #e2eaf3;
+}
 .viewport {
   height: 500px;
   overflow-x: hidden !important; // firefox
