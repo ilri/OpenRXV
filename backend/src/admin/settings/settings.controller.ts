@@ -86,6 +86,7 @@ export class SettingsController {
                 type: "Dspace",
                 startPage: repo.startPage,
                 itemsEndPoint: repo.itemsEndPoint,
+                siteMap: repo.siteMap,
                 allCores: repo.allCores,
                 schema,
             })

@@ -4,18 +4,28 @@
       <mat-card-title>
         Admin Dashboard
 
-
-        <button style="float: right;" (click)="startIndex()" color="primary" mat-raised-button>
+        <button style="float: right;" (click)="startReIndex()" color="accent" mat-raised-button>
+          Commit Indexing
+          <mat-icon>check</mat-icon>
+        </button>
+        <button class="mr-2" style="float: right;" (click)="startPlugins()" color="primary" mat-raised-button>
+          Start Plugins
+          <mat-icon>archive</mat-icon>
+        </button>
+        <button class="mr-2" style="float: right;" (click)="startIndex()" color="primary" mat-raised-button>
           Start Indexing
-          <mat-icon>archive</mat-icon></button>
+          <mat-icon>archive</mat-icon>
+        </button>
 
         <button class="mr-2" style="float: right;" (click)="stopIndex()" color="warn" mat-raised-button>
           Stop Indexing
-          <mat-icon>unarchive</mat-icon></button>
+          <mat-icon>unarchive</mat-icon>
+        </button>
 
         <button class="mr-2" style="float: right;" (click)="Init()" mat-raised-button>
           Refresh
-          <mat-icon>refresh</mat-icon></button>
+          <mat-icon>refresh</mat-icon>
+        </button>
       </mat-card-title>
     </mat-card>
   </div>

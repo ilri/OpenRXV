@@ -101,7 +101,18 @@ export class SettingsService {
       return data;
     })).toPromise();
   }
-
+  
+  
+  async startPlugins() {
+    return await this.http.get(environment.api + '/harvester/start-plugins').pipe(map((data: any) => {
+      return data;
+    })).toPromise();
+  }
+  async startReIndex() {
+    return await this.http.get(environment.api + '/harvester/start-reindex').pipe(map((data: any) => {
+      return data;
+    })).toPromise();
+  }
   async startIndexing() {
     return await this.http.get(environment.api + '/harvester/startindex').pipe(map((data: any) => {
       return data;

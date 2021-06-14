@@ -23,8 +23,7 @@ export class PluginsConsumer {
             clearTimeout(this.timeout)
         this.timeout = setTimeout(async () => {
             this.logger.log("OnGlobalQueueDrained");
-            await await this.harvesterService.Reindex();
-        }, 12000)
+        }, 2000)
 
     }
 

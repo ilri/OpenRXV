@@ -42,8 +42,8 @@ export class SetupComponent implements OnInit {
       icon: new FormControl(),
       startPage: new FormControl(),
       itemsEndPoint: new FormControl(),
+      siteMap: new FormControl(),
       allCores: new FormControl(),
-
       schema: new FormArray([
         new FormGroup(this.baseSchema())
       ]),

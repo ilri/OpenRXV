@@ -1,0 +1,23 @@
+{
+    "name": "dspace_health_check",
+    "display_name": "DSpace Health Check",
+    "description": "To remove duplicates and add missing items.",
+    "multiple": "true",
+    "source": [
+        "handle"
+    ],
+    "params": [
+        {
+            "name": "repo",
+            "label": "Repository name",
+            "type": "text",
+            "required": true
+        },
+        {
+            "name": "itemEndPoint",
+            "label": "Link to DSpace item By Handle REST API ",
+            "type": "text",
+            "required": true
+        }
+    ]
+}

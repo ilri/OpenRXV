@@ -1,0 +1,14 @@
+{
+    "name": "dspace_add_missing_items",
+    "display_name": "DSpace add missing items",
+    "description": "DSpace add missing items this used by Health check",
+    "multiple": "false",
+    "params": [
+        {
+            "name": "repo",
+            "label": "Repository name",
+            "type": "text",
+            "required": true
+        }
+    ]
+}

@@ -31,16 +31,17 @@ export class HarvesterController {
     async StopIndex() {
         return { message: Date(), start: await this.harvestService.stopHarvest() }
     }
+   
     @UseGuards(AuthGuard('jwt'))
-    @Get('reindex')
-    async reIndex() {
-        return { message: Date(), start: await this.harvestService.Reindex() }
+    @Get('start-plugins')
+    async pluginsStart() {
+        return { message: Date(), start: await this.harvestService.pluginsStart() }
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('plugins')
-    async pluginsStart() {
-        return { message: Date(), start: await this.harvestService.pluginsStart() }
+    @Get('start-reindex')
+    async CheckStart() {
+        return { message: Date(), start: await this.harvestService.CheckStart() }
     }
 
 

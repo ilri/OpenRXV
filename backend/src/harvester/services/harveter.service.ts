@@ -5,7 +5,7 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { ValuesService } from 'src/shared/services/values.service';
-
+import Sitemapper from 'sitemapper';
 @Injectable()
 export class HarvesterService {
     private readonly logger = new Logger(HarvesterService.name);
@@ -65,7 +65,15 @@ export class HarvesterService {
     async stopHarvest() {
         this.logger.debug("Stopping Harvest")
         await this.fetchQueue.pause();
+        await this.fetchQueue.empty();
         await this.fetchQueue.clean(0, 'wait')
+        await this.pluginsQueue.pause();
+        await this.pluginsQueue.empty();
+        await this.pluginsQueue.clean(0, 'failed')
+        await this.pluginsQueue.clean(0, 'wait')
+        await this.pluginsQueue.clean(0, 'active')
+        await this.pluginsQueue.clean(0, 'delayed')
+        await this.pluginsQueue.clean(0, 'completed')
         return await this.fetchQueue.clean(0, 'active')
     }
     async startHarvest() {
@@ -80,13 +88,42 @@ export class HarvesterService {
         await this.fetchQueue.resume();
 
         let settings = await this.jsonFilesService.read('../../../data/dataToUse.json');
-        settings.repositories.forEach(repo => {
-            for (let pipe = 0; pipe < 4; pipe++) {
-                this.fetchQueue.add('fetch', { page: parseInt(repo.startPage) + pipe, pipe: 4, repo })
-            }
 
+        settings.repositories.forEach(async repo => {
+
+            const Sitemap = new Sitemapper({
+                url: repo.siteMap,
+                timeout: 15000, // 15 seconds
+            });
+            try {
+                const { sites } = await Sitemap.fetch();
+                let itemsCount = sites.length
+                let pages = Math.round(itemsCount / 10);
+                for (let page_number = 1; page_number <= pages; page_number++) {
+                    setTimeout(() => {
+                        this.fetchQueue.add('fetch', { page: page_number, repo })
+                    }, page_number <= 5 ? page_number * 500 : 0);
+
+                }
+            } catch (error) {
+                console.log(error);
+            }
         });
+
+
+
         return "started";
+    }
+
+    async CheckStart() {
+        await this.fetchQueue.pause();
+        await this.fetchQueue.empty();
+        await this.fetchQueue.clean(0, 'wait')
+        await this.fetchQueue.clean(0, 'active')
+        await this.fetchQueue.clean(0, 'completed')
+        await this.fetchQueue.clean(0, 'failed')
+        await this.fetchQueue.resume();
+        return await this.Reindex();
     }
     async pluginsStart() {
         await this.pluginsQueue.pause();
@@ -104,9 +141,6 @@ export class HarvesterService {
                     await this.pluginsQueue.add(plugin.name, { ...param, page: 1, index: process.env.OPENRXV_TEMP_INDEX })
                 }
             }
-        else
-            this.Reindex()
-
     }
     async Reindex() {
         this.logger.debug("reindex function is called")
@@ -143,7 +177,7 @@ export class HarvesterService {
                 },
                 dest: { index: process.env.OPENRXV_FINAL_INDEX }
             }
-        }, { requestTimeout: 2000000 })
+        }, { requestTimeout: 2000000 }).catch(e => this.logger.log(e))
         this.logger.debug("reindex to final")
 
 
