@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -19,7 +19,9 @@ export class MainListComponent implements OnInit {
     description: new FormControl(''),
     identifierUri: new FormControl(''),
     altmetric: new FormControl(''),
-    tags: new FormArray([]),
+    tags: new FormArray([], [
+      Validators.required
+    ]),
     filterOptions: new FormArray([]),
 
   });
@@ -47,6 +49,8 @@ export class MainListComponent implements OnInit {
       this.content.tags.forEach(element => {
         this.tagsControls.push(new FormGroup(this.baseTags(element)))
       });
+    else
+      this.AddNewdata([], 'tags')
     if (this.content && this.content.filterOptions)
       this.content.filterOptions.forEach(element => {
         this.filterOptions.push(new FormGroup(this.baseFilterOptions(element)))
@@ -60,7 +64,8 @@ export class MainListComponent implements OnInit {
       this.listForm.removeControl('filterOptions');
       this.listForm.addControl('filterOptions', new FormArray(this.filterOptions))
     }
-    this.listForm.patchValue(this.content);
+    if (this.content)
+      this.listForm.patchValue(this.content);
     this.baseForm.removeControl('content')
     this.baseForm.addControl('content', this.listForm);
   }
