@@ -6,7 +6,7 @@ describe('MainBodyBuilderService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MainBodyBuilderService = TestBed.get(MainBodyBuilderService);
+    const service: MainBodyBuilderService = TestBed.inject(MainBodyBuilderService);
     expect(service).toBeTruthy();
   });
 });
