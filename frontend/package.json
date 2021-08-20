@@ -41,7 +41,7 @@
     "@tinymce/tinymce-angular": "^3.5.0",
     "@types/scriptjs": "0.0.2",
     "bodybuilder": "^2.2.21",
-    "bootstrap": "^4.2.1",
+    "bootstrap": "^4.5.2",
     "core-js": "^3.6.4",
     "highcharts": "8.0.4",
     "highcharts-angular": "~2.4.0",
