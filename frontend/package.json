@@ -54,7 +54,7 @@
     "ngx-toastr": "^12.0.1",
     "ngx-tour-core": "isaacplmann/ngx-tour#bd36abea68cb0e5bd0974f093d45ebffbe9ec077",
     "ngx-tour-md-menu": "isaacplmann/ngx-tour#bd36abea68cb0e5bd0974f093d45ebffbe9ec077",
-    "node-sass": "^6.0.1",
+    "node-sass": "^4.14.1",
     "nouislider": "^14.1.1",
     "ramda": "^0.27.0",
     "rxjs": "~6.5.4",
