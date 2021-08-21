@@ -38,7 +38,7 @@
     "@ngx-loading-bar/router": "^4.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
     "angular-inviewport": "alanorth/angular-inviewport#angular-9.1",
-    "@tinymce/tinymce-angular": "^3.5.0",
+    "@tinymce/tinymce-angular": "^4.0.0",
     "@types/scriptjs": "0.0.2",
     "bodybuilder": "^2.2.21",
     "bootstrap": "^4.5.2",
