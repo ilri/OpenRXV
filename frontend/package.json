@@ -37,7 +37,7 @@
     "@ngx-loading-bar/http-client": "^4.2.0",
     "@ngx-loading-bar/router": "^4.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
-    "angular-inviewport": "alanorth/angular-inviewport#angular-9.1",
+    "@thisissoon/angular-inviewport": "github:alanorth/angular-inviewport#angular-9.1",
     "@tinymce/tinymce-angular": "^4.0.0",
     "@types/scriptjs": "0.0.2",
     "bodybuilder": "^2.2.21",
