@@ -49,7 +49,7 @@ import { LinkTextComponent } from './dashboard/components/list/paginated-list/li
 import { VirtualListComponent } from './dashboard/components/list/virtual-list/virtual-list.component';
 // tslint:disable-next-line
 import { FilterPaginatedListComponent } from './dashboard/components/list/paginated-list/filter-paginated-list/filter-paginated-list.component';
-import { NgxLoadingModule } from 'ngx-loading';
+import { NgxLoadingModule } from 'ngx-loading/projects/dist/ngx-loading';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { TourMatMenuModule } from 'ngx-tour-md-menu';
 import { WelcomeComponent } from './dashboard/representationalComponents/welcome/welcome.component';
