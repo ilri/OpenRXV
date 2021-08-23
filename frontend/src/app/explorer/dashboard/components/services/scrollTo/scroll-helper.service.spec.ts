@@ -6,7 +6,7 @@ describe('ScrollHelperService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ScrollHelperService = TestBed.get(ScrollHelperService);
+    const service: ScrollHelperService = TestBed.inject(ScrollHelperService);
     expect(service).toBeTruthy();
   });
 });
