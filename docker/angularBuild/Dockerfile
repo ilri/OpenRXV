@@ -14,4 +14,4 @@ RUN npm install -g @angular/cli
 RUN apt install -y nginx
 COPY ./start.sh /start.sh
 EXPOSE 80
-CMD ["./start.sh"]
+CMD ["/start.sh"]
