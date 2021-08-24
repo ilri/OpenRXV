@@ -36,7 +36,7 @@
     "@ngx-loading-bar/core": "^4.2.0",
     "@ngx-loading-bar/http-client": "^4.2.0",
     "@ngx-loading-bar/router": "^4.2.0",
-    "@nicky-lenaers/ngx-scroll-to": "^3.0.1",
+    "@nicky-lenaers/ngx-scroll-to": "^9.0.0",
     "@thisissoon/angular-inviewport": "^4.2.2",
     "@tinymce/tinymce-angular": "^4.0.0",
     "@types/scriptjs": "0.0.2",
