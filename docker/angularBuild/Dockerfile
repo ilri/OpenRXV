@@ -4,6 +4,7 @@ FROM docker.io/ubuntu:20.04
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt update -y
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt install -y curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt install -y nodejs
