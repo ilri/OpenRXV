@@ -1,6 +1,6 @@
 {
     "name": "dspace_downloads_and_views",
-    "display_name": "DSpace downloads and views",
+    "display_name": "DSpace Downloads and Views",
     "description": "To get all downloads and views from a DSpace Statistics API.",
     "multiple": "true",
     "source":["numbers.views", "numbers.downloads"],

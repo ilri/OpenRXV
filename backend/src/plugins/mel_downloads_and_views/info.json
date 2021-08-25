@@ -1,13 +1,13 @@
 {
     "name": "mel_downloads_and_views",
-    "display_name": "MEL downloads and views",
+    "display_name": "MEL Downloads and Views",
     "description": "To get all downloads and views from MEL.",
     "multiple": "false",
     "source":["numbers.views", "numbers.downloads"],
     "params": [
         {
             "name": "repo",
-            "label": "MEL repository name",
+            "label": "Repository name",
             "type": "text",
             "required": true
         }

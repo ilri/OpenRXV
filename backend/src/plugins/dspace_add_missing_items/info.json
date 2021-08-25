@@ -1,7 +1,7 @@
 {
     "name": "dspace_add_missing_items",
-    "display_name": "DSpace add missing items",
-    "description": "DSpace add missing items this used by Health check",
+    "display_name": "DSpace Add Missing Items",
+    "description": "DSpace add missing items (this is used by the health check plugin, do not activate manually).",
     "multiple": "false",
     "params": [
         {
