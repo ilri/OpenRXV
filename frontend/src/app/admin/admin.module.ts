@@ -98,11 +98,5 @@ import { DocComponent } from './reporting/doc/doc.component';
     },
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
-  entryComponents: [
-    FormComponent,
-    ConfirmationComponent,
-    ValuesForm,
-    FormDialogComponent,
-  ],
 })
 export class AdminModule {}
