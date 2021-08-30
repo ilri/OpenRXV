@@ -53,7 +53,7 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
     });
     return {
       chart: {
-        type: 'column',
+        type: 'bar',
       },
       xAxis: {
         type: 'category',
@@ -65,7 +65,12 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
           },
         },
       },
-      colors: this.colors,
+		plotOptions: {
+			series: {
+				colorByPoint: true,
+				colors: this.colors
+			}
+		},
       yAxis: {
         min: 0,
       },
