@@ -17,11 +17,8 @@ services:
   angular_nginx:
     container_name: angular_nginx
     image: angular_nginx
-    build: angularBuild
+    build: frontend
     restart: always
-    volumes:
-      - ../frontend:/frontend
-      - ./default.conf:/etc/nginx/sites-available/default
     ports:
       - 80:80
     depends_on:
@@ -52,15 +49,11 @@ services:
       - openrxv
   api:
     container_name: api
-    working_dir: /backend
     restart: always
     image: backend
-    build: backendBuild
-    command: "npm run install_and_run"
+    build: backend
     ports:
       - 127.0.0.1:3000:3000
-    volumes:
-      - ../backend:/backend
     depends_on:
       - elasticsearch_7
       - angular_nginx
