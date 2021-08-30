@@ -6,7 +6,6 @@
   "private": true,
   "license": "GPL-3.0-only",
   "scripts": {
-    "install_and_run": "npm i && cp example.env .env &&  npm run copy:assets && npm run build && npm run start:prod",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",
