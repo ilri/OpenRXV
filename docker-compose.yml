@@ -14,16 +14,16 @@ services:
       - esData_7:/usr/share/elasticsearch/data:rw
     networks:
       - openrxv
-  angular_nginx:
-    container_name: angular_nginx
-    image: angular_nginx
+  frontend:
+    container_name: frontend
+    image: frontend
     build: frontend
     restart: always
     ports:
       - 80:80
     depends_on:
       - elasticsearch_7
-      - api
+      - backend
     networks:
       - openrxv
   redis:
@@ -48,8 +48,8 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch_7:9200
     networks:
       - openrxv
-  api:
-    container_name: api
+  backend:
+    container_name: backend
     restart: always
     image: backend
     build: backend
