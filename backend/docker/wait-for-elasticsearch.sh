@@ -24,12 +24,11 @@ until [ "$response" = "200" ]; do
     sleep 1
 done
 
-# Next, wait for Elasticsearch status to turn to yellow (originally green, but
-# OpenRXV indexes are always yellow...)
+# Next, wait for Elasticsearch status to turn green or yellow
 health="$(curl -fsSL "$host/_cat/health?h=status")"
-health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')" # trim whitespace (otherwise we'll have "yellow ")
+health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')" # trim whitespace (otherwise we'll have "green ")
 
-until [ "$health" = 'yellow' ]; do
+until [[ "$health" =~ (green|yellow) ]]; do
     health="$(curl -fsSL "$host/_cat/health?h=status")"
     health="$(echo "$health" | sed -r 's/^[[:space:]]+|[[:space:]]+$//g')"
     >&2 echo "Elasticsearch is unavailable - sleeping"
