@@ -46,6 +46,7 @@ export class StructureComponent implements OnInit {
       icon: 'bar_chart',
     },
     { name: 'Line', value: 'LineComponent', icon: 'bar_chart' },
+    { name: 'Google Maps', value: 'GoogleMapsComponent', icon: 'map' },
   ];
   sortoptions = [
     { name: 'Alphabetical', value: true },
@@ -99,6 +100,7 @@ export class StructureComponent implements OnInit {
       case 'MapComponent':
       case 'ListComponent':
       case 'WheelComponent':
+      case 'GoogleMapsComponent':
         this.form_data = [
           ...this.baseform,
           ...[

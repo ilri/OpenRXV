@@ -81,6 +81,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lables/rotated-lables.component';
+import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemaps.component';
+import { AgmCoreModule } from "@agm/core";
 
 @NgModule({
   declarations: [
@@ -123,12 +125,16 @@ import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lable
     ShareComponent,
     MainListComponent,
     RotatedLablesComponent,
+    GooglemapsComponent
   ],
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
     BrowserModule,
     FormsModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'No API KEY PROVIDED'
+    }),
     NgSelectModule,
     PortalModule,
     MatSidenavModule,
@@ -190,6 +196,7 @@ import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lable
     SimiCircleComponent,
     BarComponent,
     ExportComponent,
+    GooglemapsComponent
   ],
 })
 export class ExplorerModule {}

@@ -1,0 +1,99 @@
+<mat-expansion-panel
+  [ngClass]="{ fullscreen: isFullscreen }"
+  [disabled]="isFullscreen"
+  [expanded]="scrollHelperService.expandedStatus"
+  (afterCollapse)="disPatchSetInView(true)"
+  (afterExpand)="disPatchSetInView(false)"
+>
+  <div
+    class="prevent-scroll"
+    *ngIf="!isPaginatedList && !isFullscreen"
+    (click)="hideClickToEnable()"
+    #clickToEnable
+  >
+    <span>Click to enable</span>
+  </div>
+  <div class="panel-header-icons">
+    <mat-icon
+      class="mr-2"
+      matTooltip="Reset Filter"
+      matTooltipPosition="after"
+      (click)="resetQ()"
+      *ngIf="filterd"
+    >
+      autorenew
+    </mat-icon>
+    <mat-icon
+      matTooltip="Full Screen"
+      matTooltipPosition="after"
+      (click)="fullscren()"
+      *ngIf="!isFullscreen"
+    >
+      fullscreen
+    </mat-icon>
+    <mat-icon
+      matTooltip="Exit Full Screen"
+      matTooltipPosition="after"
+      (click)="fullscren()"
+      *ngIf="isFullscreen"
+    >
+      fullscreen_exit
+    </mat-icon>
+  </div>
+  <mat-expansion-panel-header class="border-bottom-muted">
+    <mat-panel-title
+      class="icon-with-text"
+      *ngIf="scrollHelperService.getViewState?.userSeesMe"
+    >
+      <span class="mr-1">{{ componentConfigs.title }}</span>
+      <mat-icon
+        aria-label="Button that displays
+            a tooltip when focused or hovered over"
+        [mdePopoverTriggerFor]="appPopover"
+        mdePopoverTriggerOn="hover"
+      >
+        error
+      </mat-icon>
+      <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
+        <app-icons-with-text
+          [text]="componentConfigs.description"
+        ></app-icons-with-text>
+      </mde-popover>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <ng-container>
+    <div class="w-100 h-100" #panel>
+      <agm-map
+        *ngIf="refreshMap"
+        [ngStyle]="myStyles"
+        [zoom]="zoom"
+        [zoomControl]="true"
+        [fitBounds]="fitBounds"
+        mapTypeId="hybrid"
+        [disableDefaultUI]="false"
+        [zoomControl]="false"
+      >
+        <ng-container *ngFor="let m of listData">
+          <agm-marker
+            (markerClick)="filterMarker(aVariable[2])"
+            [iconUrl]="
+              'http://maps.google.com/mapfiles/ms/icons/' +
+              ((aVariable[2] | split: '_' | head) == 'technologies'
+                ? 'green'
+                : 'orange') +
+              '-dot.png'
+            "
+            *ngIf="m.key | split: ','; let aVariable"
+            [agmFitBounds]="fitBounds"
+            [latitude]="aVariable[1]"
+            [longitude]="aVariable[0]"
+          >
+          </agm-marker>
+        </ng-container>
+      </agm-map>
+    </div>
+  </ng-container>
+  <ngx-loading
+    [show]="!loadingHits && scrollHelperService.loading"
+  ></ngx-loading>
+</mat-expansion-panel>
