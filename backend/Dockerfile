@@ -6,7 +6,6 @@ RUN apt update -y \
 RUN npm install -g npm@latest \
     && rm -rf ~/.npm
 RUN mkdir /backend
-COPY data /backend/data
 COPY src /backend/src
 COPY example.env nest-cli.json package.json package-lock.json tsconfig.build.json tsconfig.json docker/wait-for-elasticsearch.sh /backend/
 WORKDIR /backend

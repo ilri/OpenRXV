@@ -60,6 +60,8 @@ services:
       - redis
     networks:
       - openrxv
+    volumes:
+      - ./backend/data:/backend/data
 volumes:
   esData_7:
   redisData:
