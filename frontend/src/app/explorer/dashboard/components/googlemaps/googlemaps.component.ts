@@ -1,20 +1,35 @@
 // import { AgmMap } from "@agm/core";
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit, ViewChild } from "@angular/core";
-import { PageEvent } from "@angular/material/paginator";
-import { Store } from "@ngrx/store";
-import { first } from "rxjs/operators";
-import { ComponentDashboardConfigs, ComponentFilterConfigs } from "src/app/explorer/configs/generalConfig.interface";
-import { BodyBuilderService } from "src/app/explorer/filters/services/bodyBuilder/body-builder.service";
-import { Hits, Bucket, hits } from "src/app/explorer/filters/services/interfaces";
-import { SelectService } from "src/app/explorer/filters/services/select/select.service";
-import { ParentComponent } from "src/app/explorer/parent-component.class";
-import { ScrollHelperService } from "../services/scrollTo/scroll-helper.service";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
+import { Store } from '@ngrx/store';
+import { first } from 'rxjs/operators';
+import {
+  ComponentDashboardConfigs,
+  ComponentFilterConfigs,
+} from 'src/app/explorer/configs/generalConfig.interface';
+import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import {
+  Hits,
+  Bucket,
+  hits,
+} from 'src/app/explorer/filters/services/interfaces';
+import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
+import { ParentComponent } from 'src/app/explorer/parent-component.class';
+import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
-import { ComponentLookup } from "../dynamic/lookup.registry";
-import { ChartMathodsService } from "../services/chartCommonMethods/chart-mathods.service";
-import { ParentChart } from "../parent-chart";
+import { ComponentLookup } from '../dynamic/lookup.registry';
+import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
+import { ParentChart } from '../parent-chart';
 import { AgmMap } from '@agm/core';
-import { SettingsService } from "src/app/admin/services/settings.service";
+import { SettingsService } from 'src/app/admin/services/settings.service';
 
 declare function _altmetric_embed_init(): any;
 interface marker {
@@ -28,10 +43,9 @@ interface marker {
   selector: 'app-google-maps',
   templateUrl: './googlemaps.component.html',
   providers: [ChartMathodsService, ScrollHelperService, SelectService],
-  styleUrls: ['./googlemaps.component.scss']
+  styleUrls: ['./googlemaps.component.scss'],
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
-
   @Input() expandedStatus: boolean;
   hits: Hits; // for the paginated list
   listData: Bucket[] = []; // for aggrigiation list
@@ -42,9 +56,9 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   refreshMap = true;
   filterd = false;
   myStyles = {
-    height: '430px'
-  }
-  @ViewChild(AgmMap) mapElement: any
+    height: '430px',
+  };
+  @ViewChild(AgmMap) mapElement: any;
   timeout: any = [];
   // google maps zoom level
   zoom: number = 2;
@@ -59,19 +73,21 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly bodyBuilderService: BodyBuilderService,
     private settingsService: SettingsService,
-    ) {
+  ) {
     super(cms, selectService, store);
   }
 
   resetQ() {
     this.filterd = false;
-    const query: bodybuilder.Bodybuilder = this.selectService.resetValueAttributetoMainQuery('id');
+    const query: bodybuilder.Bodybuilder =
+      this.selectService.resetValueAttributetoMainQuery('id');
     this.store.dispatch(new fromStore.SetQuery(query.build()));
     this.selectService.resetNotification();
   }
   filterMarker(code) {
     this.filterd = true;
-    const query: bodybuilder.Bodybuilder = this.selectService.addNewValueAttributetoMainQuery('id', code);
+    const query: bodybuilder.Bodybuilder =
+      this.selectService.addNewValueAttributetoMainQuery('id', code);
     this.store.dispatch(new fromStore.SetQuery(query.build()));
     this.selectService.resetNotification();
   }
@@ -79,40 +95,46 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.isFullscreen = !this.isFullscreen;
     this.refreshMap = false;
     setTimeout(() => {
-      this.myStyles.height = this.elementView.nativeElement.offsetHeight ? (this.elementView.nativeElement.offsetHeight - 65) + 'px' : '430px';
+      this.myStyles.height = this.elementView.nativeElement.offsetHeight
+        ? this.elementView.nativeElement.offsetHeight - 65 + 'px'
+        : '430px';
       this.refreshMap = true;
     }, 100);
   }
 
   makeChunks(markers) {
-    if (markers.length >= 1000)
-      markers = markers.slice(0, markers.length / 1)
+    if (markers.length >= 1000) markers = markers.slice(0, markers.length / 1);
     this.scrollHelperService.loading = true;
-    var i, j, temparray = [], chunk = 75;
+    var i,
+      j,
+      temparray = [],
+      chunk = 75;
     for (i = 0, j = markers.length; i < j; i += chunk) {
       temparray.push(markers.slice(i, i + chunk));
     }
-    return temparray
+    return temparray;
   }
   loopThroughMarkersText(chunks) {
     let markers = this.makeChunks(chunks);
     for (var i = 0; i < markers.length; i++) {
       ((i) => {
-        this.timeout.push(setTimeout(() => {
-          for (var z = 0; z < markers[i].length; z++) {
-            this.listData.push(markers[i][z]);
-          }
-          if (i == markers.length - 1)
-            this.scrollHelperService.loading = false;
-        }, 1000 * i));
+        this.timeout.push(
+          setTimeout(() => {
+            for (var z = 0; z < markers[i].length; z++) {
+              this.listData.push(markers[i][z]);
+            }
+            if (i == markers.length - 1)
+              this.scrollHelperService.loading = false;
+          }, 1000 * i),
+        );
       })(i);
-    };
+    }
   }
 
   ngOnInit(): void {
     this.scrollHelperService.storeVal = this.store;
     this.seeIfThisCompInView();
-    this.subToDataFromStore()
+    this.subToDataFromStore();
   }
 
   hideClickToEnable(): void {
@@ -139,15 +161,17 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   private subToDataFromStore(): void {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      let filters = this.bodyBuilderService.getFiltersFromQuery().filter(element => Object.keys(element).indexOf(source + '.keyword') != -1)
-      if (filters.length)
-        this.filterd = true;
-      else
-        this.filterd = false;
-      this.timeout.forEach(element => {
+      let filters = this.bodyBuilderService
+        .getFiltersFromQuery()
+        .filter(
+          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
+        );
+      if (filters.length) this.filterd = true;
+      else this.filterd = false;
+      this.timeout.forEach((element) => {
         clearTimeout(element);
       });
-      this.zoom = 8
+      this.zoom = 8;
       this.fitBounds = true;
       this.listData = [];
       this.loopThroughMarkersText(buckets);

@@ -8,7 +8,7 @@ import { RootComponent } from './root/root.component';
 import { JwtModule, JwtHelperService } from '@auth0/angular-jwt';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
-import { AgmCoreModule } from "@agm/core";
+import { AgmCoreModule } from '@agm/core';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
@@ -25,7 +25,7 @@ export function tokenGetter() {
     CommonModule,
     AppRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: 'NO API KEY PROVIDED'
+      apiKey: 'NO API KEY PROVIDED',
     }),
     // for HttpClient use:
     LoadingBarHttpClientModule,
