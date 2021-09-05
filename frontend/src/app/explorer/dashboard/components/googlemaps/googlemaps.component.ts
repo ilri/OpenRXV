@@ -110,7 +110,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
 
   ngOnInit(): void {
-\    this.scrollHelperService.storeVal = this.store;
+    this.scrollHelperService.storeVal = this.store;
     this.seeIfThisCompInView();
     this.subToDataFromStore()
   }
