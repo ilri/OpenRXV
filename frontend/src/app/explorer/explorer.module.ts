@@ -175,28 +175,5 @@ import { AgmCoreModule } from "@agm/core";
     MatDividerModule,
     ClipboardModule,
   ],
-  entryComponents: [
-    ChartComponent,
-    SelectComponent,
-    LabelComponent,
-    CounterComponent,
-    SearchComponent,
-    RangeComponent,
-    ListComponent,
-    WelcomeComponent,
-    SnackComponent,
-    PieComponent,
-    WheelComponent,
-    PackedBubbleComponent,
-    PackedBubbleSplitComponent,
-    DateRangeComponent,
-    WordcloudComponent,
-    MapComponent,
-    LineComponent,
-    SimiCircleComponent,
-    BarComponent,
-    ExportComponent,
-    GooglemapsComponent
-  ],
 })
 export class ExplorerModule {}

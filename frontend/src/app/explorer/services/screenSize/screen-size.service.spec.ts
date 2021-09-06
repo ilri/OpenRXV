@@ -6,7 +6,7 @@ describe('ScreenSizeService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ScreenSizeService = TestBed.get(ScreenSizeService);
+    const service: ScreenSizeService = TestBed.inject(ScreenSizeService);
     expect(service).toBeTruthy();
   });
 });

@@ -19,16 +19,26 @@
     <app-link-text [source]="h._source" [content]="content"></app-link-text>
   </div>
   <div
-    *ngIf="content.altmetric && h._source.altmetric"
+    *ngIf="content.altmetric"
     class="col-md-1 col-xs-12"
   >
-    <div
+    <div *ngIf="h._source.DOI; else altmetricHandle"
+      data-badge-popover="left"
+      data-badge-type="medium-donut"
+      [attr.data-doi]="h._source.DOI"
+      data-hide-no-mentions="true"
+      class="altmetric-embed sm-text-center"
+    ></div>
+
+    <ng-template #altmetricHandle>
+      <div
       data-badge-popover="left"
       data-badge-type="medium-donut"
       [attr.data-handle]="h._source.handle"
       data-hide-no-mentions="true"
       class="altmetric-embed sm-text-center"
-    ></div>
+      ></div>
+    </ng-template>
   </div>
 </div>
 

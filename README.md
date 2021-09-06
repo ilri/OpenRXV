@@ -21,8 +21,7 @@ You can see an example of the project working on our [Agricultural Research e-Se
 After you have configured Docker you can clone this repository and build OpenRXV:
 
 ```console
-$ cd docker
-$ sudo docker-compose -f docker/docker-compose.yml up -d
+$ sudo docker-compose up -d
 ```
 
 This will bring up all of the container components of the project and start building them. Monitor the progress with `docker logs -f angular_nginx`, for example. After a few minutes you can visit the site at localhost:80 and log into the admin dashboard (default is admin/admin).

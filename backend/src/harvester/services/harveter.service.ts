@@ -167,18 +167,18 @@ export class HarvesterService {
       },
     });
 
-    this.logger.debug('updateAliases final to tmep');
+    this.logger.debug('updateAliases final to temp');
 
     await this.elasticsearchService.indices.delete({
       index: process.env.OPENRXV_FINAL_INDEX,
       ignore_unavailable: true,
     });
-    this.logger.debug('delete final');
+    this.logger.debug('Delete final');
 
     await this.elasticsearchService.indices.create({
       index: process.env.OPENRXV_FINAL_INDEX,
     });
-    this.logger.debug('create final');
+    this.logger.debug('Create final');
 
     await this.elasticsearchService
       .reindex(
@@ -195,7 +195,7 @@ export class HarvesterService {
         { requestTimeout: 2000000 },
       )
       .catch((e) => this.logger.log(e));
-    this.logger.debug('reindex to final');
+    this.logger.debug('Reindex to final');
 
     await this.elasticsearchService.indices.updateAliases({
       body: {
@@ -222,14 +222,14 @@ export class HarvesterService {
       index: process.env.OPENRXV_TEMP_INDEX,
       ignore_unavailable: true,
     });
-    this.logger.debug('delete temp');
+    this.logger.debug('Delete temp');
 
     await this.elasticsearchService.indices.create({
       index: process.env.OPENRXV_TEMP_INDEX,
     });
 
-    this.logger.debug('create temp');
+    this.logger.debug('Create temp');
 
-    this.logger.debug('Index All Done ');
+    this.logger.debug('Indexing finished');
   }
 }
