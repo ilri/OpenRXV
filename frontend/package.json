@@ -72,6 +72,7 @@
     "@angular/compiler-cli": "~9.1.13",
     "@angular/language-service": "~9.1.13",
     "@types/country-list": "^2.1.0",
+    "@types/googlemaps": "^3.39.12",
     "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.12.47",
