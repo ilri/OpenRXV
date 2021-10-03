@@ -11,7 +11,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PluginsModule } from './plugins/plugins.module';
-import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     SharedModule,

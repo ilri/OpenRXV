@@ -8,7 +8,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { ExportService } from './services/export/export.service';
-import { ElasticService } from 'src/shared/services/elastic/elastic.service';
+import { ElasticService } from '../shared/services/elastic/elastic.service';
 
 @Controller('export')
 export class ExportController {

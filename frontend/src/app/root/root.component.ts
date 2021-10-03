@@ -43,7 +43,10 @@ export class RootComponent implements OnInit {
     }
     this.loadSettigs = true;
     if (settings.appearance.primary_color) {
-      this.savePrimaryColor(settings.appearance.primary_color);
+      this.savePrimaryColor(
+        settings.appearance.primary_color,
+        settings.appearance.secondary_color,
+      );
       this.titleService.setTitle(settings.appearance.website_name);
       this.meta.updateTag({
         name: 'og:description',
@@ -72,13 +75,15 @@ export class RootComponent implements OnInit {
     });
   }
 
-  savePrimaryColor(color) {
+  savePrimaryColor(color, secondary_color) {
     this.primaryColorPalette = computeColors(color);
+    const keys = ['A400', '900', '300', '400', '200'];
     for (const color of this.primaryColorPalette) {
       const key1 = `--theme-primary-${color.name}`;
-      const value1 = color.hex;
+      let value1 = color.hex;
       const key2 = `--theme-primary-contrast-${color.name}`;
-
+      if (secondary_color && keys.indexOf(color.name) >= 0)
+        value1 = secondary_color;
       const value2 = color.darkContrast ? 'rgba(black, 0.87)' : 'white';
       document.documentElement.style.setProperty(key1, value1);
       document.documentElement.style.setProperty(key2, value2);

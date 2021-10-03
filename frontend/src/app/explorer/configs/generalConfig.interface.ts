@@ -71,6 +71,7 @@ export interface SortOption {
  *    * string => is the value e.g: <label> : 92
  */
 export interface PaginatedListConfigs {
+  identifierUriPrefix: string;
   icon: string;
   title: string;
   description: string;

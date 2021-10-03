@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
-import { ValuesService } from 'src/shared/services/values.service';
+import { ValuesService } from '../../shared/services/values.service';
 function isEmpty(obj) {
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) {

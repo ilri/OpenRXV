@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ExplorerComponent } from './explorer.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, efficts } from 'src/app/explorer/store';
@@ -82,7 +82,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lables/rotated-lables.component';
 import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemaps.component';
-import { AgmCoreModule } from '@agm/core';
+import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
+import { agmConfigFactory } from './services/agm';
 
 @NgModule({
   declarations: [
@@ -132,9 +134,6 @@ import { AgmCoreModule } from '@agm/core';
     HttpClientModule,
     BrowserModule,
     FormsModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'No API KEY PROVIDED',
-    }),
     NgSelectModule,
     PortalModule,
     MatSidenavModule,
@@ -174,6 +173,18 @@ import { AgmCoreModule } from '@agm/core';
     MatDialogModule,
     MatDividerModule,
     ClipboardModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'initial api key',
+    }),
+    AgmSnazzyInfoWindowModule,
+  ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: agmConfigFactory,
+      deps: [HttpClient, LAZY_MAPS_API_CONFIG],
+      multi: true,
+    },
   ],
 })
 export class ExplorerModule {}

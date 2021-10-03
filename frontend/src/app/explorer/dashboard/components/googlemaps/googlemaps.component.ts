@@ -58,7 +58,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   myStyles = {
     height: '430px',
   };
-  @ViewChild(AgmMap) mapElement: any;
+  @ViewChild('agmmap') mapElement: any;
   timeout: any = [];
   // google maps zoom level
   zoom: number = 2;
@@ -72,7 +72,6 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     private readonly cdr: ChangeDetectorRef,
     private readonly bodyBuilderService: BodyBuilderService,
-    private settingsService: SettingsService,
   ) {
     super(cms, selectService, store);
   }
@@ -132,6 +131,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
 
   ngOnInit(): void {
+    this.init('google-maps');
     this.scrollHelperService.storeVal = this.store;
     this.seeIfThisCompInView();
     this.subToDataFromStore();

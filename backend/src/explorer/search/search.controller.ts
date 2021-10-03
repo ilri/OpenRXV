@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { json } from 'express';
-import { ElasticService } from 'src/shared/services/elastic/elastic.service';
+import { ElasticService } from '../../shared/services/elastic/elastic.service';
 
 @Controller('search')
 export class SearchController {

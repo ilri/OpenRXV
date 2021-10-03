@@ -4,7 +4,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { async } from 'rxjs/internal/scheduler/async';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
-import { ValuesService } from 'src/shared/services/values.service';
+import { ValuesService } from '../../shared/services/values.service';
 import Sitemapper from 'sitemapper';
 @Injectable()
 export class HarvesterService {
@@ -89,24 +89,31 @@ export class HarvesterService {
     );
 
     settings.repositories.forEach(async (repo) => {
-      const Sitemap = new Sitemapper({
-        url: repo.siteMap,
-        timeout: 15000, // 15 seconds
-      });
-      try {
-        const { sites } = await Sitemap.fetch();
-        let itemsCount = sites.length;
-        let pages = Math.round(itemsCount / 10);
-        for (let page_number = 1; page_number <= pages; page_number++) {
-          setTimeout(
-            () => {
-              this.fetchQueue.add('fetch', { page: page_number, repo });
-            },
-            page_number <= 5 ? page_number * 500 : 0,
-          );
+      if (repo.type == 'DSpace') {
+        const Sitemap = new Sitemapper({
+          url: repo.siteMap,
+          timeout: 15000, // 15 seconds
+        });
+        console.log(repo);
+        try {
+          const { sites } = await Sitemap.fetch();
+          let itemsCount = sites.length;
+          this.logger.debug('Starting Harvest =>' + itemsCount);
+          let pages = Math.round(itemsCount / 10);
+          for (let page_number = 1; page_number <= pages; page_number++) {
+            setTimeout(
+              () => {
+                this.fetchQueue.add('DSpace', { page: page_number, repo });
+              },
+              page_number <= 5 ? page_number * 500 : 0,
+            );
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        this.logger.debug('Starting Harvest =>' + repo.type);
+        this.fetchQueue.add(repo.type, { repo: repo });
       }
     });
 

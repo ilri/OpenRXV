@@ -1,15 +1,8 @@
-import {
-  Processor,
-  Process,
-  InjectQueue,
-  OnGlobalQueueDrained,
-  OnGlobalQueueResumed,
-} from '@nestjs/bull';
-import { Job, Queue } from 'bull';
+import { Processor, Process, OnGlobalQueueDrained } from '@nestjs/bull';
+import { Job } from 'bull';
 import { HttpService, Logger } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ApiResponse } from '@elastic/elasticsearch';
-import { HarvesterService } from '../services/harveter.service';
 import { FormatSearvice } from '../../shared/services/formater.service';
 @Processor('fetch')
 export class FetchConsumer {
@@ -19,11 +12,9 @@ export class FetchConsumer {
     private http: HttpService,
     public readonly elasticsearchService: ElasticsearchService,
     private readonly formatService: FormatSearvice,
-    private readonly harvesterService: HarvesterService,
-    @InjectQueue('fetch') private fetchQueue: Queue,
   ) {}
 
-  @Process({ name: 'fetch', concurrency: 5 })
+  @Process({ name: 'DSpace', concurrency: 5 })
   async transcode(job: Job<any>) {
     try {
       await job.takeLock();

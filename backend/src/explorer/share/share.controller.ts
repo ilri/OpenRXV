@@ -1,6 +1,6 @@
 import { Controller, HttpCode, Post, Body, Get, Param } from '@nestjs/common';
 
-import { ShareService } from 'src/shared/services/share.service';
+import { ShareService } from '../../shared/services/share.service';
 
 @Controller('share')
 export class ShareController {

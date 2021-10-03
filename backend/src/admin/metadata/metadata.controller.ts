@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
-import { MetadataService } from 'src/shared/services/metadata.service';
+import { MetadataService } from '../../shared/services/metadata.service';
 function isEmpty(obj) {
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) {

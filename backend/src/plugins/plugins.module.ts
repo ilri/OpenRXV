@@ -5,7 +5,7 @@ import { MELDownloadsAndViews } from './mel_downloads_and_views';
 import { DSpaceDownloadsAndViews } from './dspace_downloads_and_views';
 import { DSpaceHealthCheck } from './dspace_health_check';
 import { AddMissingItems } from './dspace_add_missing_items';
-import { SharedModule } from 'src/shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 @Module({
   providers: [
     DSpaceAltmetrics,

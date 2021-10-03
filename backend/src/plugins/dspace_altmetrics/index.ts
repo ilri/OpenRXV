@@ -3,7 +3,7 @@ import { Logger, HttpService } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Queue, Job } from 'bull';
 import { map } from 'rxjs/operators';
-import { HarvesterService } from 'src/harvester/services/harveter.service';
+import { HarvesterService } from '../../harvester/services/harveter.service';
 
 @Processor('plugins')
 export class DSpaceAltmetrics {

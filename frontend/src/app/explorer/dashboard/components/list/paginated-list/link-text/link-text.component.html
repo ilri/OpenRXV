@@ -1,6 +1,15 @@
 <article class="w-100 break-word">
-  <a target="_blank" href="{{ source[content.identifierUri] }}" class="primary-text" rel="noopener">
-    <img style="max-width: 30px;" [src]="getIcon(source[content.icon])" />
+  <a
+    target="_blank"
+    href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
+    class="primary-text"
+    rel="noopener"
+  >
+    <img
+      *ngIf="source[content.icon]"
+      style="max-width: 30px"
+      [src]="getIcon(source[content.icon])"
+    />
     <strong>
       {{ source[content.title] }}
     </strong>
@@ -11,8 +20,11 @@
   <section class="publication-text">
     <ng-container *ngFor="let tag of content.tags; let i = index">
       <ng-container *ngIf="tags(tag.metadata)">
-        <app-tags [ngClass]="{ 'simulate-p-tag': i === 0 || i === 1 }"  [label]="tag.disply_name"
-          [labelData]="tags(tag.metadata)"></app-tags>
+        <app-tags
+          [ngClass]="{ 'simulate-p-tag': i === 0 || i === 1 }"
+          [label]="tag.disply_name"
+          [labelData]="tags(tag.metadata)"
+        ></app-tags>
       </ng-container>
     </ng-container>
   </section>
