@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ElasticService } from 'src/shared/services/elastic/elastic.service';
+import { ElasticService } from '../shared/services/elastic/elastic.service';
 
 export type User = any;
 

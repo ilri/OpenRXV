@@ -26,6 +26,7 @@ export class StructureComponent implements OnInit {
     { name: 'Pie Chart', value: 'PieComponent', icon: 'pie_chart' },
     { name: 'Word Cloud', value: 'WordcloudComponent', icon: 'filter_drama' },
     { name: 'World Map', value: 'MapComponent', icon: 'map' },
+    { name: 'Google Map', value: 'GoogleMapsComponent', icon: 'map' },
     { name: 'List', value: 'ListComponent', icon: 'list' },
     { name: 'Bars Chart', value: 'BarComponent', icon: 'bar_chart' },
     { name: 'Dependency Wheel', value: 'WheelComponent', icon: 'group_work' },
@@ -46,7 +47,6 @@ export class StructureComponent implements OnInit {
       icon: 'bar_chart',
     },
     { name: 'Line', value: 'LineComponent', icon: 'bar_chart' },
-    { name: 'Google Maps', value: 'GoogleMapsComponent', icon: 'map' },
   ];
   sortoptions = [
     { name: 'Alphabetical', value: true },
@@ -56,7 +56,7 @@ export class StructureComponent implements OnInit {
   baseform = [
     {
       name: 'component',
-      label: 'Component Type',
+      label: 'Component type',
       type: 'select',
       items: this.options,
       onChange: (event) => {
@@ -81,7 +81,7 @@ export class StructureComponent implements OnInit {
   iconsForm = [
     {
       name: 'icon',
-      label: 'Select Icon',
+      label: 'Select icon',
       icons: true,
       type: 'select',
       items: icons_list.map((d) => {
@@ -100,7 +100,6 @@ export class StructureComponent implements OnInit {
       case 'MapComponent':
       case 'ListComponent':
       case 'WheelComponent':
-      case 'GoogleMapsComponent':
         this.form_data = [
           ...this.baseform,
           ...[
@@ -130,7 +129,7 @@ export class StructureComponent implements OnInit {
             },
             {
               name: 'description',
-              label: 'Tour Description',
+              label: 'Tour description',
               type: 'textarea',
               required: true,
             },
@@ -150,7 +149,7 @@ export class StructureComponent implements OnInit {
             },
             {
               name: 'description',
-              label: 'Tour Description',
+              label: 'Tour description',
               type: 'textarea',
               required: true,
             },
@@ -208,7 +207,7 @@ export class StructureComponent implements OnInit {
               },
               {
                 name: 'description',
-                label: 'Tour Description',
+                label: 'Tour description',
                 type: 'textarea',
                 required: true,
               },

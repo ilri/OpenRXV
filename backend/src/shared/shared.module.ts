@@ -10,6 +10,7 @@ import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { FormatSearvice } from './services/formater.service';
 import { HarvesterService } from '../harvester/services/harveter.service';
 import { BullModule } from '@nestjs/bull';
+import { IndexMetadataService } from './services/index-metadata.service';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { BullModule } from '@nestjs/bull';
     JsonFilesService,
     FormatSearvice,
     HarvesterService,
+    IndexMetadataService,
   ],
 
   exports: [
@@ -79,6 +81,7 @@ import { BullModule } from '@nestjs/bull';
     JsonFilesService,
     FormatSearvice,
     HarvesterService,
+    IndexMetadataService,
   ],
 })
 export class SharedModule {}

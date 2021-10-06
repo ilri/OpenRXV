@@ -1,114 +1,306 @@
 <div class="row">
-    <div class="col-12">
-        <form class="base" [formGroup]="listForm">
-            <div class="row">
-                <div class="col-12">
-                    <ng-select class="base" [addTag]="true" [items]="metadata" required="true" bindValue="disply_name"
-                        bindLabel="disply_name" [clearable]="false" [searchable]="true" formControlName="title"
-                        placeholder="Item title">
-                    </ng-select>
+  <div class="col-12">
+    <form class="base" [formGroup]="listForm">
+      <div class="row">
+        <div class="col-12">
+          <ng-select
+            class="base"
+            [addTag]="true"
+            [items]="metadata"
+            required="true"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            formControlName="title"
+            placeholder="Item title"
+          >
+          </ng-select>
+        </div>
+        <div class="col-12">
+          <ng-select
+            class="base"
+            [addTag]="true"
+            [items]="metadata"
+            required="true"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            formControlName="description"
+            placeholder="Item description"
+          >
+          </ng-select>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="w-100">
+            <input
+              type="text"
+              matInput
+              placeholder="Identifier URI prefix (if needed)"
+              formControlName="identifierUriPrefix"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <ng-select
+            class="base"
+            [addTag]="true"
+            [items]="metadata"
+            required="true"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            formControlName="identifierUri"
+            placeholder="Identifier"
+          >
+          </ng-select>
+        </div>
+        <div class="col-6">
+          <mat-form-field class="w-100">
+            <input
+              type="text"
+              matInput
+              placeholder="Thumbnail URI prefix (if needed)"
+              formControlName="thumbnail_prefix"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <ng-select
+            class="base"
+            [addTag]="true"
+            [items]="metadata"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            formControlName="thumbnail"
+            placeholder="Thumbnail"
+          >
+          </ng-select>
+        </div>
+        <div class="col-3">
+          <mat-checkbox matInput formControlName="square_thumbnail"
+            >Make thumbnail square</mat-checkbox
+          >
+        </div>
+        <div class="col-12">
+          <ng-select
+            class="base"
+            [addTag]="true"
+            [items]="metadata"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="true"
+            [searchable]="true"
+            placeholder="Tag on thumbnail"
+            formControlName="tagOnImage"
+          >
+          </ng-select>
+        </div>
+        <div class="col-12">
+          <ng-container formArrayName="image_tag_options">
+            <form
+              *ngFor="let form of image_tag_options; let i = index"
+              [formGroup]="form"
+            >
+              <div class="container">
+                <div class="row">
+                  <div class="col">
+                    <mat-form-field>
+                      <mat-label>Text value</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        placeholder="Journal Article"
+                        required
+                        formControlName="value"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="col">
+                    <mat-form-field>
+                      <mat-label>Color</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        placeholder="green"
+                        required
+                        formControlName="color"
+                      />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-1">
+                    <button
+                      class="pull-right"
+                      (click)="delete('image_tag_options', i)"
+                      color="warn"
+                      mat-icon-button
+                    >
+                      <mat-icon aria-hidden="false" aria-label="delete"
+                        >delete
+                      </mat-icon>
+                    </button>
+                  </div>
                 </div>
-                <div class="col-12">
-                    <ng-select class="base" [addTag]="true" [items]="metadata" required="true" bindValue="disply_name"
-                        bindLabel="disply_name" [clearable]="false" [searchable]="true" formControlName="description"
-                        placeholder="Item Description">
-                    </ng-select>
-                </div>
-                <div class="col-12">
-                    <ng-select class="base" [addTag]="true" [items]="metadata" required="true" bindValue="disply_name"
-                        bindLabel="disply_name" [clearable]="false" [searchable]="true" formControlName="identifierUri"
-                        placeholder="Identifier Uri">
-                    </ng-select>
-                </div>
-                <div class="col-12">
-                    <mat-checkbox matInput formControlName="altmetric">Show Altmetric</mat-checkbox>
-                </div>
-            </div>
+              </div>
+            </form>
+          </ng-container>
+        </div>
+        <div class="col-md-12 text-center">
+          <button
+            class="mb-2"
+            (click)="AddNewdata('image_tag_options')"
+            mat-raised-button
+          >
+            New option
+            <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
+          </button>
+        </div>
 
-            <h5 class="pt-3">Tags</h5>
-            <hr>
-            <ng-container formArrayName="tags">
-                <form class="pl-2" *ngFor="let form of tagsControls; let i = index;" [formGroup]="form">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <mat-form-field>
-                                <input type="text" matInput placeholder="Tag Title" required
-                                    formControlName="disply_name">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">
-                            <ng-select [addTag]="true" [items]="metadata" required="true" bindValue="disply_name"
-                                bindLabel="disply_name" [clearable]="false" [searchable]="true"
-                                formControlName="metadata" placeholder="Data Source">
-                            </ng-select>
-                        </div>
-                        <div *ngIf="i > 0" class="col-md-4">
-                            <button class="pull-right" (click)="delete('tags',i)" color="warn" mat-icon-button>
-                                <mat-icon aria-hidden="false" aria-label="delete">delete
-                                </mat-icon>
-                            </button>
-                        </div>
-                    </div>
+        <div class="col-12">
+          <mat-checkbox matInput formControlName="altmetric"
+            >Show Altmetric scores</mat-checkbox
+          >
+        </div>
+      </div>
 
-
-                </form>
-            </ng-container>
-            <div class="col-md-12 text-center">
-                <button class="float-left mb-2" (click)="AddNewdata(tagsControls,'tags')" mat-raised-button>
-                    New Tag
-                    <mat-icon aria-hidden="false" aria-label="add">add
-                    </mat-icon>
-                </button>
+      <h5 class="pt-3">Tags</h5>
+      <hr />
+      <ng-container formArrayName="tags">
+        <form
+          class="pl-2"
+          *ngFor="let form of tagsControls; let i = index"
+          [formGroup]="form"
+        >
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field>
+                <input
+                  type="text"
+                  matInput
+                  placeholder="Tag title"
+                  required
+                  formControlName="disply_name"
+                />
+              </mat-form-field>
             </div>
-            <h5>Sort By Options:</h5>
-            <hr>
-            <ng-container formArrayName="filterOptions">
-                <form *ngFor="let form of filterOptions; let i = index;" [formGroup]="form">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <mat-form-field>
-                                    <mat-label>Option Title</mat-label>
-                                    <input type="text" matInput placeholder="Option Title" required
-                                        formControlName="display">
-                                </mat-form-field>
-                            </div>
-                            <div class="col">
-                                <ng-select [addTag]="true" [items]="metadata" required="true" bindValue="disply_name"
-                                    bindLabel="disply_name" [clearable]="false" [searchable]="true"
-                                    formControlName="value" placeholder="Data Source">
-                                </ng-select>
-                            </div>
-                            <div class="col">
-                                <mat-form-field>
-                                    <mat-label>Sort</mat-label>
-                                    <mat-select placeholder="Sort" required formControlName="sort">
-                                        <mat-option value="desc">Desc</mat-option>
-                                        <mat-option value="asc">Asc</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="col">
-                                <mat-checkbox matInput formControlName="textValue">Text Value</mat-checkbox>
-                            </div>
-                            <div *ngIf="i > 0" class="col-sm-1">
-                                <button class="pull-right" (click)="delete('filterOptions',i)" color="warn"
-                                    mat-icon-button>
-                                    <mat-icon aria-hidden="false" aria-label="delete">delete
-                                    </mat-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </ng-container>
-            <div class="col-md-12 text-center">
-                <button class="mb-2" (click)="AddNewdata(filterOptions,'options')" mat-raised-button>
-                    New Option
-                    <mat-icon aria-hidden="false" aria-label="add">add
-                    </mat-icon>
-                </button>
+            <div class="col-md-4">
+              <ng-select
+                [addTag]="true"
+                [items]="metadata"
+                required="true"
+                bindValue="disply_name"
+                bindLabel="disply_name"
+                [clearable]="false"
+                [searchable]="true"
+                formControlName="metadata"
+                placeholder="Data source"
+              >
+              </ng-select>
             </div>
+            <div *ngIf="i > 0" class="col-md-4">
+              <button
+                class="pull-right"
+                (click)="delete('tags', i)"
+                color="warn"
+                mat-icon-button
+              >
+                <mat-icon aria-hidden="false" aria-label="delete"
+                  >delete
+                </mat-icon>
+              </button>
+            </div>
+          </div>
         </form>
-    </div>
+      </ng-container>
+      <div class="col-md-12 text-center">
+        <button
+          class="float-left mb-2"
+          (click)="AddNewdata('tags')"
+          mat-raised-button
+        >
+          New tag
+          <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
+        </button>
+      </div>
+      <h5>Sort options:</h5>
+      <hr />
+      <ng-container formArrayName="filterOptions">
+        <form
+          *ngFor="let form of filterOptions; let i = index"
+          [formGroup]="form"
+        >
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <mat-form-field>
+                  <mat-label>Option title</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    placeholder="Option title"
+                    required
+                    formControlName="display"
+                  />
+                </mat-form-field>
+              </div>
+              <div class="col">
+                <ng-select
+                  [addTag]="true"
+                  [items]="metadata"
+                  required="true"
+                  bindValue="disply_name"
+                  bindLabel="disply_name"
+                  [clearable]="false"
+                  [searchable]="true"
+                  formControlName="value"
+                  placeholder="Data source"
+                >
+                </ng-select>
+              </div>
+              <div class="col">
+                <mat-form-field>
+                  <mat-label>Sort</mat-label>
+                  <mat-select
+                    placeholder="Sort"
+                    required
+                    formControlName="sort"
+                  >
+                    <mat-option value="desc">Desc</mat-option>
+                    <mat-option value="asc">Asc</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col">
+                <mat-checkbox matInput formControlName="textValue"
+                  >Text value</mat-checkbox
+                >
+              </div>
+              <div *ngIf="i > 0" class="col-sm-1">
+                <button
+                  class="pull-right"
+                  (click)="delete('filterOptions', i)"
+                  color="warn"
+                  mat-icon-button
+                >
+                  <mat-icon aria-hidden="false" aria-label="delete"
+                    >delete
+                  </mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+      <div class="col-md-12 text-center">
+        <button class="mb-2" (click)="AddNewdata('options')" mat-raised-button>
+          New option
+          <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

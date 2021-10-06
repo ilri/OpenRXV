@@ -38,7 +38,7 @@ export class CounterComponent implements OnInit {
     },
     {
       name: 'description',
-      label: 'Tour Description',
+      label: 'Tour description',
       type: 'textarea',
       required: true,
     },

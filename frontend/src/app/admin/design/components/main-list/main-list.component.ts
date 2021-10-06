@@ -14,13 +14,20 @@ export class MainListComponent implements OnInit {
   filterOptions = [];
   metadata = [];
   tmpfilterOptions: [];
+  image_tag_options = [];
   listForm: FormGroup = new FormGroup({
     title: new FormControl(''),
     description: new FormControl(''),
     identifierUri: new FormControl(''),
+    identifierUriPrefix: new FormControl(''),
     altmetric: new FormControl(''),
     tags: new FormArray([]),
     filterOptions: new FormArray([]),
+    thumbnail: new FormControl(''),
+    thumbnail_prefix: new FormControl(''),
+    square_thumbnail: new FormControl(''),
+    tagOnImage: new FormControl(''),
+    image_tag_options: new FormArray([]),
   });
   baseFilterOptions(element = null) {
     return {
@@ -28,6 +35,12 @@ export class MainListComponent implements OnInit {
       value: new FormControl(element ? element.value : ''),
       sort: new FormControl(element ? element.sort : ''),
       textValue: new FormControl(''),
+    };
+  }
+  baseImageTagOptions(element = null) {
+    return {
+      color: new FormControl(element ? element.color : ''),
+      value: new FormControl(element ? element.value : ''),
     };
   }
   baseTags(element = null) {
@@ -50,6 +63,12 @@ export class MainListComponent implements OnInit {
       this.content.filterOptions.forEach((element) => {
         this.filterOptions.push(new FormGroup(this.baseFilterOptions(element)));
       });
+    if (this.content && this.content.image_tag_options)
+      this.content.image_tag_options.forEach((element) => {
+        this.image_tag_options.push(
+          new FormGroup(this.baseImageTagOptions(element)),
+        );
+      });
 
     if (this.tagsControls.length) {
       this.listForm.removeControl('tags');
@@ -62,6 +81,13 @@ export class MainListComponent implements OnInit {
         new FormArray(this.filterOptions),
       );
     }
+    if (this.image_tag_options.length) {
+      this.listForm.removeControl('image_tag_options');
+      this.listForm.addControl(
+        'image_tag_options',
+        new FormArray(this.image_tag_options),
+      );
+    }
     this.listForm.patchValue(this.content);
     this.baseForm.removeControl('content');
     this.baseForm.addControl('content', this.listForm);
@@ -72,7 +98,15 @@ export class MainListComponent implements OnInit {
       this.tagsControls.splice(index, 1);
       if (this.listForm.get('tags')) this.listForm.removeControl('tags');
       this.listForm.addControl('tags', new FormArray(this.tagsControls));
-    } else {
+    } else if (type == 'image_tag_options') {
+      this.image_tag_options.splice(index, 1);
+      if (this.listForm.get('image_tag_options'))
+        this.listForm.removeControl('image_tag_options');
+      this.listForm.addControl(
+        'image_tag_options',
+        new FormArray(this.image_tag_options),
+      );
+    } else if (type == 'options') {
       this.filterOptions.splice(index, 1);
       if (this.listForm.get('filterOptions'))
         this.listForm.removeControl('filterOptions');
@@ -81,16 +115,24 @@ export class MainListComponent implements OnInit {
         new FormArray(this.filterOptions),
       );
     }
-
+    this.content = this.baseForm.get('content').value;
     this.baseForm.removeControl('content');
     this.baseForm.addControl('content', this.listForm);
   }
-  AddNewdata(array, type) {
+  AddNewdata(type) {
     if (type == 'tags') {
       this.tagsControls.push(new FormGroup(this.baseTags()));
       if (this.listForm.get('tags')) this.listForm.removeControl('tags');
       this.listForm.addControl('tags', new FormArray(this.tagsControls));
-    } else {
+    } else if (type == 'image_tag_options') {
+      this.image_tag_options.push(new FormGroup(this.baseImageTagOptions()));
+      if (this.listForm.get('image_tag_options'))
+        this.listForm.removeControl('image_tag_options');
+      this.listForm.addControl(
+        'image_tag_options',
+        new FormArray(this.image_tag_options),
+      );
+    } else if (type == 'options') {
       this.filterOptions.push(new FormGroup(this.baseFilterOptions()));
       if (this.listForm.get('filterOptions'))
         this.listForm.removeControl('filterOptions');

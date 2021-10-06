@@ -9,16 +9,19 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./appearance.component.scss'],
 })
 export class AppearanceComponent implements OnInit {
-  color;
+  primary_color = '';
+  secondary_color = '';
   appearance;
   logo;
   favIcon;
   form: FormGroup = new FormGroup({
-    primary_color: new FormControl(this.color),
+    primary_color: new FormControl(this.primary_color),
+    secondary_color: new FormControl(this.secondary_color),
     website_name: new FormControl(''),
     logo: new FormControl(''),
     favIcon: new FormControl(''),
     tracking_code: new FormControl(''),
+    google_maps_api_key: new FormControl(''),
     description: new FormControl(''),
     chartColors: new FormArray([]),
   });
@@ -30,15 +33,16 @@ export class AppearanceComponent implements OnInit {
     let appearance = await this.settingsService.readAppearanceSettings();
     this.appearance = appearance;
     this.form.patchValue(appearance);
-    this.color = appearance.primary_color;
+    this.primary_color = appearance.primary_color;
+    this.secondary_color = appearance.secondary_color;
     this.logo = appearance.logo;
     this.favIcon = appearance.favIcon;
     await appearance.chartColors.map((a) => {
       this.colors.push(new FormControl(a));
     });
   }
-  colorPickerClose(event) {
-    this.form.get('primary_color').setValue(event);
+  colorPickerClose(event, element) {
+    this.form.get(element).setValue(event);
   }
   addColor() {
     this.colors.push(new FormControl(''));

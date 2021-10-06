@@ -68,7 +68,7 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
       plotOptions: {
         series: {
           colorByPoint: true,
-          colors: this.colors,
+          colors: [...this.colors],
         },
       },
       yAxis: {

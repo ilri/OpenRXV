@@ -19,6 +19,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SetupComponent implements OnInit {
   isLinear = true;
+  types: any = [];
 
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
@@ -44,7 +45,9 @@ export class SetupComponent implements OnInit {
       name: new FormControl(),
       icon: new FormControl(),
       startPage: new FormControl(),
+      type: new FormControl(),
       itemsEndPoint: new FormControl(),
+      apiKey: new FormControl(),
       siteMap: new FormControl(),
       allCores: new FormControl(),
       schema: new FormArray([new FormGroup(this.baseSchema())]),
@@ -57,6 +60,7 @@ export class SetupComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.getOutsourcePlugins();
     let data = await this.settingService.read();
     data.repositories.forEach((element, repoindex) => {
       if (element.icon) this.logo[repoindex] = element.icon;
@@ -98,13 +102,14 @@ export class SetupComponent implements OnInit {
   async getMetadata(index) {
     let repo = this.repositories.at(index);
     if (!repo.get('itemsEndPoint').valid) {
-      this.toastr.error('REST API endpint is not defind');
+      this.toastr.error('REST API endpoint is not defined');
       return;
     }
     let schema = <FormArray>repo.get('schema');
     let metadata = <FormArray>repo.get('metadata');
     let data = await this.settingService.retreiveMetadata(
       repo.get('itemsEndPoint').value,
+      repo.get('type').value,
     );
     schema.clear();
     metadata.clear();
@@ -116,16 +121,33 @@ export class SetupComponent implements OnInit {
         ),
       );
     });
-    data.metadata.forEach((element) => {
-      let splited = element.split('.');
-      metadata.push(
-        new FormGroup(
-          this.baseSchema(element, (splited.join('_') as string).toLowerCase()),
-        ),
-      );
+    if (
+      repo.get('type').value == 'DSpace' ||
+      repo.get('type').value == 'OpenRXV'
+    )
+      data.metadata.forEach((element) => {
+        let splited = element.split('.');
+        metadata.push(
+          new FormGroup(
+            this.baseSchema(
+              element,
+              (splited.join('_') as string).toLowerCase(),
+            ),
+          ),
+        );
+      });
+    else
+      data.metadata.forEach((element) => {
+        metadata.push(
+          new FormGroup(this.baseSchema(element, element as string)),
+        );
+      });
+  }
+  getOutsourcePlugins() {
+    this.settingService.readOutSourcePlugins().then((plugins) => {
+      this.types = plugins;
     });
   }
-
   AddNewRepo() {
     this.repositories.push(this.getNewForm());
   }

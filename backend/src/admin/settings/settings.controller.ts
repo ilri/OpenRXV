@@ -16,17 +16,18 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
 import { map } from 'rxjs/operators';
-import { HarvesterService } from 'src/harvester/services/harveter.service';
-import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync } from 'fs';
+import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
 
 @Controller('settings')
 export class SettingsController {
   constructor(
     private jsonfielServoce: JsonFilesService,
     private httpService: HttpService,
+    private indexMetadataService: IndexMetadataService,
   ) {}
   getDirectories = (source) =>
     readdirSync(source, { withFileTypes: true })
@@ -118,10 +119,11 @@ export class SettingsController {
       final['repositories'].push({
         name: repo.name,
         years: repo.years,
-        type: 'Dspace',
+        type: repo.type || 'Dspace',
         startPage: repo.startPage,
         itemsEndPoint: repo.itemsEndPoint,
         siteMap: repo.siteMap,
+        apiKey: repo.apiKey,
         allCores: repo.allCores,
         schema,
       });
@@ -155,6 +157,15 @@ export class SettingsController {
     return { success: true };
   }
 
+  @Get('outsourcePlugins')
+  async readOutsourcePlugins() {
+    let plugins = await readdirSync(
+      join(__dirname, '../../../data//harvestors'),
+    ).map((data) => {
+      return data.slice(0, -5);
+    });
+    return plugins;
+  }
   @Get('appearance')
   async ReadAppearance() {
     return await this.jsonfielServoce.read('../../../data/appearance.json');
@@ -190,9 +201,9 @@ export class SettingsController {
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
     let data = await this.jsonfielServoce.read('../../../data/data.json');
-    let plugins = await this.jsonfielServoce.read(
-      '../../../data//plugins.json',
-    );
+    let plugins = await this.jsonfielServoce.read('../../../data/plugins.json');
+    const medatadataKeys: Array<string> =
+      await this.indexMetadataService.getMetadata();
     let meta = [];
     for (var i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {
@@ -223,7 +234,9 @@ export class SettingsController {
       [],
       data.repositories.map((d) => [...d.schema, ...d.metadata]),
     );
+
     return [
+      ...(merged.length > 0 ? [] : new Set(medatadataKeys)),
       ...new Set(merged.map((d) => d.disply_name)),
       ...data.repositories.filter((d) => d.years).map((d) => d.years),
       ...uniqueArray,
@@ -231,7 +244,7 @@ export class SettingsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('autometa')
+  @Get('DSpace/autometa')
   async AutoMeta(@Query('link') link: string) {
     let checkingVersion = this.httpService
       .get(new URL(link).origin + '/rest/status')

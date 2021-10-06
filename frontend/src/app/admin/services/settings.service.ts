@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -115,11 +115,21 @@ export class SettingsService {
       .toPromise();
   }
 
-  async retreiveMetadata(linlk) {
+  async retreiveMetadata(link, type) {
     return await this.http
-      .get(environment.api + '/settings/autometa?link=' + linlk)
+      .get(environment.api + `/settings/${type}/autometa?link=` + link)
       .pipe(
         map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+  async readOutSourcePlugins() {
+    return await this.http
+      .get(environment.api + '/settings/outsourcePlugins')
+      .pipe(
+        tap((data: any) => {
           return data;
         }),
       )

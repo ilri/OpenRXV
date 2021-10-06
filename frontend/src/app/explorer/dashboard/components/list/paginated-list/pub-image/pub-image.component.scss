@@ -10,3 +10,43 @@
   max-width: 100%;
   float: none;
 }
+
+.sq-image {
+  height: auto;
+  height: 204px;
+  max-height: 100%;
+  max-width: 100%;
+  width: 240px;
+  float: left;
+}
+
+.tech-type {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 14px;
+  width: 1.5rem;
+  line-height: 0;
+  padding: 0;
+  span {
+    display: block;
+    position: absolute;
+    width: 11.25rem;
+    top: 50%;
+    left: -4.875rem;
+    margin-top: -0.75rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.10);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    -webkit-transform-origin: center center;
+    transform-origin: center center;
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+  }
+}

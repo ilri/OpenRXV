@@ -64,6 +64,7 @@
   <ng-container>
     <div class="w-100 h-100" #panel>
       <agm-map
+      #agmmap
         *ngIf="refreshMap"
         [ngStyle]="myStyles"
         [zoom]="zoom"
@@ -78,12 +79,12 @@
             (markerClick)="filterMarker(aVariable[2])"
             [iconUrl]="
               'http://maps.google.com/mapfiles/ms/icons/' +
-              ((aVariable[2] | split: '_' | head) == 'technologies'
+              ((aVariable[2].split('_')[0]) == 'technologies'
                 ? 'green'
                 : 'orange') +
               '-dot.png'
             "
-            *ngIf="m.key | split: ','; let aVariable"
+            *ngIf="m.key.split(','); let aVariable"
             [agmFitBounds]="fitBounds"
             [latitude]="aVariable[1]"
             [longitude]="aVariable[0]"
