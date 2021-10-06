@@ -15,7 +15,7 @@
             <div class="col-12">
               <div>
                 <mat-form-field>
-                  <mat-label>Website Name</mat-label>
+                  <mat-label>Website name</mat-label>
                   <input
                     matInput
                     formControlName="website_name"
@@ -26,7 +26,7 @@
               </div>
               <div>
                 <mat-form-field>
-                  <mat-label>Primary Color</mat-label>
+                  <mat-label>Primary color</mat-label>
                   <input
                     (colorPickerClose)="
                       colorPickerClose($event, 'primary_color')
@@ -49,7 +49,7 @@
               </div>
               <div>
                 <mat-form-field>
-                  <mat-label>Secondary Color</mat-label>
+                  <mat-label>Secondary color</mat-label>
                   <input
                     (colorPickerClose)="
                       colorPickerClose($event, 'secondary_color')
@@ -71,27 +71,27 @@
               </div>
               <div class="w-100">
                 <mat-form-field>
-                  <mat-label>Google Analytics Tracking Code </mat-label>
+                  <mat-label>Google Analytics tracking code</mat-label>
                   <input
                     matInput
                     formControlName="tracking_code"
-                    placeholder="Tracking Code"
+                    placeholder="UA-xxxxxxxx-y"
                   />
                 </mat-form-field>
               </div>
               <div class="w-100">
                 <mat-form-field class="w-100">
-                  <mat-label>Google Maps api key</mat-label>
+                  <mat-label>Google Maps API key</mat-label>
                   <input
                     matInput
                     formControlName="google_maps_api_key"
-                    placeholder="api key"
+                    placeholder="API key"
                   />
                 </mat-form-field>
               </div>
               <div class="w-100">
                 <mat-form-field class="w-100">
-                  <mat-label>Website Description</mat-label>
+                  <mat-label>Website description</mat-label>
                   <textarea
                     cols="30"
                     matInput
@@ -100,12 +100,12 @@
                 </mat-form-field>
               </div>
               <div class="w-100">
-                <mat-label>FavIcon: </mat-label>
+                <mat-label>Favicon:</mat-label>
                 <input
                   *ngIf="!favIcon"
                   type="file"
                   (change)="favIconChange($event)"
-                  placeholder="FavIcon"
+                  placeholder="Favicon"
                   required
                 />
                 <div *ngIf="favIcon" class="logo">
@@ -116,7 +116,7 @@
                 </div>
               </div>
               <div class="file w-100">
-                <mat-label>Logo: </mat-label>
+                <mat-label>Logo:</mat-label>
                 <input
                   *ngIf="!logo"
                   type="file"
@@ -134,7 +134,7 @@
             </div>
           </div>
           <br />
-          <h4>Chart Colors:</h4>
+          <h4>Chart colors:</h4>
           <div formArrayName="chartColors">
             <div
               *ngFor="let color of colors.controls; index as i"

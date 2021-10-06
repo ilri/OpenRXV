@@ -9,11 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 @Module({
   providers: [JsonFilesService, PluginsConsumer, HarvesterService],
   exports: [],
-  imports: [
-    ConfigModule.forRoot(),
-    SharedModule,
-    DSpaceModule,
-  ],
+  imports: [ConfigModule.forRoot(), SharedModule, DSpaceModule],
   controllers: [HarvesterController],
 })
 export class HarvesterModule {

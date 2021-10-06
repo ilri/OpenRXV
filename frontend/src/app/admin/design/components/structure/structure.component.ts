@@ -56,7 +56,7 @@ export class StructureComponent implements OnInit {
   baseform = [
     {
       name: 'component',
-      label: 'Component Type',
+      label: 'Component type',
       type: 'select',
       items: this.options,
       onChange: (event) => {
@@ -81,7 +81,7 @@ export class StructureComponent implements OnInit {
   iconsForm = [
     {
       name: 'icon',
-      label: 'Select Icon',
+      label: 'Select icon',
       icons: true,
       type: 'select',
       items: icons_list.map((d) => {
@@ -129,7 +129,7 @@ export class StructureComponent implements OnInit {
             },
             {
               name: 'description',
-              label: 'Tour Description',
+              label: 'Tour description',
               type: 'textarea',
               required: true,
             },
@@ -149,7 +149,7 @@ export class StructureComponent implements OnInit {
             },
             {
               name: 'description',
-              label: 'Tour Description',
+              label: 'Tour description',
               type: 'textarea',
               required: true,
             },
@@ -207,7 +207,7 @@ export class StructureComponent implements OnInit {
               },
               {
                 name: 'description',
-                label: 'Tour Description',
+                label: 'Tour description',
                 type: 'textarea',
                 required: true,
               },

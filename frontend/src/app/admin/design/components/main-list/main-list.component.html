@@ -28,7 +28,7 @@
             [clearable]="false"
             [searchable]="true"
             formControlName="description"
-            placeholder="Item Description"
+            placeholder="Item description"
           >
           </ng-select>
         </div>
@@ -37,7 +37,7 @@
             <input
               type="text"
               matInput
-              placeholder="Identifier Uri prefix"
+              placeholder="Identifier URI prefix (if needed)"
               formControlName="identifierUriPrefix"
             />
           </mat-form-field>
@@ -53,11 +53,21 @@
             [clearable]="false"
             [searchable]="true"
             formControlName="identifierUri"
-            placeholder="Identifier Uri"
+            placeholder="Identifier"
           >
           </ng-select>
         </div>
-        <div class="col-12">
+        <div class="col-6">
+          <mat-form-field class="w-100">
+            <input
+              type="text"
+              matInput
+              placeholder="Thumbnail URI prefix (if needed)"
+              formControlName="thumbnail_prefix"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-3">
           <ng-select
             class="base"
             [addTag]="true"
@@ -71,22 +81,12 @@
           >
           </ng-select>
         </div>
-        <div class="col-9">
-          <mat-form-field class="w-100">
-            <input
-              type="text"
-              matInput
-              placeholder="Thumbnail prefix"
-              formControlName="thumbnail_prefix"
-            />
-          </mat-form-field>
-        </div>
         <div class="col-3">
           <mat-checkbox matInput formControlName="square_thumbnail"
-            >Square thumbnail</mat-checkbox
+            >Make thumbnail square</mat-checkbox
           >
         </div>
-        <div class="col-9">
+        <div class="col-12">
           <ng-select
             class="base"
             [addTag]="true"
@@ -110,11 +110,11 @@
                 <div class="row">
                   <div class="col">
                     <mat-form-field>
-                      <mat-label>Value</mat-label>
+                      <mat-label>Text value</mat-label>
                       <input
                         type="text"
                         matInput
-                        placeholder="Value"
+                        placeholder="Journal Article"
                         required
                         formControlName="value"
                       />
@@ -126,7 +126,7 @@
                       <input
                         type="text"
                         matInput
-                        placeholder="Color"
+                        placeholder="green"
                         required
                         formControlName="color"
                       />
@@ -155,14 +155,14 @@
             (click)="AddNewdata('image_tag_options')"
             mat-raised-button
           >
-            New Option
+            New option
             <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
           </button>
         </div>
 
         <div class="col-12">
           <mat-checkbox matInput formControlName="altmetric"
-            >Show Altmetric</mat-checkbox
+            >Show Altmetric scores</mat-checkbox
           >
         </div>
       </div>
@@ -181,7 +181,7 @@
                 <input
                   type="text"
                   matInput
-                  placeholder="Tag Title"
+                  placeholder="Tag title"
                   required
                   formControlName="disply_name"
                 />
@@ -197,7 +197,7 @@
                 [clearable]="false"
                 [searchable]="true"
                 formControlName="metadata"
-                placeholder="Data Source"
+                placeholder="Data source"
               >
               </ng-select>
             </div>
@@ -222,11 +222,11 @@
           (click)="AddNewdata('tags')"
           mat-raised-button
         >
-          New Tag
+          New tag
           <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
         </button>
       </div>
-      <h5>Sort By Options:</h5>
+      <h5>Sort options:</h5>
       <hr />
       <ng-container formArrayName="filterOptions">
         <form
@@ -237,11 +237,11 @@
             <div class="row">
               <div class="col">
                 <mat-form-field>
-                  <mat-label>Option Title</mat-label>
+                  <mat-label>Option title</mat-label>
                   <input
                     type="text"
                     matInput
-                    placeholder="Option Title"
+                    placeholder="Option title"
                     required
                     formControlName="display"
                   />
@@ -257,7 +257,7 @@
                   [clearable]="false"
                   [searchable]="true"
                   formControlName="value"
-                  placeholder="Data Source"
+                  placeholder="Data source"
                 >
                 </ng-select>
               </div>
@@ -276,7 +276,7 @@
               </div>
               <div class="col">
                 <mat-checkbox matInput formControlName="textValue"
-                  >Text Value</mat-checkbox
+                  >Text value</mat-checkbox
                 >
               </div>
               <div *ngIf="i > 0" class="col-sm-1">
@@ -297,7 +297,7 @@
       </ng-container>
       <div class="col-md-12 text-center">
         <button class="mb-2" (click)="AddNewdata('options')" mat-raised-button>
-          New Option
+          New option
           <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
         </button>
       </div>
