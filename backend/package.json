@@ -23,7 +23,7 @@
     "copy:assets": "mkdir -p 'dist/export/services/template-files/' && mkdir -p  data/files/downloads/ &&  cp -r 'src/export/services/template-files/' 'dist/export/services/template-files/'"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.7.1",
+    "@elastic/elasticsearch": "^7.8.0",
     "@nestjs/bull": "^0.3.1",
     "@nestjs/common": "^7.6.17",
     "@nestjs/config": "^0.6.3",
