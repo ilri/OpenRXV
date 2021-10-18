@@ -157,7 +157,7 @@ export class BodyBuilderService {
       size: size,
       shard_size: size,
       order: {
-        _term: 'asc',
+        _key: 'asc',
       },
     };
   }
