@@ -1,6 +1,6 @@
 FROM docker.io/node:12-bullseye
 RUN npm --version \
-    && npm install -g npm@latest \
+    && npm install -g npm@7 \
     && npm install -g @angular/cli \
     && rm -rf ~/.npm
 RUN mkdir /frontend
