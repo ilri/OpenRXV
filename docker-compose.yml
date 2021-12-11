@@ -9,7 +9,7 @@ services:
       - 127.0.0.1:9300:9300
     environment:
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms1536m -Xmx1536m"
+      - "ES_JAVA_OPTS=-Xms1536m -Xmx1536m -Dlog4j2.formatMsgNoLookups=true"
     volumes:
       - esData_7:/usr/share/elasticsearch/data:rw
     networks:
