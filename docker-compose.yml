@@ -28,7 +28,7 @@ services:
       - openrxv
   redis:
     container_name: redis
-    image: docker.io/redis:5
+    image: docker.io/redis:6
     restart: always
     volumes:
       - redisData:/data
