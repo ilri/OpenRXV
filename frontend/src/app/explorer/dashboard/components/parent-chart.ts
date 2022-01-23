@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, Directive } from '@angular/core';
 import {
   ComponentDashboardConfigs,
   ComponentFilterConfigs,
@@ -11,6 +11,7 @@ import { SelectService } from '../../filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 
+@Directive()
 export class ParentChart extends ParentComponent {
   chartOptions: Highcharts.Options;
   protected buildOptions: EventEmitter<Array<Bucket> | MergedSelect>;
