@@ -175,7 +175,7 @@ export class ExplorerComponent implements OnInit {
       if (event.x === 0 && !this.sidenav.opened) {
         this.openAndRender('over');
       }
-      if (event.x > this.sidenav._width && this.sidenav.opened) {
+      if (event.x > this.sidenav._getWidth() && this.sidenav.opened) {
         this.sidenav.close();
       }
     }
