@@ -1,4 +1,4 @@
-FROM docker.io/node:12-bullseye
+FROM docker.io/node:14-bullseye
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y \
     && apt install -y --no-install-recommends unoconv libreoffice-writer \
