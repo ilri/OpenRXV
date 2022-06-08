@@ -20,6 +20,7 @@ import { environment } from 'src/environments/environment';
 import { InViewState } from './store/reducers/items.reducer';
 import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'explorer-root',
@@ -68,6 +69,7 @@ export class ExplorerComponent implements OnInit {
     private readonly screenSizeService: ScreenSizeService,
     private readonly itemsService: ItemsService,
     public dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
   ) {
     this.orOperator = false;
     this.orAndToolTip = orAndToolTip;
@@ -193,10 +195,14 @@ export class ExplorerComponent implements OnInit {
   }
 
   refresh(): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.mainBodyBuilderService.resetAttributes();
     setTimeout(() => {
       this.store.dispatch(
-        new SetQuery(this.mainBodyBuilderService.buildMainQuery(0).build()),
+        new SetQuery({
+          dashboard: dashboard_name ? dashboard_name : 'index',
+          body: this.mainBodyBuilderService.buildMainQuery(0).build(),
+        }),
       );
     }, 300);
   }

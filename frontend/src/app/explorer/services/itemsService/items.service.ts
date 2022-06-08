@@ -15,8 +15,11 @@ export class ItemsService {
   private readonly api_end_point: string = environment.api + '/search';
   constructor(private http: HttpClient) {}
 
-  getItems(query: ElasticsearchQuery): Observable<ElasticsearchResponse> {
-    return this.http.post(this.api_end_point, query);
+  getItems(
+    query: ElasticsearchQuery,
+    dashboard: string = 'index',
+  ): Observable<ElasticsearchResponse> {
+    return this.http.post(this.api_end_point, { dashboard, query });
   }
 
   async getShare(id: string) {

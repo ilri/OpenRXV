@@ -38,7 +38,10 @@ export class DashboardComponent implements OnInit {
     this.oldViewState = new Map<string, boolean>();
   }
   async getCounters() {
-    let settings = await this.settingsService.readExplorerSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    let settings = await this.settingsService.readExplorerSettings(
+      dashboard_name ? dashboard_name : undefined,
+    );
     this.dashboardConfig = settings.dashboard.flat(1);
     this.tourConfig = [settings.welcome];
 
@@ -54,7 +57,7 @@ export class DashboardComponent implements OnInit {
   }
   async ngOnInit() {
     await this.getCounters();
-
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     let shareID = this.activeRoute.snapshot.paramMap.get('id');
     if (shareID) {
       try {
@@ -74,7 +77,10 @@ export class DashboardComponent implements OnInit {
       }
     }
     this.store.dispatch(
-      new SetQuery(this.bodyBuilderService.buildMainQuery().build()),
+      new SetQuery({
+        dashboard: dashboard_name,
+        body: this.bodyBuilderService.buildMainQuery().build(),
+      }),
     );
 
     this.store.select(fromStore.getErrors).subscribe((e: ESHttpError) => {

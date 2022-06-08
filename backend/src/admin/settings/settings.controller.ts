@@ -12,6 +12,7 @@ import {
   Request,
   Param,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
@@ -171,15 +172,16 @@ export class SettingsController {
     return await this.jsonfielServoce.read('../../../data/appearance.json');
   }
 
-  @Get('explorer')
-  async ReadExplorer() {
-    let settings = await this.jsonfielServoce.read(
-      '../../../data/explorer.json',
-    );
+  @Get(['explorer', 'explorer/:name'])
+  async ReadExplorer(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    const settings = dashboard.explorer;
     let configs = await this.jsonfielServoce.read('../../../data/data.json');
-    let appearance = await this.jsonfielServoce.read(
-      '../../../data/appearance.json',
-    );
+    let appearance = dashboard.appearance;
     settings['appearance'] = appearance;
     let list_icons = {};
     if (configs.repositories) {
@@ -188,6 +190,7 @@ export class SettingsController {
       return settings;
     } else return {};
   }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('')
   async Read() {

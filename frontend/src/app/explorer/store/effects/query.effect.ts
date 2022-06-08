@@ -12,6 +12,7 @@ export class QueryEffects {
   loadQuery$ = this.actions$.pipe(
     ofType(queryActions.QueryActionTypes.setQuery),
     switchMap((action: queryActions.SetQuery) => {
+      console.log(action.payload)
       return of(new itemsActions.GetData(action.payload));
     }),
   );

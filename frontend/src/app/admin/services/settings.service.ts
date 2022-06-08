@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
+import { Route, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private route: Router) {}
   async save(data) {
     return await this.http
       .post(environment.api + '/settings', data)
@@ -72,15 +73,19 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readExplorerSettings() {
+  async readExplorerSettings(name = 'index') {
     return await this.http
-      .get(environment.api + '/settings/explorer')
+      .get(`${environment.api}/settings/explorer/${name}`)
       .pipe(
         map((data: any) => {
           return data;
         }),
       )
-      .toPromise();
+      .toPromise()
+      .catch((e) => {
+        this.route.navigate(['notfound']);
+        return undefined;
+      });
   }
 
   async readPluginsSettings() {

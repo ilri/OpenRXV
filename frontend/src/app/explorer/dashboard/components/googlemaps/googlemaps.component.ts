@@ -30,6 +30,7 @@ import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathod
 import { ParentChart } from '../parent-chart';
 import { AgmMap } from '@agm/core';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 
 declare function _altmetric_embed_init(): any;
 interface marker {
@@ -72,22 +73,37 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     private readonly cdr: ChangeDetectorRef,
     private readonly bodyBuilderService: BodyBuilderService,
+    activeRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store);
+    super(cms, selectService, store,activeRoute);
   }
 
   resetQ() {
     this.filterd = false;
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery('id');
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: query.build(),
+      }),
+    );
     this.selectService.resetNotification();
   }
   filterMarker(code) {
     this.filterd = true;
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery('id', code);
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: query.build(),
+      }),
+    );
     this.selectService.resetNotification();
   }
   fullscren() {

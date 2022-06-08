@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
 import * as tinycolor from 'tinycolor2';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
 import { get } from 'scriptjs';
@@ -32,31 +32,40 @@ export class RootComponent implements OnInit {
 
   primaryColorPalette;
   async ngOnInit() {
-    let settings = await this.settingsService.readExplorerSettings();
-    this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
-    await localStorage.setItem('configs', JSON.stringify(settings));
-    if (
-      (!settings.counters && !settings.dashboard) ||
-      settings.dashboard.length == 0
-    ) {
-      this.router.navigate(['/admin']);
-    }
-    this.loadSettigs = true;
-    if (settings.appearance.primary_color) {
-      this.savePrimaryColor(
-        settings.appearance.primary_color,
-        settings.appearance.secondary_color,
-      );
-      this.titleService.setTitle(settings.appearance.website_name);
-      this.meta.updateTag({
-        name: 'og:description',
-        content: settings.appearance.description,
-      });
-    }
+    this.router.events.subscribe(async (event) => {
+      if (event instanceof NavigationEnd) {
+        const dashboard_name = event.urlAfterRedirects.split('/dashboard/')[1];
+        console.log(event.urlAfterRedirects.split('/dashboard/'));
+        let settings = await this.settingsService.readExplorerSettings(
+          dashboard_name ?  dashboard_name.split('/')[0] : undefined
+        );
+        //http://localhost:4200/explorer/dashboard/black/shared/OzCvPoEBA16eUfRbqOxA
+        this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
+        await localStorage.setItem('configs', JSON.stringify(settings));
+        if (
+          (!settings.counters && !settings.dashboard) ||
+          settings.dashboard.length == 0
+        ) {
+          this.router.navigate(['/admin']);
+        }
+        this.loadSettigs = true;
+        if (settings.appearance.primary_color) {
+          this.savePrimaryColor(
+            settings.appearance.primary_color,
+            settings.appearance.secondary_color,
+          );
+          this.titleService.setTitle(settings.appearance.website_name);
+          this.meta.updateTag({
+            name: 'og:description',
+            content: settings.appearance.description,
+          });
+        }
 
-    if (settings.appearance.tracking_code) {
-      this.setupGoogleAnalytics(settings.appearance.tracking_code);
-    }
+        if (settings.appearance.tracking_code) {
+          this.setupGoogleAnalytics(settings.appearance.tracking_code);
+        }
+      }
+    });
   }
 
   setupGoogleAnalytics(tracking_code) {
