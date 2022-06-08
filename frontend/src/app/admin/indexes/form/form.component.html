@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>{{ data.event }} Index</h1>
+<!-- <p *ngIf="form">{{this.form | json}}</p> -->
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="">
+    <!-- <p *ngIf="this.form.value">{{this.form.value | json}}</p> -->
+    <div mat-dialog-content class="w-100">
+        <p class="w-100 ">
+            <mat-form-field class="w-100">
+                <input type="text" matInput placeholder="Name" class="w-100" formControlName="name">
+                <mat-error *ngIf="form?.controls?.name?.errors?.required">Name is required</mat-error>
+                <mat-error *ngIf="form?.controls?.name?.errors?.cannotContainSpace">Name can not contain space.</mat-error>
+                <mat-error *ngIf="form?.controls?.name?.errors?.lowercaseValidator">Name can not contain lowercase.</mat-error>
+            </mat-form-field>
+        </p>
+        <p class="w-100"> 
+            <mat-form-field class="w-100">
+                <textarea type="text" matInput rows="5" class="w-100" placeholder="Description" formControlName="description"></textarea>
+            </mat-form-field>
+        </p>
+        <p class="w-100"> 
+            <mat-checkbox formControlName="to_be_indexed">Enable Indexing</mat-checkbox>
+        </p>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button type="button" mat-raised-button color="default" (click)="onNoClick($event)">Close <mat-icon>close
+            </mat-icon></button>
+        <button type="button" color="primary" (keyup.enter)="submit()" (click)="submit()" mat-raised-button>Submit
+            <mat-icon>done</mat-icon></button>
+    </div>
+</form>

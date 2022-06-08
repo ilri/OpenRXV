@@ -15,6 +15,7 @@ import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { query } from '@angular/animations';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('RangeComponent')
 @Component({
   selector: 'app-range',
@@ -37,6 +38,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     private readonly rangeService: RangeService,
     private readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    public activeRoute: ActivatedRoute,
   ) {
     super();
     this.disabled = false;
@@ -44,9 +46,11 @@ export class RangeComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.rangeService.sourceVal = source;
-    this.shouldReset();
+    this.shouldReset(dashboard_name);
     this.loading$ = this.store.select(fromStore.getLoadingStatus);
     this.subToOrOperator();
     this.subtoToQuery(source);
@@ -62,23 +66,33 @@ export class RangeComponent extends ParentComponent implements OnInit {
         lte: max,
       });
     this.rangeService.resetNotification({ min, max });
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: query.build(),
+      }),
+    );
   }
   timeout = null;
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
       if (this.timeout) clearTimeout(this.timeout);
       let filters = this.bodyBuilderService.getFiltersFromQuery();
       filters.forEach(async (element) => {
         for (var key in element)
           if (key == source) {
-            await this.getYears('select', true);
+            await this.getYears('select', true, dashboard_name);
             this.range = [element[key].gte, element[key].lte];
           }
       });
 
       if (!filters.filter((element) => element[source]).length) {
-        this.getYears('select', true);
+        this.getYears('select', true,dashboard_name);
       }
     });
   }
@@ -95,7 +109,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     });
   }
 
-  private shouldReset(): void {
+  private shouldReset(dashboard_name): void {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     /**
      * we will not get the years
@@ -122,13 +136,17 @@ export class RangeComponent extends ParentComponent implements OnInit {
             ),
           );
         } else {
-          this.getYears(ro.caller, true);
+          this.getYears(ro.caller, true,dashboard_name);
         }
       }
     });
   }
 
-  private async getYears(caller?: ResetCaller, force: boolean = false) {
+  private async getYears(
+    caller?: ResetCaller,
+    force: boolean = false,
+    dashboard_name='index',
+  ) {
     return await new Promise((resolve, reject) => {
       const qb: BuildQueryObj = {
         size: 100000,
@@ -137,6 +155,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
         .getYears(
           this.rangeService.buildquery(qb).build() as ElasticsearchQuery,
           force,
+          dashboard_name,
         )
         .subscribe((n: number[]) => {
           // some queries will return empty array

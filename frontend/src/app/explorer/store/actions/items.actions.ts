@@ -17,7 +17,7 @@ export enum ActionTypes {
 
 export class GetData implements Action {
   readonly type = ActionTypes.getData;
-  constructor(public payload: ElasticsearchQuery = null) {}
+  constructor(public payload: any = null) {}
 }
 
 /**

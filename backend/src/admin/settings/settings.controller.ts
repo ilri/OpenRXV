@@ -12,6 +12,7 @@ import {
   Request,
   Param,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
@@ -21,13 +22,15 @@ import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync } from 'fs';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
-
+import { v4 as uuidv4 } from 'uuid';
+import { ElasticService } from 'src/shared/services/elastic/elastic.service';
 @Controller('settings')
 export class SettingsController {
   constructor(
     private jsonfielServoce: JsonFilesService,
     private httpService: HttpService,
     private indexMetadataService: IndexMetadataService,
+    private elasticSearvice: ElasticService,
   ) {}
   getDirectories = (source) =>
     readdirSync(source, { withFileTypes: true })
@@ -120,6 +123,7 @@ export class SettingsController {
         name: repo.name,
         years: repo.years,
         type: repo.type || 'Dspace',
+        index_name: repo.index_name,
         startPage: repo.startPage,
         itemsEndPoint: repo.itemsEndPoint,
         siteMap: repo.siteMap,
@@ -145,15 +149,219 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('explorer')
-  async SaveExplorer(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/explorer.json');
+  async SaveExplorer(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    // console.log(data,  await this.jsonfielServoce.read('../../../data/dashboards.json'));
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+    //  await this.jsonfielServoce.save(body, '../../../data/explorer.json');
     return { success: true };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('appearance')
-  async SaveAppearance(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/appearance.json');
+  async SaveAppearance(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['appearance'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+
+    return { success: true };
+  }
+  @Get(['appearance', 'appearance/:name'])
+  async ReadAppearance(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    return dashboard.appearance;
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Post('reportings')
+  async SaveReports(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['reports'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+
+    return { success: true };
+  }
+
+  @Get(['reports','reports/:name'])
+  async ReadReports(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    return dashboard.reports;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('indexes')
+  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean) {
+    let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
+    if(isNew) {
+      const newIndex = {
+        id: uuidv4(), 
+        name: body.data.name,
+        description: body.data.description,
+        created_at: new Date().toLocaleString()
+      };
+      indexes.push(newIndex);
+    } else {
+      indexes = body.data;
+
+    }    
+    await this.jsonfielServoce.save(indexes, '../../../data/indexes.json');
+    this.elasticSearvice.startUpIndexes();
+    return { success: true };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('dashboards')
+  async SaveDashboards(@Body() body: any, @Body('isNew') isNew: boolean) {
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (isNew) {
+      const newDashboard = {
+        id: uuidv4(), 
+        name: body.data.name,
+        index: body.data.index,
+        description: body.data.description,
+        created_at: new Date().toLocaleString(),
+        reports:[],
+        appearance: {
+          primary_color: '#20a5b7',
+          website_name: 'OpenRXV',
+          logo: null,
+          chartColors: [
+            '#427730',
+            '#009673',
+            '#0065bd',
+            '#e1d219',
+            '#762022',
+            '#FF6633',
+            '#FFB399',
+            '#FF33FF',
+            '#FFFF99',
+            '#00B3E6',
+            '#E6B333',
+            '#3366E6',
+            '#999966',
+            '#99FF99',
+            '#B34D4D',
+            '#80B300',
+            '#809900',
+            '#E6B3B3',
+            '#6680B3',
+            '#66991A',
+            '#FF99E6',
+            '#CCFF1A',
+            '#FF1A66',
+            '#E6331A',
+            '#33FFCC',
+            '#66994D',
+            '#B366CC',
+            '#4D8000',
+            '#B33300',
+            '#CC80CC',
+            '#66664D',
+            '#991AFF',
+            '#E666FF',
+            '#4DB3FF',
+            '#1AB399',
+            '#E666B3',
+            '#33991A',
+            '#CC9999',
+            '#B3B31A',
+            '#00E680',
+            '#4D8066',
+            '#809980',
+            '#E6FF80',
+            '#1AFF33',
+            '#999933',
+            '#FF3380',
+            '#CCCC00',
+            '#66E64D',
+            '#4D80CC',
+            '#9900B3',
+            '#E64D66',
+            '#4DB380',
+            '#FF4D4D',
+            '#99E6E6',
+            '#6666FF',
+          ],
+        },
+        explorer: {
+          counters: [],
+          filters: [],
+          dashboard: [],
+          appearance: {
+            primary_color: '#20a5b7',
+            website_name: 'OpenRXV',
+            logo: null,
+          },
+          footer: '',
+          welcome: {
+            show: true,
+            component: 'WelcomeComponent',
+            componentConfigs: {
+              title: 'Greetings',
+              description:
+                'Welcome to OpenRXV - Open Repository Explorer and Visualizer',
+              show: true,
+              id: 'welcome',
+              text: '<h2 class="primary-text center-text" style="text-align: center;">Welcome to OpenRXV - Open Repository Explorer and Visualizer</h2>\n<p class="center-text">Choose your search options from the lists on your ICONS:search . Consider adding a filter &ndash; this can provide greater specificity to your query. You can start filtering anywhere you want. By selecting multiple criteria in each filter, all the other filters will be automatically updated to guarantee a combined result that returns no empty queries. AReS figures, graphics, tables and the Info Products List of Results update in real time and your results will be instantly displayed!</p>\n<p class="center-text">Navigate the page and explore all of its features. You can expand and collapse the filters&rsquo; tab and any other section as you like, by clicking on ICONS:search and ICONS:expand_more icons. All graphics are exportable by clicking on ICONS:view_headline, and the Info Products List of Results can be downloaded in .xls , .docx , .pdf formats. Want to clean up all filters and query something else? Click ICONS:loop and start a new query straight away!</p>',
+            },
+            tour: true,
+          },
+        },
+      };
+      dashboards.push(newDashboard);
+    } else {
+      dashboards = body.data;
+    }
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
     return { success: true };
   }
 
@@ -166,20 +374,27 @@ export class SettingsController {
     });
     return plugins;
   }
-  @Get('appearance')
-  async ReadAppearance() {
-    return await this.jsonfielServoce.read('../../../data/appearance.json');
+
+  @Get('indexes')
+  async ReadIndexes() {
+    return await this.jsonfielServoce.read('../../../data/indexes.json');
   }
 
-  @Get('explorer')
-  async ReadExplorer() {
-    let settings = await this.jsonfielServoce.read(
-      '../../../data/explorer.json',
-    );
+  @Get('dashboards')
+  async ReadDashboards() {
+    return await this.jsonfielServoce.read('../../../data/dashboards.json');
+  }
+
+  @Get(['explorer', 'explorer/:name'])
+  async ReadExplorer(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    const settings = dashboard.explorer;
     let configs = await this.jsonfielServoce.read('../../../data/data.json');
-    let appearance = await this.jsonfielServoce.read(
-      '../../../data/appearance.json',
-    );
+    let appearance = dashboard.appearance;
     settings['appearance'] = appearance;
     let list_icons = {};
     if (configs.repositories) {
@@ -188,6 +403,7 @@ export class SettingsController {
       return settings;
     } else return {};
   }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('')
   async Read() {
@@ -195,15 +411,17 @@ export class SettingsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('metadata')
-  async getMetadata() {
+  @Get(['metadata/:name', 'metadata'])
+  async getMetadata(@Param('name') name: string = 'index') {
+    const index_name = await this.jsonfielServoce.getIndexFromDashboard(name);
+    console.log(index_name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
     let data = await this.jsonfielServoce.read('../../../data/data.json');
     let plugins = await this.jsonfielServoce.read('../../../data/plugins.json');
     const medatadataKeys: Array<string> =
-      await this.indexMetadataService.getMetadata();
+      await this.indexMetadataService.getMetadata(index_name);
     let meta = [];
     for (var i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {
@@ -380,17 +598,6 @@ export class SettingsController {
     return { location: response.slice(response.indexOf('files/') + 6) };
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('reportings')
-  async SaveReports(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/reports.json');
-    return { success: true };
-  }
-
-  @Get('reports')
-  async ReadReports() {
-    return await this.jsonfielServoce.read('../../../data/reports.json');
-  }
   @Post('upload/file')
   @UseInterceptors(
     FileInterceptor('file', {

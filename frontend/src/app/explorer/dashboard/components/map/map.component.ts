@@ -16,6 +16,7 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('MapComponent')
 @Component({
   selector: 'app-map',
@@ -31,8 +32,9 @@ export class MapComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store);
+    super(cms, selectService, store, activatedRoute);
   }
   filterd = false;
   ngOnInit(): void {

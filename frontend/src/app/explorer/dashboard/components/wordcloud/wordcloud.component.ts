@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('WordcloudComponent')
 @Component({
   selector: 'app-wordcloud',
@@ -31,13 +32,17 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store);
+    super(cms, selectService, store, activatedRoute);
   }
   colors: string[];
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    let appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

@@ -4,15 +4,16 @@ import { ElasticService } from './elastic/elastic.service';
 
 @Injectable()
 export class IndexMetadataService extends ElasticService {
-  index: string = process.env.OPENRXV_FINAL_INDEX;
   constructor(public readonly elasticsearchService: ElasticsearchService) {
     super(elasticsearchService);
   }
 
-  async getMetadata() {
+  async getMetadata(index) {
+    console.log('getMetadata', index);
     let mappings: any = await this.elasticsearchService.indices.getMapping({
-      index: this.index,
+      index: index,
     });
-    return Object.keys(mappings.body[this.index].mappings.properties);
+  
+    return mappings.body[index] ? Object.keys(mappings.body[index].mappings.properties) : mappings.body[index+'_final'] ? Object.keys(mappings.body[index+'_final'].mappings.properties) : [];
   }
 }

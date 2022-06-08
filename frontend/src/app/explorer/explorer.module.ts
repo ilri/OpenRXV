@@ -85,7 +85,10 @@ import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemap
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { agmConfigFactory } from './services/agm';
-
+// for HttpClient import:
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+// for Router import:
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 @NgModule({
   declarations: [
     ExplorerComponent,
@@ -130,6 +133,10 @@ import { agmConfigFactory } from './services/agm';
     GooglemapsComponent,
   ],
   imports: [
+        // for HttpClient use:
+        LoadingBarHttpClientModule,
+        // for Router use:
+        LoadingBarRouterModule,
     BrowserAnimationsModule,
     HttpClientModule,
     BrowserModule,

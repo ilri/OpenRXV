@@ -5,7 +5,7 @@ import {
   ExportFilesModal,
 } from '../paginated-list/filter-paginated-list/types.interface';
 import { ExportService } from '../services/export/export.service';
-import { switchMap, first } from 'rxjs/operators';
+import { switchMap, first, last } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ElasticsearchQuery } from 'src/app/explorer/filters/services/interfaces';
 import { environment } from 'src/environments/environment';
@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -23,6 +24,7 @@ export class ExportComponent implements OnInit {
   @Input() type: FileType;
   @Input() query: Observable<ElasticsearchQuery>;
   @Input() file: any;
+  @Input() dashboard: string;
   forceEnd: boolean;
   installing: boolean;
   delegationArr: Array<ExportFilesModal>;
@@ -55,7 +57,9 @@ export class ExportComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.webSiteName = await this.settingsService.readAppearanceSettings();
+    this.webSiteName = await this.settingsService.readAppearanceSettings(
+      this.dashboard,
+    );
     this.webSiteName = this.webSiteName.website_name;
   }
 
@@ -100,17 +104,19 @@ export class ExportComponent implements OnInit {
     this.installing = true;
     const exporter: Observable<ExporterResponse> = this.query.pipe(
       first(),
-      switchMap((q: ElasticsearchQuery) =>
-        this.exportService.export({
+      switchMap((q: ElasticsearchQuery) => {
+        console.log(q);
+        return this.exportService.export({
           type: this.type,
           scrollId: id,
           query: q,
+          dashboard: this.dashboard,
           part: this.part,
           fileName: this.file.file,
           file: this.file,
           webSiteName: this.webSiteName,
-        }),
-      ),
+        });
+      }),
     );
 
     exporter.subscribe(this.subscriber.bind(this), (err: HttpErrorResponse) => {

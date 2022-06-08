@@ -23,10 +23,6 @@ export function tokenGetter() {
     AdminModule,
     CommonModule,
     AppRoutingModule,
-    // for HttpClient use:
-    LoadingBarHttpClientModule,
-    // for Router use:
-    LoadingBarRouterModule,
     ToastrModule.forRoot(),
     JwtModule.forRoot({
       config: {

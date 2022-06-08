@@ -36,6 +36,7 @@ import {
 // syntax. However, rollup creates a synthetic default module and we thus need to import it using
 // the `default as` syntax.
 import * as _moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
 // tslint:disable-next-line:no-duplicate-imports
 
 const moment = _moment;
@@ -84,6 +85,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
     private readonly rangeService: RangeService,
     private readonly bodyBuilderService: BodyBuilderService,
     private readonly store: Store<fromStore.AppState>,
+    public activeRoute: ActivatedRoute,
   ) {
     super();
     this.rangeService.storeVal = this.store;
@@ -97,6 +99,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
   }
 
   getMinMaxValues(source) {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     const qb: BuildQueryObj = {
       size: 100000,
     };
@@ -104,6 +108,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
       .getMaxAndMin(
         this.rangeService.buildminmaxquery(qb).build() as ElasticsearchQuery,
         true,
+        dashboard_name
       )
       .subscribe(
         (n: any) => {
@@ -145,7 +150,14 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         min: this.fromDate,
         max: this.toDate,
       });
-      this.store.dispatch(new fromStore.SetQuery(query.build()));
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+      this.store.dispatch(
+        new fromStore.SetQuery({
+          dashboard: dashboard_name ? dashboard_name : 'index',
+          body: query.build(),
+        }),
+      );
     } else if (type == 'from' && this.fromDate && !this.toDate) {
       this.toMinDate = this.fromDate;
     } else if (type == 'to' && this.toDate && !this.fromDate) {
@@ -161,6 +173,13 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         lte: max,
       });
     this.rangeService.resetNotification({ min, max });
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: query.build(),
+      }),
+    );
   }
 }

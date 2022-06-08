@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-counter',
@@ -63,16 +64,21 @@ export class CounterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     if (!this.configs.componentConfigs.source) this.openDialog();
   }
 
   openDialog(): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     const dialogRef = this.dialog.open(FormDialogComponent, {
       width: '456px',
-      data: { form_data: this.form_data, configs: this.configs },
+      data: {
+        dashboard_name,
+        form_data: this.form_data,
+        configs: this.configs,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

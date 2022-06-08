@@ -9,6 +9,7 @@ import {
 import { SortOption } from 'src/app/explorer/configs/generalConfig.interface';
 import { FileType } from './types.interface';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-filter-paginated-list',
@@ -24,12 +25,16 @@ export class FilterPaginatedListComponent implements OnInit {
   ascDesc: SortOption[];
   reverseOption: string;
   files: [];
-  constructor(private settingsService: SettingsService) {
+  constructor(
+    private settingsService: SettingsService,
+    private activeRoute: ActivatedRoute,
+  ) {
     this.filterChanged = new EventEmitter();
     this.startExporting = new EventEmitter();
   }
 
   async ngOnInit() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.ascDesc = [
       {
         display: 'Descending',
@@ -42,7 +47,7 @@ export class FilterPaginatedListComponent implements OnInit {
     ];
     this.selectedFilter = this.filterOptions[0];
     this.reverseOption = this.selectedFilter.sort;
-    this.files = await this.settingsService.readReports();
+    this.files = await this.settingsService.readReports(dashboard_name);
     this.filterChanged.emit(this.selectedFilter);
   }
 

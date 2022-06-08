@@ -80,7 +80,7 @@ export class DSpaceHealthCheck {
   }
   async deleteDuplicates(job: Job) {
     let elastic_data = {
-      index: process.env.OPENRXV_TEMP_INDEX,
+      index: job.data.index,
       body: {
         size: 0,
         _source: ['handle'],
@@ -137,7 +137,7 @@ export class DSpaceHealthCheck {
               await this.elasticsearchService
                 .delete({
                   id: element._id,
-                  index: process.env.OPENRXV_TEMP_INDEX,
+                  index: job.data.index,
                 })
                 .catch((e) => this.logger.error(e));
             }
@@ -164,7 +164,7 @@ export class DSpaceHealthCheck {
       try {
         let allRecords: any = [];
         let elastic_data = {
-          index: process.env.OPENRXV_TEMP_INDEX,
+          index: repo.index_name,
           body: {
             size: 9999,
             _source: ['handle'],

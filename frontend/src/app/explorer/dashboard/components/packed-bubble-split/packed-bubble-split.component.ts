@@ -13,6 +13,7 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
+import { ActivatedRoute } from '@angular/router';
 
 @ComponentLookup('PackedBubbleSplitComponent')
 @Component({
@@ -29,13 +30,17 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
     private settingsService: SettingsService,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, null, null);
+    super(cms, null, null, activatedRoute);
   }
   colors: string[];
 
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    let appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('packed-bubble-split');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

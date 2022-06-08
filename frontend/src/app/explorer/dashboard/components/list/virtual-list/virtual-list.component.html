@@ -6,9 +6,7 @@
          -->
 <mat-list>
   <cdk-virtual-scroll-viewport
-    [itemSize]="
-      listData?.length > 50 ? listData?.length / 20 : listData?.length
-    "
+    [itemSize]="10"
     class="viewport w-100"
   >
     <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)">

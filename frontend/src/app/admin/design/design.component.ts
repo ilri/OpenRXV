@@ -14,6 +14,7 @@ import { SortComponent } from './components/sort/sort.component';
 import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-design',
@@ -25,6 +26,7 @@ export class DesignComponent implements OnInit {
     public dialog: MatDialog,
     private settingsService: SettingsService,
     private toastr: ToastrService,
+    private activeRoute: ActivatedRoute,
   ) {}
   counters: Array<any> = [];
   filters: Array<any> = [];
@@ -68,8 +70,9 @@ export class DesignComponent implements OnInit {
     });
   }
   async ngOnInit() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     let { counters, filters, dashboard, footer, welcome } =
-      await this.settingsService.readExplorerSettings();
+      await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -184,12 +187,13 @@ export class DesignComponent implements OnInit {
   }
 
   async save() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     if (
       this.dashboard.filter((d) => d.filter((e) => e.scroll == null).length > 0)
         .length == 0
     ) {
       this.welcome.componentConfigs['text'] = this.welcome_text;
-      await this.settingsService.saveExplorerSettings({
+      await this.settingsService.saveExplorerSettings(dashboard_name, {
         counters: this.counters,
         filters: this.filters,
         dashboard: this.dashboard,

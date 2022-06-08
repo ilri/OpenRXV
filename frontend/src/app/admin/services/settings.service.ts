@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
+import { Route, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private route: Router) {}
   async save(data) {
     return await this.http
       .post(environment.api + '/settings', data)
@@ -19,9 +20,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async saveExplorerSettings(data) {
+  async saveExplorerSettings(dashboard_name, data) {
     return await this.http
-      .post(environment.api + '/settings/explorer', data)
+      .post(environment.api + '/settings/explorer', { dashboard_name, data })
       .pipe(
         map((data: any) => {
           return data;
@@ -30,9 +31,10 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readAppearanceSettings() {
+  async readAppearanceSettings(name) {
+    if (name == null) name = 'index';
     return await this.http
-      .get(environment.api + '/settings/appearance')
+      .get(`${environment.api}/settings/appearance/${name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -40,30 +42,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async saveAppearanceSettings(data) {
+  async saveAppearanceSettings(dashboard_name, data) {
     return await this.http
-      .post(environment.api + '/settings/appearance', data)
-      .pipe(
-        map((data: any) => {
-          return data;
-        }),
-      )
-      .toPromise();
-  }
-
-  async saveReportsSettings(data) {
-    return await this.http
-      .post(environment.api + '/settings/reportings', data)
-      .pipe(
-        map((data: any) => {
-          return data;
-        }),
-      )
-      .toPromise();
-  }
-  async readReports() {
-    return await this.http
-      .get(environment.api + '/settings/reports')
+      .post(environment.api + '/settings/appearance', { dashboard_name, data })
       .pipe(
         map((data: any) => {
           return data;
@@ -72,15 +53,84 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readExplorerSettings() {
+  async readIndexesSettings() {
     return await this.http
-      .get(environment.api + '/settings/explorer')
+      .get(environment.api + '/settings/indexes')
       .pipe(
         map((data: any) => {
           return data;
         }),
       )
       .toPromise();
+  }
+  async saveIndexesSettings(data, isNew: boolean) {
+    return await this.http
+      .post(environment.api + '/settings/indexes', { data, isNew })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async readDashboardsSettings() {
+    return await this.http
+      .get(environment.api + '/settings/dashboards')
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+  async saveDashboardsSettings(data, isNew: boolean) {
+    return await this.http
+      .post(environment.api + '/settings/dashboards', { data, isNew })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async saveReportsSettings(data, dashboard_name) {
+    return await this.http
+      .post(environment.api + '/settings/reportings', { dashboard_name, data })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+  async readReports(dashboard = 'index') {
+    if (dashboard == null) dashboard = 'index';
+    return await this.http
+      .get(`${environment.api}/settings/reports/${dashboard}`)
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async readExplorerSettings(name = 'index') {
+    if (name == null) name = 'index';
+    return await this.http
+      .get(`${environment.api}/settings/explorer/${name}`)
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise()
+      .catch((e) => {
+        this.route.navigate(['notfound']);
+        return undefined;
+      });
   }
 
   async readPluginsSettings() {

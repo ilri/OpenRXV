@@ -1,5 +1,6 @@
 <mat-drawer-container>
-  <mat-drawer mode="side" opened position="end">
+ 
+  <mat-drawer *ngIf="false" mode="side" opened position="end">
     <app-scroll-to></app-scroll-to>
   </mat-drawer>
 
@@ -7,13 +8,16 @@
     <section class="container-fluid">
       <ng-container *ngFor="let conf of tourConfig">
         <div *ngIf="conf.show" [tourAnchor]="conf.componentConfigs.id">
-          <app-dynamic [componentConfigs]="conf.componentConfigs" [comp]="conf.component"></app-dynamic>
+          <app-dynamic
+            [componentConfigs]="conf.componentConfigs"
+            [comp]="conf.component"
+          ></app-dynamic>
         </div>
         <div>
-          {{conf.componentConfig | json }}
+          {{ conf.componentConfig | json }}
         </div>
       </ng-container>
-      <section class="mb-2 d-flex justify-content-between  flex-wrap">
+      <section class="mb-2 d-flex justify-content-between flex-wrap">
         <!-- Counter loop START -->
         <ng-container *ngFor="let conf of countersConfig">
           <div *ngIf="conf.show" class="w-xs-100">
