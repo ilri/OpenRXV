@@ -13,7 +13,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
       - run: npm install -g npm@latest; cd backend; npm install
   format:
     runs-on: ubuntu-22.04
@@ -23,5 +23,5 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
       - run: npm install -g npm@latest; cd backend; npm ci; npm run format:check
