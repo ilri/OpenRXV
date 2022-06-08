@@ -6,7 +6,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: Build
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +16,7 @@ jobs:
           node-version: '12'
       - run: npm install -g npm@7; cd frontend; npm install
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: Prettier format check
     steps:
       - uses: actions/checkout@v2
