@@ -20,9 +20,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async saveExplorerSettings(data) {
+  async saveExplorerSettings(dashboard_name, data) {
     return await this.http
-      .post(environment.api + '/settings/explorer', data)
+      .post(environment.api + '/settings/explorer', { dashboard_name, data })
       .pipe(
         map((data: any) => {
           return data;
@@ -31,9 +31,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readAppearanceSettings() {
+  async readAppearanceSettings(name) {
     return await this.http
-      .get(environment.api + '/settings/appearance')
+      .get(`${environment.api}/settings/appearance/${name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -41,9 +41,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async saveAppearanceSettings(data) {
+  async saveAppearanceSettings(dashboard_name, data) {
     return await this.http
-      .post(environment.api + '/settings/appearance', data)
+      .post(environment.api + '/settings/appearance', { dashboard_name, data })
       .pipe(
         map((data: any) => {
           return data;

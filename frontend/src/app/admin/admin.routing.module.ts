@@ -27,7 +27,7 @@ const routes: Routes = [
         canActivate: [AdminGuard],
       },
       {
-        path: 'appearance',
+        path: 'appearance/:name',
         component: AppearanceComponent,
         canActivate: [AdminGuard],
       },
@@ -44,7 +44,7 @@ const routes: Routes = [
         component: PluginsComponent,
         canActivate: [AdminGuard],
       },
-      { path: 'design', component: DesignComponent, canActivate: [AdminGuard] },
+      { path: 'design/:name', component: DesignComponent, canActivate: [AdminGuard] },
       {
         path: 'reporting',
         component: ReportingComponent,

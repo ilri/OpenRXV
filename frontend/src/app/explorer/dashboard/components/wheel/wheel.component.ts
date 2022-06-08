@@ -42,7 +42,8 @@ export class WheelComponent extends ParentChart implements OnInit {
   }
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    const appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('dependencywheel');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

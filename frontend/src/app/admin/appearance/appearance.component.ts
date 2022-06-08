@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import { SettingsService } from '../services/settings.service';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-appearance',
@@ -29,12 +30,13 @@ export class AppearanceComponent implements OnInit {
     description: new UntypedFormControl(''),
     chartColors: new UntypedFormArray([]),
   });
-  constructor(private settingsService: SettingsService) {}
+  constructor(private settingsService: SettingsService, private activeRoute:ActivatedRoute) {}
   src(value) {
     return environment.api + '/' + value;
   }
   async ngOnInit() {
-    const appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
     this.appearance = appearance;
     this.form.patchValue(appearance);
     this.primary_color = appearance.primary_color;
@@ -56,10 +58,11 @@ export class AppearanceComponent implements OnInit {
   }
 
   async save() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
     if (this.form.valid)
-      await this.settingsService.saveAppearanceSettings(this.form.value);
+      await this.settingsService.saveAppearanceSettings(dashboard_name, this.form.value);
   }
 
   logoChange(event) {

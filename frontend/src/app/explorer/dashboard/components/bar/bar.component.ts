@@ -38,7 +38,8 @@ export class BarComponent extends ParentChart implements OnInit {
   }
   colors: string[];
   async ngOnInit() {
-    const appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

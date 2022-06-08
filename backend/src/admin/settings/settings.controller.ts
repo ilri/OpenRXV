@@ -144,15 +144,46 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('explorer')
-  async SaveExplorer(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/explorer.json');
+  async SaveExplorer(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    // console.log(data,  await this.jsonfielServoce.read('../../../data/dashboards.json'));
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+    //  await this.jsonfielServoce.save(body, '../../../data/explorer.json');
     return { success: true };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('appearance')
-  async SaveAppearance(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/appearance.json');
+  async SaveAppearance(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['appearance'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+
     return { success: true };
   }
 
@@ -165,9 +196,14 @@ export class SettingsController {
     });
     return plugins;
   }
-  @Get('appearance')
-  async ReadAppearance() {
-    return await this.jsonfielServoce.read('../../../data/appearance.json');
+  @Get(['appearance', 'appearance/:name'])
+  async ReadAppearance(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    return dashboard.appearance;
   }
 
   @Get(['explorer', 'explorer/:name'])
