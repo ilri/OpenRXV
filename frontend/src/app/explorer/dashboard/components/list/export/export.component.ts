@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -46,6 +47,7 @@ export class ExportComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly snackBar: MatSnackBar,
     private settingsService: SettingsService,
+    private activeRoute:ActivatedRoute
   ) {
     this.installing = false;
     this.indexToToggleLoaded = 0;
@@ -55,7 +57,8 @@ export class ExportComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.webSiteName = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    this.webSiteName =  await this.settingsService.readAppearanceSettings(dashboard_name);
     this.webSiteName = this.webSiteName.website_name;
   }
 

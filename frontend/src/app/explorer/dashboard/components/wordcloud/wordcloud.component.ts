@@ -39,7 +39,8 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   colors: string[];
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    let appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

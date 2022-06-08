@@ -38,7 +38,8 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
   }
 
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    let appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
