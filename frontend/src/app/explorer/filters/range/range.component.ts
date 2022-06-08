@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('RangeComponent')
 @Component({
   selector: 'app-range',
@@ -35,6 +36,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     private readonly rangeService: RangeService,
     private readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    public activeRoute: ActivatedRoute
   ) {
     super();
     this.disabled = false;
@@ -60,7 +62,15 @@ export class RangeComponent extends ParentComponent implements OnInit {
         lte: max,
       });
     this.rangeService.resetNotification({ min, max });
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: query.build(),
+      }),
+    );
   }
   timeout = null;
   private subtoToQuery(source): void {

@@ -14,7 +14,8 @@ export class ItemsEffects {
   loadItems$ = this.actions$.pipe(
     ofType(itemsactions.ActionTypes.getData),
     switchMap((action: itemsactions.GetData) => {
-      return this.itemsService.getItems(action.payload).pipe(
+      console.log(action.payload);
+      return this.itemsService.getItems(action.payload.body,action.payload.dashboard).pipe(
         map(
           (items: ElasticsearchResponse) =>
             new itemsactions.GetDataSuccess(items),

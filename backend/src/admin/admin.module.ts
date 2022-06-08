@@ -7,8 +7,9 @@ import { JsonFilesService } from './json-files/json-files.service';
 import { HarvesterModule } from 'src/harvester/harvester.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
+import { DashboardsController } from './dashboards/dashboards.controller';
 @Module({
-  controllers: [MetadataController, ValuesController, SettingsController],
+  controllers: [MetadataController, ValuesController, SettingsController, DashboardsController],
   imports: [
     SharedModule,
     HarvesterModule,

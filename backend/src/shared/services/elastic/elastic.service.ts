@@ -72,10 +72,15 @@ export class ElasticService {
       await this.add(body);
     }
   }
-  async search(query, size = 10, scroll: string = null) {
+  async search(
+    query,
+    size = 10,
+    scroll: string = null,
+    index,
+  ) {
     try {
       const options: any = {
-        index: process.env.OPENRXV_ALIAS,
+        index,
         method: 'POST',
         // size: size,
         // scroll:'10m',

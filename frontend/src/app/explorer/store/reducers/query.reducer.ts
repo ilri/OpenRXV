@@ -2,10 +2,12 @@ import * as actions from 'src/app/explorer/store/actions/query.actions';
 import { ElasticsearchQuery } from 'src/app/explorer/filters/services/interfaces';
 export interface QueryState {
   body: ElasticsearchQuery;
+  dashboard: string;
 }
 
 const initialState: QueryState = {
   body: null,
+  dashboard: 'index',
 };
 
 export function reducer(
@@ -14,10 +16,12 @@ export function reducer(
 ): QueryState {
   switch (action.type) {
     case actions.QueryActionTypes.setQuery: {
-      const body = action.payload;
+      const payload = action.payload;
+      console.log(payload);
       return {
         ...state,
-        body,
+        body: payload.body,
+        dashboard: payload.dashboard,
       };
     }
     default: {

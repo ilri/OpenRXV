@@ -14,6 +14,7 @@ import * as fromStore from '../../../store';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('WheelComponent')
 @Component({
   selector: 'app-wheel',
@@ -31,8 +32,9 @@ export class WheelComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    activatedRoute:ActivatedRoute
   ) {
-    super(cms, selectService, store);
+    super(cms, selectService, store,activatedRoute);
   }
   filterd = false;
   resetFilter(value = false) {
