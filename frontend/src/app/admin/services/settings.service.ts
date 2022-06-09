@@ -53,6 +53,39 @@ export class SettingsService {
       .toPromise();
   }
 
+  async readIndexesSettings() {
+    return await this.http
+      .get(environment.api + '/settings/indexes')
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+  async saveIndexesSettings(data, isNew: boolean) {
+    return await this.http
+      .post(environment.api + '/settings/indexes', {data, isNew})
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+
+  async readDashboardsSettings() {
+    return await this.http
+      .get(environment.api + '/settings/dashboards')
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
   async saveReportsSettings(data, dashboard_name) {
     return await this.http
       .post(environment.api + '/settings/reportings', { dashboard_name, data })

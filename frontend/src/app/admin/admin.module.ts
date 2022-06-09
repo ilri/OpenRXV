@@ -9,7 +9,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { UsersComponent } from './components/users/users.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DemoMaterialModule } from 'src/app/material/material.module';
-import { FormComponent } from './components/users/form/form.component';
+import { FormIndexComponent } from './indexes/form/form.component';
+import { FormDashboardsComponent } from './indexes-dashboard/form/form.component';
+
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './auth/token.interceptor';
 import { ConfirmationComponent } from './components/confirmation/confirmation.component';
@@ -38,6 +40,9 @@ import { ReportingComponent } from './reporting/reporting.component';
 import { ReprotingFormComponent } from './reporting/reproting-form/reproting-form.component';
 import { DialogComponent } from './reporting/dialog/dialog.component';
 import { DocComponent } from './reporting/doc/doc.component';
+import { IndexesComponent } from './indexes/indexes.component';
+import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
+import { FormComponent } from './components/users/form/form.component';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -45,6 +50,8 @@ import { DocComponent } from './reporting/doc/doc.component';
     LoginComponent,
     UsersComponent,
     FormComponent,
+    FormIndexComponent,
+    FormDashboardsComponent,
     ConfirmationComponent,
     MappingValuesComponent,
     ValuesForm,
@@ -66,6 +73,10 @@ import { DocComponent } from './reporting/doc/doc.component';
     ReprotingFormComponent,
     DialogComponent,
     DocComponent,
+    IndexesComponent,
+    IndexesDashboardComponent,
+    
+    
   ],
   imports: [
     BrowserModule,
