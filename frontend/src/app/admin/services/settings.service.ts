@@ -32,6 +32,7 @@ export class SettingsService {
   }
 
   async readAppearanceSettings(name) {
+    if (name == null) name = 'index';
     return await this.http
       .get(`${environment.api}/settings/appearance/${name}`)
       .pipe(
@@ -63,6 +64,7 @@ export class SettingsService {
       .toPromise();
   }
   async readReports(dashboard = 'index') {
+    if (dashboard == null) dashboard = 'index';
     return await this.http
       .get(`${environment.api}/settings/reports/${dashboard}`)
       .pipe(
@@ -74,6 +76,7 @@ export class SettingsService {
   }
 
   async readExplorerSettings(name = 'index') {
+    if (name == null) name = 'index';
     return await this.http
       .get(`${environment.api}/settings/explorer/${name}`)
       .pipe(
