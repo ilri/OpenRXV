@@ -16,7 +16,7 @@
                    
                     <ng-container matColumnDef="id">
                         <th mat-header-cell *matHeaderCellDef> ID. </th>
-                        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.id.substr(0,2)}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="name">

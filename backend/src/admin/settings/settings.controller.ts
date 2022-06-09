@@ -164,7 +164,7 @@ export class SettingsController {
     let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
     if(isNew) {
       const newIndex = {
-        id: uuidv4().substring(0, 2), 
+        id: uuidv4(), 
         name: body.data.name,
         description: body.data.description,
         created_at: new Date().toLocaleString()
@@ -186,7 +186,7 @@ export class SettingsController {
     let dashboards = await this.jsonfielServoce.read('../../../data/dashboards.json');
     if(isNew) {
       const newDashboard = {
-        id: uuidv4().substring(0, 2), 
+        id: uuidv4(), 
         name: body.data.name,
         index: body.data.index,
         description: body.data.description,
