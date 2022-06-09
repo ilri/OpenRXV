@@ -124,7 +124,7 @@ export class PaginatedListComponent implements OnInit {
       .pipe(skip(1))
       .subscribe(
         (b: QueryState) =>
-          b.body.from === 0 &&
+          b?.body?.from === 0 &&
           this.paginationAtt.pageIndex !== 0 &&
           this.resetPagination(),
       );
