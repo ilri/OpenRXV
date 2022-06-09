@@ -51,6 +51,7 @@ export interface DataForExporter {
   fileName: string;
   file: any;
   webSiteName: string;
+  dashboard:string
 }
 
 export interface ExportFilesModal {

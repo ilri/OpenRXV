@@ -46,7 +46,7 @@ const routes: Routes = [
       },
       { path: 'design/:name', component: DesignComponent, canActivate: [AdminGuard] },
       {
-        path: 'reporting',
+        path: 'reporting/:name',
         component: ReportingComponent,
         canActivate: [AdminGuard],
       },
