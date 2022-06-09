@@ -26,12 +26,14 @@ export class ReprotingFormComponent implements OnInit {
   initialForm;
   metadata: any;
   labels = [];
+  dashboard_name:string
   profileForm = new FormGroup({
     title: new FormControl(''),
     fileType: new FormControl(''),
     file: new FormControl(''),
   });
   async ngOnInit() {
+    this.dashboard_name = this.data.dashboard_name;
     this.profileForm.get('title').setValue(this.data.form_data.title);
     this.profileForm.get('fileType').setValue(this.data.form_data.fileType);
     this.profileForm.get('file').setValue(this.data.form_data.file);
@@ -76,7 +78,7 @@ export class ReprotingFormComponent implements OnInit {
   }
 
   saveDate() {
-    this.settingsService.saveReportsSettings(this.data.reports);
+    this.settingsService.saveReportsSettings(this.data.reports,this.dashboard_name);
     this.dialogRef.close(this.formValues);
   }
   deleteSource(index) {

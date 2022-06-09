@@ -10,6 +10,7 @@ import { SettingsService } from '../services/settings.service';
 import { MetadataService } from '../services/metadata.service';
 import { DocComponent } from './doc/doc.component';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-reporting',
   templateUrl: './reporting.component.html',
@@ -23,21 +24,26 @@ export class ReportingComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   envireoment = environment.api;
   metadata: any;
+  dashboard_name:string;
   constructor(
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private metadataService: MetadataService,
+    private activeRoute:ActivatedRoute
   ) {}
 
   async ngOnInit() {
-    this.reports = await this.settingsService.readReports();
+    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.dataSource = await this.settingsService.retreiveMetadata;
     this.metadata = await this.metadataService.get();
+  
   }
 
   newReport() {
     let dialogRef = this.dialog.open(ReprotingFormComponent, {
       data: {
+        dashboard_name: this.dashboard_name,
         form_data: { title: '', fileType: '', file: '' },
         reports: this.reports,
         index: -1,
@@ -49,12 +55,12 @@ export class ReportingComponent implements OnInit {
 
   delete(index) {
     let dialog = this.dialog.open(DialogComponent, {
-      data: { reportData: this.reports[index] },
+      data: {dashboard_name:this.dashboard_name, reportData: this.reports[index] },
     });
     dialog.afterClosed().subscribe((result) => {
       if (result) {
         this.reports.splice(index, 1);
-        this.settingsService.saveReportsSettings(this.reports);
+        this.settingsService.saveReportsSettings(this.reports,this.dashboard_name);
       }
     });
   }
@@ -62,6 +68,7 @@ export class ReportingComponent implements OnInit {
   edit(index) {
     this.dialogRef = this.dialog.open(ReprotingFormComponent, {
       data: {
+        dashboard_name:this.dashboard_name,
         form_data: this.reports[index],
         reports: this.reports,
         index: index,

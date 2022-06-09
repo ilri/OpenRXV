@@ -21,7 +21,7 @@ export class ExportController {
   async ExportData(@Body() body: any, @Response() res: any) {
     try {
       const { type, scrollId, query, part, fileName, file, webSiteName } = body;
-      query._source = [];
+      if (query) query['_source'] = [];
       const searchQuery: any = { ...query, size: 2000 };
       this.exportService.downloadFile(
         res,
@@ -34,6 +34,7 @@ export class ExportController {
         webSiteName,
       );
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: 'Something went wrong' });
     }
   }

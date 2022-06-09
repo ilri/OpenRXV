@@ -52,9 +52,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async saveReportsSettings(data) {
+  async saveReportsSettings(data, dashboard_name) {
     return await this.http
-      .post(environment.api + '/settings/reportings', data)
+      .post(environment.api + '/settings/reportings', { dashboard_name, data })
       .pipe(
         map((data: any) => {
           return data;
@@ -62,9 +62,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async readReports() {
+  async readReports(dashboard = 'index') {
     return await this.http
-      .get(environment.api + '/settings/reports')
+      .get(`${environment.api}/settings/reports/${dashboard}`)
       .pipe(
         map((data: any) => {
           return data;

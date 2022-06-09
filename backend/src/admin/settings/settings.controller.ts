@@ -188,6 +188,46 @@ export class SettingsController {
 
     return { success: true };
   }
+  @Get(['appearance', 'appearance/:name'])
+  async ReadAppearance(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    return dashboard.appearance;
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Post('reportings')
+  async SaveReports(
+    @Body('data') data: any,
+    @Body('dashboard_name') dashboard_name: any,
+  ) {
+    let dashboards = await this.jsonfielServoce.read(
+      '../../../data/dashboards.json',
+    );
+    if (!dashboards) return new NotFoundException();
+    for (let dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) dashboard['reports'] = data;
+    }
+
+    await this.jsonfielServoce.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
+
+    return { success: true };
+  }
+
+  @Get(['reports','reports/:name'])
+  async ReadReports(@Param('name') name: string = 'index') {
+    const dashboard = (
+      await this.jsonfielServoce.read('../../../data/dashboards.json')
+    ).filter((d) => d.name == name)[0];
+    if (!dashboard) throw new NotFoundException();
+
+    return dashboard.reports;
+  }
 
   @Get('outsourcePlugins')
   async readOutsourcePlugins() {
@@ -197,15 +237,6 @@ export class SettingsController {
       return data.slice(0, -5);
     });
     return plugins;
-  }
-  @Get(['appearance', 'appearance/:name'])
-  async ReadAppearance(@Param('name') name: string = 'index') {
-    const dashboard = (
-      await this.jsonfielServoce.read('../../../data/dashboards.json')
-    ).filter((d) => d.name == name)[0];
-    if (!dashboard) throw new NotFoundException();
-
-    return dashboard.appearance;
   }
 
   @Get(['explorer', 'explorer/:name'])
@@ -418,17 +449,6 @@ export class SettingsController {
     return { location: response.slice(response.indexOf('files/') + 6) };
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('reportings')
-  async SaveReports(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/reports.json');
-    return { success: true };
-  }
-
-  @Get('reports')
-  async ReadReports() {
-    return await this.jsonfielServoce.read('../../../data/reports.json');
-  }
   @Post('upload/file')
   @UseInterceptors(
     FileInterceptor('file', {

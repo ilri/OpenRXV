@@ -22,6 +22,7 @@ import {
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { skip } from 'rxjs/operators';
 import { ExportComponent } from '../export/export.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-paginated-list',
@@ -50,6 +51,7 @@ export class PaginatedListComponent implements OnInit {
     private readonly store: Store<fromStore.AppState>,
     private readonly mainBodyBuilderService: MainBodyBuilderService,
     private readonly dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
   ) {
     this.flag = true;
   }
@@ -84,6 +86,8 @@ export class PaginatedListComponent implements OnInit {
   }
 
   exportFile(file): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     const dialogRef = this.dialog.open(ExportComponent, {
       width: '400px',
       disableClose: true,
@@ -91,6 +95,9 @@ export class PaginatedListComponent implements OnInit {
     dialogRef.componentInstance.type = file.type;
     dialogRef.componentInstance.file = file.file;
     dialogRef.componentInstance.query = this.store.select(fromStore.getQuery);
+    dialogRef.componentInstance.dashboard = dashboard_name
+      ? dashboard_name
+      : 'index';
   }
 
   private dispatchAction(spo: SortPaginationOptions): void {
