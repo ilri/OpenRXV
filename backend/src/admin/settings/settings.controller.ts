@@ -21,7 +21,7 @@ import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync } from 'fs';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
-
+import { v4 as uuidv4 } from 'uuid';
 @Controller('settings')
 export class SettingsController {
   constructor(
@@ -157,6 +157,50 @@ export class SettingsController {
     return { success: true };
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('indexes')
+  async SaveIndexes(@Body() body: any,  @Body('isNew') isNew: boolean) {
+    console.log("isNew", isNew);
+    let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
+    if(isNew) {
+      const newIndex = {
+        id: uuidv4().substring(0, 2), 
+        name: body.data.name,
+        description: body.data.description,
+        created_at: new Date().toLocaleString()
+      }
+      indexes.indexes.push(newIndex);
+    } else {
+      console.log(body.data)
+      indexes = body.data;
+
+    }    
+    await this.jsonfielServoce.save(indexes, '../../../data/indexes.json');
+    return { success: true };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('dashboards')
+  async SaveDashboards(@Body() body: any,  @Body('isNew') isNew: boolean) {
+    console.log("isNew", isNew);
+    let dashboards = await this.jsonfielServoce.read('../../../data/dashboards.json');
+    if(isNew) {
+      const newDashboard = {
+        id: uuidv4().substring(0, 2), 
+        name: body.data.name,
+        index: body.data.index,
+        description: body.data.description,
+        created_at: new Date().toLocaleString()
+      }
+      dashboards.dashboards.push(newDashboard);
+    } else {
+      console.log(body.data)
+      dashboards = body.data; 
+    }    
+    await this.jsonfielServoce.save(dashboards, '../../../data/dashboards.json');
+    return { success: true };
+  }
+
   @Get('outsourcePlugins')
   async readOutsourcePlugins() {
     let plugins = await readdirSync(
@@ -169,6 +213,16 @@ export class SettingsController {
   @Get('appearance')
   async ReadAppearance() {
     return await this.jsonfielServoce.read('../../../data/appearance.json');
+  }
+
+  @Get('indexes')
+  async ReadIndexes() {
+    return await this.jsonfielServoce.read('../../../data/indexes.json');
+  }
+
+  @Get('dashboards')
+  async ReadDashboards() {
+    return await this.jsonfielServoce.read('../../../data/dashboards.json');
   }
 
   @Get('explorer')

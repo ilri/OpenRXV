@@ -13,6 +13,8 @@ import { DesignComponent } from './design/design.component';
 import { AppearanceComponent } from './appearance/appearance.component';
 import { PluginsComponent } from './plugins/plugins.component';
 import { ReportingComponent } from './reporting/reporting.component';
+import { IndexesComponent } from './indexes/indexes.component';
+import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +34,8 @@ const routes: Routes = [
         canActivate: [AdminGuard],
       },
       { path: 'users', component: UsersComponent, canActivate: [AdminGuard] },
+      { path: 'indexes', component: IndexesComponent, canActivate: [AdminGuard] },
+      { path: 'indexes-dashboards', component: IndexesDashboardComponent, canActivate: [AdminGuard] },
       { path: 'shared', component: SharedComponent, canActivate: [AdminGuard] },
       {
         path: 'mapping-values',
