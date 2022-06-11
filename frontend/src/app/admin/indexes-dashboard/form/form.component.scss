@@ -1,0 +1,7 @@
+.w-100 {
+    width: 100% !important;
+}
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: unset;
+    padding: 0;
+}
