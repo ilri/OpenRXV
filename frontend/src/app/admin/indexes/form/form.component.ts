@@ -18,7 +18,7 @@ export class FormIndexComponent implements OnInit {
       console.log("this.form.value", this.form.value) 
     } else if (this.form.valid && this.data.event == "Edit") {
       let indexes = await this.settingsService.readIndexesSettings();
-      const newIndexesArray = indexes.indexes.map(obj => {
+      const newIndexesArray = indexes.map(obj => {
         if (obj.id === this.data.body[0].id) {
           return {...obj, name: this.form.value.name, description: this.form.value.description, created_at: new Date().toLocaleString()};
         }

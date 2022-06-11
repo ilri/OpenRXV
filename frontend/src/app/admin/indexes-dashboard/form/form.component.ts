@@ -18,13 +18,13 @@ export class FormDashboardsComponent implements OnInit {
       console.log("this.form.value", this.form.value) 
     } else if (this.form.valid && this.data.event == "Edit") {
       let dashboards = await this.settingsService.readDashboardsSettings();
-      const newDashboardsArray = dashboards.dashboards.map(obj => {
+      const newDashboardsArray = dashboards.map(obj => {
         if (obj.id === this.data.body[0].id) {
           return {...obj, name: this.form.value.name, description: this.form.value.description, index: this.form.value.index, created_at: new Date().toLocaleString()};
         }
         return obj;
       });
-      const ind = await this.settingsService.saveDashboardsSettings({dashboards: newDashboardsArray}, false);
+      const ind = await this.settingsService.saveDashboardsSettings(newDashboardsArray, false);
       this.dialogRef.close();
     }
   }

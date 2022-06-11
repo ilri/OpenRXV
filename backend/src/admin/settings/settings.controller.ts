@@ -241,7 +241,7 @@ export class SettingsController {
         description: body.data.description,
         created_at: new Date().toLocaleString(),
       };
-      indexes.indexes.push(newIndex);
+      indexes.push(newIndex);
     } else {
       console.log(body.data);
       indexes = body.data;
@@ -265,7 +265,7 @@ export class SettingsController {
         description: body.data.description,
         created_at: new Date().toLocaleString(),
       };
-      dashboards.dashboards.push(newDashboard);
+      dashboards.push(newDashboard);
     } else {
       console.log(body.data);
       dashboards = body.data;
