@@ -46,38 +46,38 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   deleteDashboard(id) {
-    var dashboard = this.dashboards.dashboards.map(x => {
+    var dashboard = this.dashboards.map(x => {
       return x.id;
     }).indexOf(id);
-    this.dashboards.dashboards.splice(dashboard, 1);
-    this.dataSource = new MatTableDataSource<any>(this.dashboards.dashboards);
+    this.dashboards.splice(dashboard, 1);
+    this.dataSource = new MatTableDataSource<any>(this.dashboards);
     this.settingsService.saveDashboardsSettings(this.dashboards, false);
   }
 
   editDashboard(id) {
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: {event: 'Edit', body: this.dashboards.dashboards.filter(x => x.id == id)},
+      data: {event: 'Edit', body: this.dashboards.filter(x => x.id == id)},
     });
 
     dialogRef.afterClosed().subscribe( async (result) => {
       let dashboards = await this.settingsService.readDashboardsSettings();
-      console.log("dashboards", dashboards.dashboards)
+      console.log("dashboards", dashboards)
       this.dashboards = dashboards;
-      this.dataSource = new MatTableDataSource<any>(dashboards.dashboards);
+      this.dataSource = new MatTableDataSource<any>(dashboards);
       this.dataSource.paginator = this.paginator;
-      this.form.patchValue(dashboards.dashboards);
+      this.form.patchValue(dashboards);
     });
   }
 
   async ngOnInit() {
     let dashboards = await this.settingsService.readDashboardsSettings();
     
-    console.log("dashboards", dashboards.dashboards)
+    console.log("dashboards", dashboards)
     this.dashboards = dashboards;
-    this.dataSource = new MatTableDataSource<any>(dashboards.dashboards);
+    this.dataSource = new MatTableDataSource<any>(dashboards);
     this.dataSource.paginator = this.paginator;
-    this.form.patchValue(dashboards.dashboards);
+    this.form.patchValue(dashboards);
   }
 
 }

@@ -227,11 +227,10 @@ export class SettingsController {
         id: uuidv4(),
         name: body.data.name,
         description: body.data.description,
-        created_at: new Date().toLocaleString()
-      }
-      indexes.indexes.push(newIndex);
+        created_at: new Date().toLocaleString(),
+      };
+      indexes.push(newIndex);
     } else {
-      console.log(body.data)
       indexes = body.data;
 
     }
@@ -250,11 +249,10 @@ export class SettingsController {
         name: body.data.name,
         index: body.data.index,
         description: body.data.description,
-        created_at: new Date().toLocaleString()
-      }
-      dashboards.dashboards.push(newDashboard);
+        created_at: new Date().toLocaleString(),
+      };
+      dashboards.push(newDashboard);
     } else {
-      console.log(body.data)
       dashboards = body.data;
     }
     await this.jsonfielServoce.save(dashboards, '../../../data/dashboards.json');

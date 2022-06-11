@@ -45,36 +45,34 @@ export class IndexesComponent implements OnInit {
   }
   
   deleteIndex(id) {
-    var index = this.indexes.indexes.map(x => {
+    var index = this.indexes.map(x => {
       return x.id;
     }).indexOf(id);
-    this.indexes.indexes.splice(index, 1);
-    this.dataSource = new MatTableDataSource<any>(this.indexes.indexes);
+    this.indexes.splice(index, 1);
+    this.dataSource = new MatTableDataSource<any>(this.indexes);
     this.settingsService.saveIndexesSettings(this.indexes, false);
   }
 
    editIndex(id) {
     const dialogRef = this.dialog.open(FormIndexComponent, {
       width: '30%',
-      data: {event: 'Edit', body: this.indexes.indexes.filter(x => x.id == id)},
+      data: {event: 'Edit', body: this.indexes.filter(x => x.id == id)},
     });
 
     dialogRef.afterClosed().subscribe( async (result) => {
       let indexes = await this.settingsService.readIndexesSettings();
-      console.log("indexes", indexes.indexes)
       this.indexes = indexes;
-      this.dataSource = new MatTableDataSource<any>(indexes.indexes);
+      this.dataSource = new MatTableDataSource<any>(indexes);
       this.dataSource.paginator = this.paginator;
-      this.form.patchValue(indexes.indexes);
+      this.form.patchValue(indexes);
     });
   }
   async ngOnInit() {
     let indexes = await this.settingsService.readIndexesSettings();
-    console.log("indexes", indexes.indexes)
     this.indexes = indexes;
-    this.dataSource = new MatTableDataSource<any>(indexes.indexes);
+    this.dataSource = new MatTableDataSource<any>(indexes);
     this.dataSource.paginator = this.paginator;
-    this.form.patchValue(indexes.indexes);
+    this.form.patchValue(indexes);
   }
 
 }

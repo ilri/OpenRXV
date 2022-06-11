@@ -16,7 +16,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Select Index</mat-label>
                 <mat-select class="w-100"  formControlName="index">
-                  <mat-option *ngFor="let index of indexes.indexes"  [value]="index.id">
+                  <mat-option *ngFor="let index of indexes"  [value]="index.id">
                     {{index.name}}
                   </mat-option>
                 </mat-select>
