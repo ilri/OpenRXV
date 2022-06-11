@@ -24,7 +24,7 @@ export class FormIndexComponent implements OnInit {
         }
         return obj;
       });
-      const ind = await this.settingsService.saveIndexesSettings({indexes: newIndexesArray}, false);
+      const ind = await this.settingsService.saveIndexesSettings(newIndexesArray, false);
       this.dialogRef.close();
     }
   }
