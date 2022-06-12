@@ -30,7 +30,7 @@ export class MELDownloadsAndViews {
       scrollId = job.data.scroll_id;
     } else {
       batch = await this.elasticsearchService.search({
-        index: process.env.OPENRXV_TEMP_INDEX,
+        index: job.data.index,
         scroll: '5m',
         body: {
           size: 100,
@@ -63,7 +63,7 @@ export class MELDownloadsAndViews {
             finaldata.push({
               update: {
                 _id: dspace_id,
-                _index: process.env.OPENRXV_TEMP_INDEX,
+                _index: job.data.index,
               },
             });
             finaldata.push({

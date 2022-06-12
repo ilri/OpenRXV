@@ -24,7 +24,7 @@ export class DSpaceDownloadsAndViews {
     job.progress(50);
     if (stats.statistics && stats.statistics.length > 0) {
       const searchResult = await this.elasticsearchService.search({
-        index: process.env.OPENRXV_TEMP_INDEX,
+        index: job.data.index,
         body: {
           _source: ['_id', 'id'],
           track_total_hits: true,
@@ -61,7 +61,7 @@ export class DSpaceDownloadsAndViews {
           if (IDs[stat.id]) {
             toUpdateIndexes.push({
               update: {
-                _index: process.env.OPENRXV_TEMP_INDEX,
+                _index: job.data.index,
                 _id: IDs[stat.id],
               },
             });

@@ -21,12 +21,14 @@ import * as fs from 'fs';
 import { readdirSync } from 'fs';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
 import { v4 as uuidv4 } from 'uuid';
+import { ElasticService } from 'src/shared/services/elastic/elastic.service';
 @Controller('settings')
 export class SettingsController {
   constructor(
     private jsonfielServoce: JsonFilesService,
     private httpService: HttpService,
     private indexMetadataService: IndexMetadataService,
+    private elasticSearvice: ElasticService,
   ) {}
   getDirectories = (source) =>
     readdirSync(source, { withFileTypes: true })
@@ -119,6 +121,7 @@ export class SettingsController {
         name: repo.name,
         years: repo.years,
         type: repo.type || 'Dspace',
+        index_name: repo.index_name,
         startPage: repo.startPage,
         itemsEndPoint: repo.itemsEndPoint,
         siteMap: repo.siteMap,
@@ -219,8 +222,7 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('indexes')
-  async SaveIndexes(@Body() body: any,  @Body('isNew') isNew: boolean) {
-    console.log("isNew", isNew);
+  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean) {
     let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
     if(isNew) {
       const newIndex = {
@@ -235,6 +237,7 @@ export class SettingsController {
 
     }
     await this.jsonfielServoce.save(indexes, '../../../data/indexes.json');
+    this.elasticSearvice.startUpIndexes();
     return { success: true };
   }
 
@@ -314,8 +317,9 @@ export class SettingsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('metadata')
-  async getMetadata() {
+  @Get(['metadata/:name', 'metadata'])
+  async getMetadata(@Param('name') name: string = 'index') {
+    const index_name = await this.jsonfielServoce.getIndexFromDashboard(name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
@@ -324,7 +328,7 @@ export class SettingsController {
       '../../../data/plugins.json',
     );
     const medatadataKeys: Array<string> =
-      await this.indexMetadataService.getMetadata();
+      await this.indexMetadataService.getMetadata(index_name);
     const meta = [];
     for (let i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {

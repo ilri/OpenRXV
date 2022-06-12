@@ -3,11 +3,42 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Update } from '@elastic/elasticsearch/api/requestParams';
 import { ApiResponse } from '@elastic/elasticsearch';
 import * as bcrypt from 'bcrypt';
+import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 @Injectable()
 export class ElasticService {
   index = 'openrxv-users';
-  constructor(public readonly elasticsearchService: ElasticsearchService) {}
+  constructor(
+    public readonly elasticsearchService: ElasticsearchService,
+    private readonly jsonFilesService: JsonFilesService = null,
+  ) {}
+
+  async startUpIndexes() {
+    const indexes = await this.jsonFilesService.read(
+      '../../../data/indexes.json',
+    );
+    for (const index of indexes) {
+      const items_final_exist: ApiResponse =
+        await this.elasticsearchService.indices.exists({
+          index: `${index.name}_final`,
+        });
+      const items_temp_exist: ApiResponse =
+        await this.elasticsearchService.indices.exists({
+          index: `${index.name}_temp`,
+        });
+
+      if (!items_final_exist.body)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_final`,
+        });
+      if (!items_temp_exist.body)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_temp`,
+        });
+    }
+  }
   async startup() {
+    await this.startUpIndexes();
+
     const values_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-values',
@@ -20,23 +51,7 @@ export class ElasticService {
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-shared',
       });
-    const items_final_exist: ApiResponse =
-      await this.elasticsearchService.indices.exists({
-        index: process.env.OPENRXV_FINAL_INDEX,
-      });
-    const items_temp_exist: ApiResponse =
-      await this.elasticsearchService.indices.exists({
-        index: process.env.OPENRXV_TEMP_INDEX,
-      });
 
-    if (!items_final_exist.body)
-      await this.elasticsearchService.indices.create({
-        index: process.env.OPENRXV_FINAL_INDEX,
-      });
-    if (!items_temp_exist.body)
-      await this.elasticsearchService.indices.create({
-        index: process.env.OPENRXV_TEMP_INDEX,
-      });
     if (!shared_exist.body)
       await this.elasticsearchService.indices.create({
         index: 'openrxv-shared',
@@ -72,15 +87,14 @@ export class ElasticService {
       await this.add(body);
     }
   }
-  async search(
-    query,
-    size = 10,
-    scroll: string = null,
-    index,
-  ) {
+  async search(query, size = 10, scroll: string = null, dashbaord = null) {
+    let index_name;
+    if (dashbaord == null)
+      index_name = await this.jsonFilesService.getIndexFromDashboard('index');
+    else index_name = await this.jsonFilesService.getIndexFromDashboard(dashbaord);
     try {
       const options: any = {
-        index,
+        index: index_name,
         method: 'POST',
         // size: size,
         // scroll:'10m',

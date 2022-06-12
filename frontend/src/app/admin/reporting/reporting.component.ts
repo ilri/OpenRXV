@@ -32,8 +32,7 @@ export class ReportingComponent implements OnInit {
     this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.dataSource = await this.settingsService.retreiveMetadata;
-    this.metadata = await this.metadataService.get();
-
+    this.metadata = await this.metadataService.get(this.dashboard_name);
   }
 
   newReport() {

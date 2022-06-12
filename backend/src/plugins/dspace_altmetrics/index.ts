@@ -19,7 +19,7 @@ export class DSpaceAltmetrics {
   async transcode(job: Job<any>) {
     const page = job.data.page;
     if (page == 1) this.handlesIds = null;
-    this.handlesIds = await this.generateCache(process.env.OPENRXV_TEMP_INDEX);
+    this.handlesIds = await this.generateCache(job.data.index);
     const handle_prefix = job.data.handle_prefix;
 
     job.progress(20);
@@ -43,7 +43,7 @@ export class DSpaceAltmetrics {
         if (this.handlesIds[element.handle]) {
           Allindexing.push({
             update: {
-              _index: process.env.OPENRXV_TEMP_INDEX,
+              _index: job.data.index,
               _id: this.handlesIds[element.handle],
             },
           });

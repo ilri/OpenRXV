@@ -141,101 +141,114 @@ export class HarvesterService {
     const plugins: Array<any> = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
-    if (plugins.filter((plugin) => plugin.value.length > 0).length > 0)
-      for (const plugin of plugins) {
-        for (const param of plugin.value) {
-          await this.pluginsQueue.add(plugin.name, {
-            ...param,
-            page: 1,
-            index: process.env.OPENRXV_TEMP_INDEX,
-          });
+    const indexes = await this.jsonFilesService.read(
+      '../../../data/indexes.json',
+    );
+
+    for (const index of indexes) {
+      if (plugins.filter((plugin) => plugin.value.length > 0).length > 0)
+        for (const plugin of plugins) {
+          for (const param of plugin.value) {
+            await this.pluginsQueue.add(plugin.name, {
+              ...param,
+              page: 1,
+              index: `${index.name}_temp`,
+            });
+          }
         }
-      }
+    }
   }
   async Reindex() {
     this.logger.debug('reindex function is called');
-    await this.elasticsearchService.indices.updateAliases({
-      body: {
-        actions: [
-          {
-            remove: {
-              index: process.env.OPENRXV_FINAL_INDEX,
-              alias: process.env.OPENRXV_ALIAS,
+    let indexes = await this.jsonFilesService.read(
+      '../../../data/indexes.json',
+    );
+
+    for (let index of indexes) {
+      console.log(index.name);
+      await this.elasticsearchService.indices.updateAliases({
+        body: {
+          actions: [
+            {
+              remove: {
+                index: `${index.name}_final`,
+                alias: index.name,
+              },
             },
-          },
-          {
-            add: {
-              index: process.env.OPENRXV_TEMP_INDEX,
-              alias: process.env.OPENRXV_ALIAS,
+            {
+              add: {
+                index: `${index.name}_temp`,
+                alias: index.name,
+              },
             },
-          },
-        ],
-      },
-    });
-
-    this.logger.debug('updateAliases final to temp');
-
-    await this.elasticsearchService.indices.delete({
-      index: process.env.OPENRXV_FINAL_INDEX,
-      ignore_unavailable: true,
-    });
-    this.logger.debug('Delete final');
-
-    await this.elasticsearchService.indices.create({
-      index: process.env.OPENRXV_FINAL_INDEX,
-    });
-    this.logger.debug('Create final');
-
-    await this.elasticsearchService
-      .reindex(
-        {
-          wait_for_completion: true,
-          body: {
-            conflicts: 'proceed',
-            source: {
-              index: process.env.OPENRXV_TEMP_INDEX,
-            },
-            dest: { index: process.env.OPENRXV_FINAL_INDEX },
-          },
+          ],
         },
-        { requestTimeout: 2000000 },
-      )
-      .catch((e) => this.logger.log(e));
-    this.logger.debug('Reindex to final');
+      });
 
-    await this.elasticsearchService.indices.updateAliases({
-      body: {
-        actions: [
+      this.logger.debug('updateAliases final to temp');
+
+      await this.elasticsearchService.indices.delete({
+        index: `${index.name}_final`,
+        ignore_unavailable: true,
+      });
+      this.logger.debug('Delete final');
+
+      await this.elasticsearchService.indices.create({
+        index: `${index.name}_final`,
+      });
+      this.logger.debug('Create final');
+
+      await this.elasticsearchService
+        .reindex(
           {
-            remove: {
-              index: process.env.OPENRXV_TEMP_INDEX,
-              alias: process.env.OPENRXV_ALIAS,
+            wait_for_completion: true,
+            body: {
+              conflicts: 'proceed',
+              source: {
+                index: `${index.name}_temp`,
+              },
+              dest: { index: `${index.name}_final` },
             },
           },
-          {
-            add: {
-              index: process.env.OPENRXV_FINAL_INDEX,
-              alias: process.env.OPENRXV_ALIAS,
+          { requestTimeout: 2000000 },
+        )
+        .catch((e) => this.logger.log(e));
+      this.logger.debug('Reindex to final');
+
+      await this.elasticsearchService.indices.updateAliases({
+        body: {
+          actions: [
+            {
+              remove: {
+                index: `${index.name}_temp`,
+                alias: index.name,
+              },
             },
-          },
-        ],
-      },
-    });
+            {
+              add: {
+                index: `${index.name}_final`,
+                alias: index.name,
+              },
+            },
+          ],
+        },
+      });
 
-    this.logger.debug('updateAliases temp to final');
+      this.logger.debug('updateAliases temp to final');
 
-    await this.elasticsearchService.indices.delete({
-      index: process.env.OPENRXV_TEMP_INDEX,
-      ignore_unavailable: true,
-    });
-    this.logger.debug('Delete temp');
+      await this.elasticsearchService.indices.delete({
+        index: `${index.name}_temp`,
+        ignore_unavailable: true,
+      });
+      this.logger.debug('Delete temp');
 
-    await this.elasticsearchService.indices.create({
-      index: process.env.OPENRXV_TEMP_INDEX,
-    });
+      await this.elasticsearchService.indices.create({
+        index: `${index.name}_temp`,
+      });
 
-    this.logger.debug('Create temp');
+      this.logger.debug('Create temp');
 
-    this.logger.debug('Indexing finished');
+      this.logger.debug('Indexing finished');
+    }
   }
 }
