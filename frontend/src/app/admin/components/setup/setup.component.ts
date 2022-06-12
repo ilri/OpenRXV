@@ -20,7 +20,7 @@ import { environment } from 'src/environments/environment';
 export class SetupComponent implements OnInit {
   isLinear = true;
   types: any = [];
-
+  indexes;
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
       metadata: new FormControl(metadada),
@@ -46,6 +46,7 @@ export class SetupComponent implements OnInit {
       icon: new FormControl(),
       startPage: new FormControl(),
       type: new FormControl(),
+      index_name: new FormControl(),
       itemsEndPoint: new FormControl(),
       apiKey: new FormControl(),
       siteMap: new FormControl(),
@@ -60,6 +61,7 @@ export class SetupComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.indexes = await this.settingService.readIndexesSettings();
     this.getOutsourcePlugins();
     let data = await this.settingService.read();
     data.repositories.forEach((element, repoindex) => {

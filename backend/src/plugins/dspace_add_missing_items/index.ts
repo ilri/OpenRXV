@@ -52,7 +52,7 @@ export class AddMissingItems {
       formated['repo'] = job.data.repo.name;
       job.progress(70);
       await this.elasticsearchService
-        .index({ index: process.env.OPENRXV_TEMP_INDEX, body: formated })
+        .index({ index: job.data.index, body: formated })
         .catch((e) => job.moveToFailed(e, true));
       this.logger.log('dspace_add_missing_items => ' + job.data.handle);
       job.progress(100);

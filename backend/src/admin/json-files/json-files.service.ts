@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as jsonfile from 'jsonfile';
 import { join } from 'path';
 import * as fs from 'fs';
@@ -12,6 +12,7 @@ import {
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
 @Injectable()
 export class JsonFilesService {
   async startup() {
@@ -30,7 +31,18 @@ export class JsonFilesService {
         recursive: true,
       });
   }
+  async getIndexFromDashboard(dashboard_name) {
+    let dashboards = await this.read('../../../data/dashboards.json');
+    let indexes = await this.read('../../../data/indexes.json');
+    if (!dashboards) return new NotFoundException();
 
+    const index_id = dashboards.filter((d) => (d.name = dashboard_name))[0]
+      .index;
+
+    const index_name = indexes.filter((d) => (d.id = index_id))[0].name;
+
+    return index_name;
+  }
   async createifnotexist() {
     const directory = join(__dirname, '../../../data/harvestors');
     if (!(await existsSync(directory)))

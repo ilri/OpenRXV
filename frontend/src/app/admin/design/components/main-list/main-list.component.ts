@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -49,12 +50,16 @@ export class MainListComponent implements OnInit {
       disply_name: new FormControl(element ? element.disply_name : ''),
     };
   }
-  constructor(private metadataService: MetadataService) {}
+  constructor(
+    private metadataService: MetadataService,
+    private activeRoute: ActivatedRoute,
+  ) {}
 
   async ngOnInit() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     if (this.baseForm.get('content'))
       this.content = this.baseForm.get('content').value;
-    this.metadata = await this.metadataService.get();
+    this.metadata = await this.metadataService.get(dashboard_name);
     if (this.content && this.content.tags)
       this.content.tags.forEach((element) => {
         this.tagsControls.push(new FormGroup(this.baseTags(element)));

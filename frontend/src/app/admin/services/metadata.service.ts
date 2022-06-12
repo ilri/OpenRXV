@@ -8,9 +8,10 @@ import { map } from 'rxjs/operators';
 export class MetadataService {
   constructor(private http: HttpClient) {}
 
-  async get() {
+  async get(name) {
+    if (name == null) name = 'index';
     return await this.http
-      .get(environment.api + `/settings/metadata`)
+      .get(environment.api + `/settings/metadata/${name}`)
       .pipe(
         map((data: any) => {
           return data;

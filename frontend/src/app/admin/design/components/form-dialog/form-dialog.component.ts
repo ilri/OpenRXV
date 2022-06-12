@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-form-dialog',
@@ -21,6 +22,7 @@ export class FormDialogComponent implements OnInit {
     private metadataService: MetadataService,
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private activeRoute: ActivatedRoute,
   ) {}
 
   onNoClick(value): void {
@@ -34,6 +36,7 @@ export class FormDialogComponent implements OnInit {
     if (this.form.valid) this.dialogRef.close(value);
   }
   async ngOnInit() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     let FormGroupControls: any = {};
     this.data.form_data.forEach((element) => {
       if (this.data.configs.componentConfigs[element.name] != null)
@@ -56,7 +59,7 @@ export class FormDialogComponent implements OnInit {
       else FormGroupControls[element.name] = new FormControl(null);
     });
     this.form = new FormGroup(FormGroupControls);
-    this.metadata = await this.metadataService.get();
+    this.metadata = await this.metadataService.get(dashboard_name);
     this.formControls = this.data.form_data;
     this.pre = this.form.value;
   }
