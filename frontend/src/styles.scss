@@ -25,7 +25,7 @@ body {
 }
 
 mat-sidenav-container {
-  height: 91.8vh;
+  height: 100%;
 }
 
 mat-spinner {
@@ -158,12 +158,11 @@ mat-spinner {
 }
 .mat-drawer-container{
   margin-top: 6px ;
-  overflow: hidden;
+  display: block !important;
 }
 
 .mat-toolbar {
   margin-top: 2px;
-  z-index: 999999 !important;
   padding-bottom: 5px !important;
 }
 
