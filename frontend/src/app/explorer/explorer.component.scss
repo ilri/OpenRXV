@@ -1,10 +1,8 @@
-@import "../../scss/responsive.scss";
+@import '../../scss/responsive.scss';
 
 .mat-toolbar-row {
-  // height: 80px !important;
   display: flex !important;
   flex-direction: row !important;
-  // justify-content: space-between !important;
   justify-content: flex-start !important;
 }
 
@@ -22,12 +20,13 @@ button {
 
 ::ng-deep .mat-drawer-inner-container {
   overflow-x: hidden !important;
+  padding-top: 75px;
 }
 
 .toolbar-style {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  position: relative;
-  z-index: 0 !important;
+  position: fixed;
+  z-index: 800;
 }
 
 #drawer {
@@ -53,5 +52,14 @@ button {
 
 .mat-drawer-container {
   position: inherit !important;
+  display: block !important;
+  width: 100%;
 }
-
+.flex-explorer {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  gap: 0px;
+  height: 99%;
+  padding-top: 75px;
+}

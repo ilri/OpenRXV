@@ -11,9 +11,7 @@ button.active {
 }
 
 .btn-group-vertical {
-  height: 90%;
-  position: fixed !important;
-  right: 0 !important;
+  height: 100%;
   justify-content: unset;
   flex-direction: column;
   align-items: flex-start;
