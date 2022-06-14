@@ -91,7 +91,8 @@ export class ElasticService {
     let index_name;
     if (dashbaord == null)
       index_name = await this.jsonFilesService.getIndexFromDashboard('index');
-    else index_name = await this.jsonFilesService.getIndexFromDashboard(dashbaord);
+    else
+      index_name = await this.jsonFilesService.getIndexFromDashboard(dashbaord);
     try {
       const options: any = {
         index: index_name,

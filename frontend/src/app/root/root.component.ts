@@ -36,7 +36,7 @@ export class RootComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         const dashboard_name = event.urlAfterRedirects.split('/dashboard/')[1];
         const settings = await this.settingsService.readExplorerSettings(
-          dashboard_name ? dashboard_name.split('/')[0] : undefined
+          dashboard_name ? dashboard_name.split('/')[0] : undefined,
         );
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
         await localStorage.setItem('configs', JSON.stringify(settings));

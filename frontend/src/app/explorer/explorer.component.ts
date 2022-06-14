@@ -86,7 +86,7 @@ export class ExplorerComponent implements OnInit {
       data: { link },
     });
   }
-  appearance
+  appearance;
   async ngOnInit() {
     const { counters, dashboard, appearance, welcome } = await JSON.parse(
       localStorage.getItem('configs'),

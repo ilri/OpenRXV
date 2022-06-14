@@ -71,7 +71,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     private readonly bodyBuilderService: BodyBuilderService,
     activeRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store,activeRoute);
+    super(cms, selectService, store, activeRoute);
   }
 
   resetQ() {

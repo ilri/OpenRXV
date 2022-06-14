@@ -78,7 +78,10 @@ export class ReprotingFormComponent implements OnInit {
   }
 
   saveDate() {
-    this.settingsService.saveReportsSettings(this.data.reports, this.dashboard_name);
+    this.settingsService.saveReportsSettings(
+      this.data.reports,
+      this.dashboard_name,
+    );
     this.dialogRef.close(this.formValues);
   }
   deleteSource(index) {

@@ -8,9 +8,8 @@ describe('IndexesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IndexesComponent ]
-    })
-    .compileComponents();
+      declarations: [IndexesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

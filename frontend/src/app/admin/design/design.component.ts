@@ -25,7 +25,7 @@ export class DesignComponent implements OnInit {
     public dialog: MatDialog,
     private settingsService: SettingsService,
     private toastr: ToastrService,
-    private activeRoute:ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {}
   counters: Array<any> = [];
   filters: Array<any> = [];

@@ -243,10 +243,11 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('dashboards')
-  async SaveDashboards(@Body() body: any,  @Body('isNew') isNew: boolean) {
-    console.log("isNew", isNew);
-    let dashboards = await this.jsonfielServoce.read('../../../data/dashboards.json');
-    if(isNew) {
+  async SaveDashboards(@Body() body: any, @Body('isNew') isNew: boolean) {
+    let dashboards = await this.jsonfielServoce.read(
+        '../../../data/dashboards.json',
+    );
+    if (isNew) {
       const newDashboard = {
         id: uuidv4(),
         name: body.data.name,

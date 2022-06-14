@@ -5,7 +5,7 @@ import {
   ExportFilesModal,
 } from '../paginated-list/filter-paginated-list/types.interface';
 import { ExportService } from '../services/export/export.service';
-import { switchMap, first,last } from 'rxjs/operators';
+import { switchMap, first, last } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ElasticsearchQuery } from 'src/app/explorer/filters/services/interfaces';
 import { environment } from 'src/environments/environment';

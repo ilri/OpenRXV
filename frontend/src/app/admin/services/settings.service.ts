@@ -65,7 +65,7 @@ export class SettingsService {
   }
   async saveIndexesSettings(data, isNew: boolean) {
     return await this.http
-      .post(environment.api + '/settings/indexes', {data, isNew})
+      .post(environment.api + '/settings/indexes', { data, isNew })
       .pipe(
         map((data: any) => {
           return data;
@@ -74,10 +74,19 @@ export class SettingsService {
       .toPromise();
   }
 
-
   async readDashboardsSettings() {
     return await this.http
       .get(environment.api + '/settings/dashboards')
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+  async saveDashboardsSettings(data, isNew: boolean) {
+    return await this.http
+      .post(environment.api + '/settings/dashboards', { data, isNew })
       .pipe(
         map((data: any) => {
           return data;

@@ -21,8 +21,15 @@ export class MainListComponent extends ListComponent {
     public readonly cdr: ChangeDetectorRef,
     selectService: SelectService,
     bodyBuilderService: BodyBuilderService,
-    activatedRoute:ActivatedRoute
+    activatedRoute: ActivatedRoute,
   ) {
-    super(store, scrollHelperService, cdr, selectService, bodyBuilderService,activatedRoute);
+    super(
+      store,
+      scrollHelperService,
+      cdr,
+      selectService,
+      bodyBuilderService,
+      activatedRoute,
+    );
   }
 }

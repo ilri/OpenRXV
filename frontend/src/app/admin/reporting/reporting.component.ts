@@ -20,12 +20,12 @@ export class ReportingComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   envireoment = environment.api;
   metadata: any;
-  dashboard_name:string;
+  dashboard_name: string;
   constructor(
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private metadataService: MetadataService,
-    private activeRoute:ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {}
 
   async ngOnInit() {
@@ -50,12 +50,18 @@ export class ReportingComponent implements OnInit {
 
   delete(index) {
     const dialog = this.dialog.open(DialogComponent, {
-      data: {dashboard_name: this.dashboard_name, reportData: this.reports[index] },
+      data: {
+        dashboard_name: this.dashboard_name,
+        reportData: this.reports[index],
+      },
     });
     dialog.afterClosed().subscribe((result) => {
       if (result) {
         this.reports.splice(index, 1);
-        this.settingsService.saveReportsSettings(this.reports,this.dashboard_name);
+        this.settingsService.saveReportsSettings(
+          this.reports,
+          this.dashboard_name,
+        );
       }
     });
   }

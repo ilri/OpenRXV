@@ -29,15 +29,17 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
     private settingsService: SettingsService,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
-    activatedRoute:ActivatedRoute
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, null, null,activatedRoute);
+    super(cms, null, null, activatedRoute);
   }
   colors: string[];
 
   async ngOnInit() {
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
-    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
+    const appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('packed-bubble-split');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

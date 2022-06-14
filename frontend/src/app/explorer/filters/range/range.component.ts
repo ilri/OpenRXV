@@ -36,7 +36,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     private readonly rangeService: RangeService,
     private readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
-    public activeRoute: ActivatedRoute
+    public activeRoute: ActivatedRoute,
   ) {
     super();
     this.disabled = false;

@@ -9,14 +9,13 @@ import { FormDashboardsComponent } from './form/form.component';
 @Component({
   selector: 'app-indexes-dashboard',
   templateUrl: './indexes-dashboard.component.html',
-  styleUrls: ['./indexes-dashboard.component.scss']
+  styleUrls: ['./indexes-dashboard.component.scss'],
 })
 export class IndexesDashboardComponent implements OnInit {
-
   constructor(
     private settingsService: SettingsService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+  ) {}
 
   dashboards: any;
   displayedColumns: string[] = [
@@ -33,11 +32,10 @@ export class IndexesDashboardComponent implements OnInit {
   });
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-
   openDialog() {
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: {event: 'New', body: {}},
+      data: { event: 'New', body: {} },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -46,9 +44,11 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   deleteDashboard(id) {
-    var dashboard = this.dashboards.map(x => {
-      return x.id;
-    }).indexOf(id);
+    var dashboard = this.dashboards
+      .map((x) => {
+        return x.id;
+      })
+      .indexOf(id);
     this.dashboards.splice(dashboard, 1);
     this.dataSource = new MatTableDataSource<any>(this.dashboards);
     this.settingsService.saveDashboardsSettings(this.dashboards, false);
@@ -57,12 +57,12 @@ export class IndexesDashboardComponent implements OnInit {
   editDashboard(id) {
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: {event: 'Edit', body: this.dashboards.filter(x => x.id == id)},
+      data: { event: 'Edit', body: this.dashboards.filter((x) => x.id == id) },
     });
 
-    dialogRef.afterClosed().subscribe( async (result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       let dashboards = await this.settingsService.readDashboardsSettings();
-      console.log("dashboards", dashboards)
+      console.log('dashboards', dashboards);
       this.dashboards = dashboards;
       this.dataSource = new MatTableDataSource<any>(dashboards);
       this.dataSource.paginator = this.paginator;
@@ -72,12 +72,11 @@ export class IndexesDashboardComponent implements OnInit {
 
   async ngOnInit() {
     let dashboards = await this.settingsService.readDashboardsSettings();
-    
-    console.log("dashboards", dashboards)
+
+    console.log('dashboards', dashboards);
     this.dashboards = dashboards;
     this.dataSource = new MatTableDataSource<any>(dashboards);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(dashboards);
   }
-
 }

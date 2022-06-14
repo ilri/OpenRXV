@@ -28,14 +28,16 @@ export class PackedBubbleComponent extends ParentChart implements OnInit {
     private settingsService: SettingsService,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
-    activatedRoute:ActivatedRoute
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store,activatedRoute);
+    super(cms, selectService, store, activatedRoute);
   }
   colors: string[];
   async ngOnInit() {
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
-    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
+    const appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('packed-bubble');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
