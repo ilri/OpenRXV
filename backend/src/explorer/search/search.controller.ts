@@ -15,9 +15,13 @@ export class SearchController {
   constructor(private readonly elasticSearvice: ElasticService) {}
   @HttpCode(200)
   @Post('/')
-  search(@Body('dashboard') dashboard: any, @Body('query') query: any = {}, @Query('scroll') scroll: string) {
+  search(
+    @Body('dashboard') dashboard: any,
+    @Body('query') query: any = {},
+    @Query('scroll') scroll: string,
+  ) {
     query['track_total_hits'] = true;
-    return this.elasticSearvice.search(query, null, scroll,dashboard);
+    return this.elasticSearvice.search(query, null, scroll, dashboard);
   }
 
   @HttpCode(200)
@@ -29,7 +33,7 @@ export class SearchController {
     @Query('scroll') scroll: string,
   ) {
     query['track_total_hits'] = true;
-    return this.elasticSearvice.search(query, size, scroll,dashboard);
+    return this.elasticSearvice.search(query, size, scroll, dashboard);
   }
 
   @HttpCode(200)

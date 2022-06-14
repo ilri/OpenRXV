@@ -26,7 +26,7 @@ export class ReprotingFormComponent implements OnInit {
   initialForm;
   metadata: any;
   labels = [];
-  dashboard_name:string
+  dashboard_name: string;
   profileForm = new FormGroup({
     title: new FormControl(''),
     fileType: new FormControl(''),
@@ -78,7 +78,10 @@ export class ReprotingFormComponent implements OnInit {
   }
 
   saveDate() {
-    this.settingsService.saveReportsSettings(this.data.reports,this.dashboard_name);
+    this.settingsService.saveReportsSettings(
+      this.data.reports,
+      this.dashboard_name,
+    );
     this.dialogRef.close(this.formValues);
   }
   deleteSource(index) {

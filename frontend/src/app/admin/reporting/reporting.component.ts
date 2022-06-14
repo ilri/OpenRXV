@@ -24,20 +24,19 @@ export class ReportingComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   envireoment = environment.api;
   metadata: any;
-  dashboard_name:string;
+  dashboard_name: string;
   constructor(
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private metadataService: MetadataService,
-    private activeRoute:ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {}
 
   async ngOnInit() {
     this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.dataSource = await this.settingsService.retreiveMetadata;
-    this.metadata = await this.metadataService.get( this.dashboard_name);
-  
+    this.metadata = await this.metadataService.get(this.dashboard_name);
   }
 
   newReport() {
@@ -55,12 +54,18 @@ export class ReportingComponent implements OnInit {
 
   delete(index) {
     let dialog = this.dialog.open(DialogComponent, {
-      data: {dashboard_name:this.dashboard_name, reportData: this.reports[index] },
+      data: {
+        dashboard_name: this.dashboard_name,
+        reportData: this.reports[index],
+      },
     });
     dialog.afterClosed().subscribe((result) => {
       if (result) {
         this.reports.splice(index, 1);
-        this.settingsService.saveReportsSettings(this.reports,this.dashboard_name);
+        this.settingsService.saveReportsSettings(
+          this.reports,
+          this.dashboard_name,
+        );
       }
     });
   }
@@ -68,7 +73,7 @@ export class ReportingComponent implements OnInit {
   edit(index) {
     this.dialogRef = this.dialog.open(ReprotingFormComponent, {
       data: {
-        dashboard_name:this.dashboard_name,
+        dashboard_name: this.dashboard_name,
         form_data: this.reports[index],
         reports: this.reports,
         index: index,

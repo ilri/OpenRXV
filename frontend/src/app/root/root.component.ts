@@ -37,7 +37,7 @@ export class RootComponent implements OnInit {
         const dashboard_name = event.urlAfterRedirects.split('/dashboard/')[1];
         console.log(event.urlAfterRedirects.split('/dashboard/'));
         let settings = await this.settingsService.readExplorerSettings(
-          dashboard_name ?  dashboard_name.split('/')[0] : undefined
+          dashboard_name ? dashboard_name.split('/')[0] : undefined,
         );
         //http://localhost:4200/explorer/dashboard/black/shared/OzCvPoEBA16eUfRbqOxA
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;

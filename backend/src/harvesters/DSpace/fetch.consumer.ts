@@ -70,7 +70,7 @@ export class FetchConsumer {
       }
       formated['id'] = item.uuid ? item.uuid.toString() : item.id.toString();
       formated['repo'] = job.data.repo.name;
-      finaldata.push({ index: { _index: job.data.repo.index_name+'_temp' } });
+      finaldata.push({ index: { _index: job.data.repo.index_name + '_temp' } });
       finaldata.push(formated);
     });
 

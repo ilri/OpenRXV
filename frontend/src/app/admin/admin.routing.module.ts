@@ -34,8 +34,16 @@ const routes: Routes = [
         canActivate: [AdminGuard],
       },
       { path: 'users', component: UsersComponent, canActivate: [AdminGuard] },
-      { path: 'indexes', component: IndexesComponent, canActivate: [AdminGuard] },
-      { path: 'indexes-dashboards', component: IndexesDashboardComponent, canActivate: [AdminGuard] },
+      {
+        path: 'indexes',
+        component: IndexesComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'indexes-dashboards',
+        component: IndexesDashboardComponent,
+        canActivate: [AdminGuard],
+      },
       { path: 'shared', component: SharedComponent, canActivate: [AdminGuard] },
       {
         path: 'mapping-values',
@@ -48,7 +56,11 @@ const routes: Routes = [
         component: PluginsComponent,
         canActivate: [AdminGuard],
       },
-      { path: 'design/:name', component: DesignComponent, canActivate: [AdminGuard] },
+      {
+        path: 'design/:name',
+        component: DesignComponent,
+        canActivate: [AdminGuard],
+      },
       {
         path: 'reporting/:name',
         component: ReportingComponent,

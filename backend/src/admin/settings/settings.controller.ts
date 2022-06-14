@@ -255,7 +255,6 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('dashboards')
   async SaveDashboards(@Body() body: any, @Body('isNew') isNew: boolean) {
-    console.log('isNew', isNew);
     let dashboards = await this.jsonfielServoce.read(
       '../../../data/dashboards.json',
     );
@@ -269,7 +268,6 @@ export class SettingsController {
       };
       dashboards.push(newDashboard);
     } else {
-      console.log(body.data);
       dashboards = body.data;
     }
     await this.jsonfielServoce.save(

@@ -32,7 +32,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute:ActivatedRoute
+    activatedRoute: ActivatedRoute,
   ) {
     super(cms, selectService, store, activatedRoute);
   }
@@ -40,7 +40,9 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
-    let appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
+    let appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

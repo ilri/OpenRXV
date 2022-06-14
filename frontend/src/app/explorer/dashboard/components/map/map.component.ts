@@ -32,7 +32,7 @@ export class MapComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute:ActivatedRoute
+    activatedRoute: ActivatedRoute,
   ) {
     super(cms, selectService, store, activatedRoute);
   }

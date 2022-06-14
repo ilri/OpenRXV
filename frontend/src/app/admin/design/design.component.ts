@@ -26,7 +26,7 @@ export class DesignComponent implements OnInit {
     public dialog: MatDialog,
     private settingsService: SettingsService,
     private toastr: ToastrService,
-    private activeRoute:ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {}
   counters: Array<any> = [];
   filters: Array<any> = [];
@@ -193,7 +193,7 @@ export class DesignComponent implements OnInit {
         .length == 0
     ) {
       this.welcome.componentConfigs['text'] = this.welcome_text;
-      await this.settingsService.saveExplorerSettings(dashboard_name,{
+      await this.settingsService.saveExplorerSettings(dashboard_name, {
         counters: this.counters,
         filters: this.filters,
         dashboard: this.dashboard,

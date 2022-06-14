@@ -9,7 +9,12 @@ import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
 import { DashboardsController } from './dashboards/dashboards.controller';
 @Module({
-  controllers: [MetadataController, ValuesController, SettingsController, DashboardsController],
+  controllers: [
+    MetadataController,
+    ValuesController,
+    SettingsController,
+    DashboardsController,
+  ],
   imports: [
     SharedModule,
     HarvesterModule,

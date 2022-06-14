@@ -84,8 +84,6 @@ import { FormComponent } from './components/users/form/form.component';
     DocComponent,
     IndexesComponent,
     IndexesDashboardComponent,
-    
-    
   ],
   imports: [
     BrowserModule,

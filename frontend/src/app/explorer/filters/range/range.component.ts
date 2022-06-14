@@ -38,7 +38,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     private readonly rangeService: RangeService,
     private readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
-    public activeRoute: ActivatedRoute
+    public activeRoute: ActivatedRoute,
   ) {
     super();
     this.disabled = false;
@@ -63,8 +63,8 @@ export class RangeComponent extends ParentComponent implements OnInit {
         gte: min,
         lte: max,
       });
-    this.rangeService.resetNotification({ min, max });      
-    
+    this.rangeService.resetNotification({ min, max });
+
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
 
     this.store.dispatch(

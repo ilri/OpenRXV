@@ -15,20 +15,22 @@ export class ItemsEffects {
     ofType(itemsactions.ActionTypes.getData),
     switchMap((action: itemsactions.GetData) => {
       console.log(action.payload);
-      return this.itemsService.getItems(action.payload.body,action.payload.dashboard).pipe(
-        map(
-          (items: ElasticsearchResponse) =>
-            new itemsactions.GetDataSuccess(items),
-        ),
-        catchError((error: HttpErrorResponse) =>
-          of(
-            new itemsactions.GetDataError({
-              type: itemsactions.ActionTypes.getData,
-              error,
-            }),
+      return this.itemsService
+        .getItems(action.payload.body, action.payload.dashboard)
+        .pipe(
+          map(
+            (items: ElasticsearchResponse) =>
+              new itemsactions.GetDataSuccess(items),
           ),
-        ),
-      );
+          catchError((error: HttpErrorResponse) =>
+            of(
+              new itemsactions.GetDataError({
+                type: itemsactions.ActionTypes.getData,
+                error,
+              }),
+            ),
+          ),
+        );
     }),
   );
 
