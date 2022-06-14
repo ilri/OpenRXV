@@ -35,17 +35,17 @@ export class RootComponent implements OnInit {
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         const dashboard_name = event.urlAfterRedirects.split('/dashboard/')[1];
-        console.log(event.urlAfterRedirects.split('/dashboard/'));
         let settings = await this.settingsService.readExplorerSettings(
           dashboard_name ? dashboard_name.split('/')[0] : undefined,
         );
-        //http://localhost:4200/explorer/dashboard/black/shared/OzCvPoEBA16eUfRbqOxA
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
         await localStorage.setItem('configs', JSON.stringify(settings));
+        console.log();
         if (
           (!settings.counters && !settings.dashboard) ||
           settings.dashboard.length == 0
         ) {
+          if(!event.urlAfterRedirects.includes('admin'))
           this.router.navigate(['/admin']);
         }
         this.loadSettigs = true;
