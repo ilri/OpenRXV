@@ -86,11 +86,12 @@ export class ExplorerComponent implements OnInit {
       data: { link },
     });
   }
-
+  appearance
   async ngOnInit() {
     let { counters, dashboard, appearance, welcome } = await JSON.parse(
       localStorage.getItem('configs'),
     );
+    this.appearance = appearance;
     if (appearance.logo) this.logo = environment.api + '/' + appearance.logo;
     this.website_name = appearance.website_name;
     localStorage.setItem('primaryColor', appearance.primary_color);

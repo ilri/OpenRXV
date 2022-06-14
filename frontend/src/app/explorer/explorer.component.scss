@@ -20,7 +20,16 @@ button {
 
 ::ng-deep .mat-drawer-inner-container {
   overflow-x: hidden !important;
+  padding-top: 0;
+}
+::ng-deep .show_top_nav .mat-drawer-inner-container {
+  padding-top: 40px;
+}
+::ng-deep .show_tool_bar .mat-drawer-inner-container {
   padding-top: 75px;
+}
+.in-tool-bar {
+  width: 100%;
 }
 
 .toolbar-style {
@@ -28,7 +37,9 @@ button {
   position: fixed;
   z-index: 800;
 }
-
+.top_nav.toolbar-style {
+  height: 40px;
+}
 #drawer {
   max-width: 25% !important;
   min-width: 25% !important;
@@ -61,5 +72,12 @@ button {
   align-items: stretch;
   gap: 0px;
   height: 99%;
-  padding-top: 75px;
+  padding-top: 0;
+}
+
+.show_top_nav.flex-explorer {
+  padding-top: 40px !important;
+}
+.show_tool_bar.flex-explorer {
+  padding-top: 75px !important;
 }

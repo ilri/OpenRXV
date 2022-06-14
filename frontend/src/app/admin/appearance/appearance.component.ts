@@ -22,17 +22,25 @@ export class AppearanceComponent implements OnInit {
     logo: new FormControl(''),
     favIcon: new FormControl(''),
     tracking_code: new FormControl(''),
+    show_tool_bar: new FormControl(false),
+    show_side_nav: new FormControl(false),
+    show_top_nav: new FormControl(false),
     google_maps_api_key: new FormControl(''),
     description: new FormControl(''),
     chartColors: new FormArray([]),
   });
-  constructor(private settingsService: SettingsService,  private activeRoute:ActivatedRoute) {}
+  constructor(
+    private settingsService: SettingsService,
+    private activeRoute: ActivatedRoute,
+  ) {}
   src(value) {
     return environment.api + '/' + value;
   }
   async ngOnInit() {
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
-    let appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
+    let appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.appearance = appearance;
     this.form.patchValue(appearance);
     this.primary_color = appearance.primary_color;
@@ -58,7 +66,10 @@ export class AppearanceComponent implements OnInit {
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
     if (this.form.valid)
-      await this.settingsService.saveAppearanceSettings(dashboard_name,this.form.value);
+      await this.settingsService.saveAppearanceSettings(
+        dashboard_name,
+        this.form.value,
+      );
   }
 
   logoChange(event) {

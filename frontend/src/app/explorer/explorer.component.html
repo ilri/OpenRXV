@@ -1,4 +1,8 @@
-<mat-toolbar color="primary" class="toolbar-style">
+<mat-toolbar
+  *ngIf="appearance?.show_tool_bar"
+  color="primary"
+  class="toolbar-style"
+>
   <mat-toolbar-row>
     <img
       *ngIf="logo"
@@ -54,8 +58,53 @@
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<div class="flex-explorer">
-  <app-scroll-to></app-scroll-to>
+<mat-toolbar
+  *ngIf="appearance?.show_top_nav"
+  color="primary"
+  class="toolbar-style top_nav"
+>
+  <app-scroll-to class="in-tool-bar"></app-scroll-to>
+  <button
+    matTooltip="Open Filters drawer"
+    mat-icon-button
+    aria-label="refresh page button"
+    class="end"
+    (click)="openNavAndDisableIgnoreMouseEvent()"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <button
+    matTooltip="Reset All Filters"
+    mat-icon-button
+    (click)="refresh()"
+    aria-label="refresh page button"
+  >
+    <mat-icon>loop</mat-icon>
+  </button>
+  <button
+    matTooltip="Take a tour"
+    *ngIf="!isSmall"
+    mat-icon-button
+    (click)="startTour()"
+    aria-label="refresh page button"
+  >
+    <mat-icon>contact_support</mat-icon>
+  </button>
+  <button
+    matTooltip="About Us"
+    mat-icon-button
+    (click)="seeAbout()"
+    aria-label="About Us"
+  >
+    <mat-icon>info</mat-icon>
+  </button>
+</mat-toolbar>
+<!--  -->
+<div
+  [ngClass]="{ show_tool_bar: appearance?.show_tool_bar, show_top_nav: appearance?.show_top_nav }"
+  class="flex-explorer"
+>
+  <app-scroll-to *ngIf="appearance?.show_side_nav"></app-scroll-to>
   <tour-step-template></tour-step-template>
   <mat-sidenav-container
     (document:mousemove)="onMouseMove($event)"
@@ -64,6 +113,10 @@
     fullscreen
   >
     <mat-sidenav
+      [ngClass]="{
+        show_tool_bar: appearance?.show_tool_bar,
+        show_top_nav: appearance?.show_top_nav
+      }"
       #drawer
       [mode]="isSmall ? 'over' : 'over'"
       [fixedInViewport]="options.fixed"
