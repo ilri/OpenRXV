@@ -1,8 +1,20 @@
-{
-    "primary_color": "#20a5b7",
-    "website_name": "OpenRXV",
-    "logo": null,
-    "chartColors": [
+[
+  {
+    "id": "a1",
+    "index": "c411accc-97a1-44ce-b47b-ff5beb4bdb20",
+    "name": "index",
+    "appearance": {
+      "primary_color": "#3612f7",
+      "secondary_color": "#f20000",
+      "website_name": "OpenRXV",
+      "logo": null,
+      "tracking_code": "",
+      "show_tool_bar": false,
+      "show_side_nav": false,
+      "show_top_nav": false,
+      "google_maps_api_key": "",
+      "description": "",
+      "chartColors": [
         "#427730",
         "#009673",
         "#0065bd",
@@ -58,5 +70,11 @@
         "#FF4D4D",
         "#99E6E6",
         "#6666FF"
-    ]
-}
+      ]
+    },
+    "explorer": {},
+    "reports": [],
+    "description": "The Main explorer index do not delete",
+    "created_at": "6/11/2022, 6:10:06 PM"
+  }
+]
