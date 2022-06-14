@@ -40,10 +40,12 @@ export class RootComponent implements OnInit {
         );
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
         await localStorage.setItem('configs', JSON.stringify(settings));
+        console.log();
         if (
           (!settings.counters && !settings.dashboard) ||
           settings.dashboard.length == 0
         ) {
+          if(!event.urlAfterRedirects.includes('admin'))
           this.router.navigate(['/admin']);
         }
         this.loadSettigs = true;
