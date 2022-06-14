@@ -18,3 +18,24 @@ button.active {
   display: inline-flex;
   vertical-align: middle;
 }
+
+::ng-deep .in-tool-bar .btn-group-vertical {
+  width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+::ng-deep .in-tool-bar {
+  button {
+    transition: box-shadow 0.35s ease-in, color 0.45s ease-in,
+      background-color 0.35s ease-in;
+    cursor: pointer;
+    outline: none;
+    width: 40% !important;
+    border: none !important;
+  }
+
+  button.active {
+    width: 60% !important;
+  }
+}
