@@ -10,9 +10,10 @@ export class IndexMetadataService extends ElasticService {
 
   async getMetadata(index) {
     console.log('getMetadata', index);
-    const mappings: any = await this.elasticsearchService.indices.getMapping({
-      index: index + '_final',
+    let mappings: any = await this.elasticsearchService.indices.getMapping({
+      index: index,
     });
-    return Object.keys(mappings.body[index + '_final'].mappings.properties);
+    console.log(mappings.body)
+    return Object.keys(mappings.body[index].mappings.properties);
   }
 }

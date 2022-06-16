@@ -14,6 +14,7 @@ import { MetadataService } from 'src/app/admin/services/metadata.service';
 })
 export class MainListComponent implements OnInit {
   @Input() baseForm: UntypedFormGroup = null;
+  @Input() dashbard_name: string = null;
   content;
   tagsControls = [];
   filterOptions = [];
@@ -60,10 +61,11 @@ export class MainListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     if (this.baseForm.get('content'))
       this.content = this.baseForm.get('content').value;
-    this.metadata = await this.metadataService.get(dashboard_name);
+    console.log('dashboard_name aa', this.dashbard_name);
+    this.metadata = await this.metadataService.get(this.dashbard_name);
     if (this.content && this.content.tags)
       this.content.tags.forEach((element) => {
         this.tagsControls.push(new UntypedFormGroup(this.baseTags(element)));

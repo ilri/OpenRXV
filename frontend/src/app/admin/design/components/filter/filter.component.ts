@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 
 @Component({
@@ -147,7 +148,7 @@ export class FilterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
   setIcon() {
     const icons = {
       SelectComponent: 'list',
@@ -185,10 +186,14 @@ export class FilterComponent implements OnInit {
     if (this.pre) {
       this.configs.component = this.pre.value;
     }
-
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.dialogRef = this.dialog.open(FormDialogComponent, {
       width: '456px',
-      data: { form_data: this.form_data, configs: this.configs },
+      data: {
+        dashboard_name,
+        form_data: this.form_data,
+        configs: this.configs,
+      },
     });
 
     this.dialogRef.afterClosed().subscribe((result) => {

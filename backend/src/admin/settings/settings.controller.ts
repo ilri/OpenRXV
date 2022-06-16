@@ -321,6 +321,7 @@ export class SettingsController {
   @Get(['metadata/:name', 'metadata'])
   async getMetadata(@Param('name') name: string = 'index') {
     const index_name = await this.jsonfielServoce.getIndexFromDashboard(name);
+    console.log(index_name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;

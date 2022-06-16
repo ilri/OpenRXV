@@ -35,8 +35,9 @@ export class FormDialogComponent implements OnInit {
     });
     if (this.form.valid) this.dialogRef.close(value);
   }
+  dashbard_name
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    this.dashbard_name = this.data.dashboard_name;
     const FormGroupControls: any = {};
     this.data.form_data.forEach((element) => {
       if (this.data.configs.componentConfigs[element.name] != null)
@@ -59,7 +60,7 @@ export class FormDialogComponent implements OnInit {
       else FormGroupControls[element.name] = new UntypedFormControl(null);
     });
     this.form = new UntypedFormGroup(FormGroupControls);
-    this.metadata = await this.metadataService.get(dashboard_name);
+    this.metadata = await this.metadataService.get(this.dashbard_name);
     this.formControls = this.data.form_data;
     this.pre = this.form.value;
   }
