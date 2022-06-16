@@ -165,21 +165,13 @@ export class MainBodyBuilderService extends BuilderUtilities {
     }
     // bitstreams needed for the images
     // handle needed for the altmetric
-    rows.push(
-      'thumbnail',
-      'handle',
-      'bitstreams',
-      'contributor',
-      'affiliation',
-      'language',
-      'country',
-      'region',
-    );
-    return rows;
+
+    return rows.filter((d) => d != '');
   }
 
   private sortHitsQuery(b: bodybuilder.Bodybuilder, from: number): void {
     const { sort, value } = this.hitsAttributes;
+
     b.sort('_score', {
       order: 'desc',
     }).from(from);
