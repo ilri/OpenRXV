@@ -103,9 +103,11 @@ export class PaginatedListComponent implements OnInit {
   private dispatchAction(spo: SortPaginationOptions): void {
     this.store.dispatch(
       new fromStore.SetQuery(
-        this.mainBodyBuilderService
+       { 
+        dashboard:'partner', 
+        body: this.mainBodyBuilderService
           .buildMainQuery(spo.reset ? 0 : spo.pageEvent.pageIndex * 10, false)
-          .build(),
+          .build()},
       ),
     );
   }

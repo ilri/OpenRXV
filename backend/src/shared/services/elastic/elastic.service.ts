@@ -89,10 +89,13 @@ export class ElasticService {
   }
   async search(query, size = 10, scroll: string = null, dashbaord = null) {
     let index_name;
+
     if (dashbaord == null)
       index_name = await this.jsonFilesService.getIndexFromDashboard('index');
     else
       index_name = await this.jsonFilesService.getIndexFromDashboard(dashbaord);
+
+      console.log(dashbaord,index_name);
     try {
       let options: any = {
         index: index_name,
@@ -103,6 +106,8 @@ export class ElasticService {
       };
       if (scroll) options.scroll = scroll;
       if (size) options.size = size;
+
+     
       const { body } = await this.elasticsearchService.search(options);
       return body;
     } catch (e) {

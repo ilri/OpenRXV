@@ -72,7 +72,29 @@
         "#6666FF"
       ]
     },
-    "explorer": {},
+    "explorer": {
+      "counters": [],
+      "filters": [],
+      "dashboard": [],
+      "appearance": {
+        "primary_color": "#20a5b7",
+        "website_name": "OpenRXV",
+        "logo": null
+      },
+      "footer": "",
+      "welcome": {
+        "show": true,
+        "component": "WelcomeComponent",
+        "componentConfigs": {
+          "title": "Greetings",
+          "description": "Welcome to OpenRXV - Open Repository Explorer and Visualizer",
+          "show": true,
+          "id": "welcome",
+          "text": "<h2 class=\"primary-text center-text\" style=\"text-align: center;\">Welcome to OpenRXV - Open Repository Explorer and Visualizer</h2>\n<p class=\"center-text\">Choose your search options from the lists on your ICONS:search . Consider adding a filter &ndash; this can provide greater specificity to your query. You can start filtering anywhere you want. By selecting multiple criteria in each filter, all the other filters will be automatically updated to guarantee a combined result that returns no empty queries. AReS figures, graphics, tables and the Info Products List of Results update in real time and your results will be instantly displayed!</p>\n<p class=\"center-text\">Navigate the page and explore all of its features. You can expand and collapse the filters&rsquo; tab and any other section as you like, by clicking on ICONS:search and ICONS:expand_more icons. All graphics are exportable by clicking on ICONS:view_headline, and the Info Products List of Results can be downloaded in .xls , .docx , .pdf formats. Want to clean up all filters and query something else? Click ICONS:loop and start a new query straight away!</p>"
+        },
+        "tour": true
+      }
+    },
     "reports": [],
     "description": "The Main explorer index do not delete",
     "created_at": "6/11/2022, 6:10:06 PM"

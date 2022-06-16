@@ -36,11 +36,11 @@ export class JsonFilesService {
     let indexes = await this.read('../../../data/indexes.json');
     if (!dashboards) return new NotFoundException();
 
-    const index_id = dashboards.filter((d) => (d.name = dashboard_name))[0]
+    const index_id = dashboards.filter((d) => (d.name == dashboard_name))[0]
       .index;
 
-    const index_name = indexes.filter((d) => (d.id = index_id))[0].name;
-
+    const index_name = indexes.filter((d) => (d.id == index_id))[0].name;
+    console.log('get index from dashboard name => ',dashboard_name,index_name);
     return index_name;
   }
   async createifnotexist() {

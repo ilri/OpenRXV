@@ -9,6 +9,7 @@ import {
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { icons_list } from './icons';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-structure',
@@ -217,7 +218,7 @@ export class StructureComponent implements OnInit {
         break;
     }
   }
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
 
   oldcomponent = [];
 
@@ -283,6 +284,8 @@ export class StructureComponent implements OnInit {
   }
 
   openDialog(index): void {
+    console.log('openDialog',index)
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     if (this.pre) this.grid[index].component = this.pre.value;
 
     this.currentIndex = index;
@@ -291,6 +294,7 @@ export class StructureComponent implements OnInit {
       width:
         this.grid[index].component == 'MainListComponent' ? '1100px' : '456px',
       data: {
+        dashboard_name,
         form_data: Object.create(this.form_data),
         configs: Object.create(this.grid[index]),
       },
