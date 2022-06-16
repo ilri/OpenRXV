@@ -101,14 +101,14 @@ export class PaginatedListComponent implements OnInit {
   }
 
   private dispatchAction(spo: SortPaginationOptions): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     this.store.dispatch(
-      new fromStore.SetQuery(
-       { 
-        dashboard:'partner', 
+      new fromStore.SetQuery({
+        dashboard: dashboard_name,
         body: this.mainBodyBuilderService
           .buildMainQuery(spo.reset ? 0 : spo.pageEvent.pageIndex * 10, false)
-          .build()},
-      ),
+          .build(),
+      }),
     );
   }
 
