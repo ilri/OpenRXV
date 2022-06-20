@@ -21,7 +21,7 @@ export class FormatSearvice {
     _.each(schema, (item: any, index: string) => {
       if (json[index]) {
         if (_.isArray(item)) {
-          _.each(item, (subItem: any, subIndex: string) => {
+          _.each(item, (subItem: any) => {
             let values = json[index]
               .filter(
                 (d: any) =>
