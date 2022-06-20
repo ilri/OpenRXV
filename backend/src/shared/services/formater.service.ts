@@ -1,7 +1,6 @@
 import * as _ from 'underscore';
 import * as ISO from 'iso-3166-1';
-import * as moment from 'moment';
-(moment as any).suppressDeprecationWarnings = true;
+import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { HarvesterService } from '../../harvester/services/harveter.service';
 let langISO = require('iso-639-1');
@@ -104,8 +103,8 @@ export class FormatSearvice {
         if (addOn == 'date') {
           if (_.isArray(value)) value = value[0];
           try {
-            value = moment(new Date(value)).format('YYYY-MM-DD');
-            if (!moment(value).isValid()) value = null;
+            value = dayjs(value).format('YYYY-MM-DD');
+            if (!dayjs(value).isValid()) value = null;
           } catch (e) {
             value = null;
           }
