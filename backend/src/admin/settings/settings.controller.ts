@@ -360,6 +360,7 @@ export class SettingsController {
   @UseInterceptors(
     FileInterceptor('file', {
       preservePath: true,
+      // @ts-ignore: Object is possibly 'undefined'.
       fileFilter: this.imageFileFilter,
       dest: join(__dirname, '../../../data/files/images'),
     }),
@@ -394,6 +395,7 @@ export class SettingsController {
   @UseInterceptors(
     FileInterceptor('file', {
       preservePath: true,
+      // @ts-ignore: Object is possibly 'undefined'.
       fileFilter: this.imageFileFilter,
       dest: join(__dirname, '../../../data/files/files'),
     }),
