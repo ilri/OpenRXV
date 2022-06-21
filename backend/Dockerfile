@@ -3,7 +3,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y \
     && apt install -y --no-install-recommends unoconv libreoffice-writer \
     && rm -rf /var/lib/apt/lists/*
-RUN npm install -g npm@latest \
+RUN npm install -g npm@7 \
     && rm -rf ~/.npm
 RUN mkdir /backend
 COPY src /backend/src
