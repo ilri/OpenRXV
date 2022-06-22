@@ -9,7 +9,7 @@ RUN mkdir /backend
 COPY src /backend/src
 COPY example.env nest-cli.json package.json package-lock.json tsconfig.build.json tsconfig.json docker/wait-for-elasticsearch.sh /backend/
 WORKDIR /backend
-RUN npm i
+RUN npm ci
 
 RUN cp example.env .env \
     && npm run copy:assets \

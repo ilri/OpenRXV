@@ -7,7 +7,7 @@ RUN mkdir /frontend
 COPY src /frontend/src
 COPY angular.json package.json package-lock.json tsconfig.json tslint.json /frontend/
 WORKDIR /frontend
-RUN npm i
+RUN npm ci
 RUN ng b --prod --base-href=/explorer/
 
 FROM docker.io/nginx:stable
