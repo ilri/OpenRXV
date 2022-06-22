@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '12'
       - run: npm install -g npm@7; cd frontend; npm install
-  lint:
+  format:
     runs-on: ubuntu-22.04
     # This job is to check the formatting with prettier, so we install exact
     # dependencies from package-lock.json with `npm ci`.
