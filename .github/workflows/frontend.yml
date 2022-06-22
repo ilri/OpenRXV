@@ -7,6 +7,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-22.04
+    # This job is to test whether npm dependencies are installable, so we use
+    # `npm install`, which also installs devDependencies.
     name: Build
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +19,8 @@ jobs:
       - run: npm install -g npm@7; cd frontend; npm install
   lint:
     runs-on: ubuntu-22.04
+    # This job is to check the formatting with prettier, so we install exact
+    # dependencies from package-lock.json with `npm ci`.
     name: Prettier format check
     steps:
       - uses: actions/checkout@v2
