@@ -14,6 +14,7 @@ import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('SearchComponent')
 @Component({
   selector: 'app-search',
@@ -27,6 +28,7 @@ export class SearchComponent extends ParentComponent implements OnInit {
   constructor(
     private readonly bodyBuilderService: BodyBuilderService,
     private readonly store: Store<fromStore.AppState>,
+    private activeRoute: ActivatedRoute
   ) {
     super();
   }
@@ -117,9 +119,17 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   private dispatchActions() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     this.bodyBuilderService.resetOtherComponent({ caller: 'search' });
     this.store.dispatch(
-      new fromStore.SetQuery(this.bodyBuilderService.buildMainQuery().build()),
+      
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'index',
+        body: this.bodyBuilderService.buildMainQuery().build(),
+      }
+        
+        ),
     );
   }
 
