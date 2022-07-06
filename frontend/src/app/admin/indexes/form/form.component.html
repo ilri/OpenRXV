@@ -17,6 +17,9 @@
                 <textarea type="text" matInput rows="5" class="w-100" placeholder="Description" formControlName="description"></textarea>
             </mat-form-field>
         </p>
+        <p class="w-100"> 
+            <mat-checkbox formControlName="to_be_indexed">Enable Indexing</mat-checkbox>
+        </p>
     </div>
     <div mat-dialog-actions align="end">
         <button type="button" mat-raised-button color="default" (click)="onNoClick($event)">Close <mat-icon>close

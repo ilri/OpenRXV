@@ -30,6 +30,7 @@ export class FormIndexComponent implements OnInit {
             ...obj,
             name: this.form.value.name,
             description: this.form.value.description,
+            to_be_indexed: this.form.value.to_be_indexed,
             created_at: new Date().toLocaleString(),
           };
         }
@@ -53,7 +54,7 @@ export class FormIndexComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
   nonWhitespaceRegExp: RegExp = new RegExp('\\S');
-  populateForm(data = { name: '', description: '' }) {
+  populateForm(data = { name: '', description: '',to_be_indexed:false }) {
     this.form = this.fb.group({
       name: [
         data.name,
@@ -63,6 +64,7 @@ export class FormIndexComponent implements OnInit {
           NoSapceService.lowercaseValidator,
         ],
       ],
+      to_be_indexed:[data.to_be_indexed],
       description: [data.description],
     });
   }
@@ -72,10 +74,11 @@ export class FormIndexComponent implements OnInit {
       const data = {
         name: this.data.body[0].name,
         description: this.data.body[0].description,
+        to_be_indexed: this.data.body[0].to_be_indexed,
       };
       await this.populateForm(data);
     } else {
-      const data = { name: '', description: '' };
+      const data = { name: '', description: '',to_be_indexed:false };
       await this.populateForm(data);
     }
   }
