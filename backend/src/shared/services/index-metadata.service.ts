@@ -13,7 +13,7 @@ export class IndexMetadataService extends ElasticService {
     let mappings: any = await this.elasticsearchService.indices.getMapping({
       index: index,
     });
-    console.log(mappings.body)
-    return Object.keys(mappings.body[index].mappings.properties);
+  
+    return mappings.body[index] ? Object.keys(mappings.body[index].mappings.properties) : mappings.body[index+'_final'] ? Object.keys(mappings.body[index+'_final'].mappings.properties) : [];
   }
 }

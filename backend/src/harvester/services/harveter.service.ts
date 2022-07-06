@@ -146,7 +146,7 @@ export class HarvesterService {
       '../../../data/indexes.json',
     );
 
-    for (let index of indexes) {
+    for (let index of indexes.filter((d) => d?.to_be_indexed)) {
       if (plugins.filter((plugin) => plugin.value.length > 0).length > 0)
         for (let plugin of plugins) {
           for (let param of plugin.value) {
@@ -165,8 +165,7 @@ export class HarvesterService {
       '../../../data/indexes.json',
     );
 
-    for (let index of indexes) {
-      console.log(index.name);
+    for (let index of indexes.filter((d) => d?.to_be_indexed)) {
       await this.elasticsearchService.indices.updateAliases({
         body: {
           actions: [
