@@ -99,6 +99,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
   }
 
   getMinMaxValues(source) {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     const qb: BuildQueryObj = {
       size: 100000,
     };
@@ -106,6 +108,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
       .getMaxAndMin(
         this.rangeService.buildminmaxquery(qb).build() as ElasticsearchQuery,
         true,
+        dashboard_name
       )
       .subscribe(
         (n: any) => {
