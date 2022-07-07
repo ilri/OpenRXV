@@ -44,9 +44,11 @@ export class RangeComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.rangeService.sourceVal = source;
-    this.shouldReset();
+    this.shouldReset(dashboard_name);
     this.loading$ = this.store.select(fromStore.getLoadingStatus);
     this.subToOrOperator();
     this.subtoToQuery(source);
@@ -75,18 +77,20 @@ export class RangeComponent extends ParentComponent implements OnInit {
   timeout = null;
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+
       if (this.timeout) clearTimeout(this.timeout);
       const filters = this.bodyBuilderService.getFiltersFromQuery();
       filters.forEach(async (element) => {
         for (const key in element)
           if (key == source) {
-            await this.getYears('select', true);
+            await this.getYears('select', true, dashboard_name);
             this.range = [element[key].gte, element[key].lte];
           }
       });
 
       if (!filters.filter((element) => element[source]).length) {
-        this.getYears('select', true);
+        this.getYears('select', true,dashboard_name);
       }
     });
   }
@@ -103,7 +107,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     });
   }
 
-  private shouldReset(): void {
+  private shouldReset(dashboard_name): void {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     /**
      * we will not get the years
@@ -130,13 +134,17 @@ export class RangeComponent extends ParentComponent implements OnInit {
             ),
           );
         } else {
-          this.getYears(ro.caller, true);
+          this.getYears(ro.caller, true,dashboard_name);
         }
       }
     });
   }
 
-  private async getYears(caller?: ResetCaller, force = false) {
+  private async getYears(
+    caller?: ResetCaller,
+    force = false,
+    dashboard_name ='index',
+  ) {
     return await new Promise((resolve, reject) => {
       const qb: BuildQueryObj = {
         size: 100000,
@@ -145,6 +153,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
         .getYears(
           this.rangeService.buildquery(qb).build() as ElasticsearchQuery,
           force,
+          dashboard_name,
         )
         .subscribe((n: number[]) => {
           // some queries will return empty array
