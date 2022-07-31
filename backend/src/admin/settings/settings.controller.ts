@@ -254,6 +254,7 @@ export class SettingsController {
         index: body.data.index,
         description: body.data.description,
         created_at: new Date().toLocaleString(),
+        reports:[],
         appearance: {
           primary_color: '#20a5b7',
           website_name: 'OpenRXV',
