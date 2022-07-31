@@ -219,7 +219,7 @@ export class ElasticService {
     }
   }
 
-  async get(q: any, scrollId?: string) {
+  async get(index_name,q: any, scrollId?: string) {
     try {
       let scrollSearch: any;
       if (scrollId) {
@@ -230,7 +230,7 @@ export class ElasticService {
         });
       } else {
         scrollSearch = await this.elasticsearchService.search({
-          index: process.env.OPENRXV_ALIAS,
+          index: index_name,
           scroll: '10m',
           method: 'POST',
           body: { ...q },
