@@ -6,13 +6,16 @@ import {
   HttpCode,
   Res,
   Get,
+  NotFoundException,
 } from '@nestjs/common';
 import { ExportService } from './services/export/export.service';
 import { ElasticService } from '../shared/services/elastic/elastic.service';
+import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 
 @Controller('export')
 export class ExportController {
   constructor(
+    private jsonfielServoce: JsonFilesService,
     private exportService: ExportService,
     private elasticService: ElasticService,
   ) {}
@@ -20,12 +23,26 @@ export class ExportController {
   @Post('/')
   async ExportData(@Body() body: any, @Response() res: any) {
     try {
-      const { type, scrollId, query, part, fileName, file, webSiteName } = body;
+      const {
+        type,
+        scrollId,
+        query,
+        part,
+        fileName,
+        file,
+        webSiteName,
+        dashboard,
+      } = body;
+
+      const index_name = await this.jsonfielServoce.getIndexFromDashboard(
+        dashboard,
+      );
+console.log(index_name);
       if (query) query['_source'] = [];
       const searchQuery: any = { ...query, size: 2000 };
       this.exportService.downloadFile(
         res,
-        await this.elasticService.get(searchQuery, scrollId),
+        await this.elasticService.get(index_name, searchQuery, scrollId),
         type,
         part,
         fileName,
