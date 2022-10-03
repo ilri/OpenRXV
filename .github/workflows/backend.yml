@@ -11,11 +11,13 @@ jobs:
     # `npm install`, which also installs devDependencies.
     name: Build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
       - run: npm install -g npm@7; cd backend; npm install
   format:
     runs-on: ubuntu-22.04
@@ -23,9 +25,11 @@ jobs:
     # dependencies from package-lock.json with `npm ci`.
     name: Prettier format check
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
       - run: npm install -g npm@7; cd backend; npm ci; npm run format:check
