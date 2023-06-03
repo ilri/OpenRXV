@@ -1,0 +1,20 @@
+{
+   "$schema" : "https://docs.renovatebot.com/renovate-schema.json",
+   "baseBranches" : [
+      "master"
+   ],
+   "enabledManagers": ["dockerfile", "npm"],
+   "extends" : [
+      "config:base"
+   ],
+   "packageRules" : [
+      {
+         "matchCurrentVersion" : "!/^0/",
+         "matchUpdateTypes" : [
+            "minor",
+            "patch"
+         ]
+      }
+   ]
+}
+
