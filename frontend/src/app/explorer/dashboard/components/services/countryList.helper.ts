@@ -59,7 +59,7 @@ export const countrylist = [
   { name: 'congo, dr', code: 'CD' },
   { name: 'Cook Islands', code: 'CK' },
   { name: 'Costa Rica', code: 'CR' },
-  { name: "cote d'ivoire", code: 'CI' }, // tslint:disable-line
+  { name: "cote d'ivoire", code: 'CI' }, // eslint-disable-line
   { name: 'Croatia', code: 'HR' },
   { name: 'Cuba', code: 'CU' },
   { name: 'Cyprus', code: 'CY' },

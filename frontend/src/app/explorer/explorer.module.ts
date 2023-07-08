@@ -47,7 +47,7 @@ import { PaginatedListComponent } from './dashboard/components/list/paginated-li
 import { PubImageComponent } from './dashboard/components/list/paginated-list/pub-image/pub-image.component';
 import { LinkTextComponent } from './dashboard/components/list/paginated-list/link-text/link-text.component';
 import { VirtualListComponent } from './dashboard/components/list/virtual-list/virtual-list.component';
-// tslint:disable-next-line
+// eslint-disable-next-line
 import { FilterPaginatedListComponent } from './dashboard/components/list/paginated-list/filter-paginated-list/filter-paginated-list.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { FooterComponent } from './dashboard/components/footer/footer.component';

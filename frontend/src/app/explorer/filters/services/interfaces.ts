@@ -43,7 +43,7 @@ export interface Hits {
 /**
  * **Elasticsearch** hits ( aray of hists )
  */
-// tslint:disable-next-line
+// eslint-disable-next-line
 export interface hits {
   _id: number;
   _index: string;
