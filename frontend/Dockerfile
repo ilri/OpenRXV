@@ -9,7 +9,7 @@ COPY angular.json package.json package-lock.json tsconfig.json /frontend/
 WORKDIR /frontend
 # we need to force because @agm/core wants Angular 9/10
 RUN npm ci --force
-RUN ng b --prod --base-href=/explorer/
+RUN ng b --base-href=/explorer/
 
 FROM docker.io/nginx:stable
 COPY --from=0 /frontend/dist /frontend/dist
