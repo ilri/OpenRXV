@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import decode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
@@ -17,7 +17,7 @@ export class AuthService {
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     if (token) {
-      const tokenPayload = decode(token);
+      const tokenPayload = jwt_decode(token);
     } else return false;
     // decode the token to get its payload
 
