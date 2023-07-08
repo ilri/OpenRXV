@@ -42,7 +42,7 @@
     "@thisissoon/angular-inviewport": "^4.2.2",
     "@tinymce/tinymce-angular": "^6.0.0",
     "@types/scriptjs": "0.0.2",
-    "bodybuilder": "^2.2.21",
+    "bodybuilder": "^2.5.0",
     "bootstrap": "^4.2.1",
     "core-js": "^3.6.4",
     "highcharts": "^9.3.3",
