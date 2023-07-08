@@ -1,13 +1,14 @@
-FROM docker.io/node:12-bullseye
+FROM docker.io/node:16-bullseye
 RUN npm --version \
-    && npm install -g npm@7 \
+    && npm install -g npm@8 \
     && npm install -g @angular/cli@13 \
     && rm -rf ~/.npm
 RUN mkdir /frontend
 COPY src /frontend/src
 COPY angular.json package.json package-lock.json tsconfig.json /frontend/
 WORKDIR /frontend
-RUN npm ci
+# we need to force because @agm/core wants Angular 9/10
+RUN npm ci --force
 RUN ng b --prod --base-href=/explorer/
 
 FROM docker.io/nginx:stable
