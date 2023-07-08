@@ -80,7 +80,6 @@
     "@types/node": "^12.20.55",
     "@types/ramda": "0.27.34",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "codelyzer": "^5.1.2",
     "eslint": "^8.44.0",
@@ -98,7 +97,6 @@
     "protractor": "~7.0.0",
     "sass": "^1.38.1",
     "ts-node": "~8.8.1",
-    "tslint": "~6.1.0",
     "typescript": "4.6.4"
   }
 }
