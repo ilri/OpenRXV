@@ -5,7 +5,7 @@ RUN npm --version \
     && rm -rf ~/.npm
 RUN mkdir /frontend
 COPY src /frontend/src
-COPY angular.json package.json package-lock.json tsconfig.json tslint.json /frontend/
+COPY angular.json package.json package-lock.json tsconfig.json /frontend/
 WORKDIR /frontend
 RUN npm ci
 RUN ng b --prod --base-href=/explorer/
