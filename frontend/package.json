@@ -40,7 +40,7 @@
     "@ngx-loading-bar/router": "^4.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^13.0.0",
     "@thisissoon/angular-inviewport": "^4.2.2",
-    "@tinymce/tinymce-angular": "^4.0.0",
+    "@tinymce/tinymce-angular": "^6.0.0",
     "@types/scriptjs": "0.0.2",
     "bodybuilder": "^2.2.21",
     "bootstrap": "^4.2.1",
@@ -63,7 +63,6 @@
     "scriptjs": "^2.5.9",
     "snazzy-info-window": "^1.1.1",
     "tinycolor2": "^1.4.1",
-    "tinymce": "^5.2.2",
     "tslib": "^2.0.0",
     "xlsx": "^0.15.6",
     "zone.js": "~0.11.4"
