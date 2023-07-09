@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-// use this syntax to prevent optimization bailouts during Angular build 
-var bodybuilder = require('bodybuilder')
+// use this syntax to prevent optimization bailouts during Angular build
+var bodybuilder = require('bodybuilder');
 import { Subject } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
 import {

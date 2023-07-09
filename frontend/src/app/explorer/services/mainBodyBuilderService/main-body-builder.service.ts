@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-// use this syntax to prevent optimization bailouts during Angular build 
-var bodybuilder = require('bodybuilder')
+// use this syntax to prevent optimization bailouts during Angular build
+var bodybuilder = require('bodybuilder');
 import {
   QuerySearchAttribute,
   QueryYearAttribute,
