@@ -1,4 +1,4 @@
-FROM docker.io/node:16-bullseye
+FROM docker.io/node:16-bookworm
 RUN npm --version \
     && npm install -g npm@8 \
     && npm install -g @angular/cli@13 \
