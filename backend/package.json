@@ -98,7 +98,7 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": ">=14",
-    "npm": "^7.24.2"
+    "node": ">=18",
+    "npm": "^9.5.1"
   }
 }
