@@ -201,7 +201,9 @@ export class SettingsController {
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
     const data = await this.jsonfielServoce.read('../../../data/data.json');
-    const plugins = await this.jsonfielServoce.read('../../../data/plugins.json');
+    const plugins = await this.jsonfielServoce.read(
+      '../../../data/plugins.json',
+    );
     const medatadataKeys: Array<string> =
       await this.indexMetadataService.getMetadata();
     const meta = [];
