@@ -5,7 +5,7 @@ import { ElasticService } from './elastic/elastic.service';
 
 @Injectable()
 export class ValuesService extends ElasticService {
-  index: string = 'openrxv-values';
+  index = 'openrxv-values';
   constructor(public readonly elasticsearchService: ElasticsearchService) {
     super(elasticsearchService);
   }

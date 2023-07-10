@@ -17,11 +17,11 @@ export class HarvesterService {
     @InjectQueue('fetch') private fetchQueue: Queue,
   ) {}
   async getInfoById(id) {
-    let job = await this.fetchQueue.getJob(id);
+    const job = await this.fetchQueue.getJob(id);
     return job;
   }
   async getInfo() {
-    let obj = {
+    const obj = {
       active_count: 0,
       waiting_count: 0,
       completed_count: 0,
@@ -53,8 +53,8 @@ export class HarvesterService {
   }
 
   async getMappingValues() {
-    let data = await this.valuesServes.find();
-    let values = {};
+    const data = await this.valuesServes.find();
+    const values = {};
     data.hits.map((d) => (values[d._source.find] = d._source.replace));
     return values;
   }
@@ -84,7 +84,7 @@ export class HarvesterService {
     await this.fetchQueue.clean(0, 'completed');
     await this.fetchQueue.resume();
 
-    let settings = await this.jsonFilesService.read(
+    const settings = await this.jsonFilesService.read(
       '../../../data/dataToUse.json',
     );
 
@@ -95,8 +95,8 @@ export class HarvesterService {
       });
       try {
         const { sites } = await Sitemap.fetch();
-        let itemsCount = sites.length;
-        let pages = Math.round(itemsCount / 10);
+        const itemsCount = sites.length;
+        const pages = Math.round(itemsCount / 10);
         for (let page_number = 1; page_number <= pages; page_number++) {
           setTimeout(
             () => {
@@ -132,12 +132,12 @@ export class HarvesterService {
     await this.pluginsQueue.clean(0, 'delayed');
     await this.pluginsQueue.clean(0, 'completed');
     await this.pluginsQueue.resume();
-    let plugins: Array<any> = await this.jsonFilesService.read(
+    const plugins: Array<any> = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
     if (plugins.filter((plugin) => plugin.value.length > 0).length > 0)
-      for (let plugin of plugins) {
-        for (let param of plugin.value) {
+      for (const plugin of plugins) {
+        for (const param of plugin.value) {
           await this.pluginsQueue.add(plugin.name, {
             ...param,
             page: 1,

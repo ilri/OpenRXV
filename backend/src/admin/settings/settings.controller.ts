@@ -36,16 +36,16 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Get('plugins')
   async plugins() {
-    let plugins = await this.getDirectories('./src/plugins');
-    let plugins_values = await this.jsonfielServoce.read(
+    const plugins = await this.getDirectories('./src/plugins');
+    const plugins_values = await this.jsonfielServoce.read(
       '../../../data/plugins.json',
     );
-    let info = [];
+    const info = [];
     plugins.forEach(async (plugin) => {
-      let infor = await this.jsonfielServoce.read(
+      const infor = await this.jsonfielServoce.read(
         '../../../src/plugins/' + plugin + '/info.json',
       );
-      let values = plugins_values.filter((plug) => plug.name == plugin);
+      const values = plugins_values.filter((plug) => plug.name == plugin);
       if (values[0]) infor['values'] = values[0].value;
       else infor['values'] = [];
       info.push(infor);
@@ -59,10 +59,10 @@ export class SettingsController {
   }
 
   format(body: any) {
-    let final = {};
+    const final = {};
     final['repositories'] = [];
     body.repositories.forEach((repo) => {
-      let schema = {
+      const schema = {
         metadata: [],
       };
       repo.schema
@@ -93,7 +93,7 @@ export class SettingsController {
         });
 
       repo.metadata.forEach((item) => {
-        let temp = {
+        const temp = {
           where: {
             key: item.metadata,
           },
@@ -159,7 +159,7 @@ export class SettingsController {
 
   @Get('outsourcePlugins')
   async readOutsourcePlugins() {
-    let plugins = await readdirSync(
+    const plugins = await readdirSync(
       join(__dirname, '../../../data//harvestors'),
     ).map((data) => {
       return data.slice(0, -5);
@@ -173,15 +173,15 @@ export class SettingsController {
 
   @Get('explorer')
   async ReadExplorer() {
-    let settings = await this.jsonfielServoce.read(
+    const settings = await this.jsonfielServoce.read(
       '../../../data/explorer.json',
     );
-    let configs = await this.jsonfielServoce.read('../../../data/data.json');
-    let appearance = await this.jsonfielServoce.read(
+    const configs = await this.jsonfielServoce.read('../../../data/data.json');
+    const appearance = await this.jsonfielServoce.read(
       '../../../data/appearance.json',
     );
     settings['appearance'] = appearance;
-    let list_icons = {};
+    const list_icons = {};
     if (configs.repositories) {
       configs.repositories.map((d) => [(list_icons[d.name] = d.icon)]);
       settings['appearance']['icons'] = list_icons;
@@ -200,12 +200,12 @@ export class SettingsController {
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
-    let data = await this.jsonfielServoce.read('../../../data/data.json');
-    let plugins = await this.jsonfielServoce.read('../../../data/plugins.json');
+    const data = await this.jsonfielServoce.read('../../../data/data.json');
+    const plugins = await this.jsonfielServoce.read('../../../data/plugins.json');
     const medatadataKeys: Array<string> =
       await this.indexMetadataService.getMetadata();
-    let meta = [];
-    for (var i = 0; i < plugins.length; i++) {
+    const meta = [];
+    for (let i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {
         dspace_altmetrics = await this.jsonfielServoce.read(
           '../../../src/plugins/dspace_altmetrics/info.json',
@@ -225,12 +225,12 @@ export class SettingsController {
         meta.push(mel_downloads_and_views.source);
       }
     }
-    let a = [].concat(...meta);
-    let uniqueArray = a.filter(function (item, pos) {
+    const a = [].concat(...meta);
+    const uniqueArray = a.filter(function (item, pos) {
       return a.indexOf(item) == pos;
     });
 
-    var merged = [].concat.apply(
+    const merged = [].concat.apply(
       [],
       data.repositories.map((d) => [...d.schema, ...d.metadata]),
     );
@@ -246,17 +246,17 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Get('DSpace/autometa')
   async AutoMeta(@Query('link') link: string) {
-    let checkingVersion = this.httpService
+    const checkingVersion = this.httpService
       .get(new URL(link).origin + '/rest/status')
       .pipe(
         map(async (response, index) => {
           if (response.data.apiVersion == undefined) {
-            let data = await this.httpService
+            const data = await this.httpService
               .get(link + '/items?expand=metadata,parentCommunityList&limit=25')
               .pipe(
                 map(
                   (data: any) => {
-                    let merged = {
+                    const merged = {
                       base: [],
                       metadata: [],
                     };
@@ -294,11 +294,11 @@ export class SettingsController {
 
             return data;
           } else if (response.data.apiVersion == 6) {
-            let merged = {
+            const merged = {
               base: [],
               metadata: [],
             };
-            let base = await this.httpService
+            const base = await this.httpService
               .get(link + '/items?expand=metadata,parentCommunityList&limit=25')
               .pipe(
                 map(
@@ -325,7 +325,7 @@ export class SettingsController {
               )
               .toPromise();
 
-            let data = await this.httpService
+            const data = await this.httpService
               .get(link + '/registries/schema')
               .pipe(
                 map(
@@ -366,9 +366,9 @@ export class SettingsController {
     }),
   )
   async uploadFile(@UploadedFile() file) {
-    let splited = file.originalname.split('.');
-    let name = splited[0] + '-' + new Date().getTime();
-    let response =
+    const splited = file.originalname.split('.');
+    const name = splited[0] + '-' + new Date().getTime();
+    const response =
       join(__dirname, '../../../data/files/images/') +
       name +
       '.' +
@@ -401,9 +401,9 @@ export class SettingsController {
     }),
   )
   async uploadFile1(@UploadedFile() file) {
-    let splited = file.originalname.split('.');
-    let name = splited[0].replace(/\s/g, '-') + '-' + new Date().getTime();
-    let response =
+    const splited = file.originalname.split('.');
+    const name = splited[0].replace(/\s/g, '-') + '-' + new Date().getTime();
+    const response =
       join(__dirname, '../../../data/files/files/') +
       name +
       '.' +

@@ -13,17 +13,17 @@ export class DSpaceDownloadsAndViews {
   ) {}
   @Process({ name: 'dspace_downloads_and_views', concurrency: 1 })
   async transcode(job: Job<any>) {
-    let link = job.data.link;
-    let page = job.data.page;
+    const link = job.data.link;
+    const page = job.data.page;
     job.progress(20);
-    let toUpdateIndexes: Array<any> = [];
-    let stats = await this.http
+    const toUpdateIndexes: Array<any> = [];
+    const stats = await this.http
       .get(`${link}?page=${page}&limit=100`)
       .pipe(map((d) => d.data))
       .toPromise();
     job.progress(50);
     if (stats.statistics && stats.statistics.length > 0) {
-      let searchResult = await this.elasticsearchService.search({
+      const searchResult = await this.elasticsearchService.search({
         index: process.env.OPENRXV_TEMP_INDEX,
         body: {
           _source: ['_id', 'id'],
@@ -53,7 +53,7 @@ export class DSpaceDownloadsAndViews {
         searchResult.body &&
         searchResult.body.hits.total.value > 0
       ) {
-        let IDs = {};
+        const IDs = {};
         searchResult.body.hits.hits.forEach((element) => {
           IDs[element._source.id] = element._id;
         });
@@ -85,7 +85,7 @@ export class DSpaceDownloadsAndViews {
           link,
           repo: job.data.repo,
         });
-        let currentResult = await await this.elasticsearchService.bulk({
+        const currentResult = await await this.elasticsearchService.bulk({
           refresh: 'wait_for',
           body: toUpdateIndexes,
         });

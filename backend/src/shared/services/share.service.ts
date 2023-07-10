@@ -4,16 +4,16 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import * as hash from 'object-hash';
 @Injectable()
 export class ShareService extends ElasticService {
-  index: string = 'openrxv-shared';
+  index = 'openrxv-shared';
   constructor(public readonly elasticsearchService: ElasticsearchService) {
     super(elasticsearchService);
   }
 
   async saveShare(item) {
-    let hashedItem = hash(item);
-    let result = await this.find({ 'hashedItem.keyword': hashedItem });
+    const hashedItem = hash(item);
+    const result = await this.find({ 'hashedItem.keyword': hashedItem });
     if (result.total.value == 0) {
-      let { body } = await this.elasticsearchService.index({
+      const { body } = await this.elasticsearchService.index({
         index: this.index,
         refresh: 'wait_for',
         body: { created_at: new Date(), hashedItem, attr: item },

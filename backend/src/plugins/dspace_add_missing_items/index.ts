@@ -22,10 +22,10 @@ export class AddMissingItems {
   @Process({ name: 'dspace_add_missing_items', concurrency: 5 })
   async transcode(job: Job<any>) {
     await job.takeLock();
-    let url =
+    const url =
       job.data.itemEndPoint +
       `/${job.data.handle}?expand=metadata,parentCommunityList,parentCollectionList,bitstreams`;
-    let result = await this.http
+    const result = await this.http
       .get(url)
       .pipe(map((d) => d.data))
       .toPromise()
@@ -33,9 +33,9 @@ export class AddMissingItems {
     job.progress(50);
     if (result && result.type == 'item') {
       this.formatService.Init();
-      let formated = this.formatService.format(result, job.data.repo.schema);
+      const formated = this.formatService.format(result, job.data.repo.schema);
       if (job.data.repo.years) {
-        let spleted = job.data.repo.years.split(/_(.+)/);
+        const spleted = job.data.repo.years.split(/_(.+)/);
 
         if (formated[spleted[1]]) {
           if (typeof formated[spleted[1]] === 'string')

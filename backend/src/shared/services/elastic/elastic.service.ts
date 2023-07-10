@@ -5,26 +5,26 @@ import { ApiResponse } from '@elastic/elasticsearch';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class ElasticService {
-  index: string = 'openrxv-users';
+  index = 'openrxv-users';
   constructor(public readonly elasticsearchService: ElasticsearchService) {}
   async startup() {
-    let values_exist: ApiResponse =
+    const values_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-values',
       });
-    let users_exist: ApiResponse =
+    const users_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-users',
       });
-    let shared_exist: ApiResponse =
+    const shared_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-shared',
       });
-    let items_final_exist: ApiResponse =
+    const items_final_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: process.env.OPENRXV_FINAL_INDEX,
       });
-    let items_temp_exist: ApiResponse =
+    const items_temp_exist: ApiResponse =
       await this.elasticsearchService.indices.exists({
         index: process.env.OPENRXV_TEMP_INDEX,
       });
@@ -60,7 +60,7 @@ export class ElasticService {
     });
 
     if (!users_exist.body) {
-      let body = {
+      const body = {
         name: 'admin',
         role: 'Admin',
         email: 'admin',
@@ -74,7 +74,7 @@ export class ElasticService {
   }
   async search(query, size = 10, scroll: string = null) {
     try {
-      let options: any = {
+      const options: any = {
         index: process.env.OPENRXV_ALIAS,
         method: 'POST',
         // size: size,
@@ -92,7 +92,7 @@ export class ElasticService {
 
   async add(item) {
     item['created_at'] = new Date();
-    let { body } = await this.elasticsearchService.index({
+    const { body } = await this.elasticsearchService.index({
       index: this.index,
       refresh: 'wait_for',
       body: item,
@@ -100,7 +100,7 @@ export class ElasticService {
     return body;
   }
   async update(id, item) {
-    let update: Update = {
+    const update: Update = {
       id,
       index: this.index,
       refresh: 'wait_for',
@@ -110,7 +110,7 @@ export class ElasticService {
   }
 
   async delete(id) {
-    let { body } = await this.elasticsearchService.delete({
+    const { body } = await this.elasticsearchService.delete({
       index: this.index,
       refresh: 'wait_for',
       id,
@@ -120,7 +120,7 @@ export class ElasticService {
   }
 
   async findOne(id) {
-    let { body } = await this.elasticsearchService.get({
+    const { body } = await this.elasticsearchService.get({
       index: this.index,
 
       id,
@@ -142,7 +142,7 @@ export class ElasticService {
         obj = {
           match_all: {},
         };
-      let { body } = await this.elasticsearchService.search({
+      const { body } = await this.elasticsearchService.search({
         index: this.index,
         method: 'POST',
         from: 0,
@@ -173,7 +173,7 @@ export class ElasticService {
           match_all: {},
         };
 
-      let { body } = await this.elasticsearchService.search({
+      const { body } = await this.elasticsearchService.search({
         index: this.index,
         from: 0,
         method: 'POST',

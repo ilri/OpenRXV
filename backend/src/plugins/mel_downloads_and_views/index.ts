@@ -42,7 +42,7 @@ export class MELDownloadsAndViews {
     }
     job.progress(50);
 
-    let publicationsToUpdate = batch.body.hits.hits;
+    const publicationsToUpdate = batch.body.hits.hits;
     if (publicationsToUpdate.length > 0) {
       const stats = await this.http
         .get(
@@ -53,10 +53,10 @@ export class MELDownloadsAndViews {
         .pipe(map((d) => d.data))
         .toPromise();
       job.progress(70);
-      let finaldata: Array<any> = [];
+      const finaldata: Array<any> = [];
       if (stats && stats.data && stats.data.length > 0) {
         stats.data.forEach((stat: any) => {
-          let dspace_id = publicationsToUpdate.find(
+          const dspace_id = publicationsToUpdate.find(
             (p: any) => p._source.id == stat.dspace_item_id,
           )._id;
           if (dspace_id) {
@@ -78,7 +78,7 @@ export class MELDownloadsAndViews {
           }
         });
         job.progress(80);
-        let result = await this.elasticsearchService
+        const result = await this.elasticsearchService
           .bulk({
             refresh: 'wait_for',
             body: finaldata,
@@ -95,7 +95,7 @@ export class MELDownloadsAndViews {
               .catch((e) => job.moveToFailed(e));
           });
         job.progress(100);
-        let newJob = await this.pluginQueue.add('mel_downloads_and_views', {
+        const newJob = await this.pluginQueue.add('mel_downloads_and_views', {
           scroll_id: scrollId,
           repo: job.data.repo,
         });

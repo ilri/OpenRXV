@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 import { MetadataService } from '../../shared/services/metadata.service';
 function isEmpty(obj) {
-  for (var prop in obj) {
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       return false;
     }
@@ -32,7 +32,7 @@ export class MetadataController {
 
   @Get(':id')
   async GetOneUser(@Param('id') id: string) {
-    let user: any = await this.elastic.findOne(id);
+    const user: any = await this.elastic.findOne(id);
     user['id'] = id;
     return user;
   }
@@ -57,7 +57,7 @@ export class MetadataController {
       });
     }
 
-    let users = await this.elastic.find(filters);
+    const users = await this.elastic.find(filters);
 
     users.hits.map((element: any) => {
       delete element._source.password;

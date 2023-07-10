@@ -20,14 +20,14 @@ export class FetchConsumer {
       await job.takeLock();
       await job.progress(20);
       this.formatService.Init();
-      let offset = parseInt(job.data.page) * 10;
-      let url =
+      const offset = parseInt(job.data.page) * 10;
+      const url =
         job.data.repo.itemsEndPoint +
         '/items?expand=metadata,parentCommunityList,parentCollectionList,bitstreams' +
         '&limit=10&offset=' +
         offset;
 
-      let request = await this.http
+      const request = await this.http
         .get(url)
         .toPromise()
         .catch((d) => {
@@ -35,7 +35,7 @@ export class FetchConsumer {
           return null;
         });
       if (request) {
-        let data = request.data;
+        const data = request.data;
         await job.progress(50);
         if (Array.isArray(data) && data.length == 0) {
           return 'done';
@@ -49,13 +49,13 @@ export class FetchConsumer {
     }
   }
   async index(job: Job<any>, data) {
-    let finaldata: Array<any> = [];
+    const finaldata: Array<any> = [];
 
     data.forEach((item: any) => {
-      let formated = this.formatService.format(item, job.data.repo.schema);
+      const formated = this.formatService.format(item, job.data.repo.schema);
 
       if (job.data.repo.years) {
-        let spleted = job.data.repo.years.split(/_(.+)/);
+        const spleted = job.data.repo.years.split(/_(.+)/);
 
         if (formated[spleted[1]]) {
           if (typeof formated[spleted[1]] === 'string')
@@ -76,7 +76,7 @@ export class FetchConsumer {
 
     job.progress(70);
 
-    let resp: ApiResponse = await this.elasticsearchService.bulk({
+    const resp: ApiResponse = await this.elasticsearchService.bulk({
       refresh: 'wait_for',
       body: finaldata,
     });
@@ -85,7 +85,7 @@ export class FetchConsumer {
     resp.body.items.forEach((item: any, index: number) => {
       //item.index.status
       if (item.index.status != 200 && item.index.status != 201) {
-        let error = new Error('error update or create item ');
+        const error = new Error('error update or create item ');
         error.stack = item.index;
         job.attemptsMade = 10;
         job.moveToFailed(error, true);

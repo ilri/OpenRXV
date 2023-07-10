@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
 import { ValuesService } from '../../shared/services/values.service';
 function isEmpty(obj) {
-  for (var prop in obj) {
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       return false;
     }
@@ -53,7 +53,7 @@ export class ValuesController {
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async GetOneUser(@Param('id') id: string) {
-    let user: any = await this.elastic.findOne(id);
+    const user: any = await this.elastic.findOne(id);
     user['id'] = id;
     return user;
   }

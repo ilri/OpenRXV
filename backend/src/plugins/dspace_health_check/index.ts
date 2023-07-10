@@ -24,10 +24,10 @@ export class DSpaceHealthCheck {
     try {
       await job.takeLock();
       this.logger.log('Started DSpace health check for ' + job.data.repo);
-      let settings = await this.jsonFilesService.read(
+      const settings = await this.jsonFilesService.read(
         '../../../data/dataToUse.json',
       );
-      let repo = settings.repositories.filter(
+      const repo = settings.repositories.filter(
         (d) => d.name == job.data.repo,
       )[0];
       await job.progress(30);
@@ -43,9 +43,9 @@ export class DSpaceHealthCheck {
 
       const { sites } = await Sitemap.fetch();
       await job.progress(50);
-      let sitemapHandles = sites.map((d) => d.split('/handle/')[1]);
+      const sitemapHandles = sites.map((d) => d.split('/handle/')[1]);
 
-      let indexedHandles = await this.getHandles(job.data.repo).catch((e) => {
+      const indexedHandles = await this.getHandles(job.data.repo).catch((e) => {
         job.moveToFailed(e, true);
         return null;
       });
@@ -69,7 +69,7 @@ export class DSpaceHealthCheck {
   }
   async addjob_missing_items(missingHandles, repo, job, i) {
     if (missingHandles[i]) {
-      let handle = missingHandles[i];
+      const handle = missingHandles[i];
       await this.pluginsQueue.add(
         'dspace_add_missing_items',
         { repo, handle, itemEndPoint: job.data.itemEndPoint },
@@ -79,7 +79,7 @@ export class DSpaceHealthCheck {
     }
   }
   async deleteDuplicates(job: Job) {
-    let elastic_data = {
+    const elastic_data = {
       index: process.env.OPENRXV_TEMP_INDEX,
       body: {
         size: 0,
@@ -118,7 +118,7 @@ export class DSpaceHealthCheck {
         },
       },
     };
-    let response: any = await this.elasticsearchService
+    const response: any = await this.elasticsearchService
       .search(elastic_data)
       .catch((e) => {
         this.logger.error(e);
@@ -126,7 +126,7 @@ export class DSpaceHealthCheck {
         return null;
       });
 
-    let duplicates = [];
+    const duplicates = [];
     if (response) {
       this.logger.log('Searching for duplicate handles for ' + job.data.repo);
       response.body.aggregations.duplicateCount.buckets.forEach(
@@ -163,7 +163,7 @@ export class DSpaceHealthCheck {
     return new Promise(async (resolve, reject) => {
       try {
         let allRecords: any = [];
-        let elastic_data = {
+        const elastic_data = {
           index: process.env.OPENRXV_TEMP_INDEX,
           body: {
             size: 9999,
@@ -187,8 +187,8 @@ export class DSpaceHealthCheck {
           scroll: '10m',
         };
 
-        let getMoreUntilDone = async (response) => {
-          let handleIDs = response.body.hits.hits
+        const getMoreUntilDone = async (response) => {
+          const handleIDs = response.body.hits.hits
             .filter((d) => {
               if (d._source.handle) return true;
               return false;
@@ -196,7 +196,7 @@ export class DSpaceHealthCheck {
             .map((d) => d._source.handle);
           allRecords = [...allRecords, ...handleIDs];
           if (response.body.hits.hits.length != 0) {
-            let response2 = await this.elasticsearchService
+            const response2 = await this.elasticsearchService
               .scroll({
                 scroll_id: <string>response.body._scroll_id,
                 scroll: '10m',
@@ -209,7 +209,7 @@ export class DSpaceHealthCheck {
           }
         };
 
-        let response3 = await this.elasticsearchService
+        const response3 = await this.elasticsearchService
           .search(elastic_data)
           .catch((e) => {
             this.logger.error(e);

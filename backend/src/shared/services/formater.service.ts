@@ -3,7 +3,7 @@ import * as ISO from 'iso-3166-1';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { HarvesterService } from '../../harvester/services/harveter.service';
-let langISO = require('iso-639-1');
+const langISO = require('iso-639-1');
 let mapto: any = {};
 
 @Injectable()
@@ -17,12 +17,12 @@ export class FormatSearvice {
   }
 
   format(json: any, schema: any) {
-    let finalValues: any = {};
+    const finalValues: any = {};
     _.each(schema, (item: any, index: string) => {
       if (json[index]) {
         if (_.isArray(item)) {
           _.each(item, (subItem: any) => {
-            let values = json[index]
+            const values = json[index]
               .filter(
                 (d: any) =>
                   d[Object.keys(subItem.where)[0]] ==
@@ -49,7 +49,7 @@ export class FormatSearvice {
           });
         } else if (_.isObject(item)) {
           if (_.isArray(json[index])) {
-            let values = this.getArrayOrValue(
+            const values = this.getArrayOrValue(
               json[index].map((d: any) => this.mapIt(d[Object.keys(item)[0]])),
             );
             if (values)

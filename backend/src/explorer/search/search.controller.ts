@@ -24,7 +24,7 @@ export class SearchController {
   @Post('/:size')
   Sizesearch(
     @Body() query: any,
-    @Param('size') size: number = 10,
+    @Param('size') size = 10,
     @Query('scroll') scroll: string,
   ) {
     query['track_total_hits'] = true;

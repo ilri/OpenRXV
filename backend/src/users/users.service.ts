@@ -13,7 +13,7 @@ export class UsersService {
   constructor(private elastic: ElasticService) {}
 
   async findOne(email: string): Promise<User | undefined> {
-    let data = await this.elastic.find({ 'email.keyword': email });
+    const data = await this.elastic.find({ 'email.keyword': email });
     if (data.hits[0]) return data.hits[0]._source;
     else throw new UnauthorizedException();
   }

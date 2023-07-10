@@ -12,8 +12,8 @@ import * as fs from 'fs';
 import * as PizZip from 'pizzip';
 import * as Docxtemplater from 'docxtemplater';
 import * as libre from 'libreoffice-convert';
-var expressions = require('angular-expressions');
-var assign = require('lodash/assign');
+const expressions = require('angular-expressions');
+const assign = require('lodash/assign');
 expressions.filters.lower = function (input) {
   if (!input) return input;
   return input.toLowerCase();
@@ -91,8 +91,8 @@ export class ExportService {
     let select = '';
     let search = '';
     let sortBy = 'score';
-    let dateObj = new Date();
-    let currentDate = dateObj.toDateString();
+    const dateObj = new Date();
+    const currentDate = dateObj.toDateString();
     if (query.sort.length != 1) {
       sortBy = Object.getOwnPropertyNames(query.sort[1])[0].replace(
         '.keyword',
@@ -219,8 +219,8 @@ export class ExportService {
       });
       doc.render();
       const buf = doc.getZip().generate({ type: 'nodebuffer' });
-      var d = new Date();
-      var milliS = d.getTime();
+      const d = new Date();
+      const milliS = d.getTime();
       const filePath = this.resolvePath(
         `${websiteName}-${milliS}-${part}.docx`,
         true,
@@ -236,11 +236,11 @@ export class ExportService {
   }
 
   private async createXlsx(body, file, part, websiteName) {
-    var workbook = new ExcelJS.Workbook();
+    const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('sheet', {
       pageSetup: { paperSize: 20, orientation: 'landscape', fitToPage: true },
     });
-    let columns = new Array();
+    const columns = [];
     for (let index = 0; index < file.tags.length; index++) {
       columns.push({ header: `${file.tags[index].label}` });
     }
@@ -248,7 +248,7 @@ export class ExportService {
     //TODO make it general for any object
     const sourcesMetadata = body.hits.map(({ _source }) =>
       file.tags.map((tag) => {
-        let splited = tag.metadata.split('.');
+        const splited = tag.metadata.split('.');
         if (!splited[1] && splited[0])
           return _source[splited[0]] ? _source[splited[0]] : '';
         else
@@ -268,8 +268,8 @@ export class ExportService {
     for (let index = 0; index < sourcesMetadata.length; index++) {
       worksheet.getRow(index + 2).values = sourcesMetadata[index];
     }
-    var d = new Date();
-    var milliS = d.getTime();
+    const d = new Date();
+    const milliS = d.getTime();
     const filePath = this.resolvePath(`${websiteName}-${milliS}-${part}`, true);
     const buffer = await workbook.xlsx.writeBuffer();
     fs.writeFile(filePath + '.xlsx', buffer, (err) => {
@@ -295,8 +295,8 @@ export class ExportService {
   ) {
     // const spinner = ora(`🔭 converting to PDF`).start();
     // Read file
-    var d = new Date();
-    var milliS = d.getTime();
+    const d = new Date();
+    const milliS = d.getTime();
     const file = fs.readFileSync(this.resolvePath(filePath, true));
     return await new Promise((resolve, rejet) => {
       libre.convert(file, type, undefined, async (err, done) => {
@@ -304,7 +304,7 @@ export class ExportService {
           rejet(err);
           console.log(`Error converting file: ${err}`);
         }
-        let filename = `${websiteName}-${milliS}-${part}.${type}`;
+        const filename = `${websiteName}-${milliS}-${part}.${type}`;
         // Here in done you have pdf file which you can save or transfer in another stream
         await fs.writeFileSync(this.resolvePath(filename, true), done);
         resolve(filename);

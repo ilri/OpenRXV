@@ -15,8 +15,8 @@ function timeout(ms) {
 @Injectable()
 export class JsonFilesService {
   async startup() {
-    let files = await readdirSync(join(__dirname, '../../../data/templates'));
-    for (let file of files)
+    const files = await readdirSync(join(__dirname, '../../../data/templates'));
+    for (const file of files)
       if (
         !(await existsSync(join(__dirname, '../../../data/' + file.substr(8))))
       )
