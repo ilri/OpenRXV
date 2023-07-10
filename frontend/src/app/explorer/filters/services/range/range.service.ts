@@ -67,10 +67,7 @@ export class RangeService {
    * * if we do we simply retutn an observable of the years
    * * else we get them from the server.
    */
-  getYears(
-    query: ElasticsearchQuery,
-    force = false,
-  ): Observable<number[]> {
+  getYears(query: ElasticsearchQuery, force = false): Observable<number[]> {
     return this.getYearsFromStore().pipe(
       switchMap((buckets: Array<Bucket>) =>
         buckets && buckets.length && !force

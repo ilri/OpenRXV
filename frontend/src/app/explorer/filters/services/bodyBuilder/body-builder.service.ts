@@ -87,10 +87,7 @@ export class BodyBuilderService {
     );
   }
 
-  buildMainQuery(
-    from = 10,
-    excludeSource?: string,
-  ): bodybuilder.Bodybuilder {
+  buildMainQuery(from = 10, excludeSource?: string): bodybuilder.Bodybuilder {
     this.from = from === 10 ? this.from : from;
     return this.mainBodyBuilderService.buildMainQuery(
       this.from,
