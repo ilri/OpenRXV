@@ -51,7 +51,7 @@
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.26.0",
     "ng2-nouislider": "^1.7.13",
-    "ngx-color-picker": "^12.0.1",
+    "ngx-color-picker": "^14.0.0",
     "ngx-loading": "^13.0.1",
     "ngx-toastr": "^12.0.1",
     "ngx-tour-core": "~4.1.0",
