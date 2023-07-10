@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
-var bodybuilder = require('bodybuilder');
+const bodybuilder = require('bodybuilder');
 import { Subject } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
 import {
@@ -88,7 +88,7 @@ export class BodyBuilderService {
   }
 
   buildMainQuery(
-    from: number = 10,
+    from = 10,
     excludeSource?: string,
   ): bodybuilder.Bodybuilder {
     this.from = from === 10 ? this.from : from;
@@ -171,7 +171,7 @@ export class BodyBuilderService {
 
   getFiltersFromQuery() {
     const query = this.buildMainQuery().build();
-    let finalObj = [];
+    const finalObj = [];
     this.traverse(query, (obj: any, key: any, val: any) => {
       if (key == 'term' && val instanceof Object) finalObj.push(val);
       if (key == 'range' && val instanceof Object) finalObj.push(val);

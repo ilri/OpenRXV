@@ -41,7 +41,7 @@ export class ScrollHelperService {
   constructor(private readonly cdr: ChangeDetectorRef) {
     this.expanded = true;
     this.dataIsReadyArrived = new Subject();
-    let { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
+    const { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
     this.countersConfig = counters;
     this.dashboardConfig = dashboard.flat(1);
   }

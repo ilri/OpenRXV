@@ -9,7 +9,7 @@ import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 export class PluginComponent implements OnInit {
   @Input() plugin: any = null;
   formdata: FormArray = new FormArray([]);
-  active: boolean = false;
+  active = false;
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
   constructor(private fb: FormBuilder) {}
@@ -45,7 +45,7 @@ export class PluginComponent implements OnInit {
   }
 
   addNew(value = null) {
-    let form = {};
+    const form = {};
     this.plugin.params.forEach((element) => {
       if (value) form[element.name] = this.fb.control(value[element.name]);
       else form[element.name] = this.fb.control('');

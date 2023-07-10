@@ -15,12 +15,12 @@ export class LinkTextComponent {
   @Input() content: PaginatedListConfigs;
   baselink = environment.api;
   constructor() {
-    let { appearance } = JSON.parse(localStorage.getItem('configs'));
+    const { appearance } = JSON.parse(localStorage.getItem('configs'));
     this.appearance = appearance;
   }
 
   tags(value: string) {
-    let splited = value.split('.');
+    const splited = value.split('.');
     if (
       splited.length > 1 &&
       this.source[splited[0]] &&

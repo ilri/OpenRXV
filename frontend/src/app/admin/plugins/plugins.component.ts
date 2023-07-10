@@ -21,12 +21,12 @@ export class PluginsComponent implements OnInit {
   }
 
   async save() {
-    let final = Object.values(this.pluginsForms)
+    const final = Object.values(this.pluginsForms)
       .filter((data: any) => data.active)
       .filter((data: any) => data.form.valid);
     await this.settingsService.writePluginsSettings(
       final.map((data: any) => {
-        let obj = {};
+        const obj = {};
         obj['name'] = data.name;
         obj['value'] = data.form.value;
         return obj;

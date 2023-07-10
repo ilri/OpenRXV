@@ -37,7 +37,7 @@ export class LineComponent extends ParentChart implements OnInit {
 
   colors: string[];
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('line');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
@@ -49,7 +49,7 @@ export class LineComponent extends ParentChart implements OnInit {
   }
 
   setOptions(buckets: Array<Bucket>) {
-    let categories = [];
+    const categories = [];
     buckets.forEach((b: Bucket) => {
       b.related.buckets.forEach((d) => {
         if (categories.indexOf(d.key.substr(0, 50)) == -1)
@@ -57,11 +57,11 @@ export class LineComponent extends ParentChart implements OnInit {
       });
     });
 
-    let data: any = buckets
+    const data: any = buckets
       .map((b: Bucket) => {
-        let data = [];
+        const data = [];
         categories.forEach((e, i) => {
-          let found: Array<any> = b.related.buckets.filter(
+          const found: Array<any> = b.related.buckets.filter(
             (d) => d.key.substr(0, 50) == e,
           );
           if (found.length) data[i] = found[0].doc_count;

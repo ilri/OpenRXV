@@ -7,9 +7,9 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  footer: string = '';
+  footer = '';
   constructor() {
-    let { footer } = JSON.parse(localStorage.getItem('configs'));
+    const { footer } = JSON.parse(localStorage.getItem('configs'));
     this.footer = footer;
   }
 }

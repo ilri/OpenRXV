@@ -61,7 +61,7 @@ export class SetupComponent implements OnInit {
 
   async ngOnInit() {
     this.getOutsourcePlugins();
-    let data = await this.settingService.read();
+    const data = await this.settingService.read();
     data.repositories.forEach((element, repoindex) => {
       if (element.icon) this.logo[repoindex] = element.icon;
       if (repoindex > 0) this.AddNewRepo();
@@ -93,28 +93,28 @@ export class SetupComponent implements OnInit {
   }
   async submit() {
     if (this.repositories.valid) {
-      let settings = { repositories: this.repositories.value };
+      const settings = { repositories: this.repositories.value };
       await this.settingService.save(settings);
       this.toastr.success('Settings have been saved successfully');
     }
   }
 
   async getMetadata(index) {
-    let repo = this.repositories.at(index);
+    const repo = this.repositories.at(index);
     if (!repo.get('itemsEndPoint').valid) {
       this.toastr.error('REST API endpoint is not defined');
       return;
     }
-    let schema = <FormArray>repo.get('schema');
-    let metadata = <FormArray>repo.get('metadata');
-    let data = await this.settingService.retreiveMetadata(
+    const schema = <FormArray>repo.get('schema');
+    const metadata = <FormArray>repo.get('metadata');
+    const data = await this.settingService.retreiveMetadata(
       repo.get('itemsEndPoint').value,
       repo.get('type').value,
     );
     schema.clear();
     metadata.clear();
     data.base.forEach((element) => {
-      let splited = element.split('.');
+      const splited = element.split('.');
       schema.push(
         new FormGroup(
           this.baseSchema(element, (splited.join('_') as string).toLowerCase()),
@@ -126,7 +126,7 @@ export class SetupComponent implements OnInit {
       repo.get('type').value == 'OpenRXV'
     )
       data.metadata.forEach((element) => {
-        let splited = element.split('.');
+        const splited = element.split('.');
         metadata.push(
           new FormGroup(
             this.baseSchema(

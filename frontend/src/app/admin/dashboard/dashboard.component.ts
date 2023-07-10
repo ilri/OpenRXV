@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async Init() {
-    let {
+    const {
       completed_count,
       active_count,
       failed_count,

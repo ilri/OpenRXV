@@ -36,7 +36,7 @@ export class ReportingComponent implements OnInit {
   }
 
   newReport() {
-    let dialogRef = this.dialog.open(ReprotingFormComponent, {
+    const dialogRef = this.dialog.open(ReprotingFormComponent, {
       data: {
         form_data: { title: '', fileType: '', file: '' },
         reports: this.reports,
@@ -48,7 +48,7 @@ export class ReportingComponent implements OnInit {
   }
 
   delete(index) {
-    let dialog = this.dialog.open(DialogComponent, {
+    const dialog = this.dialog.open(DialogComponent, {
       data: { reportData: this.reports[index] },
     });
     dialog.afterClosed().subscribe((result) => {
@@ -81,7 +81,7 @@ export class ReportingComponent implements OnInit {
   }
 
   showDoc() {
-    let dialogRef = this.dialog.open(DocComponent, { width: '1300px' });
+    const dialogRef = this.dialog.open(DocComponent, { width: '1300px' });
   }
   downloadfile(file) {
     this.settingsService.getFile(file);

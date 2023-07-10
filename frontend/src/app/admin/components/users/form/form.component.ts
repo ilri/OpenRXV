@@ -68,7 +68,7 @@ export class FormComponent implements OnInit {
         'email',
         new FormControl(null, [Validators.email]),
       ); // [existValidator(!this.data ? this.userService : null)]
-      let temp = this.data;
+      const temp = this.data;
       temp['password'] = '';
       delete temp.created_at;
       this.form.setValue(this.data);

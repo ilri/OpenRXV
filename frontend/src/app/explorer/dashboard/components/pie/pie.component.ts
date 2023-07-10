@@ -38,11 +38,11 @@ export class PieComponent extends ParentChart implements OnInit {
   filterd = false;
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('pie');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      let filters = this.bodyBuilderService
+      const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
           (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
@@ -55,7 +55,7 @@ export class PieComponent extends ParentChart implements OnInit {
       this.cdr.detectChanges();
     });
   }
-  resetFilter(value: boolean = false) {
+  resetFilter(value = false) {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {

@@ -28,7 +28,7 @@ export class SharedComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   async ngOnInit() {
-    let mappingshared = await this.sharedService.getSharedLinks();
+    const mappingshared = await this.sharedService.getSharedLinks();
     this.dataSource = new MatTableDataSource<any>(mappingshared.hits);
     this.dataSource.paginator = this.paginator;
   }

@@ -18,7 +18,7 @@ export class BuilderUtilities {
   protected filtersConfig = [];
   years;
   async configs() {
-    let configs = await JSON.parse(localStorage.getItem('configs'));
+    const configs = await JSON.parse(localStorage.getItem('configs'));
     return configs;
   }
   private querySourceBucketsFilter: QueryBlock[];
@@ -37,7 +37,7 @@ export class BuilderUtilities {
     this.aggAttributes = Object.create(null);
   }
   async init() {
-    let { dashboard, counters, filters } = await this.configs();
+    const { dashboard, counters, filters } = await this.configs();
     this.dashboardConfig = dashboard.flat(1);
     this.countersConfig = counters;
     this.filtersConfig = filters;
@@ -231,7 +231,7 @@ export class BuilderUtilities {
   }
 
   private buildTermRules(size: number, source: string, sort: boolean): object {
-    let temp = [];
+    const temp = [];
     if (this.years) {
       for (let index = this.years.gte; index <= this.years.lte; index++) {
         temp.push(`${index}`);

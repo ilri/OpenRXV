@@ -11,7 +11,7 @@ export class FiltersComponent implements OnInit {
   constructor(private settings: SettingsService) {}
 
   async ngOnInit() {
-    let { filters } = await this.settings.readExplorerSettings();
+    const { filters } = await this.settings.readExplorerSettings();
     this.filters = filters;
   }
 }

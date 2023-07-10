@@ -53,7 +53,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
   }
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
-      let filters = this.bodyBuilderService.getFiltersFromQuery();
+      const filters = this.bodyBuilderService.getFiltersFromQuery();
 
       filters.forEach((element) => {
         for (var key in element)

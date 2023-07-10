@@ -137,7 +137,7 @@ export class SettingsService {
   }
 
   async upload(file: File) {
-    let formdata = new FormData();
+    const formdata = new FormData();
     formdata.append('file', file);
     return await this.http
       .post(environment.api + '/settings/upload/image/', formdata)
@@ -150,7 +150,7 @@ export class SettingsService {
   }
 
   async uploadFile(file: File) {
-    let formdata = new FormData();
+    const formdata = new FormData();
     formdata.append('file', file);
     return await this.http
       .post(environment.api + '/settings/upload/file/', formdata)

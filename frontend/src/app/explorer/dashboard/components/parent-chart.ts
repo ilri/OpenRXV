@@ -63,7 +63,7 @@ export class ParentChart extends ParentComponent {
     }, 5000);
   }
   setQ() {
-    var _self = this;
+    const _self = this;
     return function (e: any) {
       _self.Query(this.name);
     };

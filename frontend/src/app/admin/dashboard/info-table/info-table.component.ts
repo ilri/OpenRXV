@@ -8,7 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrls: ['./info-table.component.scss'],
 })
 export class InfoTableComponent implements OnInit {
-  @Input() plugin: boolean = false;
+  @Input() plugin = false;
   displayedColumns: string[] = [
     'id',
     'page',

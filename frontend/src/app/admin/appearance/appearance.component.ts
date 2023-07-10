@@ -30,7 +30,7 @@ export class AppearanceComponent implements OnInit {
     return environment.api + '/' + value;
   }
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.appearance = appearance;
     this.form.patchValue(appearance);
     this.primary_color = appearance.primary_color;

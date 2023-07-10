@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
-var bodybuilder = require('bodybuilder');
+const bodybuilder = require('bodybuilder');
 import {
   QuerySearchAttribute,
   QueryYearAttribute,
@@ -25,7 +25,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
   }
   async start() {
     await this.init();
-    let { dashboard, counters, filters } = await this.configs();
+    const { dashboard, counters, filters } = await this.configs();
     this.dashboardConfig = dashboard.flat(1);
     this.countersConfig = counters;
     this.filtersConfig = filters;
@@ -91,7 +91,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
    */
   buildMainQuery(
     from: number,
-    everything: boolean = true,
+    everything = true,
     excludeSource?,
   ): bodybuilder.Bodybuilder {
     const b: bodybuilder.Bodybuilder = bodybuilder();

@@ -107,7 +107,7 @@ export class ListComponent extends ParentComponent implements OnInit {
           .subscribe((b: Bucket[]) => {
             const { source } = this
               .componentConfigs as ComponentDashboardConfigs;
-            let filters = this.bodyBuilderService
+            const filters = this.bodyBuilderService
               .getFiltersFromQuery()
               .filter(
                 (element) =>
@@ -147,7 +147,7 @@ export class ListComponent extends ParentComponent implements OnInit {
 
   private shouldWePaginate(source: string | undefined): boolean {
     // undefined is for the paginated list and the source will be hits
-    return !!!source;
+    return !source;
   }
 
   private expandOrStay(length: number): void {

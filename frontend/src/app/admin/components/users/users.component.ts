@@ -41,7 +41,7 @@ export class UsersComponent implements OnInit {
     });
   }
   async toEdit(id) {
-    let user = await this.usersService.getUser(id);
+    const user = await this.usersService.getUser(id);
 
     const dialogRef = this.dialog.open(FormComponent, {
       width: '30%',
@@ -66,7 +66,7 @@ export class UsersComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   async ngOnInit() {
-    let users = await this.usersService.getUsers();
+    const users = await this.usersService.getUsers();
     this.dataSource = new MatTableDataSource<any>(users.hits);
     this.dataSource.paginator = this.paginator;
   }

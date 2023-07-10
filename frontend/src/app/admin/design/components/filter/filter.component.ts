@@ -149,14 +149,14 @@ export class FilterComponent implements OnInit {
   controls = [];
   constructor(public dialog: MatDialog) {}
   setIcon() {
-    let icons = {
+    const icons = {
       SelectComponent: 'list',
       LabelComponent: 'label',
       SearchComponent: 'search',
       RangeComponent: 'settings_ethernet',
       DateRangeComponent: 'date_range',
     };
-    let iconsTexts = {
+    const iconsTexts = {
       SelectComponent: 'Select',
       LabelComponent: 'Label',
       SearchComponent: 'Search',

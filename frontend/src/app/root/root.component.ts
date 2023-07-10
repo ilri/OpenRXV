@@ -22,7 +22,7 @@ declare let dataLayer: any;
 })
 export class RootComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');
-  loadSettigs: boolean = false;
+  loadSettigs = false;
   constructor(
     private titleService: Title,
     private readonly settingsService: SettingsService,
@@ -32,7 +32,7 @@ export class RootComponent implements OnInit {
 
   primaryColorPalette;
   async ngOnInit() {
-    let settings = await this.settingsService.readExplorerSettings();
+    const settings = await this.settingsService.readExplorerSettings();
     this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
     await localStorage.setItem('configs', JSON.stringify(settings));
     if (

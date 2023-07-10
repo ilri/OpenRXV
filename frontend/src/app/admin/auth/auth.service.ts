@@ -34,7 +34,7 @@ export class AuthService {
 
   async login(userinfo) {
     await localStorage.setItem('token', '');
-    let res: any = await this.httpService
+    const res: any = await this.httpService
       .post(environment.api + '/auth/login', userinfo)
       .pipe(map((res: any) => res))
       .toPromise();

@@ -68,9 +68,9 @@ export class RangeComponent extends ParentComponent implements OnInit {
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
       if (this.timeout) clearTimeout(this.timeout);
-      let filters = this.bodyBuilderService.getFiltersFromQuery();
+      const filters = this.bodyBuilderService.getFiltersFromQuery();
       filters.forEach(async (element) => {
-        for (var key in element)
+        for (const key in element)
           if (key == source) {
             await this.getYears('select', true);
             this.range = [element[key].gte, element[key].lte];
@@ -128,7 +128,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
     });
   }
 
-  private async getYears(caller?: ResetCaller, force: boolean = false) {
+  private async getYears(caller?: ResetCaller, force = false) {
     return await new Promise((resolve, reject) => {
       const qb: BuildQueryObj = {
         size: 100000,

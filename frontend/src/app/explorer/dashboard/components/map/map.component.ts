@@ -39,7 +39,7 @@ export class MapComponent extends ParentChart implements OnInit {
     this.init('map');
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      let filters = this.bodyBuilderService
+      const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
           (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
@@ -52,7 +52,7 @@ export class MapComponent extends ParentChart implements OnInit {
       this.cdr.detectChanges();
     });
   }
-  resetFilter(value: boolean = false) {
+  resetFilter(value = false) {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {

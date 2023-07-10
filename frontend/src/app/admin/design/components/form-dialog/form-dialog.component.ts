@@ -27,14 +27,14 @@ export class FormDialogComponent implements OnInit {
     this.dialogRef.close(false);
   }
   submit(value) {
-    let names_exist: Array<string> = this.data.form_data.map((d) => d.name);
+    const names_exist: Array<string> = this.data.form_data.map((d) => d.name);
     Object.keys(this.form.controls).forEach((key) => {
       if (names_exist.indexOf(key) == -1) this.form.removeControl(key);
     });
     if (this.form.valid) this.dialogRef.close(value);
   }
   async ngOnInit() {
-    let FormGroupControls: any = {};
+    const FormGroupControls: any = {};
     this.data.form_data.forEach((element) => {
       if (this.data.configs.componentConfigs[element.name] != null)
         FormGroupControls[element.name] = new FormControl(

@@ -86,7 +86,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   async ngOnInit() {
-    let { counters, dashboard, appearance, welcome } = await JSON.parse(
+    const { counters, dashboard, appearance, welcome } = await JSON.parse(
       localStorage.getItem('configs'),
     );
     if (appearance.logo) this.logo = environment.api + '/' + appearance.logo;
@@ -101,7 +101,7 @@ export class ExplorerComponent implements OnInit {
       this.hexToHSL(localStorage.getItem('primaryColor'), 'mid'),
     );
     localStorage.setItem('colors', JSON.stringify(appearance.chartColors));
-    let inview = (() => {
+    const inview = (() => {
       // creating the state dynamically
       const obj = Object.create(null);
       Object.values([counters[0], ...dashboard.flat(1)]).forEach(

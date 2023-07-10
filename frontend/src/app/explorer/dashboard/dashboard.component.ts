@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     this.oldViewState = new Map<string, boolean>();
   }
   async getCounters() {
-    let settings = await this.settingsService.readExplorerSettings();
+    const settings = await this.settingsService.readExplorerSettings();
     this.dashboardConfig = settings.dashboard.flat(1);
     this.tourConfig = [settings.welcome];
 
@@ -55,13 +55,13 @@ export class DashboardComponent implements OnInit {
   async ngOnInit() {
     await this.getCounters();
 
-    let shareID = this.activeRoute.snapshot.paramMap.get('id');
+    const shareID = this.activeRoute.snapshot.paramMap.get('id');
     if (shareID) {
       try {
-        let shareitem: any = await this.itemsService.getShare(shareID);
+        const shareitem: any = await this.itemsService.getShare(shareID);
         if (shareitem) {
-          let sprateObjects = Object.keys(shareitem.attr).map(function (key) {
-            let obj = {};
+          const sprateObjects = Object.keys(shareitem.attr).map(function (key) {
+            const obj = {};
             obj[key] = shareitem.attr[key];
             return obj;
           });

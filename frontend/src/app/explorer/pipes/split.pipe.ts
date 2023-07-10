@@ -4,7 +4,7 @@ import { Pipe, PipeTransform, NgModule } from '@angular/core';
   name: 'split',
 })
 export class SplitPipe implements PipeTransform {
-  transform(input: any, separator: string = ' ', limit?: number): any {
+  transform(input: any, separator = ' ', limit?: number): any {
     if (typeof input != 'string') {
       return input;
     }

@@ -35,7 +35,7 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   colors: string[];
 
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('packed-bubble-split');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
@@ -47,7 +47,7 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   }
 
   private setOptions(buckets: Array<Bucket>): any {
-    let data = buckets
+    const data = buckets
       .map((b: Bucket) => {
         return {
           name: b.key,
@@ -60,15 +60,15 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
       })
       .flat(1);
 
-    let sorted = data
+    const sorted = data
       .map((d) => d.data.map((b) => b.value))
       .flat(1)
       .sort((a, b) => {
         return a - b;
       });
 
-    let min = sorted[0];
-    let max = sorted.reduce((a, b) => a + b) / sorted.length;
+    const min = sorted[0];
+    const max = sorted.reduce((a, b) => a + b) / sorted.length;
 
     return {
       chart: {

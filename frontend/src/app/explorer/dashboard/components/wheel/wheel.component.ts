@@ -36,17 +36,17 @@ export class WheelComponent extends ParentChart implements OnInit {
     super(cms, selectService, store);
   }
   filterd = false;
-  resetFilter(value: boolean = false) {
+  resetFilter(value = false) {
     this.resetQ();
   }
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('dependencywheel');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
-        let filters = this.bodyBuilderService
+        const filters = this.bodyBuilderService
           .getFiltersFromQuery()
           .filter(
             (element) =>
@@ -60,7 +60,7 @@ export class WheelComponent extends ParentChart implements OnInit {
     });
   }
   private setOptions(buckets: Array<Bucket>): any {
-    let data = buckets
+    const data = buckets
       .map((b: Bucket) =>
         b.related.buckets
           .filter((d) => b.key != d.key)

@@ -37,11 +37,11 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   colors: string[];
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      let filters = this.bodyBuilderService
+      const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
           (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
@@ -55,7 +55,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     });
   }
   filterd = false;
-  resetFilter(value: boolean = false) {
+  resetFilter(value = false) {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {

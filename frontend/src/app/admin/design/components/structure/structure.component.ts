@@ -235,12 +235,12 @@ export class StructureComponent implements OnInit {
   }
 
   icon(component) {
-    let filterd = this.options.filter((d) => d.value == component);
+    const filterd = this.options.filter((d) => d.value == component);
     if (filterd.length && filterd[0]) return filterd[0].icon;
   }
 
   word(component) {
-    let filterd = this.options.filter((d) => d.value == component);
+    const filterd = this.options.filter((d) => d.value == component);
     if (filterd.length && filterd[0]) return filterd[0].name;
   }
 
@@ -254,7 +254,7 @@ export class StructureComponent implements OnInit {
 
   contentChange(content, i) {
     this.grid[i].componentConfigs['content'] = content;
-    let cat = {
+    const cat = {
       class: this.class_names[i],
       scroll: this.grid[i].scroll,
       component: this.grid[i].component,

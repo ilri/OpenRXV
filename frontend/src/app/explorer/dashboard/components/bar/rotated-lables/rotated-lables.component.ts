@@ -36,7 +36,7 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
   }
 
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
@@ -48,7 +48,7 @@ export class RotatedLablesComponent extends ParentChart implements OnInit {
   }
 
   private setOptions(buckets: Array<Bucket>): any {
-    let data = buckets.map(function (values) {
+    const data = buckets.map(function (values) {
       return [values.key, values.doc_count];
     });
     return {

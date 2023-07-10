@@ -27,7 +27,7 @@ export class SimiCircleComponent extends ParentChart implements OnInit {
   }
 
   async ngOnInit() {
-    let appearance = await this.settingsService.readAppearanceSettings();
+    const appearance = await this.settingsService.readAppearanceSettings();
     this.colors = appearance.chartColors;
     this.init('pie');
     this.buildOptions.subscribe(() => (this.chartOptions = this.setOptions()));

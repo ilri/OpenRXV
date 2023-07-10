@@ -31,7 +31,7 @@ export class DesignComponent implements OnInit {
   dashboard: Array<any> = [];
   footer: any = null;
   welcome: any;
-  welcome_text: string = '';
+  welcome_text = '';
   footerEditor = {
     height: 250,
     forced_root_block: 'div',
@@ -68,7 +68,7 @@ export class DesignComponent implements OnInit {
     });
   }
   async ngOnInit() {
-    let { counters, filters, dashboard, footer, welcome } =
+    const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings();
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
@@ -170,7 +170,7 @@ export class DesignComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        let obj = {
+        const obj = {
           show: true,
           component: 'WelcomeComponent',
           componentConfigs: result as Tour,
@@ -202,7 +202,7 @@ export class DesignComponent implements OnInit {
     }
   }
   createDashboardItem(obj, index, index1) {
-    let temp = {};
+    const temp = {};
     if (obj.title) temp['title'] = obj.title;
 
     if (obj.description) temp['description'] = obj.description;
@@ -244,7 +244,7 @@ export class DesignComponent implements OnInit {
     )
       temp['related'] = true;
 
-    var class_name: null;
+    let class_name: null;
 
     if (typeof obj.class == 'string') class_name = obj.class;
 
@@ -259,7 +259,7 @@ export class DesignComponent implements OnInit {
     };
   }
   createFilter(obj) {
-    let temp = {};
+    const temp = {};
     if (obj.text) temp['text'] = obj.text;
 
     if (obj.placeholder) temp['placeholder'] = obj.placeholder;
@@ -286,7 +286,7 @@ export class DesignComponent implements OnInit {
     };
   }
   createCounter(obj) {
-    let temp = {};
+    const temp = {};
 
     if (obj.title) temp['title'] = obj.title;
 

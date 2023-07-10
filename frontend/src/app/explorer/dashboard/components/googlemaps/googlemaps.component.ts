@@ -51,8 +51,8 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   listData: Bucket[] = []; // for aggrigiation list
   isPaginatedList: boolean; // determine if we should display the hits or not
   paginationAtt: PageEvent;
-  isFullscreen: boolean = false;
-  fitBounds: boolean = false;
+  isFullscreen = false;
+  fitBounds = false;
   refreshMap = true;
   filterd = false;
   myStyles = {
@@ -61,7 +61,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   @ViewChild('agmmap') mapElement: any;
   timeout: any = [];
   // google maps zoom level
-  zoom: number = 2;
+  zoom = 2;
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   @ViewChild('panel') elementView: ElementRef;
@@ -104,7 +104,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   makeChunks(markers) {
     if (markers.length >= 1000) markers = markers.slice(0, markers.length / 1);
     this.scrollHelperService.loading = true;
-    var i,
+    let i,
       j,
       temparray = [],
       chunk = 75;
@@ -114,12 +114,12 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     return temparray;
   }
   loopThroughMarkersText(chunks) {
-    let markers = this.makeChunks(chunks);
-    for (var i = 0; i < markers.length; i++) {
+    const markers = this.makeChunks(chunks);
+    for (let i = 0; i < markers.length; i++) {
       ((i) => {
         this.timeout.push(
           setTimeout(() => {
-            for (var z = 0; z < markers[i].length; z++) {
+            for (let z = 0; z < markers[i].length; z++) {
               this.listData.push(markers[i][z]);
             }
             if (i == markers.length - 1)
@@ -161,7 +161,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   private subToDataFromStore(): void {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      let filters = this.bodyBuilderService
+      const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
           (element) => Object.keys(element).indexOf(source + '.keyword') != -1,

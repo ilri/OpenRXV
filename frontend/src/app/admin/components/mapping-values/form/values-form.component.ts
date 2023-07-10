@@ -43,7 +43,7 @@ export class ValuesForm implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      let temp = this.data;
+      const temp = this.data;
       delete temp.created_at;
       // delete temp.id
       this.form.setValue(this.data);

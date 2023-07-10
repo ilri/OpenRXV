@@ -45,7 +45,7 @@ export class MappingValuesComponent implements OnInit {
     });
   }
   async toEdit(id) {
-    let user = await this.valuesService.findOne(id);
+    const user = await this.valuesService.findOne(id);
 
     const dialogRef = this.dialog.open(ValuesForm, {
       width: '30%',
@@ -65,7 +65,7 @@ export class MappingValuesComponent implements OnInit {
     clearTimeout(this.timeout);
   }
   async ngOnInit() {
-    let mappingvalues = await this.valuesService.findByTerm(this.term);
+    const mappingvalues = await this.valuesService.findByTerm(this.term);
     this.dataSource = new MatTableDataSource<Array<any>>(mappingvalues.hits);
     this.dataSource.paginator = this.paginator;
   }
@@ -75,7 +75,7 @@ export class MappingValuesComponent implements OnInit {
     clearTimeout(this.timeout);
     // Make a new timeout set to go off in 1000ms (1 second)
     this.timeout = setTimeout(async () => {
-      let data = await this.valuesService.findByTerm(this.term);
+      const data = await this.valuesService.findByTerm(this.term);
       this.dataSource = new MatTableDataSource<Array<any>>(data.hits);
       this.dataSource.paginator = this.paginator;
     }, 1000);

@@ -69,7 +69,7 @@ export class RangeService {
    */
   getYears(
     query: ElasticsearchQuery,
-    force: boolean = false,
+    force = false,
   ): Observable<number[]> {
     return this.getYearsFromStore().pipe(
       switchMap((buckets: Array<Bucket>) =>
@@ -79,26 +79,26 @@ export class RangeService {
       ),
     );
   }
-  getMaxAndMin(query: ElasticsearchQuery, force: boolean = false): any {
+  getMaxAndMin(query: ElasticsearchQuery, force = false): any {
     return this.httpGetMinAndMax(query);
   }
 
   buildquery(bq: BuildQueryObj): bodybuilder.Bodybuilder {
     bq.size = bq.size ? bq.size : 10;
     bq.source = this.source;
-    let q = this.bodyBuilderService.yearsBuildquery(bq, this.source);
+    const q = this.bodyBuilderService.yearsBuildquery(bq, this.source);
     return q;
   }
 
   buildminmaxquery(bq: BuildQueryObj): bodybuilder.Bodybuilder {
     bq.size = bq.size ? bq.size : 10;
     bq.source = this.source;
-    let q = this.bodyBuilderService.buildMinMaxQuery(bq);
+    const q = this.bodyBuilderService.buildMinMaxQuery(bq);
     return q;
   }
 
   addAttributeToMainQuery(range): bodybuilder.Bodybuilder {
-    let obj = {};
+    const obj = {};
     obj[this.source] = range;
     this.bodyBuilderService.setAggAttributes = obj;
     return this.bodyBuilderService.buildMainQuery();
@@ -129,7 +129,7 @@ export class RangeService {
         this.store.dispatch(new fromStore.GetDataSuccess(res, false)),
       ),
       map((d: ElasticsearchResponse) => {
-        let obj = {};
+        const obj = {};
         obj[`min_${this.source}`] = d.aggregations[`min_${this.source}`];
         obj[`max_${this.source}`] = d.aggregations[`max_${this.source}`];
         return obj;

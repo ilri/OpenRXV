@@ -32,8 +32,8 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
-    let sorcue =
+    const { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
+    const sorcue =
       (() => {
         const [conf] = dashboard
           .flat(1)
@@ -91,9 +91,9 @@ export class SearchComponent extends ParentComponent implements OnInit {
   private subtoToQuery(source): void {
     const { type } = this.componentConfigs as ComponentSearchConfigs;
     this.store.select(fromStore.getQuery).subscribe((query) => {
-      let filters = this.bodyBuilderService.getFiltersFromQuery();
+      const filters = this.bodyBuilderService.getFiltersFromQuery();
       filters.forEach((element) => {
-        for (var key in element)
+        for (const key in element)
           if (key == 'query') this.searchTerm = element[key];
           else if (key == source && type == 0) this.searchTerm = element[key];
       });
