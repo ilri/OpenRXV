@@ -56,7 +56,7 @@
     "ngx-toastr": "^12.0.1",
     "ngx-tour-core": "~4.1.0",
     "ngx-tour-md-menu": "~4.1.0",
-    "nouislider": "^14.1.1",
+    "nouislider": "^15.7.1",
     "querystring": "^0.2.1",
     "ramda": "^0.27.0",
     "rxjs": "~6.5.4",
