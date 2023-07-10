@@ -15,10 +15,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '12'
+          node-version: '16'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-      - run: npm install -g npm@7; cd frontend; npm install
+      # we need to force because @agm/core wants an older Angular
+      - run: npm install -g npm@8; cd frontend; npm install --force
   format:
     runs-on: ubuntu-22.04
     # This job is to check the formatting with prettier, so we install exact
@@ -29,7 +30,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '12'
+          node-version: '16'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-      - run: npm install -g npm@7; cd frontend; npm ci; npm run format:check
+      - run: npm install -g npm@8; cd frontend; npm ci --force; npm run format:check
