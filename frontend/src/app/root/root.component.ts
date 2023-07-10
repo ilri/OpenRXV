@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
