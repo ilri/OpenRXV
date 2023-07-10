@@ -15,10 +15,10 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
-      - run: npm install -g npm@7; cd backend; npm install
+      - run: npm install -g npm@9; cd backend; npm install
   format:
     runs-on: ubuntu-22.04
     # This job is to check the formatting with prettier, so we install exact
@@ -29,7 +29,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
-      - run: npm install -g npm@7; cd backend; npm ci; npm run format:check
+      - run: npm install -g npm@9; cd backend; npm ci; npm run format:check
