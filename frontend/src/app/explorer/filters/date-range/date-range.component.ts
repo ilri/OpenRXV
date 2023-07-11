@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  ComponentFilterConfigs,
-} from 'src/app/explorer/configs/generalConfig.interface';
+import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
-import {
-  ElasticsearchQuery,
-  BuildQueryObj,
-} from '../services/interfaces';
+import { ElasticsearchQuery, BuildQueryObj } from '../services/interfaces';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';

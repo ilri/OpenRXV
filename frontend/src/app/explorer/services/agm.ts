@@ -1,6 +1,4 @@
-import {
-  LazyMapsAPILoaderConfigLiteral,
-} from '@agm/core';
+import { LazyMapsAPILoaderConfigLiteral } from '@agm/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';

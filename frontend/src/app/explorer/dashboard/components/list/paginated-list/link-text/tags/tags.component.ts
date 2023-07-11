@@ -1,7 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
-
-
 @Component({
   selector: 'app-tags',
   templateUrl: './tags.component.html',
