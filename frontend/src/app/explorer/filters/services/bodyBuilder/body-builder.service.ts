@@ -10,7 +10,6 @@ import {
   QuerySearchAttribute,
   BuildQueryObj,
   ResetOptions,
-  ResetCaller,
 } from '../interfaces';
 
 @Injectable({

@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import {
   ExporterResponse,
   DataForExporter,
-  ExportFilesModal,
 } from '../../paginated-list/filter-paginated-list/types.interface';
 
 @Injectable()

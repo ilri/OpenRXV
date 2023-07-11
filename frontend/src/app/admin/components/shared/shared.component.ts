@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ValuesService } from '../../services/values.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { SharedService } from '../../services/shared.service';
 
 @Component({

@@ -5,7 +5,6 @@ import { ValuesService } from '../../services/values.service';
 import { ValuesForm } from './form/values-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
-import { async } from 'rxjs/internal/scheduler/async';
 
 @Component({
   selector: 'app-mapping-values',

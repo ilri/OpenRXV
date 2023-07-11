@@ -1,24 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  searchOptions,
-  ComponentSearchConfigs,
   ComponentFilterConfigs,
-  GeneralConfigs,
-  ComponentDashboardConfigs,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 import {
-  QuerySearchAttribute,
   ElasticsearchQuery,
   BuildQueryObj,
 } from '../services/interfaces';
-import { fromEvent } from 'rxjs';
-import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
-import { type } from 'os';
 import { RangeService } from '../services/range/range.service';
 
 import {

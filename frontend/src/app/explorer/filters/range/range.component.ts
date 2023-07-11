@@ -3,7 +3,6 @@ import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.i
 import { RangeService } from '../services/range/range.service';
 import {
   ElasticsearchQuery,
-  QueryYearAttribute,
   BuildQueryObj,
   ResetOptions,
   ResetCaller,
@@ -14,7 +13,6 @@ import { Observable } from 'rxjs';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
-import { query } from '@angular/animations';
 @ComponentLookup('RangeComponent')
 @Component({
   selector: 'app-range',

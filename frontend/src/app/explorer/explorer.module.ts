@@ -82,7 +82,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lables/rotated-lables.component';
 import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemaps.component';
-import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
+import { AgmCoreModule, LAZY_MAPS_API_CONFIG } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { agmConfigFactory } from './services/agm';
 

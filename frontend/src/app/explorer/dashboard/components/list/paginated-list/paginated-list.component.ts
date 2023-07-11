@@ -13,7 +13,6 @@ import * as fromStore from '../../../../store';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
 import {
   SortPaginationOptions,
-  FileType,
 } from './filter-paginated-list/types.interface';
 import { QueryState } from 'src/app/explorer/store/reducers/query.reducer';
 import {

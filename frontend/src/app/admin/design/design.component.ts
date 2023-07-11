@@ -3,7 +3,6 @@ import {
   ComponentCounterConfigs,
   ComponentFilterConfigs,
   searchOptions,
-  ComponentDashboardConfigs,
   Tour,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { SettingsService } from '../services/settings.service';

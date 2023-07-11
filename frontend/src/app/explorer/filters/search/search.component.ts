@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {
   searchOptions,
   ComponentSearchConfigs,
-  ComponentFilterConfigs,
   GeneralConfigs,
   ComponentDashboardConfigs,
 } from 'src/app/explorer/configs/generalConfig.interface';

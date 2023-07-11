@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as queryActions from '../actions/query.actions';
 import * as itemsActions from '../actions/items.actions';

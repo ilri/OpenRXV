@@ -5,7 +5,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
-import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { ComponentLookup } from '../dynamic/lookup.registry';

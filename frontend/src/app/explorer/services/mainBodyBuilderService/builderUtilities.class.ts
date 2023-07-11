@@ -4,7 +4,7 @@ import {
   ComponentCounterConfigs,
   ComponentDashboardConfigs,
 } from 'src/app/explorer/configs/generalConfig.interface';
-import { Subject, config } from 'rxjs';
+import { Subject } from 'rxjs';
 import {
   QuerySearchAttribute,
   QueryYearAttribute,

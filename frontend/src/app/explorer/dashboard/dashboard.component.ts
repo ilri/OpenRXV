@@ -12,7 +12,6 @@ import {
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { ItemsService } from '../services/itemsService/items.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainBodyBuilderService } from '../services/mainBodyBuilderService/main-body-builder.service';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 
 @Component({

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
-import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';

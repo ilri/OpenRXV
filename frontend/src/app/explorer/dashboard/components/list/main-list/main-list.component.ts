@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { ListComponent } from '../list.component';
 import { Store } from '@ngrx/store';

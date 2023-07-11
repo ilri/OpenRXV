@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-plugin',

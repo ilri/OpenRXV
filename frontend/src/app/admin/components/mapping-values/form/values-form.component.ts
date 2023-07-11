@@ -1,19 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {
-  MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import {
   FormGroup,
   FormControl,
-  Validators,
-  AsyncValidatorFn,
-  AbstractControl,
-  ValidationErrors,
 } from '@angular/forms';
 import { ValuesService } from 'src/app/admin/services/values.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-values-form',

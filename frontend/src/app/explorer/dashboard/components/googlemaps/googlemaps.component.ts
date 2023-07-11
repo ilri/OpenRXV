@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
-import { first } from 'rxjs/operators';
 import {
   ComponentDashboardConfigs,
   ComponentFilterConfigs,
@@ -22,14 +21,11 @@ import {
   hits,
 } from 'src/app/explorer/filters/services/interfaces';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
-import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
-import { AgmMap } from '@agm/core';
-import { SettingsService } from 'src/app/admin/services/settings.service';
 
 declare function _altmetric_embed_init(): any;
 interface marker {

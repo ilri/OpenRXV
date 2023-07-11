@@ -5,7 +5,7 @@ import { AdminModule } from './admin/admin.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app.routing.module';
 import { RootComponent } from './root/root.component';
-import { JwtModule, JwtHelperService } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
 // for HttpClient import:

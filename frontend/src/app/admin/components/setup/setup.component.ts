@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
-  FormBuilder,
-  Validators,
   FormControl,
   FormArray,
 } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
-import { async } from '@angular/core/testing';
 import { ToastrService } from 'ngx-toastr';
-import { split } from 'ramda';
 import { environment } from 'src/environments/environment';
 
 @Component({

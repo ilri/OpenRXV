@@ -1,8 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import {
-  Numbers,
-  Altmetric,
-} from 'src/app/explorer/filters/services/interfaces';
+
+
 
 @Component({
   selector: 'app-tags',

@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {
-  MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
@@ -14,7 +13,6 @@ import {
 } from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
 import { Observable } from 'rxjs';
-import { ConfirmationComponent } from '../../confirmation/confirmation.component';
 
 export function existValidator(usersService: UsersService): AsyncValidatorFn {
   if (usersService)

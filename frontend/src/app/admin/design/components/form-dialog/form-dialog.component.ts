@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject, Output } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
