@@ -1,7 +1,4 @@
-import {
-  Processor,
-  OnGlobalQueueDrained,
-} from '@nestjs/bull';
+import { Processor, OnGlobalQueueDrained } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { HarvesterService } from '../../harvester/services/harveter.service';

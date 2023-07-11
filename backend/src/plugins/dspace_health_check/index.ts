@@ -1,9 +1,4 @@
-import {
-  InjectQueue,
-  Processor,
-  Process,
-  OnQueueStalled,
-} from '@nestjs/bull';
+import { InjectQueue, Processor, Process, OnQueueStalled } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Queue, Job } from 'bull';

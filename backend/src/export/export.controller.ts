@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Response,
-  HttpCode,
-} from '@nestjs/common';
+import { Controller, Post, Body, Response, HttpCode } from '@nestjs/common';
 import { ExportService } from './services/export/export.service';
 import { ElasticService } from '../shared/services/elastic/elastic.service';
 
