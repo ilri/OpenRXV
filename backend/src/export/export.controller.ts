@@ -4,8 +4,6 @@ import {
   Body,
   Response,
   HttpCode,
-  Res,
-  Get,
 } from '@nestjs/common';
 import { ExportService } from './services/export/export.service';
 import { ElasticService } from '../shared/services/elastic/elastic.service';

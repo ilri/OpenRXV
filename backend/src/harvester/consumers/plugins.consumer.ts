@@ -1,18 +1,10 @@
 import {
-  InjectQueue,
   Processor,
-  Process,
-  OnGlobalQueueProgress,
-  OnQueueDrained,
   OnGlobalQueueDrained,
-  OnGlobalQueueResumed,
 } from '@nestjs/bull';
-import { Logger, HttpService } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { Queue, Job } from 'bull';
-import { map } from 'rxjs/operators';
+import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
 import { HarvesterService } from '../../harvester/services/harveter.service';
-import { async } from 'rxjs/internal/scheduler/async';
 
 @Processor('plugins')
 export class PluginsConsumer {

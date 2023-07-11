@@ -1,9 +1,7 @@
 import { InjectQueue, Processor, Process } from '@nestjs/bull';
 import { Logger, HttpService } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { doesNotMatch } from 'assert';
 import { Queue, Job } from 'bull';
-import { env } from 'process';
 import { map } from 'rxjs/operators';
 import { FormatSearvice } from '../../shared/services/formater.service';
 const melnumbersUrl =

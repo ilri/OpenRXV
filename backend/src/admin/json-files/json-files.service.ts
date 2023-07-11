@@ -7,7 +7,6 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
-  rmdirSync,
 } from 'fs';
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

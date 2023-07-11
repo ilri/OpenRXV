@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { async } from 'rxjs/internal/scheduler/async';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { ValuesService } from '../../shared/services/values.service';

@@ -8,8 +8,6 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
-  Logger,
-  Request,
   Param,
   Res,
 } from '@nestjs/common';

@@ -2,10 +2,9 @@ import {
   InjectQueue,
   Processor,
   Process,
-  JOB_REF,
   OnQueueStalled,
 } from '@nestjs/bull';
-import { Logger, HttpService } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Queue, Job } from 'bull';
 import Sitemapper from 'sitemapper';

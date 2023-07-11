@@ -1,7 +1,5 @@
 import {
   Injectable,
-  NotFoundException,
-  ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ElasticService } from '../shared/services/elastic/elastic.service';

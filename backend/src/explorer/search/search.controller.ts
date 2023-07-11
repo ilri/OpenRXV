@@ -1,13 +1,11 @@
 import {
   Controller,
-  Get,
   Body,
   Post,
   HttpCode,
   Param,
   Query,
 } from '@nestjs/common';
-import { json } from 'express';
 import { ElasticService } from '../../shared/services/elastic/elastic.service';
 
 @Controller('search')

@@ -10,7 +10,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import * as bcrypt from 'bcrypt';
 import { MetadataService } from '../../shared/services/metadata.service';
 function isEmpty(obj) {
   for (const prop in obj) {

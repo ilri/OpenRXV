@@ -9,11 +9,9 @@ import {
   Query,
   Put,
 } from '@nestjs/common';
-import { BodyRequest } from 'src/shared/models/types.helpers';
 import { AuthGuard } from '@nestjs/passport';
 import { ElasticService } from '../../shared/services/elastic/elastic.service';
 import * as bcrypt from 'bcrypt';
-import { map } from 'rxjs/operators';
 function isEmpty(obj) {
   for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
