@@ -63,7 +63,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/bull": "^3.15.9",
     "@types/express": "^4.17.3",
-    "@types/jest": "25.1.4",
+    "@types/jest": "25.2.3",
     "@types/jsonfile": "^6.1.0",
     "@types/node": "^18.16.19",
     "@types/object-hash": "^2.2.1",
