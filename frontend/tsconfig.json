@@ -5,14 +5,15 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2020",
+    "module": "es2022",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2021",
     "typeRoots": ["node_modules/@types"],
     "types": ["node"],
-    "lib": ["es2018", "dom", "esnext"],
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es2021", "dom"],
     "resolveJsonModule": true
   }
 }
