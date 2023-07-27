@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -8,45 +8,45 @@ import { MetadataService } from 'src/app/admin/services/metadata.service';
   styleUrls: ['./main-list.component.scss'],
 })
 export class MainListComponent implements OnInit {
-  @Input() baseForm: FormGroup = null;
+  @Input() baseForm: UntypedFormGroup = null;
   content;
   tagsControls = [];
   filterOptions = [];
   metadata = [];
   tmpfilterOptions: [];
   image_tag_options = [];
-  listForm: FormGroup = new FormGroup({
-    title: new FormControl(''),
-    description: new FormControl(''),
-    identifierUri: new FormControl(''),
-    identifierUriPrefix: new FormControl(''),
-    altmetric: new FormControl(''),
-    tags: new FormArray([]),
-    filterOptions: new FormArray([]),
-    thumbnail: new FormControl(''),
-    thumbnail_prefix: new FormControl(''),
-    square_thumbnail: new FormControl(''),
-    tagOnImage: new FormControl(''),
-    image_tag_options: new FormArray([]),
+  listForm: UntypedFormGroup = new UntypedFormGroup({
+    title: new UntypedFormControl(''),
+    description: new UntypedFormControl(''),
+    identifierUri: new UntypedFormControl(''),
+    identifierUriPrefix: new UntypedFormControl(''),
+    altmetric: new UntypedFormControl(''),
+    tags: new UntypedFormArray([]),
+    filterOptions: new UntypedFormArray([]),
+    thumbnail: new UntypedFormControl(''),
+    thumbnail_prefix: new UntypedFormControl(''),
+    square_thumbnail: new UntypedFormControl(''),
+    tagOnImage: new UntypedFormControl(''),
+    image_tag_options: new UntypedFormArray([]),
   });
   baseFilterOptions(element = null) {
     return {
-      display: new FormControl(element ? element.display : ''),
-      value: new FormControl(element ? element.value : ''),
-      sort: new FormControl(element ? element.sort : ''),
-      textValue: new FormControl(''),
+      display: new UntypedFormControl(element ? element.display : ''),
+      value: new UntypedFormControl(element ? element.value : ''),
+      sort: new UntypedFormControl(element ? element.sort : ''),
+      textValue: new UntypedFormControl(''),
     };
   }
   baseImageTagOptions(element = null) {
     return {
-      color: new FormControl(element ? element.color : ''),
-      value: new FormControl(element ? element.value : ''),
+      color: new UntypedFormControl(element ? element.color : ''),
+      value: new UntypedFormControl(element ? element.value : ''),
     };
   }
   baseTags(element = null) {
     return {
-      metadata: new FormControl(element ? element.metadata : ''),
-      disply_name: new FormControl(element ? element.disply_name : ''),
+      metadata: new UntypedFormControl(element ? element.metadata : ''),
+      disply_name: new UntypedFormControl(element ? element.disply_name : ''),
     };
   }
   constructor(private metadataService: MetadataService) {}
@@ -57,35 +57,35 @@ export class MainListComponent implements OnInit {
     this.metadata = await this.metadataService.get();
     if (this.content && this.content.tags)
       this.content.tags.forEach((element) => {
-        this.tagsControls.push(new FormGroup(this.baseTags(element)));
+        this.tagsControls.push(new UntypedFormGroup(this.baseTags(element)));
       });
     if (this.content && this.content.filterOptions)
       this.content.filterOptions.forEach((element) => {
-        this.filterOptions.push(new FormGroup(this.baseFilterOptions(element)));
+        this.filterOptions.push(new UntypedFormGroup(this.baseFilterOptions(element)));
       });
     if (this.content && this.content.image_tag_options)
       this.content.image_tag_options.forEach((element) => {
         this.image_tag_options.push(
-          new FormGroup(this.baseImageTagOptions(element)),
+          new UntypedFormGroup(this.baseImageTagOptions(element)),
         );
       });
 
     if (this.tagsControls.length) {
       this.listForm.removeControl('tags');
-      this.listForm.addControl('tags', new FormArray(this.tagsControls));
+      this.listForm.addControl('tags', new UntypedFormArray(this.tagsControls));
     }
     if (this.filterOptions.length) {
       this.listForm.removeControl('filterOptions');
       this.listForm.addControl(
         'filterOptions',
-        new FormArray(this.filterOptions),
+        new UntypedFormArray(this.filterOptions),
       );
     }
     if (this.image_tag_options.length) {
       this.listForm.removeControl('image_tag_options');
       this.listForm.addControl(
         'image_tag_options',
-        new FormArray(this.image_tag_options),
+        new UntypedFormArray(this.image_tag_options),
       );
     }
     this.listForm.patchValue(this.content);
@@ -97,14 +97,14 @@ export class MainListComponent implements OnInit {
     if (type == 'tags') {
       this.tagsControls.splice(index, 1);
       if (this.listForm.get('tags')) this.listForm.removeControl('tags');
-      this.listForm.addControl('tags', new FormArray(this.tagsControls));
+      this.listForm.addControl('tags', new UntypedFormArray(this.tagsControls));
     } else if (type == 'image_tag_options') {
       this.image_tag_options.splice(index, 1);
       if (this.listForm.get('image_tag_options'))
         this.listForm.removeControl('image_tag_options');
       this.listForm.addControl(
         'image_tag_options',
-        new FormArray(this.image_tag_options),
+        new UntypedFormArray(this.image_tag_options),
       );
     } else if (type == 'options') {
       this.filterOptions.splice(index, 1);
@@ -112,7 +112,7 @@ export class MainListComponent implements OnInit {
         this.listForm.removeControl('filterOptions');
       this.listForm.addControl(
         'filterOptions',
-        new FormArray(this.filterOptions),
+        new UntypedFormArray(this.filterOptions),
       );
     }
     this.content = this.baseForm.get('content').value;
@@ -121,24 +121,24 @@ export class MainListComponent implements OnInit {
   }
   AddNewdata(type) {
     if (type == 'tags') {
-      this.tagsControls.push(new FormGroup(this.baseTags()));
+      this.tagsControls.push(new UntypedFormGroup(this.baseTags()));
       if (this.listForm.get('tags')) this.listForm.removeControl('tags');
-      this.listForm.addControl('tags', new FormArray(this.tagsControls));
+      this.listForm.addControl('tags', new UntypedFormArray(this.tagsControls));
     } else if (type == 'image_tag_options') {
-      this.image_tag_options.push(new FormGroup(this.baseImageTagOptions()));
+      this.image_tag_options.push(new UntypedFormGroup(this.baseImageTagOptions()));
       if (this.listForm.get('image_tag_options'))
         this.listForm.removeControl('image_tag_options');
       this.listForm.addControl(
         'image_tag_options',
-        new FormArray(this.image_tag_options),
+        new UntypedFormArray(this.image_tag_options),
       );
     } else if (type == 'options') {
-      this.filterOptions.push(new FormGroup(this.baseFilterOptions()));
+      this.filterOptions.push(new UntypedFormGroup(this.baseFilterOptions()));
       if (this.listForm.get('filterOptions'))
         this.listForm.removeControl('filterOptions');
       this.listForm.addControl(
         'filterOptions',
-        new FormArray(this.filterOptions),
+        new UntypedFormArray(this.filterOptions),
       );
     }
 

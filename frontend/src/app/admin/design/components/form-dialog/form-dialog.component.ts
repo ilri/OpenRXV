@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -10,8 +10,8 @@ import { MetadataService } from 'src/app/admin/services/metadata.service';
 })
 export class FormDialogComponent implements OnInit {
   controls = [];
-  form: FormGroup = new FormGroup({
-    icon: new FormControl(''),
+  form: UntypedFormGroup = new UntypedFormGroup({
+    icon: new UntypedFormControl(''),
   });
   pre: any;
   formControls = [];
@@ -37,7 +37,7 @@ export class FormDialogComponent implements OnInit {
     const FormGroupControls: any = {};
     this.data.form_data.forEach((element) => {
       if (this.data.configs.componentConfigs[element.name] != null)
-        FormGroupControls[element.name] = new FormControl(
+        FormGroupControls[element.name] = new UntypedFormControl(
           element.name == 'source'
             ? this.data.configs.componentConfigs[element.name].replace(
                 '.keyword',
@@ -46,16 +46,16 @@ export class FormDialogComponent implements OnInit {
             : this.data.configs.componentConfigs[element.name],
         );
       else if (this.data.configs[element.name])
-        FormGroupControls[element.name] = new FormControl(
+        FormGroupControls[element.name] = new UntypedFormControl(
           this.data.configs[element.name],
         );
       else if (this.data.configs[element.name])
-        FormGroupControls[element.name] = new FormControl(
+        FormGroupControls[element.name] = new UntypedFormControl(
           this.data.configs[element.name],
         );
-      else FormGroupControls[element.name] = new FormControl(null);
+      else FormGroupControls[element.name] = new UntypedFormControl(null);
     });
-    this.form = new FormGroup(FormGroupControls);
+    this.form = new UntypedFormGroup(FormGroupControls);
     this.metadata = await this.metadataService.get();
     this.formControls = this.data.form_data;
     this.pre = this.form.value;

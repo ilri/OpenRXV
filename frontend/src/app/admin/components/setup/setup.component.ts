@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, UntypedFormArray } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
@@ -15,9 +15,9 @@ export class SetupComponent implements OnInit {
 
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
-      metadata: new FormControl(metadada),
-      disply_name: new FormControl(disply_name),
-      addOn: new FormControl(addOn),
+      metadata: new UntypedFormControl(metadada),
+      disply_name: new UntypedFormControl(disply_name),
+      addOn: new UntypedFormControl(addOn),
     };
   }
 
@@ -29,21 +29,21 @@ export class SetupComponent implements OnInit {
       this.repositories.at(index).get('years').reset();
   }
 
-  repositories: FormArray = new FormArray([this.getNewForm()]);
+  repositories: UntypedFormArray = new UntypedFormArray([this.getNewForm()]);
 
   getNewForm() {
-    return new FormGroup({
-      years: new FormControl(),
-      name: new FormControl(),
-      icon: new FormControl(),
-      startPage: new FormControl(),
-      type: new FormControl(),
-      itemsEndPoint: new FormControl(),
-      apiKey: new FormControl(),
-      siteMap: new FormControl(),
-      allCores: new FormControl(),
-      schema: new FormArray([new FormGroup(this.baseSchema())]),
-      metadata: new FormArray([new FormGroup(this.baseSchema())]),
+    return new UntypedFormGroup({
+      years: new UntypedFormControl(),
+      name: new UntypedFormControl(),
+      icon: new UntypedFormControl(),
+      startPage: new UntypedFormControl(),
+      type: new UntypedFormControl(),
+      itemsEndPoint: new UntypedFormControl(),
+      apiKey: new UntypedFormControl(),
+      siteMap: new UntypedFormControl(),
+      allCores: new UntypedFormControl(),
+      schema: new UntypedFormArray([new UntypedFormGroup(this.baseSchema())]),
+      metadata: new UntypedFormArray([new UntypedFormGroup(this.baseSchema())]),
     });
   }
   constructor(
@@ -97,8 +97,8 @@ export class SetupComponent implements OnInit {
       this.toastr.error('REST API endpoint is not defined');
       return;
     }
-    const schema = <FormArray>repo.get('schema');
-    const metadata = <FormArray>repo.get('metadata');
+    const schema = <UntypedFormArray>repo.get('schema');
+    const metadata = <UntypedFormArray>repo.get('metadata');
     const data = await this.settingService.retreiveMetadata(
       repo.get('itemsEndPoint').value,
       repo.get('type').value,
@@ -108,7 +108,7 @@ export class SetupComponent implements OnInit {
     data.base.forEach((element) => {
       const splited = element.split('.');
       schema.push(
-        new FormGroup(
+        new UntypedFormGroup(
           this.baseSchema(element, (splited.join('_') as string).toLowerCase()),
         ),
       );
@@ -120,7 +120,7 @@ export class SetupComponent implements OnInit {
       data.metadata.forEach((element) => {
         const splited = element.split('.');
         metadata.push(
-          new FormGroup(
+          new UntypedFormGroup(
             this.baseSchema(
               element,
               (splited.join('_') as string).toLowerCase(),
@@ -131,7 +131,7 @@ export class SetupComponent implements OnInit {
     else
       data.metadata.forEach((element) => {
         metadata.push(
-          new FormGroup(this.baseSchema(element, element as string)),
+          new UntypedFormGroup(this.baseSchema(element, element as string)),
         );
       });
   }
@@ -143,7 +143,7 @@ export class SetupComponent implements OnInit {
   AddNewRepo() {
     this.repositories.push(this.getNewForm());
   }
-  delete(schema: FormArray, index: number) {
+  delete(schema: UntypedFormArray, index: number) {
     schema.removeAt(index);
   }
   deleteRepo(index) {
@@ -151,6 +151,6 @@ export class SetupComponent implements OnInit {
   }
 
   AddNewMetadata(schema: any) {
-    schema.push(new FormGroup(this.baseSchema()));
+    schema.push(new UntypedFormGroup(this.baseSchema()));
   }
 }
