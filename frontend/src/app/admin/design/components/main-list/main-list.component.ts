@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -61,7 +65,9 @@ export class MainListComponent implements OnInit {
       });
     if (this.content && this.content.filterOptions)
       this.content.filterOptions.forEach((element) => {
-        this.filterOptions.push(new UntypedFormGroup(this.baseFilterOptions(element)));
+        this.filterOptions.push(
+          new UntypedFormGroup(this.baseFilterOptions(element)),
+        );
       });
     if (this.content && this.content.image_tag_options)
       this.content.image_tag_options.forEach((element) => {
@@ -125,7 +131,9 @@ export class MainListComponent implements OnInit {
       if (this.listForm.get('tags')) this.listForm.removeControl('tags');
       this.listForm.addControl('tags', new UntypedFormArray(this.tagsControls));
     } else if (type == 'image_tag_options') {
-      this.image_tag_options.push(new UntypedFormGroup(this.baseImageTagOptions()));
+      this.image_tag_options.push(
+        new UntypedFormGroup(this.baseImageTagOptions()),
+      );
       if (this.listForm.get('image_tag_options'))
         this.listForm.removeControl('image_tag_options');
       this.listForm.addControl(

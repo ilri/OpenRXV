@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, UntypedFormArray } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  UntypedFormArray,
+} from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
