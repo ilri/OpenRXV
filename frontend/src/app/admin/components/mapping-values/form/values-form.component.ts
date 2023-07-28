@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { ValuesService } from 'src/app/admin/services/values.service';
 
 @Component({
@@ -9,9 +9,9 @@ import { ValuesService } from 'src/app/admin/services/values.service';
   styleUrls: ['./values-form.component.scss'],
 })
 export class ValuesForm implements OnInit {
-  form: FormGroup = new FormGroup({
-    find: new FormControl(''),
-    replace: new FormControl(''),
+  form: UntypedFormGroup = new UntypedFormGroup({
+    find: new UntypedFormControl(''),
+    replace: new UntypedFormControl(''),
   });
 
   async submit() {

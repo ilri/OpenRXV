@@ -20,7 +20,7 @@ $breakpointsMax: (
 }
 
 @mixin small {
-  @media only screen and (min-width: 0px) and(max-width: #{map-get($breakpointsMax, medium) - 1px}) {
+  @media only screen and (min-width: 0px) and (max-width: #{map-get($breakpointsMax, medium) - 1px}) {
     @content;
   }
 }

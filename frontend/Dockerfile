@@ -1,7 +1,7 @@
 FROM docker.io/node:16-bookworm
 RUN npm --version \
     && npm install -g npm@8 \
-    && npm install -g @angular/cli@13 \
+    && npm install -g @angular/cli@14 \
     && rm -rf ~/.npm
 RUN mkdir /frontend
 COPY src /frontend/src

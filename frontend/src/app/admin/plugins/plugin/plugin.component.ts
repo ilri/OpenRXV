@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-plugin',
@@ -8,13 +8,13 @@ import { FormArray, FormBuilder } from '@angular/forms';
 })
 export class PluginComponent implements OnInit {
   @Input() plugin: any = null;
-  formdata: FormArray = new FormArray([]);
+  formdata: UntypedFormArray = new UntypedFormArray([]);
   active = false;
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: UntypedFormBuilder) {}
   activeChange() {
-    if (!this.active) this.formdata = new FormArray([]);
+    if (!this.active) this.formdata = new UntypedFormArray([]);
     else if (
       this.active &&
       this.plugin.multiple == 'false' &&

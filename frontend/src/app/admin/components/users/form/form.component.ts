@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
-  FormGroup,
-  FormControl,
+  UntypedFormGroup,
+  UntypedFormControl,
   Validators,
   AsyncValidatorFn,
   AbstractControl,
@@ -28,15 +28,15 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
   styleUrls: ['./form.component.scss'],
 })
 export class FormComponent implements OnInit {
-  form: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    email: new FormControl(
+  form: UntypedFormGroup = new UntypedFormGroup({
+    name: new UntypedFormControl(''),
+    email: new UntypedFormControl(
       null,
       [Validators.email],
       [existValidator(this.userService)],
     ),
-    role: new FormControl(''),
-    password: new FormControl(''),
+    role: new UntypedFormControl(''),
+    password: new UntypedFormControl(''),
   });
   get email() {
     return this.form.get('email');
@@ -61,7 +61,7 @@ export class FormComponent implements OnInit {
       this.form.removeControl('email');
       this.form.registerControl(
         'email',
-        new FormControl(null, [Validators.email]),
+        new UntypedFormControl(null, [Validators.email]),
       ); // [existValidator(!this.data ? this.userService : null)]
       const temp = this.data;
       temp['password'] = '';

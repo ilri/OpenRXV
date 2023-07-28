@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SettingsService } from '../../../admin/services/settings.service';
 import { FormDialogComponent } from '../../design/components/form-dialog/form-dialog.component';
 import { MetadataService } from '../../services/metadata.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -26,10 +26,10 @@ export class ReprotingFormComponent implements OnInit {
   initialForm;
   metadata: any;
   labels = [];
-  profileForm = new FormGroup({
-    title: new FormControl(''),
-    fileType: new FormControl(''),
-    file: new FormControl(''),
+  profileForm = new UntypedFormGroup({
+    title: new UntypedFormControl(''),
+    fileType: new UntypedFormControl(''),
+    file: new UntypedFormControl(''),
   });
   async ngOnInit() {
     this.profileForm.get('title').setValue(this.data.form_data.title);
