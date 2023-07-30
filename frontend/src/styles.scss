@@ -1,20 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 @import './app/explorer/configs/customTheme.scss';
-@import '~@ng-select/ng-select/themes/material.theme.css';
-@import '~bootstrap/scss/bootstrap-reboot';
-@import '~bootstrap/scss/bootstrap-grid';
+@import '@ng-select/ng-select/themes/material.theme.css';
+@import 'bootstrap/scss/bootstrap-reboot';
+@import 'bootstrap/scss/bootstrap-grid';
 @import 'nouislider/dist/nouislider.min.css';
 // @import '~highcharts/css/themes/dark-unica.scss';
 
-@import '~ngx-toastr/toastr';
+@import 'ngx-toastr/toastr';
 
 @import './scss/responsive.scss';
 
 $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
 
-@import '~material-design-icons-iconfont/src/material-design-icons';
+@import 'material-design-icons-iconfont/src/material-design-icons';
 
-@import "~snazzy-info-window/dist/snazzy-info-window.css";
+@import "snazzy-info-window/dist/snazzy-info-window.css";
 html,
 body {
   font-family: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
