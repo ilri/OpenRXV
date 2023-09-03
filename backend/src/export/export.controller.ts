@@ -34,7 +34,6 @@ export class ExportController {
       const index_name = await this.jsonfielServoce.getIndexFromDashboard(
         dashboard,
       );
-console.log(index_name);
       if (query) query['_source'] = [];
       const searchQuery: any = { ...query, size: 2000 };
       this.exportService.downloadFile(

@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{ data.event }} Dashboard</h1>
 <!-- <p *ngIf="form">{{this.form | json}}</p> -->
 
-<form [formGroup]="form" *ngIf="this.form.value" (ngSubmit)="submit()" class="">
+<form [formGroup]="form" *ngIf="this?.form?.value" (ngSubmit)="submit()" class="">
     <!-- <p >{{this.form.value | json}}</p> -->
     <div mat-dialog-content class="w-100">
         <p class="w-100 ">
