@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReprotingFormComponent } from './reproting-form/reproting-form.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { MetadataService } from '../services/metadata.service';
 import { DocComponent } from './doc/doc.component';
@@ -14,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ReportingComponent implements OnInit {
   reports: any;
+  tableData = new MatTableDataSource<any>([]);
   fileName;
   dataSource: any;
   confirmation = false;
@@ -21,6 +24,12 @@ export class ReportingComponent implements OnInit {
   envireoment = environment.api;
   metadata: any;
   dashboard_name: string;
+  displayedColumns: string[] = [
+    'title',
+    'fileType',
+    'actions',
+  ];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   constructor(
     private settingsService: SettingsService,
     public dialog: MatDialog,
@@ -30,9 +39,11 @@ export class ReportingComponent implements OnInit {
 
   async ngOnInit() {
     this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
-    this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.dataSource = await this.settingsService.retreiveMetadata;
     this.metadata = await this.metadataService.get(this.dashboard_name);
+    this.reports = await this.settingsService.readReports(this.dashboard_name);
+    this.tableData = new MatTableDataSource<any>(this.reports);
+    this.tableData.paginator = this.paginator;
   }
 
   newReport() {
@@ -45,6 +56,11 @@ export class ReportingComponent implements OnInit {
       },
       width: '650px',
       height: '550px',
+    });
+    dialogRef.afterClosed().subscribe(async () => {
+      this.reports = await this.settingsService.readReports(this.dashboard_name);
+      this.tableData = new MatTableDataSource<any>(this.reports);
+      this.tableData.paginator = this.paginator;
     });
   }
 
@@ -62,6 +78,8 @@ export class ReportingComponent implements OnInit {
           this.reports,
           this.dashboard_name,
         );
+        this.tableData = new MatTableDataSource<any>(this.reports);
+        this.tableData.paginator = this.paginator;
       }
     });
   }
@@ -76,6 +94,11 @@ export class ReportingComponent implements OnInit {
       },
       width: '650px',
       height: '550px',
+    });
+    this.dialogRef.afterClosed().subscribe(async () => {
+      this.reports = await this.settingsService.readReports(this.dashboard_name);
+      this.tableData = new MatTableDataSource<any>(this.reports);
+      this.tableData.paginator = this.paginator;
     });
   }
   copyMessage(val: string) {
