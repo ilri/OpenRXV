@@ -222,7 +222,7 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('indexes')
-  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean) {
+  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deletedId') deletedId: string) {
     let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
     if(isNew) {
       const newIndex = {
@@ -233,8 +233,26 @@ export class SettingsController {
       };
       indexes.push(newIndex);
     } else {
-      indexes = body.data;
+      if (deletedId != null) {
+        const dashboards = await this.jsonfielServoce.read('../../../data/dashboards.json');
 
+        let relatedDashboards = [];
+        dashboards.map((dashboard) => {
+          if (dashboard.index === deletedId) {
+            relatedDashboards.push({
+              id: dashboard.id,
+              name: dashboard.name,
+            });
+          }
+        });
+        if (relatedDashboards.length > 0) {
+          return {
+            success: false,
+            relatedDashboards
+          };
+        }
+      }
+      indexes = body.data;
     }
     await this.jsonfielServoce.save(indexes, '../../../data/indexes.json');
     this.elasticSearvice.startUpIndexes();

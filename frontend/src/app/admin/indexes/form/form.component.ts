@@ -19,7 +19,7 @@ export class FormIndexComponent implements OnInit {
   async submit() {
     if (this.form.valid && this.data.event == 'New') {
       this.dialogRef.close(
-        await this.settingsService.saveIndexesSettings(this.form.value, true),
+        await this.settingsService.saveIndexesSettings(this.form.value, true, null),
       );
       console.log('this.form.value', this.form.value);
     } else if (this.form.valid && this.data.event == 'Edit') {
@@ -39,6 +39,7 @@ export class FormIndexComponent implements OnInit {
       const ind = await this.settingsService.saveIndexesSettings(
         newIndexesArray,
         false,
+        null,
       );
       this.dialogRef.close();
     }

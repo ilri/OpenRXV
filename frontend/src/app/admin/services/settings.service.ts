@@ -63,9 +63,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async saveIndexesSettings(data, isNew: boolean) {
+  async saveIndexesSettings(data, isNew: boolean, deletedId: string) {
     return await this.http
-      .post(environment.api + '/settings/indexes', { data, isNew })
+      .post(environment.api + '/settings/indexes', { data, isNew, deletedId })
       .pipe(
         map((data: any) => {
           return data;

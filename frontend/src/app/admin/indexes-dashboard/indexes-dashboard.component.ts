@@ -5,6 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { FormDashboardsComponent } from './form/form.component';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 
 @Component({
   selector: 'app-indexes-dashboard',
@@ -15,6 +17,7 @@ export class IndexesDashboardComponent implements OnInit {
   constructor(
     private settingsService: SettingsService,
     public dialog: MatDialog,
+    private toastr: ToastrService,
   ) {}
 
   dashboards: any;
@@ -44,14 +47,26 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   deleteDashboard(id) {
-    var dashboard = this.dashboards
-      .map((x) => {
-        return x.id;
-      })
-      .indexOf(id);
-    this.dashboards.splice(dashboard, 1);
-    this.dataSource = new MatTableDataSource<any>(this.dashboards);
-    this.settingsService.saveDashboardsSettings(this.dashboards, false);
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to delete this dashboard?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const dashboard = this.dashboards
+          .map((x) => {
+            return x.id;
+          })
+          .indexOf(id);
+        this.dashboards.splice(dashboard, 1);
+        this.dataSource = new MatTableDataSource<any>(this.dashboards);
+        this.settingsService.saveDashboardsSettings(this.dashboards, false);
+        this.toastr.success('Dashboard deleted successfully');
+      }
+    });
   }
 
   editDashboard(id) {
