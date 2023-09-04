@@ -1,10 +1,10 @@
 <mat-drawer-container>
- 
+
   <mat-drawer *ngIf="false" mode="side" opened position="end">
     <app-scroll-to></app-scroll-to>
   </mat-drawer>
 
-  <mat-drawer-content id="main-content">
+  <mat-drawer-content id="main-content-dashboard">
     <section class="container-fluid">
       <ng-container *ngFor="let conf of tourConfig">
         <div *ngIf="conf.show" [tourAnchor]="conf.componentConfigs.id">
@@ -17,7 +17,7 @@
           {{ conf.componentConfig | json }}
         </div>
       </ng-container>
-      <section class="mb-2 d-flex justify-content-between flex-wrap">
+      <section class="row mb-2 d-flex justify-content-between flex-wrap">
         <!-- Counter loop START -->
         <ng-container *ngFor="let conf of countersConfig">
           <div *ngIf="conf.show" class="w-xs-100">

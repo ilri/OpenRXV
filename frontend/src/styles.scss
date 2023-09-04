@@ -32,8 +32,10 @@ mat-spinner {
   margin: 0 auto;
 }
 
-#main-content {
-  margin-left: 260px;
+#main-content-dashboard {
+  padding-top: 8px;
+  padding-left: 40px !important;
+  padding-right: 5px !important;
 }
 
 ::-webkit-scrollbar {
