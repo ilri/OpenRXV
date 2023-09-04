@@ -42,8 +42,12 @@ export class ValuesController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('term/')
-  async GetValuesnull() {
-    return await this.elastic.findByTerm();
+  async GetValuesnull(@Query() query: any) {
+    if (query?.term && query.term !== '') {
+      return await this.elastic.findByTerm(query.term);
+    } else {
+      return await this.elastic.findByTerm();
+    }
   }
   @UseGuards(AuthGuard('jwt'))
   @Post('')

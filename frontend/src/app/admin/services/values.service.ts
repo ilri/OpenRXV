@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpUrlEncodingCodec } from '@angular/common/http';
 import * as querystring from 'querystring';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
@@ -8,10 +8,11 @@ import { map } from 'rxjs/operators';
 })
 export class ValuesService {
   constructor(private http: HttpClient) {}
+  codec = new HttpUrlEncodingCodec;
 
   async findByTerm(term = '') {
     return await this.http
-      .get(environment.api + '/values/term/' + term)
+      .get(environment.api + '/values/term?term=' + this.codec.encodeValue(term))
       .pipe(
         map((data: any) => {
           data.hits = data.hits.map((element) => {
