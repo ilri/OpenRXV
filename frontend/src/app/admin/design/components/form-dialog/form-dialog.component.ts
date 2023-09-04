@@ -60,7 +60,7 @@ export class FormDialogComponent implements OnInit {
       else FormGroupControls[element.name] = new UntypedFormControl(null);
     });
     this.form = new UntypedFormGroup(FormGroupControls);
-    this.metadata = await this.metadataService.get(this.dashbard_name);
+    this.metadata = await this.metadataService.get(this.dashbard_name, null);
     this.formControls = this.data.form_data;
     this.pre = this.form.value;
   }

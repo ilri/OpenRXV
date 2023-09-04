@@ -21,19 +21,25 @@
 
     <table mat-table [dataSource]="dataSource">
 
-      <!-- Name Column -->
+      <!-- Find Column -->
       <ng-container matColumnDef="find">
         <th mat-header-cell *matHeaderCellDef> Find </th>
         <td mat-cell *matCellDef="let element"> {{element.find}} </td>
       </ng-container>
 
-      <!-- email Column -->
+      <!-- Replace Column -->
       <ng-container matColumnDef="replace">
         <th mat-header-cell *matHeaderCellDef> Replace </th>
         <td mat-cell *matCellDef="let element"> {{element.replace}} </td>
       </ng-container>
 
-      <!-- role Column -->
+      <!-- Field Column -->
+      <ng-container matColumnDef="metadataField">
+        <th mat-header-cell *matHeaderCellDef> Metadata field </th>
+        <td mat-cell *matCellDef="let element"> {{element.metadataField}} </td>
+      </ng-container>
+
+      <!-- Created at Column -->
       <ng-container matColumnDef="created_at">
         <th mat-header-cell *matHeaderCellDef> Created At </th>
         <td mat-cell *matCellDef="let element"> {{element.created_at | date:'short'}} </td>

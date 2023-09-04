@@ -423,10 +423,12 @@ export class SettingsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get(['metadata/:name', 'metadata'])
-  async getMetadata(@Param('name') name: string = 'index') {
-    const index_name = await this.jsonfielServoce.getIndexFromDashboard(name);
-    console.log(index_name);
+  @Get(['metadata/:name/:index', 'metadata/:name', 'metadata'])
+  async getMetadata(
+      @Param('name') name: string = 'index',
+      @Param('index') index_name: string = null,
+  ) {
+    index_name = index_name != null && index_name !== '' && index_name !== 'null' ? index_name : await this.jsonfielServoce.getIndexFromDashboard(name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;

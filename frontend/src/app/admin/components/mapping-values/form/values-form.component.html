@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>{{ data? 'Edit' :'New' }} Value Mappings</h1>
-<form [formGroup]="form" (keyup.enter)="submit()" (ngSubmit)="submit()">
+<form [formGroup]="form" (keyup.enter)="submit(data.values_index_name)" (ngSubmit)="submit(data.values_index_name)">
     <div mat-dialog-content>
         <p>
             <mat-form-field>
@@ -9,14 +9,24 @@
         <p>
             <mat-form-field>
                 <input type="text" matInput placeholder="Replace" required formControlName="replace">
-
             </mat-form-field>
-
+        </p>
+        <p>
+            <mat-form-field>
+              <mat-select placeholder="Metadata field" required formControlName="metadataField">
+                <mat-option *ngFor="let field of data.metadataFields" [value]="field">
+                  {{ field }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
         </p>
 
     </div>
     <div mat-dialog-actions align="end">
         <button type="button" mat-raised-button color="default"  (click)="onNoClick($event)">Close <mat-icon>close</mat-icon></button>
-        <button type="button" color="primary" (keyup.enter)="submit()" (click)="submit()" mat-raised-button>Submit <mat-icon>done</mat-icon></button>
+      <button type="button" color="primary" (keyup.enter)="submit(data.values_index_name)" (click)="submit(data.values_index_name)"
+              mat-raised-button>Submit
+        <mat-icon>done</mat-icon>
+      </button>
     </div>
 </form>

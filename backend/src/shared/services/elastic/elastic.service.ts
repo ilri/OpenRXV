@@ -115,28 +115,28 @@ export class ElasticService {
     }
   }
 
-  async add(item) {
+  async add(item, index_name = this.index) {
     item['created_at'] = new Date();
     const { body } = await this.elasticsearchService.index({
-      index: this.index,
+      index: index_name,
       refresh: 'wait_for',
       body: item,
     });
     return body;
   }
-  async update(id, item) {
+  async update(id, item, index_name = this.index) {
     const update: Update = {
       id,
-      index: this.index,
+      index: index_name,
       refresh: 'wait_for',
       body: { doc: item },
     };
     return this.elasticsearchService.update(update);
   }
 
-  async delete(id) {
+  async delete(id, index_name = this.index) {
     const { body } = await this.elasticsearchService.delete({
-      index: this.index,
+      index: index_name,
       refresh: 'wait_for',
       id,
     });
@@ -144,9 +144,9 @@ export class ElasticService {
     return body._source;
   }
 
-  async findOne(id) {
+  async findOne(id, index_name = this.index) {
     const { body } = await this.elasticsearchService.get({
-      index: this.index,
+      index: index_name,
 
       id,
     });
@@ -154,7 +154,7 @@ export class ElasticService {
     return body._source;
   }
 
-  async findByTerm(term = '') {
+  async findByTerm(term = '', index_name = this.index) {
     try {
       let obj;
       if (term != '')
@@ -168,7 +168,7 @@ export class ElasticService {
           match_all: {},
         };
       const { body } = await this.elasticsearchService.search({
-        index: this.index,
+        index: index_name,
         method: 'POST',
         from: 0,
         size: 9999,
@@ -190,7 +190,7 @@ export class ElasticService {
       return { total: { value: 0, relation: 'eq' }, max_score: null, hits: [] };
     }
   }
-  async find(obj: Object = null) {
+  async find(obj: Object = null, index_name = this.index) {
     try {
       if (obj) obj = { bool: { filter: { term: obj } } };
       else
@@ -199,7 +199,7 @@ export class ElasticService {
         };
 
       const { body } = await this.elasticsearchService.search({
-        index: this.index,
+        index: index_name,
         from: 0,
         method: 'POST',
         size: 9999,

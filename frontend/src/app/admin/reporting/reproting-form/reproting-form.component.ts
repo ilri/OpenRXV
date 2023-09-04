@@ -39,7 +39,7 @@ export class ReprotingFormComponent implements OnInit {
     this.profileForm.get('file').setValue(this.data.form_data.file);
     this.formValues = Object.assign({}, this.data.form_data);
     this.initialForm = Object.getOwnPropertyDescriptors(this.data.form_data);
-    this.metadata = await this.metadataService.get(this.dashboard_name);
+    this.metadata = await this.metadataService.get(this.dashboard_name, null);
     if (this.data.form_data.fileType == 'xlsx')
       this.labels = this.formValues.tags;
   }

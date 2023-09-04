@@ -46,7 +46,7 @@ const routes: Routes = [
       },
       { path: 'shared', component: SharedComponent, canActivate: [AdminGuard] },
       {
-        path: 'mapping-values',
+        path: 'mapping-values/:name',
         component: MappingValuesComponent,
         canActivate: [AdminGuard],
       },

@@ -36,44 +36,63 @@ export class ValuesController {
   //     return values;
   // }
   @UseGuards(AuthGuard('jwt'))
-  @Get('term/:term')
-  async GetValues(@Param('term') term: any) {
-    return await this.elastic.findByTerm(term);
+  @Get('term/:term/:index')
+  async GetValues(@Param('term') term: any, @Param('index_name') index_name: string) {
+    return await this.elastic.findByTerm(term, index_name);
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('term/')
   async GetValuesnull(@Query() query: any) {
+    let index_name = null;
+    if (query.hasOwnProperty('index_name')) {
+      index_name = query.index_name;
+    }
     if (query?.term && query.term !== '') {
-      return await this.elastic.findByTerm(query.term);
+      return await this.elastic.findByTerm(query.term, index_name);
     } else {
-      return await this.elastic.findByTerm();
+      return await this.elastic.findByTerm('', index_name);
     }
   }
   @UseGuards(AuthGuard('jwt'))
   @Post('')
-  NewUser(@Body() body: any) {
-    return this.elastic.add(body);
+  NewValue(@Body() body: any) {
+    let index_name = null;
+    if (body.hasOwnProperty('index_name')) {
+      index_name = body.index_name;
+      delete body.index_name;
+    }
+    return this.elastic.add(body, index_name);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get(':id')
-  async GetOneUser(@Param('id') id: string) {
-    const user: any = await this.elastic.findOne(id);
-    user['id'] = id;
-    return user;
+  @Get(':id/:index_name')
+  async GetOneValue(@Param('id') id: string, @Param('index_name') index_name: string) {
+    const value: any = await this.elastic.findOne(id, index_name);
+    value['id'] = id;
+    return value;
   }
   @UseGuards(AuthGuard('jwt'))
-  @Delete(':id')
-  DeleteOneUser(@Param('id') id: string) {
-    return this.elastic.delete(id);
+  @Delete(':id/:index_name')
+  DeleteOneValue(@Param('id') id: string, @Param('index_name') index_name: string) {
+    return this.elastic.delete(id, index_name);
   }
   @Put(':id')
-  updateOneUser(@Param('id') id: string, @Body() body) {
-    return this.elastic.update(id, body);
+  updateOneValue(@Param('id') id: string, @Body() body) {
+    let index_name = null;
+    if (body.hasOwnProperty('index_name')) {
+      index_name = body.index_name;
+      delete body.index_name;
+    }
+    return this.elastic.update(id, body, index_name);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('')
   async GetVales(@Query() query: any) {
+    let index_name = null;
+    if (query.hasOwnProperty('index_name')) {
+      index_name = query.index_name;
+      delete query.index_name;
+    }
     let filters = null;
 
     if (!isEmpty(query)) {
@@ -83,6 +102,6 @@ export class ValuesController {
       });
     }
 
-    return await this.elastic.find(filters);
+    return await this.elastic.find(filters, index_name);
   }
 }

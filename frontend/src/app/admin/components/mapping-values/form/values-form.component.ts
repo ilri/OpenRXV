@@ -12,29 +12,36 @@ export class ValuesForm implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({
     find: new UntypedFormControl(''),
     replace: new UntypedFormControl(''),
+    metadataField: new UntypedFormControl(''),
   });
 
-  async submit() {
-    if (this.form.valid && this.data == null)
-      this.dialogRef.close(await this.userService.post(this.form.value));
+  async submit(index_name) {
+    if (this.form.valid && (this.data == null || !this.data?.find))
+      this.dialogRef.close(await this.valuesService.post(this.form.value, index_name));
     else if (this.form.valid && this.data)
       this.dialogRef.close(
-        await this.userService.put(this.data.id, this.form.value),
+        await this.valuesService.put(this.data.id, this.form.value, index_name),
       );
   }
 
   constructor(
     public dialogRef: MatDialogRef<ValuesForm>,
-    private userService: ValuesService,
+    private valuesService: ValuesService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   ngOnInit(): void {
     if (this.data) {
-      const temp = this.data;
-      delete temp.created_at;
-      // delete temp.id
-      this.form.setValue(this.data);
+      if (!this.data?.metadataField) {
+        this.data.metadataField = null;
+      }
+      if (this.data?.find) {
+        this.form.setValue({
+          find: this.data.find,
+          replace: this.data.replace,
+          metadataField: this.data.metadataField,
+        });
+      }
     }
   }
 
