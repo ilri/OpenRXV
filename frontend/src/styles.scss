@@ -33,9 +33,7 @@ mat-spinner {
 }
 
 #main-content {
-  padding-top: 8px;
-  padding-left: 40px !important;
-  padding-right: 40px !important;
+  margin-left: 260px;
 }
 
 ::-webkit-scrollbar {
@@ -200,7 +198,7 @@ app-paginated-list app-tags {
     vertical-align: middle;
     height: 32px !important;
   }
-  
+
 }
 
 .noUi-horizontal .noUi-tooltip{

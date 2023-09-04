@@ -4,6 +4,8 @@ import {
   UntypedFormControl,
   UntypedFormArray,
 } from '@angular/forms';
+import { trigger, transition, style, animate, state } from '@angular/animations';
+
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
@@ -12,11 +14,31 @@ import { environment } from 'src/environments/environment';
   selector: 'app-setup',
   templateUrl: './setup.component.html',
   styleUrls: ['./setup.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state('true', style({
+        'max-height': '*',
+        opacity: 1
+      })),
+      state('false', style({
+        'max-height': '0',
+        'overflow-y': 'hidden'
+      })),
+      transition('true <=> false', [
+        animate('.5s')
+      ]),
+    ]),
+  ]
 })
 export class SetupComponent implements OnInit {
   isLinear = true;
   types: any = [];
   indexes;
+  isShown = {
+    schema: [],
+    fields: [],
+  };
+
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
       metadata: new UntypedFormControl(metadada),
@@ -68,12 +90,13 @@ export class SetupComponent implements OnInit {
           if (index > 0)
             this.AddNewMetadata(
               this.repositories.at(repoindex).get('metadata'),
+              null
             );
         });
       if (element.schema)
         element.schema.forEach((element, index) => {
           if (index > 0)
-            this.AddNewMetadata(this.repositories.at(repoindex).get('schema'));
+            this.AddNewMetadata(this.repositories.at(repoindex).get('schema'), null);
         });
     });
     await this.repositories.patchValue(data.repositories);
@@ -156,7 +179,19 @@ export class SetupComponent implements OnInit {
     this.repositories.removeAt(index);
   }
 
-  AddNewMetadata(schema: any) {
+  AddNewMetadata(schema: any, selector: HTMLElement) {
     schema.push(new UntypedFormGroup(this.baseSchema()));
+    if (selector != null) {
+      setTimeout(() => {
+        selector.scrollTop = selector.scrollHeight;
+      }, 200);
+    }
+  }
+
+  ToggleDisplay(index) {
+    if (!this.isShown.hasOwnProperty(index)) {
+      this.isShown[index] = false;
+    }
+    this.isShown[index] = !this.isShown[index];
   }
 }

@@ -1,365 +1,377 @@
 <div class="row">
-  <div class="col-md-12 p-5">
+  <div class="col-md-12 pb-5">
     <mat-card>
       <mat-card-title>
-        <div class="row p-3">
-          <h5 class="col-md-8">Repository Setup</h5>
-        </div>
+        Repository Setup
+        <button style="float: right" (click)="AddNewRepo()" color="primary" mat-raised-button>
+          Add new repository
+          <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
+        </button>
       </mat-card-title>
-      <mat-card-content>
-        <form
-          class="pt-3"
-          *ngFor="let repoform of repositories.controls; let repoindex = index"
-          [formGroup]="repoform"
+    </mat-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 pb-3">
+    <form
+      class="pt-3"
+      *ngFor="let repoform of repositories.controls; let repoindex = index"
+      [formGroup]="repoform"
+    >
+      <mat-card class="col-12">
+        <mat-card-title (click)="ToggleDisplay(repoindex)"
         >
-          <mat-card class="col-12">
-            <mat-card-title
-              >Repository ({{ repoindex + 1 }})
-              <button
-                class="pull-right"
-                (click)="deleteRepo(repoindex)"
-                color="warn"
-                mat-icon-button
+          <mat-icon class="show-hide-repository-icon"
+                    aria-hidden="false" aria-label="Expand"
+                    *ngIf="isShown.hasOwnProperty(repoindex) && isShown[repoindex]">
+            expand_less
+          </mat-icon>
+          <mat-icon class="show-hide-repository-icon"
+                    aria-hidden="false" aria-label="Collapse"
+                    *ngIf="!(isShown.hasOwnProperty(repoindex) && isShown[repoindex])">
+            expand_more
+          </mat-icon>
+          Repository ({{ repoindex + 1 }})
+          <button
+            style="float: right"
+            (click)="deleteRepo(repoindex)"
+            color="warn"
+            mat-icon-button
+          >
+            <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
+          </button>
+        </mat-card-title>
+        <div class="row" [@openClose]="isShown.hasOwnProperty(repoindex) && isShown[repoindex]">
+          <div class="col-12">
+            <mat-form-field class="w-100">
+              <mat-label>Repository name</mat-label>
+              <input
+                matInput
+                formControlName="name"
+                placeholder="{{ repoform.get('type').value }} Name"
+                required
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field appearance="fill">
+              <mat-label>Repository type</mat-label>
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let type of types" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field appearance="fill">
+              <mat-label>Select Index</mat-label>
+              <mat-select class="w-100" formControlName="index_name">
+                <mat-option
+                  *ngFor="let index of indexes"
+                  [value]="index.name"
+                >
+                  {{ index.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field class="w-100">
+              <mat-label
+              >Start from page number (0, unless you know what you are
+                doing)</mat-label
               >
-                <mat-icon aria-hidden="false" aria-label="delete"
-                  >delete
-                </mat-icon>
-              </button>
-            </mat-card-title>
-            <div class="row">
-              <div class="col-12">
-                <mat-form-field class="w-100">
-                  <mat-label>Repository name</mat-label>
-                  <input
-                    matInput
-                    formControlName="name"
-                    placeholder="{{ repoform.get('type').value }} Name"
-                    required
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-12">
-                <mat-form-field appearance="fill">
-                  <mat-label>Repository type</mat-label>
-                  <mat-select formControlName="type">
-                    <mat-option *ngFor="let type of types" [value]="type">
-                      {{ type }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="col-12">
-                <mat-form-field appearance="fill">
-                  <mat-label>Select Index</mat-label>
-                  <mat-select class="w-100" formControlName="index_name">
-                    <mat-option
-                      *ngFor="let index of indexes"
-                      [value]="index.name"
-                    >
-                      {{ index.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="col-12">
-                <mat-form-field class="w-100">
-                  <mat-label
-                    >Start from page number (0, unless you know what you are
-                    doing)</mat-label
-                  >
-                  <input
-                    matInput
-                    type="number"
-                    formControlName="startPage"
-                    placeholder="0"
-                    required
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-12">
-                <mat-form-field class="w-100">
-                  <mat-label
-                    >{{
-                      repoform.get('type').value != null
-                        ? repoform.get('type').value
-                        : ''
-                    }}
-                    REST API endpoint</mat-label
-                  >
-                  <input
-                    matInput
-                    formControlName="itemsEndPoint"
-                    placeholder="http://repo.org/rest"
-                    required
-                  />
-                </mat-form-field>
-              </div>
-              <div class="col-12">
-                <mat-form-field class="w-100">
-                  <mat-label>API key</mat-label>
-                  <input
-                    matInput
-                    formControlName="apiKey"
-                    placeholder="API key (optional)"
-                  />
-                </mat-form-field>
-              </div>
-              <div
-                class="col-12"
-                *ngIf="
+              <input
+                matInput
+                type="number"
+                formControlName="startPage"
+                placeholder="0"
+                required
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field class="w-100">
+              <mat-label
+              >{{
+                repoform.get('type').value != null
+                  ? repoform.get('type').value
+                  : ''
+                }}
+                REST API endpoint</mat-label
+              >
+              <input
+                matInput
+                formControlName="itemsEndPoint"
+                placeholder="http://repo.org/rest"
+                required
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field class="w-100">
+              <mat-label>API key</mat-label>
+              <input
+                matInput
+                formControlName="apiKey"
+                placeholder="API key (optional)"
+              />
+            </mat-form-field>
+          </div>
+          <div
+            class="col-12"
+            *ngIf="
                   repoform.get('type').value == 'DSpace' ||
                   repoform.get('type') == ''
                 "
-              >
-                <mat-form-field class="w-100">
-                  <mat-label>DSpace XML sitemap</mat-label>
-                  <input
-                    matInput
-                    formControlName="siteMap"
-                    placeholder="http://repo.org/sitemap"
-                    required
-                  />
-                </mat-form-field>
-              </div>
+          >
+            <mat-form-field class="w-100">
+              <mat-label>DSpace XML sitemap</mat-label>
+              <input
+                matInput
+                formControlName="siteMap"
+                placeholder="http://repo.org/sitemap"
+                required
+              />
+            </mat-form-field>
+          </div>
 
-              <div class="col-12 pb-3">
-                <div class="file">
-                  <mat-label>Repository icon:</mat-label>
-                  <input
-                    *ngIf="!logo[repoindex]"
-                    type="file"
-                    (change)="IconChange($event, repoindex)"
-                    placeholder="Icon"
-                    required
-                  />
-                  <div *ngIf="logo[repoindex]" class="logo">
-                    <button
-                      (click)="logo[repoindex] = null"
-                      color="warn"
-                      mat-icon-button
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                    <img [src]="src(logo[repoindex])" alt="logo" />
-                  </div>
-                </div>
+          <div class="col-12 pb-3">
+            <div class="file">
+              <mat-label>Repository icon:</mat-label>
+              <input
+                *ngIf="!logo[repoindex]"
+                type="file"
+                (change)="IconChange($event, repoindex)"
+                placeholder="Icon"
+                required
+              />
+              <div *ngIf="logo[repoindex]" class="logo">
+                <button
+                  (click)="logo[repoindex] = null"
+                  color="warn"
+                  mat-icon-button
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <img [src]="src(logo[repoindex])" alt="logo" />
               </div>
-              <div class="col-12 p-5 pb-3">
-                <mat-card class="w-100">
-                  <mat-card-title>
-                    Metadata structure
-                    <button
-                      class="pull-right"
-                      (click)="getMetadata(repoindex)"
-                      color="info"
-                      mat-button
-                      [disabled]="
+            </div>
+          </div>
+          <div class="col-12">
+            <mat-card class="w-100">
+              <mat-card-title>
+                Metadata structure
+                <button
+                  class="pull-right"
+                  (click)="getMetadata(repoindex)"
+                  color="info"
+                  mat-button
+                  [disabled]="
                         repoform.get('type').value == null ||
                         repoform.get('itemsEndPoint').value == null ||
                         repoform.get('itemsEndPoint').value == ''
                       "
-                    >
-                      Auto import metadata structure
-                      <mat-icon aria-hidden="false" aria-label="delete"
-                        >cloud_download
-                      </mat-icon>
-                    </button>
-                  </mat-card-title>
-                  <h4>Schema</h4>
-                  <form
-                    class="col-12 pb-3"
-                    *ngFor="
+                >
+                  Auto import metadata structure
+                  <mat-icon aria-hidden="false" aria-label="delete"
+                  >cloud_download
+                  </mat-icon>
+                </button>
+              </mat-card-title>
+              <h4>Schema</h4>
+              <div #schema_elements class="list-fields mb-2">
+                <form
+                  class="col-12 pb-3"
+                  *ngFor="
                       let form of repoform.controls.schema.controls;
                       let i = index
                     "
-                    [formGroup]="form"
-                  >
-                    <div class="row">
-                      <div class="col-md-3">
-                        <mat-form-field>
-                          <mat-label>Schema</mat-label>
-                          <input
-                            matInput
-                            formControlName="metadata"
-                            placeholder="e.g: id"
-                            required
-                          />
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-3">
-                        <mat-form-field>
-                          <mat-label>Elasticsearch label</mat-label>
-                          <input
-                            matInput
-                            formControlName="disply_name"
-                            placeholder="e.g: title"
-                            required
-                          />
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-3">
-                        <mat-form-field>
-                          <mat-label>Formatter</mat-label>
-                          <mat-select formControlName="addOn">
-                            <mat-option value="thumbnil">thumbnil</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-3">
-                        <button
-                          class="pull-right"
-                          (click)="delete(repoform.controls.schema, i)"
-                          color="warn"
-                          mat-icon-button
-                        >
-                          <mat-icon aria-hidden="false" aria-label="delete"
-                            >delete
-                          </mat-icon>
-                        </button>
-                      </div>
+                  [formGroup]="form"
+                >
+                  <div class="row">
+                    <div class="col-md-3">
+                      <mat-form-field>
+                        <mat-label>Schema</mat-label>
+                        <input
+                          matInput
+                          formControlName="metadata"
+                          placeholder="e.g: id"
+                          required
+                        />
+                      </mat-form-field>
                     </div>
-                  </form>
-                  <div class="col-md-12 text-center">
-                    <button
-                      class="float-left"
-                      (click)="AddNewMetadata(repoform.controls.schema)"
-                      mat-raised-button
-                    >
-                      New schema
-                      <mat-icon aria-hidden="false" aria-label="add"
-                        >add
-                      </mat-icon>
-                    </button>
+                    <div class="col-md-3">
+                      <mat-form-field>
+                        <mat-label>Elasticsearch label</mat-label>
+                        <input
+                          matInput
+                          formControlName="disply_name"
+                          placeholder="e.g: title"
+                          required
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field>
+                        <mat-label>Formatter</mat-label>
+                        <mat-select formControlName="addOn">
+                          <mat-option value="thumbnil">thumbnil</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <button
+                        class="pull-right"
+                        (click)="delete(repoform.controls.schema, i)"
+                        color="warn"
+                        mat-icon-button
+                      >
+                        <mat-icon aria-hidden="false" aria-label="delete"
+                        >delete
+                        </mat-icon>
+                      </button>
+                    </div>
                   </div>
-                  <h4 class="pt-5">Metadata fields</h4>
-                  <form
-                    class="col-12 pb-3"
-                    *ngFor="
+                </form>
+              </div>
+              <div class="text-center">
+                <button
+                  class="float-left"
+                  (click)="AddNewMetadata(repoform.controls.schema, schema_elements)"
+                  mat-raised-button
+                >
+                  New schema
+                  <mat-icon aria-hidden="false" aria-label="add"
+                  >add
+                  </mat-icon>
+                </button>
+              </div>
+              <h4 class="pt-5">Metadata fields</h4>
+              <div #field_elements class="list-fields mb-2">
+                <form
+                  class="col-12 pb-3"
+                  *ngFor="
                       let form of repoform.controls.metadata.controls;
                       let i = index
                     "
-                    [formGroup]="form"
-                  >
-                    <div class="row">
-                      <div class="col-md-3">
-                        <mat-form-field>
-                          <mat-label>Schema</mat-label>
-                          <input
-                            matInput
-                            formControlName="metadata"
-                            placeholder="e.g: id"
-                            required
-                          />
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-3">
-                        <mat-form-field>
-                          <mat-label>Elasticsearch label</mat-label>
-                          <input
-                            matInput
-                            formControlName="disply_name"
-                            placeholder="e.g: title"
-                            required
-                          />
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md-5">
-                        <div class="row">
-                          <div class="col-4">
-                            <mat-form-field>
-                              <mat-label>Formatter</mat-label>
-                              <mat-select
-                                (selectionChange)="
+                  [formGroup]="form"
+                >
+                  <div class="row">
+                    <div class="col-md-3">
+                      <mat-form-field>
+                        <mat-label>Schema</mat-label>
+                        <input
+                          matInput
+                          formControlName="metadata"
+                          placeholder="e.g: id"
+                          required
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                      <mat-form-field>
+                        <mat-label>Elasticsearch label</mat-label>
+                        <input
+                          matInput
+                          formControlName="disply_name"
+                          placeholder="e.g: title"
+                          required
+                        />
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-5">
+                      <div class="row">
+                        <div class="col-4">
+                          <mat-form-field>
+                            <mat-label>Formatter</mat-label>
+                            <mat-select
+                              (selectionChange)="
                                   selectFormat(
                                     repoindex,
                                     'years_' + form.controls.disply_name.value
                                   )
                                 "
-                                formControlName="addOn"
+                              formControlName="addOn"
+                            >
+                              <mat-option [value]="null">None</mat-option>
+                              <mat-option value="language"
+                              >Language</mat-option
                               >
-                                <mat-option [value]="null">None</mat-option>
-                                <mat-option value="language"
-                                  >Language</mat-option
-                                >
-                                <mat-option value="country">Country</mat-option>
-                                <mat-option value="date">Date</mat-option>
-                                <mat-option value="lowercase"
-                                  >Lowercase</mat-option
-                                >
-                              </mat-select>
-                            </mat-form-field>
-                          </div>
-                          <div class="col-8">
-                            <form [formGroup]="repoform">
-                              <mat-radio-group
-                                *ngIf="form.controls.addOn.value == 'date'"
-                                name="years"
-                                formControlName="years"
+                              <mat-option value="country">Country</mat-option>
+                              <mat-option value="date">Date</mat-option>
+                              <mat-option value="lowercase"
+                              >Lowercase</mat-option
                               >
-                                <mat-radio-button
-                                  [value]="
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-8">
+                          <form [formGroup]="repoform">
+                            <mat-radio-group
+                              *ngIf="form.controls.addOn.value == 'date'"
+                              name="years"
+                              formControlName="years"
+                            >
+                              <mat-radio-button
+                                [value]="
                                     'years_' + form.controls.disply_name.value
                                   "
-                                >
-                                  Extract years as years_{{
-                                    form.controls.disply_name.value
-                                  }}
-                                </mat-radio-button>
-                              </mat-radio-group>
-                            </form>
-                          </div>
+                              >
+                                Extract years as years_{{
+                                form.controls.disply_name.value
+                                }}
+                              </mat-radio-button>
+                            </mat-radio-group>
+                          </form>
                         </div>
                       </div>
-                      <div class="col-md-1">
-                        <button
-                          class="pull-right"
-                          (click)="delete(repoform.controls.metadata, i)"
-                          color="warn"
-                          mat-icon-button
-                        >
-                          <mat-icon aria-hidden="false" aria-label="delete"
-                            >delete
-                          </mat-icon>
-                        </button>
-                      </div>
                     </div>
-                  </form>
-                  <div class="col-md-12 text-center">
-                    <button
-                      class="float-left"
-                      (click)="AddNewMetadata(repoform.controls.metadata)"
-                      mat-raised-button
-                    >
-                      New metadata field
-                      <mat-icon aria-hidden="false" aria-label="add"
-                        >add
-                      </mat-icon>
-                    </button>
+                    <div class="col-md-1">
+                      <button
+                        class="pull-right"
+                        (click)="delete(repoform.controls.metadata, i)"
+                        color="warn"
+                        mat-icon-button
+                      >
+                        <mat-icon aria-hidden="false" aria-label="delete"
+                        >delete
+                        </mat-icon>
+                      </button>
+                    </div>
                   </div>
-                </mat-card>
+                </form>
               </div>
-            </div>
-          </mat-card>
-        </form>
-        <div class="row">
-          <div class="col-12 pt-3">
-            <button class="float-left" (click)="AddNewRepo()" mat-raised-button>
-              Add new repository
-              <mat-icon aria-hidden="false" aria-label="add">add </mat-icon>
-            </button>
-          </div>
-          <div class="col-12 pt-3">
-            <button
-              class="float-right"
-              color="primary"
-              (click)="submit()"
-              mat-raised-button
-            >
-              Save
-            </button>
+              <div class="text-center">
+                <button
+                  class="float-left"
+                  (click)="AddNewMetadata(repoform.controls.metadata, field_elements)"
+                  mat-raised-button
+                >
+                  New metadata field
+                  <mat-icon aria-hidden="false" aria-label="add"
+                  >add
+                  </mat-icon>
+                </button>
+              </div>
+            </mat-card>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </mat-card>
+    </form>
+    <div class="row">
+      <div class="col-12 pt-3">
+        <button
+          class="float-right"
+          color="primary"
+          (click)="submit()"
+          mat-raised-button
+        >
+          Save
+        </button>
+      </div>
+    </div>
   </div>
 </div>
