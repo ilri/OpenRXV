@@ -23,21 +23,22 @@ declare let dataLayer: any;
 export class RootComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');
   loadSettigs = false;
+  dashboard_name: string;
   constructor(
     private titleService: Title,
     private readonly settingsService: SettingsService,
     private router: Router,
     private meta: Meta,
+    private activeRoute: ActivatedRoute,
   ) {}
 
   primaryColorPalette;
   async ngOnInit() {
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
-        const dashboard_name = event.urlAfterRedirects.split('/dashboard/')[1];
-        const settings = await this.settingsService.readExplorerSettings(
-          dashboard_name ? dashboard_name.split('/')[0] : undefined,
-        );
+        this.dashboard_name = this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
+        const settings = await this.settingsService.readExplorerSettings(this.dashboard_name);
+
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
         await localStorage.setItem('configs', JSON.stringify(settings));
         if (

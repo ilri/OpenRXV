@@ -35,18 +35,20 @@ export class SettingsController {
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
   @UseGuards(AuthGuard('jwt'))
-  @Get('plugins')
-  async plugins() {
+  @Get('plugins/:index_name')
+  async plugins(@Param('index_name') index_name: string = 'index') {
     const plugins = await this.getDirectories('./src/plugins');
     const plugins_values = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
+    const index_plugins_values = plugins_values.hasOwnProperty(index_name) ? plugins_values[index_name] : [];
+
     const info = [];
     plugins.forEach(async (plugin) => {
       const infor = await this.jsonFilesService.read(
         '../../../src/plugins/' + plugin + '/info.json',
       );
-      const values = plugins_values.filter((plug) => plug.name == plugin);
+      const values = index_plugins_values.filter((plug) => plug.name == plugin);
       if (values[0]) infor['values'] = values[0].value;
       else infor['values'] = [];
       info.push(infor);
@@ -54,9 +56,11 @@ export class SettingsController {
     return info;
   }
 
-  @Post('plugins')
-  async savePlugins(@Body() body: any) {
-    return await this.jsonFilesService.save(body, '../../../data/plugins.json');
+  @Post('plugins/:index_name')
+  async savePlugins(@Body() body: any, @Param('index_name') index_name: string = 'index') {
+    const plugins_values = await this.jsonFilesService.read('../../../data/plugins.json');
+    plugins_values[index_name] = body;
+    return await this.jsonFilesService.save(plugins_values, '../../../data/plugins.json');
   }
 
   format(body: any) {
@@ -134,13 +138,16 @@ export class SettingsController {
     return final;
   }
   @UseGuards(AuthGuard('jwt'))
-  @Post('')
-  async Save(@Body() body: any) {
-    await this.jsonFilesService.save(body, '../../../data/data.json');
-    await this.jsonFilesService.save(
-      this.format(body),
-      '../../../data/dataToUse.json',
-    );
+  @Post(':index_name')
+  async Save(@Body() body: any, @Param('index_name') index_name: string = 'index') {
+    const data = await this.jsonFilesService.read('../../../data/data.json');
+    data[index_name] = body;
+    await this.jsonFilesService.save(data, '../../../data/data.json');
+
+    const formattedData = this.format(body);
+    const dataToUse = await this.jsonFilesService.read('../../../data/dataToUse.json');
+    dataToUse[index_name] = formattedData;
+    await this.jsonFilesService.save(dataToUse, '../../../data/dataToUse.json');
 
     return { success: true };
   }
@@ -151,7 +158,6 @@ export class SettingsController {
     @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
-    // console.log(data,  await this.jsonFilesService.read('../../../data/dashboards.json'));
     let dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
@@ -164,7 +170,6 @@ export class SettingsController {
       dashboards,
       '../../../data/dashboards.json',
     );
-    //  await this.jsonFilesService.save(body, '../../../data/explorer.json');
     return { success: true };
   }
 
@@ -438,7 +443,7 @@ export class SettingsController {
   @Get('outsourcePlugins')
   async readOutsourcePlugins() {
     const plugins = await readdirSync(
-      join(__dirname, '../../../data//harvestors'),
+      join(__dirname, '../../../data/harvestors'),
     ).map((data) => {
       return data.slice(0, -5);
     });
@@ -462,21 +467,28 @@ export class SettingsController {
     ).filter((d) => d.name == name)[0];
     if (!dashboard) throw new NotFoundException();
 
+    const index = (
+        await this.jsonFilesService.read('../../../data/indexes.json')
+    ).filter((d) => d.id === dashboard.index)[0];
+    if (!index) throw new NotFoundException();
+    const index_name = index.name;
+
     const settings = dashboard.explorer;
     const configs = await this.jsonFilesService.read('../../../data/data.json');
     settings['appearance'] = dashboard.appearance;
     const list_icons = {};
-    if (configs.repositories) {
-      configs.repositories.map((d) => [(list_icons[d.name] = d.icon)]);
-      settings['appearance']['icons'] = list_icons;
-      return settings;
-    } else return {};
+    if (index_name && configs.hasOwnProperty(index_name) && configs[index_name].repositories) {
+      configs[index_name].repositories.map((d) => [(list_icons[d.name] = d.icon)]);
+    }
+    settings['appearance']['icons'] = list_icons;
+    return settings;
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('')
-  async Read() {
-    return await this.jsonFilesService.read('../../../data/data.json');
+  @Get(['', ':index_name'])
+  async Read(@Param('index_name') index_name: string = 'index') {
+    const data = await this.jsonFilesService.read('../../../data/data.json');
+    return data.hasOwnProperty(index_name) ? data[index_name] : {repositories: []};
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -490,6 +502,7 @@ export class SettingsController {
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
     const data = await this.jsonFilesService.read('../../../data/data.json');
+    const index_data = data.hasOwnProperty(index_name) ? data[index_name] : {repositories: []};
     const plugins = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
@@ -523,13 +536,13 @@ export class SettingsController {
 
     const merged = [].concat.apply(
       [],
-      data.repositories.map((d) => [...d.schema, ...d.metadata]),
+        index_data.repositories.map((d) => [...d.schema, ...d.metadata]),
     );
 
     return [
       ...(merged.length > 0 ? [] : new Set(medatadataKeys)),
       ...new Set(merged.map((d) => d.disply_name)),
-      ...data.repositories.filter((d) => d.years).map((d) => d.years),
+      ...index_data.repositories.filter((d) => d.years).map((d) => d.years),
       ...uniqueArray,
     ];
   }

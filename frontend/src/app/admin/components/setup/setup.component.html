@@ -65,19 +65,6 @@
             </mat-form-field>
           </div>
           <div class="col-12">
-            <mat-form-field appearance="fill">
-              <mat-label>Select Index</mat-label>
-              <mat-select class="w-100" formControlName="index_name">
-                <mat-option
-                  *ngFor="let index of indexes"
-                  [value]="index.name"
-                >
-                  {{ index.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col-12">
             <mat-form-field class="w-100">
               <mat-label
               >Start from page number (0, unless you know what you are

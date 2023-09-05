@@ -9,6 +9,7 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-setup',
@@ -21,7 +22,7 @@ import { environment } from 'src/environments/environment';
         opacity: 1
       })),
       state('false', style({
-        'max-height': '0',
+        'max-height': '60px',
         'overflow-y': 'hidden'
       })),
       transition('true <=> false', [
@@ -33,11 +34,11 @@ import { environment } from 'src/environments/environment';
 export class SetupComponent implements OnInit {
   isLinear = true;
   types: any = [];
-  indexes;
   isShown = {
     schema: [],
     fields: [],
   };
+  index_name: string;
 
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
@@ -64,7 +65,6 @@ export class SetupComponent implements OnInit {
       icon: new UntypedFormControl(),
       startPage: new UntypedFormControl(),
       type: new UntypedFormControl(),
-      index_name: new UntypedFormControl(),
       itemsEndPoint: new UntypedFormControl(),
       apiKey: new UntypedFormControl(),
       siteMap: new UntypedFormControl(),
@@ -76,12 +76,13 @@ export class SetupComponent implements OnInit {
   constructor(
     private settingService: SettingsService,
     private toastr: ToastrService,
+    private activeRoute: ActivatedRoute,
   ) {}
 
   async ngOnInit() {
-    this.indexes = await this.settingService.readIndexesSettings();
+    this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.getOutsourcePlugins();
-    const data = await this.settingService.read();
+    const data = await this.settingService.read(this.index_name);
     data.repositories.forEach((element, repoindex) => {
       if (element.icon) this.logo[repoindex] = element.icon;
       if (repoindex > 0) this.AddNewRepo();
@@ -115,7 +116,7 @@ export class SetupComponent implements OnInit {
   async submit() {
     if (this.repositories.valid) {
       const settings = { repositories: this.repositories.value };
-      await this.settingService.save(settings);
+      await this.settingService.save(settings, this.index_name);
       this.toastr.success('Settings have been saved successfully');
     }
   }

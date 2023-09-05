@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-plugins',
@@ -9,10 +10,15 @@ import { SettingsService } from '../services/settings.service';
 export class PluginsComponent implements OnInit {
   plugins = [];
   pluginsForms = {};
-  constructor(private settingsService: SettingsService) {}
+  index_name: string;
+  constructor(
+    private settingsService: SettingsService,
+    private activeRoute: ActivatedRoute,
+    ) {}
 
   async ngOnInit() {
-    this.plugins = await this.settingsService.readPluginsSettings();
+    this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
+    this.plugins = await this.settingsService.readPluginsSettings(this.index_name);
   }
 
   onEdited(event, name) {
@@ -30,6 +36,7 @@ export class PluginsComponent implements OnInit {
         obj['value'] = data.form.value;
         return obj;
       }),
+      this.index_name
     );
   }
 }

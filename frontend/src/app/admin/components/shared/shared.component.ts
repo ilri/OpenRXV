@@ -37,7 +37,6 @@ export class SharedComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
   view(id) {
-    console.log(`${location.origin}/explorer/${this.dashboard_name}/shared/${id}`);
     window.open(`${location.origin}/explorer/dashboard/${this.dashboard_name}/shared/${id}`);
   }
 }

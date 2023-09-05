@@ -9,9 +9,9 @@ import { Route, Router } from '@angular/router';
 })
 export class SettingsService {
   constructor(private http: HttpClient, private route: Router) {}
-  async save(data) {
+  async save(data, index_name: string) {
     return await this.http
-      .post(environment.api + '/settings', data)
+      .post(environment.api + `/settings/${index_name}`, data)
       .pipe(
         map((data: any) => {
           return data;
@@ -117,10 +117,10 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readExplorerSettings(name = 'index') {
-    if (name == null) name = 'index';
+  async readExplorerSettings(dashboard_name = 'index') {
+    if (dashboard_name == null) dashboard_name = 'index';
     return await this.http
-      .get(`${environment.api}/settings/explorer/${name}`)
+      .get(`${environment.api}/settings/explorer/${dashboard_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -133,9 +133,9 @@ export class SettingsService {
       });
   }
 
-  async readPluginsSettings() {
+  async readPluginsSettings(index_name: string) {
     return await this.http
-      .get(environment.api + '/settings/plugins')
+      .get(environment.api + `/settings/plugins/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -144,9 +144,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async writePluginsSettings(data) {
+  async writePluginsSettings(data, index_name: string) {
     return await this.http
-      .post(environment.api + '/settings/plugins', data)
+      .post(environment.api + `/settings/plugins/${index_name}`, data)
       .pipe(
         map((data: any) => {
           return data;
@@ -154,9 +154,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async read() {
+  async read(index_name) {
     return await this.http
-      .get(environment.api + '/settings')
+      .get(environment.api + `/settings/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;
