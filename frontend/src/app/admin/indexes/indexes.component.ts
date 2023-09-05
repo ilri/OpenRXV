@@ -60,8 +60,8 @@ export class IndexesComponent implements OnInit {
             return x.id;
           })
           .indexOf(id);
-        const deletedId = this.indexes[index].hasOwnProperty('id') && this.indexes[index].id != null ? this.indexes[index].id : null;
-        const response = await this.settingsService.saveIndexesSettings(this.indexes, false, deletedId);
+        const deleted = this.indexes[index].hasOwnProperty('id') && this.indexes[index].id != null ? this.indexes[index] : null;
+        const response = await this.settingsService.saveIndexesSettings(this.indexes, false, deleted);
 
         if (response.success === true) {
           this.indexes.splice(index, 1);
@@ -71,7 +71,18 @@ export class IndexesComponent implements OnInit {
           const relatedDashboards = response.relatedDashboards.map((dashboard) => {
             return `<li><b>ID: </b>${dashboard.id.substring(0, 2)}, <b>Name: </b>${dashboard.name}</li>`;
           });
-          this.toastr.error(`Index is linked to the following dashboards and cannot be deleted:<ul>${relatedDashboards.join('')}</ul>`, '', {
+          const relatedRepositories = response.relatedRepositories.map((repository) => {
+            return `<li><b>Name: </b>${repository.name}</li>`;
+          });
+
+          let message = '';
+          if (relatedDashboards.length > 0) {
+            message += `- Linked dashboards:<ul>${relatedDashboards.join('')}</ul>`;
+          }
+          if (relatedRepositories.length > 0) {
+            message += `- Linked repositories:<ul>${relatedRepositories.join('')}</ul>`;
+          }
+          this.toastr.error(message, 'Cannot delete index', {
             enableHtml: true
           });
         }

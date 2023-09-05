@@ -35,7 +35,7 @@ export class SettingsController {
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
   @UseGuards(AuthGuard('jwt'))
-  @Get('plugins')i
+  @Get('plugins')
   async plugins() {
     const plugins = await this.getDirectories('./src/plugins');
     const plugins_values = await this.jsonFilesService.read(
@@ -222,7 +222,7 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('indexes')
-  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deletedId') deletedId: string) {
+  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deleted') deleted: any) {
     let indexes = await this.jsonFilesService.read('../../../data/indexes.json');
     if(isNew) {
       const newIndex = {
@@ -233,22 +233,40 @@ export class SettingsController {
       };
       indexes.push(newIndex);
     } else {
-      if (deletedId != null) {
+      if (deleted?.id) {
+        // Get the dashboards where the index is used
         const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
-
         let relatedDashboards = [];
-        dashboards.map((dashboard) => {
-          if (dashboard.index === deletedId) {
-            relatedDashboards.push({
-              id: dashboard.id,
-              name: dashboard.name,
-            });
-          }
-        });
-        if (relatedDashboards.length > 0) {
+        if (Array.isArray(dashboards) && dashboards.length > 0) {
+          dashboards.map((dashboard) => {
+            if (dashboard?.index && dashboard.index === deleted.id) {
+              relatedDashboards.push({
+                id: dashboard.id,
+                name: dashboard.name,
+              });
+            }
+          });
+        }
+
+        // Get the dashboards where the index is used
+        const repositories = await this.jsonFilesService.read('../../../data/data.json');
+        let relatedRepositories = [];
+        if (repositories?.repositories && Array.isArray(repositories.repositories) && repositories.repositories.length > 0) {
+          repositories.repositories.map((repository) => {
+            if (repository?.index_name && repository.index_name === deleted.name) {
+              relatedRepositories.push({
+                name: repository.name,
+              });
+            }
+          });
+        }
+
+        // Prevent deletion if the index is linked to a dashboard or a repository
+        if (relatedDashboards.length > 0 || relatedRepositories.length > 0) {
           return {
             success: false,
-            relatedDashboards
+            relatedDashboards,
+            relatedRepositories,
           };
         }
       }
