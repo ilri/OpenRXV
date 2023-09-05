@@ -13,7 +13,8 @@
         </p>
         <p>
             <mat-form-field>
-              <mat-select placeholder="Metadata field" required formControlName="metadataField">
+              <mat-select placeholder="Metadata field" formControlName="metadataField">
+                <mat-option [value]="null">None (apply to all metadata fields)</mat-option>
                 <mat-option *ngFor="let field of data.metadataFields" [value]="field">
                   {{ field }}
                 </mat-option>
