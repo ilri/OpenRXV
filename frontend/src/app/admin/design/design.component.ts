@@ -30,6 +30,7 @@ export class DesignComponent implements OnInit {
   counters: Array<any> = [];
   filters: Array<any> = [];
   dashboard: Array<any> = [];
+  dashboard_name: string;
   footer: any = null;
   welcome: any;
   welcome_text = '';
@@ -69,7 +70,7 @@ export class DesignComponent implements OnInit {
     });
   }
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)

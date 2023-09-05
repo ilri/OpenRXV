@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./appearance.component.scss'],
 })
 export class AppearanceComponent implements OnInit {
+  dashboard_name: string;
   primary_color = '';
   secondary_color = '';
   appearance;
@@ -43,7 +44,7 @@ export class AppearanceComponent implements OnInit {
     return environment.api + '/' + value;
   }
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
     const appearance = await this.settingsService.readAppearanceSettings(
       dashboard_name,
     );

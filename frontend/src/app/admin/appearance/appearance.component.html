@@ -1,166 +1,168 @@
 <div class="row">
-  <div class="col-md-12 p-5">
+  <div class="col-md-12 pb-5">
     <mat-card>
       <mat-card-title>
-        Appearance
+        Appearance - {{dashboard_name}}
         <button class="save" (click)="save()" color="primary" mat-raised-button>
           Save
           <mat-icon>save</mat-icon>
         </button>
-        <hr />
       </mat-card-title>
-      <mat-card-content>
-        <form [formGroup]="form">
-          <div class="row">
-            <div class="col-12">
-              <div>
-                <mat-form-field>
-                  <mat-label>Website name</mat-label>
-                  <input
-                    matInput
-                    formControlName="website_name"
-                    placeholder="Website Name"
-                    required
-                  />
-                </mat-form-field>
-              </div>
-              <div>
-                <mat-form-field>
-                  <mat-label>Primary color</mat-label>
-                  <input
-                    (colorPickerClose)="
+    </mat-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 pb-3">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-12">
+          <div>
+            <mat-form-field>
+              <mat-label>Website name</mat-label>
+              <input
+                matInput
+                formControlName="website_name"
+                placeholder="Website Name"
+                required
+              />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Primary color</mat-label>
+              <input
+                (colorPickerClose)="
                       colorPickerClose($event, 'primary_color')
                     "
-                    [(colorPicker)]="primary_color"
-                    [value]="primary_color"
-                    matInput
-                    formControlName="primary_color"
-                    placeholder="#CCCCC"
-                    required
-                  />
-                  <button
-                    [style.background]="primary_color"
-                    mat-icon-button
-                    matSuffix
-                  >
-                    <mat-icon>brush</mat-icon>
-                  </button>
-                </mat-form-field>
-              </div>
-              <div>
-                <mat-form-field>
-                  <mat-label>Secondary color</mat-label>
-                  <input
-                    (colorPickerClose)="
+                [(colorPicker)]="primary_color"
+                [value]="primary_color"
+                matInput
+                formControlName="primary_color"
+                placeholder="#CCCCC"
+                required
+              />
+              <button
+                [style.background]="primary_color"
+                mat-icon-button
+                matSuffix
+              >
+                <mat-icon>brush</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Secondary color</mat-label>
+              <input
+                (colorPickerClose)="
                       colorPickerClose($event, 'secondary_color')
                     "
-                    [(colorPicker)]="secondary_color"
-                    [value]="secondary_color"
-                    matInput
-                    formControlName="secondary_color"
-                    placeholder="#CCCCC"
-                  />
-                  <button
-                    [style.background]="secondary_color"
-                    mat-icon-button
-                    matSuffix
-                  >
-                    <mat-icon>brush</mat-icon>
-                  </button>
-                </mat-form-field>
-              </div>
-              <section class="w-100">
-                <p><mat-checkbox formControlName="show_tool_bar">Show toolbar</mat-checkbox></p>
-                <p><mat-checkbox formControlName="show_side_nav">Show side Nav</mat-checkbox></p>
-                <p><mat-checkbox formControlName="show_top_nav">Show top Nav</mat-checkbox></p>
-              </section>
-              <div class="w-100">
-                <mat-form-field>
-                  <mat-label>Google Analytics tracking code</mat-label>
-                  <input
-                    matInput
-                    formControlName="tracking_code"
-                    placeholder="UA-xxxxxxxx-y"
-                  />
-                </mat-form-field>
-              </div>
-              <div class="w-100">
-                <mat-form-field class="w-100">
-                  <mat-label>Google Maps API key</mat-label>
-                  <input
-                    matInput
-                    formControlName="google_maps_api_key"
-                    placeholder="API key"
-                  />
-                </mat-form-field>
-              </div>
-              <div class="w-100">
-                <mat-form-field class="w-100">
-                  <mat-label>Website description</mat-label>
-                  <textarea
-                    cols="30"
-                    matInput
-                    formControlName="description"
-                  ></textarea>
-                </mat-form-field>
-              </div>
-              <div class="w-100">
-                <mat-label>Favicon:</mat-label>
-                <input
-                  *ngIf="!favIcon"
-                  type="file"
-                  (change)="favIconChange($event)"
-                  placeholder="Favicon"
-                  required
-                />
-                <div *ngIf="favIcon" class="logo">
-                  <button (click)="favIcon = null" color="warn" mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                  <img [src]="src(favIcon)" alt="favIcon" />
-                </div>
-              </div>
-              <div class="file w-100">
-                <mat-label>Logo:</mat-label>
-                <input
-                  *ngIf="!logo"
-                  type="file"
-                  (change)="logoChange($event)"
-                  placeholder="Logo"
-                  required
-                />
-                <div *ngIf="logo" class="logo">
-                  <button (click)="logo = null" color="warn" mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                  <img [src]="src(logo)" alt="logo" />
-                </div>
-              </div>
+                [(colorPicker)]="secondary_color"
+                [value]="secondary_color"
+                matInput
+                formControlName="secondary_color"
+                placeholder="#CCCCC"
+              />
+              <button
+                [style.background]="secondary_color"
+                mat-icon-button
+                matSuffix
+              >
+                <mat-icon>brush</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <section class="w-100">
+            <p><mat-checkbox formControlName="show_tool_bar">Show toolbar</mat-checkbox></p>
+            <p><mat-checkbox formControlName="show_side_nav">Show side Nav</mat-checkbox></p>
+            <p><mat-checkbox formControlName="show_top_nav">Show top Nav</mat-checkbox></p>
+          </section>
+          <div class="w-100">
+            <mat-form-field>
+              <mat-label>Google Analytics tracking code</mat-label>
+              <input
+                matInput
+                formControlName="tracking_code"
+                placeholder="UA-xxxxxxxx-y"
+              />
+            </mat-form-field>
+          </div>
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <mat-label>Google Maps API key</mat-label>
+              <input
+                matInput
+                formControlName="google_maps_api_key"
+                placeholder="API key"
+              />
+            </mat-form-field>
+          </div>
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <mat-label>Website description</mat-label>
+              <textarea
+                cols="30"
+                matInput
+                formControlName="description"
+              ></textarea>
+            </mat-form-field>
+          </div>
+          <div class="w-100">
+            <mat-label>Favicon:</mat-label>
+            <input
+              *ngIf="!favIcon"
+              type="file"
+              (change)="favIconChange($event)"
+              placeholder="Favicon"
+              required
+            />
+            <div *ngIf="favIcon" class="logo">
+              <button (click)="favIcon = null" color="warn" mat-icon-button>
+                <mat-icon>delete</mat-icon>
+              </button>
+              <img [src]="src(favIcon)" alt="favIcon" />
             </div>
           </div>
-          <br />
-          <h4>Chart colors:</h4>
-          <div formArrayName="chartColors">
-            <div
-              *ngFor="let color of colors.controls; index as i"
-              class="colors"
-            >
-              <mat-form-field>
-                <mat-label>{{ color.value }}</mat-label>
-                <input matInput type="color" [formControlName]="i" />
-                <div *ngIf="colors.length > 1">
-                  <button mat-button (click)="deleteColor(i)">
-                    <mat-icon style="color: red">delete</mat-icon>
-                  </button>
-                </div>
-              </mat-form-field>
+          <div class="file w-100">
+            <mat-label>Logo:</mat-label>
+            <input
+              *ngIf="!logo"
+              type="file"
+              (change)="logoChange($event)"
+              placeholder="Logo"
+              required
+            />
+            <div *ngIf="logo" class="logo">
+              <button (click)="logo = null" color="warn" mat-icon-button>
+                <mat-icon>delete</mat-icon>
+              </button>
+              <img [src]="src(logo)" alt="logo" />
             </div>
           </div>
-          <button mat-raised-button color="primary" (click)="addColor()">
-            <mat-icon>add</mat-icon>Add color
-          </button>
-        </form>
-      </mat-card-content>
-    </mat-card>
+        </div>
+      </div>
+      <br />
+      <h4>Chart colors:</h4>
+      <div formArrayName="chartColors">
+        <div
+          *ngFor="let color of colors.controls; index as i"
+          class="colors"
+        >
+          <mat-form-field>
+            <mat-label>{{ color.value }}</mat-label>
+            <input matInput type="color" [formControlName]="i" />
+            <div *ngIf="colors.length > 1">
+              <button mat-button (click)="deleteColor(i)">
+                <mat-icon style="color: red">delete</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" (click)="addColor()">
+        <mat-icon>add</mat-icon>Add color
+      </button>
+    </form>
   </div>
 </div>
