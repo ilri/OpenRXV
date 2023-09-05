@@ -25,7 +25,7 @@ import { ElasticService } from 'src/shared/services/elastic/elastic.service';
 @Controller('settings')
 export class SettingsController {
   constructor(
-    private jsonfielServoce: JsonFilesService,
+    private jsonFilesService: JsonFilesService,
     private httpService: HttpService,
     private indexMetadataService: IndexMetadataService,
     private elasticSearvice: ElasticService,
@@ -35,15 +35,15 @@ export class SettingsController {
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
   @UseGuards(AuthGuard('jwt'))
-  @Get('plugins')
+  @Get('plugins')i
   async plugins() {
     const plugins = await this.getDirectories('./src/plugins');
-    const plugins_values = await this.jsonfielServoce.read(
+    const plugins_values = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
     const info = [];
     plugins.forEach(async (plugin) => {
-      const infor = await this.jsonfielServoce.read(
+      const infor = await this.jsonFilesService.read(
         '../../../src/plugins/' + plugin + '/info.json',
       );
       const values = plugins_values.filter((plug) => plug.name == plugin);
@@ -56,7 +56,7 @@ export class SettingsController {
 
   @Post('plugins')
   async savePlugins(@Body() body: any) {
-    return await this.jsonfielServoce.save(body, '../../../data/plugins.json');
+    return await this.jsonFilesService.save(body, '../../../data/plugins.json');
   }
 
   format(body: any) {
@@ -136,8 +136,8 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('')
   async Save(@Body() body: any) {
-    await this.jsonfielServoce.save(body, '../../../data/data.json');
-    await this.jsonfielServoce.save(
+    await this.jsonFilesService.save(body, '../../../data/data.json');
+    await this.jsonFilesService.save(
       this.format(body),
       '../../../data/dataToUse.json',
     );
@@ -151,8 +151,8 @@ export class SettingsController {
     @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
-    // console.log(data,  await this.jsonfielServoce.read('../../../data/dashboards.json'));
-    let dashboards = await this.jsonfielServoce.read(
+    // console.log(data,  await this.jsonFilesService.read('../../../data/dashboards.json'));
+    let dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
@@ -160,11 +160,11 @@ export class SettingsController {
       if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
     }
 
-    await this.jsonfielServoce.save(
+    await this.jsonFilesService.save(
       dashboards,
       '../../../data/dashboards.json',
     );
-    //  await this.jsonfielServoce.save(body, '../../../data/explorer.json');
+    //  await this.jsonFilesService.save(body, '../../../data/explorer.json');
     return { success: true };
   }
 
@@ -174,7 +174,7 @@ export class SettingsController {
     @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
-    let dashboards = await this.jsonfielServoce.read(
+    let dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
@@ -182,7 +182,7 @@ export class SettingsController {
       if (dashboard.name == dashboard_name) dashboard['appearance'] = data;
     }
 
-    await this.jsonfielServoce.save(
+    await this.jsonFilesService.save(
       dashboards,
       '../../../data/dashboards.json',
     );
@@ -192,7 +192,7 @@ export class SettingsController {
   @Get(['appearance', 'appearance/:name'])
   async ReadAppearance(@Param('name') name: string = 'index') {
     const dashboard = (
-      await this.jsonfielServoce.read('../../../data/dashboards.json')
+      await this.jsonFilesService.read('../../../data/dashboards.json')
     ).filter((d) => d.name == name)[0];
     if (!dashboard) throw new NotFoundException();
 
@@ -204,7 +204,7 @@ export class SettingsController {
     @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
-    let dashboards = await this.jsonfielServoce.read(
+    let dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
@@ -212,7 +212,7 @@ export class SettingsController {
       if (dashboard.name == dashboard_name) dashboard['reports'] = data;
     }
 
-    await this.jsonfielServoce.save(
+    await this.jsonFilesService.save(
       dashboards,
       '../../../data/dashboards.json',
     );
@@ -223,7 +223,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('indexes')
   async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deletedId') deletedId: string) {
-    let indexes = await this.jsonfielServoce.read('../../../data/indexes.json');
+    let indexes = await this.jsonFilesService.read('../../../data/indexes.json');
     if(isNew) {
       const newIndex = {
         id: uuidv4(),
@@ -234,7 +234,7 @@ export class SettingsController {
       indexes.push(newIndex);
     } else {
       if (deletedId != null) {
-        const dashboards = await this.jsonfielServoce.read('../../../data/dashboards.json');
+        const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
 
         let relatedDashboards = [];
         dashboards.map((dashboard) => {
@@ -254,7 +254,7 @@ export class SettingsController {
       }
       indexes = body.data;
     }
-    await this.jsonfielServoce.save(indexes, '../../../data/indexes.json');
+    await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
     this.elasticSearvice.startUpIndexes();
     return { success: true };
   }
@@ -262,7 +262,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('dashboards')
   async SaveDashboards(@Body() body: any, @Body('isNew') isNew: boolean) {
-    let dashboards = await this.jsonfielServoce.read(
+    let dashboards = await this.jsonFilesService.read(
         '../../../data/dashboards.json',
     );
     if (isNew) {
@@ -364,14 +364,14 @@ export class SettingsController {
     } else {
       dashboards = body.data;
     }
-    await this.jsonfielServoce.save(dashboards, '../../../data/dashboards.json');
+    await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
     return { success: true };
   }
 
   @Get(['reports','reports/:name'])
   async ReadReports(@Param('name') name: string = 'index') {
     const dashboard = (
-      await this.jsonfielServoce.read('../../../data/dashboards.json')
+      await this.jsonFilesService.read('../../../data/dashboards.json')
     ).filter((d) => d.name == name)[0];
     if (!dashboard) throw new NotFoundException();
 
@@ -390,23 +390,23 @@ export class SettingsController {
 
   @Get('indexes')
   async ReadIndexes() {
-    return await this.jsonfielServoce.read('../../../data/indexes.json');
+    return await this.jsonFilesService.read('../../../data/indexes.json');
   }
 
   @Get('dashboards')
   async ReadDashboards() {
-    return await this.jsonfielServoce.read('../../../data/dashboards.json');
+    return await this.jsonFilesService.read('../../../data/dashboards.json');
   }
 
   @Get(['explorer', 'explorer/:name'])
   async ReadExplorer(@Param('name') name: string = 'index') {
     const dashboard = (
-      await this.jsonfielServoce.read('../../../data/dashboards.json')
+      await this.jsonFilesService.read('../../../data/dashboards.json')
     ).filter((d) => d.name == name)[0];
     if (!dashboard) throw new NotFoundException();
 
     const settings = dashboard.explorer;
-    const configs = await this.jsonfielServoce.read('../../../data/data.json');
+    const configs = await this.jsonFilesService.read('../../../data/data.json');
     settings['appearance'] = dashboard.appearance;
     const list_icons = {};
     if (configs.repositories) {
@@ -419,7 +419,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Get('')
   async Read() {
-    return await this.jsonfielServoce.read('../../../data/data.json');
+    return await this.jsonFilesService.read('../../../data/data.json');
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -428,12 +428,12 @@ export class SettingsController {
       @Param('name') name: string = 'index',
       @Param('index') index_name: string = null,
   ) {
-    index_name = index_name != null && index_name !== '' && index_name !== 'null' ? index_name : await this.jsonfielServoce.getIndexFromDashboard(name);
+    index_name = index_name != null && index_name !== '' && index_name !== 'null' ? index_name : await this.jsonFilesService.getIndexFromDashboard(name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
-    const data = await this.jsonfielServoce.read('../../../data/data.json');
-    const plugins = await this.jsonfielServoce.read(
+    const data = await this.jsonFilesService.read('../../../data/data.json');
+    const plugins = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
     const medatadataKeys: Array<string> =
@@ -441,19 +441,19 @@ export class SettingsController {
     const meta = [];
     for (let i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {
-        dspace_altmetrics = await this.jsonfielServoce.read(
+        dspace_altmetrics = await this.jsonFilesService.read(
           '../../../src/plugins/dspace_altmetrics/info.json',
         );
         meta.push(dspace_altmetrics.source);
       }
       if (plugins[i].name == 'dspace_downloads_and_views') {
-        dspace_downloads_and_views = await this.jsonfielServoce.read(
+        dspace_downloads_and_views = await this.jsonFilesService.read(
           '../../../src/plugins/dspace_downloads_and_views/info.json',
         );
         meta.push(dspace_downloads_and_views.source);
       }
       if (plugins[i].name == 'mel_downloads_and_views') {
-        mel_downloads_and_views = await this.jsonfielServoce.read(
+        mel_downloads_and_views = await this.jsonFilesService.read(
           '../../../src/plugins/mel_downloads_and_views/info.json',
         );
         meta.push(mel_downloads_and_views.source);
