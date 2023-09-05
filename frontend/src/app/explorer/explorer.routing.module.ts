@@ -7,8 +7,8 @@ import { RootComponent } from '../root/root.component';
 const routes: Routes = [
   { path: '', component: ExplorerComponent },
   { path: 'shared/:id', component: ExplorerComponent },
-  { path: 'dashboard/:name', component: ExplorerComponent },
-  { path: 'dashboard/:name/shared/:id', component: ExplorerComponent },
+  { path: 'dashboard/:dashboard_name', component: ExplorerComponent },
+  { path: 'dashboard/:dashboard_name/shared/:id', component: ExplorerComponent },
 ];
 
 @NgModule({

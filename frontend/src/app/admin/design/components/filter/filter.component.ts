@@ -186,7 +186,7 @@ export class FilterComponent implements OnInit {
     if (this.pre) {
       this.configs.component = this.pre.value;
     }
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.dialogRef = this.dialog.open(FormDialogComponent, {
       width: '456px',
       data: {

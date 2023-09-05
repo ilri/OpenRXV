@@ -70,7 +70,7 @@ export class DesignComponent implements OnInit {
     });
   }
   async ngOnInit() {
-    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
@@ -187,7 +187,7 @@ export class DesignComponent implements OnInit {
   }
 
   async save() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     if (
       this.dashboard.filter((d) => d.filter((e) => e.scroll == null).length > 0)
         .length == 0

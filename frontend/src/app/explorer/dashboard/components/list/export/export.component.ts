@@ -105,7 +105,6 @@ export class ExportComponent implements OnInit {
     const exporter: Observable<ExporterResponse> = this.query.pipe(
       first(),
       switchMap((q: ElasticsearchQuery) => {
-        console.log(q);
         return this.exportService.export({
           type: this.type,
           scrollId: id,

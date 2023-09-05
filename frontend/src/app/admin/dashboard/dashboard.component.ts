@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,10 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private setttingService: SettingsService) {}
+  constructor(
+    private setttingService: SettingsService,
+    private activeRoute: ActivatedRoute,
+    ) {}
   completed_count = 0;
   active_count = 0;
   waiting_count = 0;
@@ -26,7 +30,11 @@ export class DashboardComponent implements OnInit {
   interval = null;
   refreshCounter = 0;
   ngOn;
+
+  index_name: string;
+
   async ngOnInit() {
+    this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.Init();
   }
   ngOnDestroy() {
@@ -84,7 +92,7 @@ export class DashboardComponent implements OnInit {
       plugins_waiting_count,
       plugins_completed,
       plugins_failed,
-    } = await this.setttingService.getHarvesterInfo();
+    } = await this.setttingService.getHarvesterInfo(this.index_name);
 
     this.completed_count = completed_count;
     this.failed_count = failed_count;

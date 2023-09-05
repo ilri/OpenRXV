@@ -277,8 +277,7 @@ export class StructureComponent implements OnInit {
   }
 
   openDialog(index): void {
-    console.log('openDialog',index)
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     if (this.pre) this.grid[index].component = this.pre.value;
 
     this.currentIndex = index;

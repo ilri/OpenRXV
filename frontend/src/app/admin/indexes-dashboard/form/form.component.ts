@@ -21,7 +21,6 @@ export class FormDashboardsComponent implements OnInit {
           true,
         ),
       );
-      console.log('this.form.value', this.form.value);
     } else if (this.form.valid && this.data.event == 'Edit') {
       let dashboards = await this.settingsService.readDashboardsSettings();
       const newDashboardsArray = dashboards.map((obj) => {

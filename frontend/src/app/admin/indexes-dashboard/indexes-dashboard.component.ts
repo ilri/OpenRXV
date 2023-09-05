@@ -77,7 +77,6 @@ export class IndexesDashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       let dashboards = await this.settingsService.readDashboardsSettings();
-      console.log('dashboards', dashboards);
       this.dashboards = dashboards;
       this.dataSource = new MatTableDataSource<any>(dashboards);
       this.dataSource.paginator = this.paginator;
@@ -86,9 +85,7 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   async ngOnInit() {
-    let dashboards = await this.settingsService.readDashboardsSettings();
-
-    console.log('dashboards', dashboards);
+    const dashboards = await this.settingsService.readDashboardsSettings();
     this.dashboards = dashboards;
     this.dataSource = new MatTableDataSource<any>(dashboards);
     this.dataSource.paginator = this.paginator;

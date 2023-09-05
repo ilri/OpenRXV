@@ -44,7 +44,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.rangeService.sourceVal = source;
@@ -65,7 +65,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
       });
     this.rangeService.resetNotification({ min, max });
 
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({
@@ -77,7 +77,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
   timeout = null;
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
-      const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
       if (this.timeout) clearTimeout(this.timeout);
       const filters = this.bodyBuilderService.getFiltersFromQuery();

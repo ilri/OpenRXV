@@ -36,7 +36,7 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   colors: string[];
 
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance = await this.settingsService.readAppearanceSettings(
       dashboard_name,
     );

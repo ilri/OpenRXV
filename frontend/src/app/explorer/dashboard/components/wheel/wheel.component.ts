@@ -42,7 +42,7 @@ export class WheelComponent extends ParentChart implements OnInit {
   }
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance = await this.settingsService.readAppearanceSettings(
       dashboard_name,
     );

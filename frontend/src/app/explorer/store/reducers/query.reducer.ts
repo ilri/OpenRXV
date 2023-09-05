@@ -17,7 +17,6 @@ export function reducer(
   switch (action.type) {
     case actions.QueryActionTypes.setQuery: {
       const payload = action.payload;
-      console.log(payload);
       return {
         ...state,
         body: payload.body,

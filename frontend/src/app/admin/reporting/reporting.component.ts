@@ -38,7 +38,7 @@ export class ReportingComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.dataSource = await this.settingsService.retreiveMetadata;
     this.metadata = await this.metadataService.get(this.dashboard_name, null);
     this.reports = await this.settingsService.readReports(this.dashboard_name);

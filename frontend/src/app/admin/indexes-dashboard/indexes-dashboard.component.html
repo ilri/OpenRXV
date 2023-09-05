@@ -75,10 +75,10 @@
           </button>
           <a
             matTooltip="Appearance"
-            target="_blank"
-            [href]="'admin/appearance/' + element.name"
-            color="primary"
-            mat-icon-button
+            [routerLink]="'/admin/appearance/' + element.name"
+            color="primary" mat-icon-button
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             <mat-icon aria-hidden="false" aria-label="Appearance"
             >color_lens</mat-icon
@@ -86,10 +86,11 @@
           </a>
           <a
             matTooltip="Design dashboard layout"
-            target="_blank"
-            [href]="'admin/design/' + element.name"
+            [routerLink]="'/admin/design/' + element.name"
             color="primary"
             mat-icon-button
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             <mat-icon aria-hidden="false" aria-label="Layout"
             >layers</mat-icon
@@ -97,21 +98,34 @@
           </a>
           <a
             matTooltip="Reporting"
-            target="_blank"
-            [href]="'admin/reporting/' + element.name"
+            [routerLink]="'/admin/reporting/' + element.name"
             color="primary"
             mat-icon-button
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             <mat-icon aria-hidden="false" aria-label="Layout"
             >find_in_page</mat-icon
             >
           </a>
           <a
+            matTooltip="Shared links"
+            [routerLink]="'/admin/shared/' + element.name"
+            color="primary"
+            mat-icon-button
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <mat-icon aria-hidden="false" aria-label="Shared links"
+            >link</mat-icon
+            >
+          </a>
+          <a
             matTooltip="View Dashboard"
-            target="_blank"
             [href]="'dashboard/' + element.name"
             color="primary"
             mat-icon-button
+            target="_blank"
           >
             <mat-icon aria-hidden="false" aria-label="Layout"
             >open_in_browser</mat-icon

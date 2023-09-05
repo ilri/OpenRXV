@@ -86,7 +86,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
   }
 
   getMinMaxValues(source) {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     const qb: BuildQueryObj = {
       size: 100000,
@@ -137,7 +137,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         min: this.fromDate,
         max: this.toDate,
       });
-      const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
       this.store.dispatch(
         new fromStore.SetQuery({
@@ -160,7 +160,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         lte: max,
       });
     this.rangeService.resetNotification({ min, max });
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({

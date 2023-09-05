@@ -28,3 +28,12 @@ img{
 mat-toolbar{
   margin-top: 2px !important;
 }
+
+mat-nav-list > mat-nav-list {
+  margin-left: 15px;
+  padding-top: 0;
+}
+mat-nav-list > mat-nav-list a {
+  font-size: 90%;
+  height: 40px;
+}

@@ -64,7 +64,6 @@ export class MainListComponent implements OnInit {
 
     if (this.baseForm.get('content'))
       this.content = this.baseForm.get('content').value;
-    console.log('dashboard_name aa', this.dashbard_name);
     this.metadata = await this.metadataService.get(this.dashbard_name, null);
     if (this.content && this.content.tags)
       this.content.tags.forEach((element) => {

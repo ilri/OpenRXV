@@ -46,9 +46,29 @@
           <button (click)="editIndex(element.id)" color="primary" mat-icon-button>
             <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
           </button>
-          <a matTooltip="Value Mappings" target="_blank" [href]="'admin/mapping-values/' + element.name" color="primary"
-             mat-icon-button>
+          <a matTooltip="Value Mappings" [routerLink]="'/admin/mapping-values/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
             <mat-icon aria-hidden="false" aria-label="Value Mappings">find_replace</mat-icon>
+          </a>
+          <a matTooltip="Harvest dashboard" [routerLink]="'/admin/harvester/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Harvest dashboard">account_tree</mat-icon>
+          </a>
+          <a matTooltip="Repositories" [routerLink]="'/admin/setup/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Repositories">account_tree</mat-icon>
+          </a>
+          <a matTooltip="Plugins" [routerLink]="'/admin/plugins/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Plugins">account_tree</mat-icon>
           </a>
         </td>
       </ng-container>

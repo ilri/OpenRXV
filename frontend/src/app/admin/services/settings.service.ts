@@ -218,9 +218,9 @@ export class SettingsService {
         return data;
       });
   }
-  async getHarvesterInfo() {
+  async getHarvesterInfo(index_name) {
     return await this.http
-      .get(environment.api + '/harvester/info')
+      .get(environment.api + `/harvester/info/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;

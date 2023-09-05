@@ -196,7 +196,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   refresh(): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.mainBodyBuilderService.resetAttributes();
     setTimeout(() => {
       this.store.dispatch(

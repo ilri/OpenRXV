@@ -83,7 +83,7 @@ export class PaginatedListComponent implements OnInit {
   }
 
   exportFile(file): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     const dialogRef = this.dialog.open(ExportComponent, {
       width: '400px',
@@ -98,7 +98,7 @@ export class PaginatedListComponent implements OnInit {
   }
 
   private dispatchAction(spo: SortPaginationOptions): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.store.dispatch(
       new fromStore.SetQuery({
         dashboard: dashboard_name,

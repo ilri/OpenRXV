@@ -118,16 +118,16 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   private dispatchActions() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.bodyBuilderService.resetOtherComponent({ caller: 'search' });
     this.store.dispatch(
-      
+
       new fromStore.SetQuery({
         dashboard: dashboard_name ? dashboard_name : 'index',
         body: this.bodyBuilderService.buildMainQuery().build(),
       }
-        
+
         ),
     );
   }

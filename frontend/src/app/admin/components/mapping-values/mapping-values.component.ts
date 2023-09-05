@@ -81,7 +81,7 @@ export class MappingValuesComponent implements OnInit {
     clearTimeout(this.timeout);
   }
   async ngOnInit() {
-    this.index_name = this.activeRoute.snapshot.paramMap.get('name');
+    this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.values_index_name = `${this.index_name}-values`;
     this.metadataFields = await this.metadataService.get(null, this.index_name);
     const mappingvalues = await this.valuesService.findByTerm(this.term, this.values_index_name);

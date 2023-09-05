@@ -44,7 +44,7 @@ export class AppearanceComponent implements OnInit {
     return environment.api + '/' + value;
   }
   async ngOnInit() {
-    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance = await this.settingsService.readAppearanceSettings(
       dashboard_name,
     );
@@ -69,7 +69,7 @@ export class AppearanceComponent implements OnInit {
   }
 
   async save() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('name');
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
     if (this.form.valid)
