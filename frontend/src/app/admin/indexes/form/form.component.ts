@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
 
@@ -21,7 +22,6 @@ export class FormIndexComponent implements OnInit {
       this.dialogRef.close(
         await this.settingsService.saveIndexesSettings(this.form.value, true, null),
       );
-      console.log('this.form.value', this.form.value);
     } else if (this.form.valid && this.data.event == 'Edit') {
       let indexes = await this.settingsService.readIndexesSettings();
       const newIndexesArray = indexes.map((obj) => {
@@ -36,12 +36,17 @@ export class FormIndexComponent implements OnInit {
         }
         return obj;
       });
-      const ind = await this.settingsService.saveIndexesSettings(
+      const response = await this.settingsService.saveIndexesSettings(
         newIndexesArray,
         false,
         null,
       );
-      this.dialogRef.close();
+      if (response.success === true) {
+        this.dialogRef.close();
+        this.toastr.success('Index saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');
+      }
     }
   }
   onNoClick(e): void {
@@ -53,9 +58,10 @@ export class FormIndexComponent implements OnInit {
     private fb: FormBuilder,
     private settingsService: SettingsService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: ToastrService,
   ) {}
   nonWhitespaceRegExp: RegExp = new RegExp('\\S');
-  populateForm(data = { name: '', description: '',to_be_indexed:false }) {
+  populateForm(data = { name: '', description: '', to_be_indexed: false }) {
     this.form = this.fb.group({
       name: [
         data.name,
@@ -79,7 +85,7 @@ export class FormIndexComponent implements OnInit {
       };
       await this.populateForm(data);
     } else {
-      const data = { name: '', description: '',to_be_indexed:false };
+      const data = { name: '', description: '', to_be_indexed: false };
       await this.populateForm(data);
     }
   }

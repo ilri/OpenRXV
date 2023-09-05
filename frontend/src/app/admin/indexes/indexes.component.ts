@@ -82,7 +82,7 @@ export class IndexesComponent implements OnInit {
           if (relatedRepositories.length > 0) {
             message += `- Linked repositories:<ul>${relatedRepositories.join('')}</ul>`;
           }
-          this.toastr.error(message, 'Cannot delete index', {
+          this.toastr.error(message, 'Index deletion failed', {
             enableHtml: true
           });
         }

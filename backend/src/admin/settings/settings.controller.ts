@@ -224,54 +224,75 @@ export class SettingsController {
   @Post('indexes')
   async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deleted') deleted: any) {
     let indexes = await this.jsonFilesService.read('../../../data/indexes.json');
-    if(isNew) {
-      const newIndex = {
-        id: uuidv4(),
-        name: body.data.name,
-        description: body.data.description,
-        created_at: new Date().toLocaleString(),
-      };
-      indexes.push(newIndex);
+
+    if (deleted?.id) {
+      // Get the dashboards where the index is used
+      const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
+      let relatedDashboards = [];
+      if (Array.isArray(dashboards) && dashboards.length > 0) {
+        dashboards.map((dashboard) => {
+          if (dashboard?.index && dashboard.index === deleted.id) {
+            relatedDashboards.push({
+              id: dashboard.id,
+              name: dashboard.name,
+            });
+          }
+        });
+      }
+
+      // Get the dashboards where the index is used
+      const repositories = await this.jsonFilesService.read('../../../data/data.json');
+      let relatedRepositories = [];
+      if (repositories?.repositories && Array.isArray(repositories.repositories) && repositories.repositories.length > 0) {
+        repositories.repositories.map((repository) => {
+          if (repository?.index_name && repository.index_name === deleted.name) {
+            relatedRepositories.push({
+              name: repository.name,
+            });
+          }
+        });
+      }
+
+      // Prevent deletion if the index is linked to a dashboard or a repository
+      if (relatedDashboards.length > 0 || relatedRepositories.length > 0) {
+        return {
+          success: false,
+          relatedDashboards,
+          relatedRepositories,
+        };
+      } else {
+        indexes = body.data;
+      }
     } else {
-      if (deleted?.id) {
-        // Get the dashboards where the index is used
-        const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
-        let relatedDashboards = [];
-        if (Array.isArray(dashboards) && dashboards.length > 0) {
-          dashboards.map((dashboard) => {
-            if (dashboard?.index && dashboard.index === deleted.id) {
-              relatedDashboards.push({
-                id: dashboard.id,
-                name: dashboard.name,
-              });
-            }
-          });
-        }
-
-        // Get the dashboards where the index is used
-        const repositories = await this.jsonFilesService.read('../../../data/data.json');
-        let relatedRepositories = [];
-        if (repositories?.repositories && Array.isArray(repositories.repositories) && repositories.repositories.length > 0) {
-          repositories.repositories.map((repository) => {
-            if (repository?.index_name && repository.index_name === deleted.name) {
-              relatedRepositories.push({
-                name: repository.name,
-              });
-            }
-          });
-        }
-
-        // Prevent deletion if the index is linked to a dashboard or a repository
-        if (relatedDashboards.length > 0 || relatedRepositories.length > 0) {
-          return {
-            success: false,
-            relatedDashboards,
-            relatedRepositories,
-          };
-        }
+      if (isNew) {
+        indexes.push({
+          id: uuidv4(),
+          name: body.data.name,
+          description: body.data.description,
+          created_at: new Date().toLocaleString(),
+        });
       }
       indexes = body.data;
+
+      // Don't allow empty index names
+      const namesFiltered = indexes.filter(index => index.name.trim().toLowerCase() !== '');
+      if (namesFiltered.length !== indexes.length) {
+        return {
+          success: false,
+          message: `Index name cannot be empty`,
+        };
+      }
+
+      // If two indexes have the same name, prevent submit
+      const names = indexes.map(index => index.name.trim().toLowerCase());
+      if ((new Set(names)).size !== names.length) {
+        return {
+          success: false,
+          message: `Index name is already used`,
+        };
+      }
     }
+
     await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
     this.elasticSearvice.startUpIndexes();
     return { success: true };
