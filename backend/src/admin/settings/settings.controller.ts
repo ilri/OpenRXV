@@ -271,8 +271,9 @@ export class SettingsController {
           description: body.data.description,
           created_at: new Date().toLocaleString(),
         });
+      } else {
+        indexes = body.data;
       }
-      indexes = body.data;
 
       // Don't allow empty index names
       const namesFiltered = indexes.filter(index => index.name.trim().toLowerCase() !== '');
@@ -402,6 +403,23 @@ export class SettingsController {
       dashboards.push(newDashboard);
     } else {
       dashboards = body.data;
+    }
+    // Don't allow empty dashboard names
+    const namesFiltered = dashboards.filter(dashboard => dashboard.name.trim().toLowerCase() !== '');
+    if (namesFiltered.length !== dashboards.length) {
+      return {
+        success: false,
+        message: `Dashboard name cannot be empty`,
+      };
+    }
+
+    // If two dashboards have the same name, prevent submit
+    const names = dashboards.map(dashboard => dashboard.name.trim().toLowerCase());
+    if ((new Set(names)).size !== names.length) {
+      return {
+        success: false,
+        message: `Dashboard name is already used`,
+      };
     }
     await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
     return { success: true };

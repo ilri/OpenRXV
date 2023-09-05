@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
 
@@ -35,11 +36,16 @@ export class FormDashboardsComponent implements OnInit {
         }
         return obj;
       });
-      const ind = await this.settingsService.saveDashboardsSettings(
+      const response = await this.settingsService.saveDashboardsSettings(
         newDashboardsArray,
         false,
       );
-      this.dialogRef.close();
+      if (response.success === true) {
+        this.dialogRef.close();
+        this.toastr.success('Dashboard saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
+      }
     }
   }
   onNoClick(e): void {
@@ -51,6 +57,7 @@ export class FormDashboardsComponent implements OnInit {
     private fb: FormBuilder,
     private settingsService: SettingsService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: ToastrService,
   ) {}
   populateForm(data) {
     this.form = this.fb.group({
