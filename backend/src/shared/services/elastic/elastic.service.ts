@@ -94,14 +94,10 @@ export class ElasticService {
       index_name = await this.jsonFilesService.getIndexFromDashboard('index');
     else
       index_name = await this.jsonFilesService.getIndexFromDashboard(dashbaord);
-
-      console.log(dashbaord,index_name);
     try {
       const options: any = {
         index: index_name,
         method: 'POST',
-        // size: size,
-        // scroll:'10m',
         body: query,
       };
       if (scroll) options.scroll = scroll;

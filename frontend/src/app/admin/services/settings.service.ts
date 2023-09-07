@@ -218,7 +218,7 @@ export class SettingsService {
         return data;
       });
   }
-  async getHarvesterInfo(index_name) {
+  async getHarvesterInfo(index_name: string) {
     return await this.http
       .get(environment.api + `/harvester/info/${index_name}`)
       .pipe(
@@ -229,9 +229,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async startPlugins() {
+  async startPlugins(index_name: string) {
     return await this.http
-      .get(environment.api + '/harvester/start-plugins')
+      .get(environment.api + `/harvester/start-plugins/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -239,9 +239,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async startReIndex() {
+  async startReIndex(index_name: string) {
     return await this.http
-      .get(environment.api + '/harvester/start-reindex')
+      .get(environment.api + `/harvester/start-reindex/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -249,9 +249,9 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async startIndexing() {
+  async startIndexing(index_name: string) {
     return await this.http
-      .get(environment.api + '/harvester/startindex')
+      .get(environment.api + `/harvester/startindex/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -260,9 +260,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async stopIndexing() {
+  async stopIndexing(index_name: string) {
     return await this.http
-      .get(environment.api + '/harvester/stopindex')
+      .get(environment.api + `/harvester/stopindex/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;

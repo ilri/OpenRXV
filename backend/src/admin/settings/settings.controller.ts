@@ -63,95 +63,6 @@ export class SettingsController {
     return await this.jsonFilesService.save(plugins_values, '../../../data/plugins.json');
   }
 
-  format(body: any) {
-    const final = {};
-    final['repositories'] = [];
-    body.repositories.forEach((repo) => {
-      const schema = {
-        metadata: [],
-      };
-      repo.schema
-        .filter(
-          (d) =>
-            [
-              'parentCollection',
-              'parentCollectionList',
-              'parentCommunityList',
-            ].indexOf(d.metadata) >= 0,
-        )
-        .forEach((item) => {
-          schema[item.metadata] = {
-            name: item.disply_name,
-          };
-        });
-      repo.schema
-        .filter(
-          (d) =>
-            [
-              'parentCollection',
-              'parentCollectionList',
-              'parentCommunityList',
-            ].indexOf(d.metadata) == -1,
-        )
-        .forEach((item) => {
-          schema[item.metadata] = item.disply_name;
-        });
-
-      repo.metadata.forEach((item) => {
-        const temp = {
-          where: {
-            key: item.metadata,
-          },
-          value: {
-            value: item.disply_name,
-          },
-        };
-        if (item.addOn) temp['addOn'] = item.addOn;
-        schema.metadata.push(temp);
-      });
-      schema['bitstreams'] = [
-        {
-          where: {
-            bundleName: 'THUMBNAIL',
-          },
-          value: {
-            retrieveLink: 'thumbnail',
-          },
-          prefix: repo.itemsEndPoint,
-        },
-      ];
-
-      final['repositories'].push({
-        name: repo.name,
-        years: repo.years,
-        type: repo.type || 'Dspace',
-        index_name: repo.index_name,
-        startPage: repo.startPage,
-        itemsEndPoint: repo.itemsEndPoint,
-        siteMap: repo.siteMap,
-        apiKey: repo.apiKey,
-        allCores: repo.allCores,
-        schema,
-      });
-    });
-
-    return final;
-  }
-  @UseGuards(AuthGuard('jwt'))
-  @Post(':index_name')
-  async Save(@Body() body: any, @Param('index_name') index_name: string = 'index') {
-    const data = await this.jsonFilesService.read('../../../data/data.json');
-    data[index_name] = body;
-    await this.jsonFilesService.save(data, '../../../data/data.json');
-
-    const formattedData = this.format(body);
-    const dataToUse = await this.jsonFilesService.read('../../../data/dataToUse.json');
-    dataToUse[index_name] = formattedData;
-    await this.jsonFilesService.save(dataToUse, '../../../data/dataToUse.json');
-
-    return { success: true };
-  }
-
   @UseGuards(AuthGuard('jwt'))
   @Post('explorer')
   async SaveExplorer(
@@ -430,7 +341,7 @@ export class SettingsController {
     return { success: true };
   }
 
-  @Get(['reports','reports/:name'])
+  @Get(['reports', 'reports/:name'])
   async ReadReports(@Param('name') name: string = 'index') {
     const dashboard = (
       await this.jsonFilesService.read('../../../data/dashboards.json')
@@ -506,8 +417,13 @@ export class SettingsController {
     const plugins = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
-    const medatadataKeys: Array<string> =
-      await this.indexMetadataService.getMetadata(index_name);
+
+    let medatadataKeys = [];
+    try {
+      medatadataKeys = await this.indexMetadataService.getMetadata(index_name);
+    } catch (e) {
+    }
+
     const meta = [];
     for (let i = 0; i < plugins.length; i++) {
       if (plugins[i].name == 'dspace_altmetrics') {
@@ -711,5 +627,95 @@ export class SettingsController {
   @Get('files/:fileName')
   async downloadFile(@Param('fileName') fileName, @Res() res): Promise<any> {
     return res.sendFile(fileName, { root: 'data/files/files' });
+  }
+
+  format(body: any) {
+    const final = {};
+    final['repositories'] = [];
+    body.repositories.forEach((repo) => {
+      const schema = {
+        metadata: [],
+      };
+      repo.schema
+          .filter(
+              (d) =>
+                  [
+                    'parentCollection',
+                    'parentCollectionList',
+                    'parentCommunityList',
+                  ].indexOf(d.metadata) >= 0,
+          )
+          .forEach((item) => {
+            schema[item.metadata] = {
+              name: item.disply_name,
+            };
+          });
+      repo.schema
+          .filter(
+              (d) =>
+                  [
+                    'parentCollection',
+                    'parentCollectionList',
+                    'parentCommunityList',
+                  ].indexOf(d.metadata) == -1,
+          )
+          .forEach((item) => {
+            schema[item.metadata] = item.disply_name;
+          });
+
+      repo.metadata.forEach((item) => {
+        const temp = {
+          where: {
+            key: item.metadata,
+          },
+          value: {
+            value: item.disply_name,
+          },
+        };
+        if (item.addOn) temp['addOn'] = item.addOn;
+        schema.metadata.push(temp);
+      });
+      schema['bitstreams'] = [
+        {
+          where: {
+            bundleName: 'THUMBNAIL',
+          },
+          value: {
+            retrieveLink: 'thumbnail',
+          },
+          prefix: repo.itemsEndPoint,
+        },
+      ];
+
+      final['repositories'].push({
+        name: repo.name,
+        years: repo.years,
+        type: repo.type || 'Dspace',
+        index_name: repo.index_name,
+        startPage: repo.startPage,
+        itemsEndPoint: repo.itemsEndPoint,
+        siteMap: repo.siteMap,
+        apiKey: repo.apiKey,
+        allCores: repo.allCores,
+        schema,
+      });
+    });
+
+    return final;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':index_name')
+  async Save(@Body() body: any, @Param('index_name') index_name: string = 'index') {
+    const data = await this.jsonFilesService.read('../../../data/data.json');
+    data[index_name] = body;
+    await this.jsonFilesService.save(data, '../../../data/data.json');
+
+    const formattedData = this.format(body);
+    const dataToUse = await this.jsonFilesService.read('../../../data/dataToUse.json');
+    dataToUse[index_name] = formattedData;
+    await this.jsonFilesService.save(dataToUse, '../../../data/dataToUse.json');
+
+    return { success: true };
   }
 }

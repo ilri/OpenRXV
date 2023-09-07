@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
+import { SettingsService } from '../../services/settings.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-plugin',
@@ -10,9 +12,15 @@ export class PluginComponent implements OnInit {
   @Input() plugin: any = null;
   formdata: UntypedFormArray = new UntypedFormArray([]);
   active = false;
+  index_name: string;
+  repositoriesList: [] = [];
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
-  constructor(private fb: UntypedFormBuilder) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private settingService: SettingsService,
+    private activeRoute: ActivatedRoute,
+    ) {}
   activeChange() {
     if (!this.active) this.formdata = new UntypedFormArray([]);
     else if (
@@ -32,7 +40,11 @@ export class PluginComponent implements OnInit {
       form: this.formdata,
     });
   }
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
+    const repositories = await this.settingService.read(this.index_name);
+    this.repositoriesList = repositories?.repositories.map(repository => repository.name);
+
     if (this.plugin.values.length) {
       this.active = true;
       this.plugin.values.forEach((element) => {
@@ -46,7 +58,14 @@ export class PluginComponent implements OnInit {
 
   addNew(value = null) {
     const form = {};
-    this.plugin.params.forEach((element) => {
+    this.plugin.params.forEach((element, index) => {
+      if (element?.items && !Array.isArray(element.items)) {
+        if (element.items === 'repositoriesList') {
+          this.plugin.params[index].items = this.repositoriesList;
+        } else {
+          this.plugin.params[index].items = [];
+        }
+      }
       if (value) form[element.name] = this.fb.control(value[element.name]);
       else form[element.name] = this.fb.control('');
     });

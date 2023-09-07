@@ -34,7 +34,6 @@ export class JsonFilesService {
       .index;
 
     const index_name = indexes.filter((d) => (d.id == index_id))[0].name;
-    console.log('get index from dashboard name => ',dashboard_name,index_name);
     return index_name;
   }
   async createifnotexist() {

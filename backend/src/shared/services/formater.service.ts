@@ -2,17 +2,20 @@ import * as _ from 'underscore';
 import * as ISO from 'iso-3166-1';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
-import { HarvesterService } from '../../harvester/services/harveter.service';
+import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
 let mapto: any = {};
 
 @Injectable()
-export class FormatSearvice {
-  constructor(private readonly harvesterService: HarvesterService) {}
+export class FormatService {
+  constructor(private readonly valuesServes: ValuesService) {}
 
-  async Init() {
+  async Init(index_name: string) {
     if (mapto != {}) {
-      mapto = await this.harvesterService.getMappingValues();
+      const data = await this.valuesServes.find(null, index_name);
+      const values = {};
+      data.hits.map((d) => (values[d._source.find] = d._source.replace));
+      mapto = values;
     }
   }
 

@@ -10,7 +10,8 @@
         {
             "name": "repo",
             "label": "Repository name",
-            "type": "text",
+            "type": "select",
+            "items": "repositoriesList",
             "required": true
         },
         {

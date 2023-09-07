@@ -55,26 +55,26 @@ export class DashboardComponent implements OnInit {
   }
 
   async startIndex() {
-    await this.setttingService.startIndexing();
+    await this.setttingService.startIndexing(this.index_name);
     this.refreshCounter = 0;
     this.Init();
   }
 
   async startReIndex() {
-    await this.setttingService.startReIndex();
+    await this.setttingService.startReIndex(this.index_name);
     this.refreshCounter = 0;
     this.Init();
   }
 
   async startPlugins() {
-    await this.setttingService.startPlugins();
+    await this.setttingService.startPlugins(this.index_name);
     this.refreshCounter = 0;
     this.Init();
   }
 
   async stopIndex() {
     this.refreshCounter = 0;
-    await this.setttingService.stopIndexing();
+    await this.setttingService.stopIndexing(this.index_name);
     this.Init();
   }
 

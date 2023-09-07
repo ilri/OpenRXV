@@ -36,6 +36,19 @@ services:
       - 127.0.0.1:6379:6379
     networks:
       - openrxv
+  bullboard_openrxv:
+    container_name: bullboard_openrxv
+    image: deadly0/bull-board
+    restart: always
+    volumes:
+      - ./redisData:/data
+    ports:
+      - 3457:3000
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - openrxv
   kibana:
     container_name: kibana
     restart: always

@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
-import { HarvesterService } from '../../harvester/services/harveter.service';
 import { SharedModule } from '../../shared/shared.module';
-import { FetchConsumer } from './fetch.consumer';
+import { FetchService } from './fetch.service';
 @Module({
-  providers: [FetchConsumer, JsonFilesService, HarvesterService],
-  exports: [FetchConsumer],
+  providers: [FetchService, JsonFilesService],
+  exports: [FetchService],
   imports: [SharedModule],
   controllers: [],
 })
