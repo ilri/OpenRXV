@@ -51,7 +51,7 @@ import { VirtualListComponent } from './dashboard/components/list/virtual-list/v
 import { FilterPaginatedListComponent } from './dashboard/components/list/paginated-list/filter-paginated-list/filter-paginated-list.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
-import { TourMatMenuModule } from 'ngx-tour-md-menu';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { WelcomeComponent } from './dashboard/representationalComponents/welcome/welcome.component';
 import { MdePopoverModule } from '@material-extended/mde';
 import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';

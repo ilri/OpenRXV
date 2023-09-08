@@ -207,3 +207,11 @@ app-paginated-list app-tags {
   top: 120% !important;
   bottom: unset !important;
 }
+
+.ngx-ui-tour-md-menu-no-scroll {
+  overflow: hidden !important;
+}
+
+.cdk-overlay-container .mat-menu-panel .mat-menu-content .title-text {
+  white-space: unset !important
+}

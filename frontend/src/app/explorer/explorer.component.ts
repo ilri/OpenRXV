@@ -4,7 +4,7 @@ import * as fromStore from './store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
-import { TourService, IStepOption } from 'ngx-tour-md-menu';
+import { TourService, IStepOption } from 'ngx-ui-tour-md-menu';
 import {
   GeneralConfigs,
   ComponentCounterConfigs,
@@ -235,6 +235,15 @@ export class ExplorerComponent implements OnInit {
             content: description,
             title,
             enableBackdrop: true,
+            backdropConfig: {
+              zIndex: '999',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)'
+            },
+            placement: {
+              yPosition: 'above'
+            },
+            closeOnOutsideClick: true,
+            disablePageScrolling: true,
           } as IStepOption)
         );
       })
