@@ -8,56 +8,17 @@ import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { RangeService } from '../services/range/range.service';
 
-import {
-  MomentDateAdapter,
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-} from '@angular/material-moment-adapter';
-import {
-  DateAdapter,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-} from '@angular/material/core';
+import * as dayjs from 'dayjs';
 
-// Depending on whether rollup is used, moment needs to be imported differently.
-// Since Moment.js doesn't have a default export, we normally need to import using the `* as`
-// syntax. However, rollup creates a synthetic default module and we thus need to import it using
-// the `default as` syntax.
-import * as _moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 // eslint-disable-next-line no-duplicate-imports
-
-const moment = _moment;
-
-export const MY_FORMATS = {
-  parse: {
-    dateInput: 'YYYY-MM-DD',
-  },
-  display: {
-    dateInput: 'YYYY-MM-DD',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 @ComponentLookup('DateRangeComponent')
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
-  providers: [
-    RangeService,
-    // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
-    // application's root module. We provide it at the component level here, due to limitations of
-    // our example generation script.
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+  providers: [RangeService]
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
   fromDate = null;
@@ -130,8 +91,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
     if (this.toDate && this.fromDate) {
       const query: bodybuilder.Bodybuilder =
         this.rangeService.addAttributeToMainQuery({
-          gte: moment(new Date(this.fromDate)).format('YYYY-MM-DD'),
-          lte: moment(new Date(this.toDate)).format('YYYY-MM-DD'),
+          gte: dayjs(this.fromDate).format('YYYY-MM-DD'),
+          lte: dayjs(this.toDate).format('YYYY-MM-DD'),
         });
       this.rangeService.resetNotification({
         min: this.fromDate,
