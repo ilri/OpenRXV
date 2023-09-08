@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Param } from '@nestjs/common';
+import {Controller, UseGuards, Get, Post, Param, Body} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { HarvesterService } from '../services/harveter.service';
 
@@ -6,9 +6,13 @@ import { HarvesterService } from '../services/harveter.service';
 export class HarvesterController {
   constructor(private harvestService: HarvesterService) {}
   @UseGuards(AuthGuard('jwt'))
-  @Get('info/:index_name')
-  async getInfo(@Param('index_name') index_name: string) {
-    return await this.harvestService.getInfo(index_name);
+  @Post('info/:index_name/:type?')
+  async getInfo(
+      @Param('index_name') index_name: string,
+      @Param('type') type: string,
+      @Body() pagination: any,
+  ) {
+    return await this.harvestService.getInfo(index_name, type, pagination);
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -59,6 +59,7 @@ export class DSpaceHealthCheck {
 
         for (let i = 0; i < missingHandles.length; i++) {
           await queue.add('dspace_add_missing_items', {
+            index: job.data.index,
             repo,
             handle: missingHandles[i],
             itemEndPoint: job.data.itemEndPoint

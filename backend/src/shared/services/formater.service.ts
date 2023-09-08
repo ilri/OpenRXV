@@ -4,17 +4,22 @@ import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
-let mapto: any = {};
+let mapto: any = null;
 
 @Injectable()
 export class FormatService {
   constructor(private readonly valuesServes: ValuesService) {}
 
   async Init(index_name: string) {
-    if (mapto != {}) {
-      const data = await this.valuesServes.find(null, index_name);
+    if (mapto === null) {
+      const data = await this.valuesServes.find(null, `${index_name}-values`);
       const values = {};
-      data.hits.map((d) => (values[d._source.find] = d._source.replace));
+      data.hits.map((d) => {
+        values[d._source.find] = {
+          replace: d._source.replace,
+          metadataField: d._source.metadataField,
+        }
+      });
       mapto = values;
     }
   }
@@ -26,23 +31,14 @@ export class FormatService {
         if (_.isArray(item)) {
           _.each(item, (subItem: any) => {
             const values = json[index]
-              .filter(
-                (d: any) =>
-                  d[Object.keys(subItem.where)[0]] ==
-                  subItem.where[Object.keys(subItem.where)[0]],
-              )
-              .map((d: any) =>
-                subItem.prefix
-                  ? subItem.prefix +
-                    this.mapIt(
-                      d[Object.keys(subItem.value)[0]],
-                      subItem.addOn ? subItem.addOn : null,
-                    )
-                  : this.mapIt(
-                      d[Object.keys(subItem.value)[0]],
-                      subItem.addOn ? subItem.addOn : null,
-                    ),
-              );
+              .filter((d: any) => d[Object.keys(subItem.where)[0]] == subItem.where[Object.keys(subItem.where)[0]])
+              .map((d: any) => {
+                const addOn = subItem.addOn ? subItem.addOn : null;
+                const value = d[Object.keys(subItem.value)[0]];
+                const mappedValue = this.mapIt(value, addOn, subItem.value.value);
+                return subItem.prefix ? subItem.prefix + mappedValue : mappedValue;
+              })
+                .filter(v => v !== '' && v != null);
             if (values.length)
               finalValues[subItem.value[Object.keys(subItem.value)[0]]] =
                 this.setValue(
@@ -52,16 +48,23 @@ export class FormatService {
           });
         } else if (_.isObject(item)) {
           if (_.isArray(json[index])) {
-            const values = this.getArrayOrValue(
-              json[index].map((d: any) => this.mapIt(d[Object.keys(item)[0]])),
-            );
+            const mappedValues = json[index].map((d: any) => {
+              this.mapIt(d[Object.keys(item)[0]])
+            })
+                .filter(v => v !== '' && v != null);
+            const values = this.getArrayOrValue(mappedValues);
             if (values)
               finalValues[<string>Object.values(item)[0]] = this.setValue(
                 finalValues[<string>Object.values(item)[0]],
                 values,
               );
           }
-        } else finalValues[index] = this.mapIt(json[index]);
+        } else {
+          const mappedValue = this.mapIt(json[index]);
+          if (mappedValue !== '' && mappedValue != null) {
+            finalValues[index] = mappedValue;
+          }
+        }
       }
     });
     return finalValues;
@@ -92,7 +95,7 @@ export class FormatService {
       ? ISO.whereAlpha2(value).country
       : this.capitalizeFirstLetter(value);
 
-  mapIt(value: any, addOn = null): string {
+  mapIt(value: any, addOn = null, metadataField: string = null): string {
     if (addOn) {
       if (typeof value === 'string' || value instanceof String) {
         if (addOn == 'country')
@@ -115,7 +118,19 @@ export class FormatService {
         if (addOn == 'lowercase') value = value.trim().toLowerCase();
       }
     }
-    return mapto[value] ? mapto[value] : value;
+
+    if (mapto[value]) {
+      // If the mapping value is specific for a metadata field then apply it only to the specified metadata field,
+      // otherwise apply it to all
+      if (mapto[value]?.metadataField) {
+        if (mapto[value].metadataField === metadataField) {
+          value = mapto[value].replace;
+        }
+      } else {
+        value = mapto[value].replace;
+      }
+    }
+    return value;
   }
   getArrayOrValue(values: Array<any>) {
     if (values.length > 1) return values;

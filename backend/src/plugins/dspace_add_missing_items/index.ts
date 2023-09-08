@@ -48,7 +48,6 @@ export class AddMissingItems {
         await this.elasticsearchService
             .index({index: job.data.index, body: formated})
             .catch((e) => job.moveToFailed(e, true));
-        this.logger.log('dspace_add_missing_items => ' + job.data.handle);
         await job.progress(100);
         return 'done';
       }

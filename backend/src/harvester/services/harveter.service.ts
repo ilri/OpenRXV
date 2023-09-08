@@ -87,11 +87,20 @@ export class HarvesterService implements OnModuleInit {
     return indexFetchQueue != null ? await indexFetchQueue.getJob(id) : null;
   }
 
-  async getInfo(index_name: string) {
+  async getInfo(index_name: string, type: string = null, pagination) {
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
 
+    let records = [];
+    let defaultPageSize = 5;
+    let defaultPage = 0;
+    let start = 0;
+    let end = 0;
+    let pageSize = 0;
+    let pageIndex = 0;
+
     const obj = {
+      type,
       active_count: 0,
       waiting_count: 0,
       completed_count: 0,
@@ -100,29 +109,115 @@ export class HarvesterService implements OnModuleInit {
       plugins_waiting_count: 0,
       plugins_completed_count: 0,
       plugins_failed_count: 0,
-      completed: [],
-      failed: [],
-      plugins_completed: [],
-      plugins_failed: [],
+      completed: {
+        data: [],
+        pageIndex: defaultPage,
+        pageSize: defaultPageSize,
+        totalPages: 0,
+        totalRecords: 0,
+      },
+      failed: {
+        data: [],
+        pageIndex: defaultPage,
+        pageSize: defaultPageSize,
+        totalPages: 0,
+        totalRecords: 0,
+      },
+      plugins_completed: {
+        data: [],
+        pageIndex: defaultPage,
+        pageSize: defaultPageSize,
+        totalPages: 0,
+        totalRecords: 0,
+      },
+      plugins_failed: {
+        data: [],
+        pageIndex: defaultPage,
+        pageSize: defaultPageSize,
+        totalPages: 0,
+        totalRecords: 0,
+      },
     };
 
     if (indexFetchQueue == null || indexPluginsQueue == null) {
       return obj;
     }
 
-    obj.active_count = await indexFetchQueue.getActiveCount();
-    obj.waiting_count = await indexFetchQueue.getWaitingCount();
-    obj.completed_count = await indexFetchQueue.getCompletedCount();
-    obj.failed_count = await indexFetchQueue.getFailedCount();
-    obj.completed = await indexFetchQueue.getCompleted(0, 10);
-    obj.failed = await indexFetchQueue.getFailed(0, 10);
+    if (type == null) {
+      obj.active_count = await indexFetchQueue.getActiveCount();
+      obj.waiting_count = await indexFetchQueue.getWaitingCount();
 
-    obj.plugins_active_count = await indexPluginsQueue.getActiveCount();
-    obj.plugins_waiting_count = await indexPluginsQueue.getWaitingCount();
-    obj.plugins_completed_count = await indexPluginsQueue.getCompletedCount();
-    obj.plugins_failed_count = await indexPluginsQueue.getFailedCount();
-    obj.plugins_completed = await indexPluginsQueue.getCompleted(0, 10);
-    obj.plugins_failed = await indexPluginsQueue.getFailed(0, 10);
+      obj.plugins_active_count = await indexPluginsQueue.getActiveCount();
+      obj.plugins_waiting_count = await indexPluginsQueue.getWaitingCount();
+    }
+
+    if (type == null || type === 'completed') {
+      obj.completed_count = await indexFetchQueue.getCompletedCount();
+
+      pageSize = pagination?.completed?.pageSize > 0 ? pagination?.completed?.pageSize : defaultPageSize;
+      pageIndex = pagination?.completed?.pageIndex > 0 ? pagination?.completed?.pageIndex : defaultPage;
+      end = obj.completed_count - (pageIndex * pageSize) - 1;
+      start = end - pageSize + 1;
+      records = await indexFetchQueue.getCompleted(start, end);
+      obj.completed = {
+        data: records.reverse(),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: obj.completed_count > 0 ? Math.ceil(obj.completed_count / pageSize) : 0,
+        totalRecords: obj.completed_count,
+      };
+    }
+
+    if (type == null || type === 'failed') {
+      obj.failed_count = await indexFetchQueue.getFailedCount();
+
+      pageSize = pagination?.failed?.pageSize > 0 ? pagination?.failed?.pageSize : defaultPageSize;
+      pageIndex = pagination?.failed?.pageIndex > 0 ? pagination?.failed?.pageIndex : defaultPage;
+      end = obj.failed_count - (pageIndex * pageSize) - 1;
+      start = end - pageSize + 1;
+      records = await indexFetchQueue.getFailed(start, end);
+      obj.failed = {
+        data: records.reverse(),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: obj.failed_count > 0 ? Math.ceil(obj.failed_count / pageSize) : 0,
+        totalRecords: obj.failed_count,
+      };
+    }
+
+    if (type == null || type === 'plugins_completed') {
+      obj.plugins_completed_count = await indexPluginsQueue.getCompletedCount();
+
+      pageSize = pagination?.plugins_completed?.pageSize > 0 ? pagination?.plugins_completed?.pageSize : defaultPageSize;
+      pageIndex = pagination?.plugins_completed?.pageIndex > 0 ? pagination?.plugins_completed?.pageIndex : defaultPage;
+      end = obj.plugins_completed_count - (pageIndex * pageSize) - 1;
+      start = end - pageSize + 1;
+      records = await indexPluginsQueue.getCompleted(start, end);
+      obj.plugins_completed = {
+        data: records.reverse(),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: obj.plugins_completed_count > 0 ? Math.ceil(obj.plugins_completed_count / pageSize) : 0,
+        totalRecords: obj.plugins_completed_count,
+      };
+    }
+
+    if (type == null || type === 'plugins_failed') {
+      obj.plugins_failed_count = await indexPluginsQueue.getFailedCount();
+
+      pageSize = pagination?.plugins_failed?.pageSize > 0 ? pagination?.plugins_failed?.pageSize : defaultPageSize;
+      pageIndex = pagination?.plugins_failed?.pageIndex > 0 ? pagination?.plugins_failed?.pageIndex : defaultPage;
+      end = obj.plugins_failed_count - (pageIndex * pageSize) - 1;
+      start = end - pageSize + 1;
+      records = await indexPluginsQueue.getFailed(start, end);
+      obj.plugins_failed = {
+        data: records.reverse(),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: obj.plugins_failed_count > 0 ? Math.ceil(obj.plugins_failed_count / pageSize) : 0,
+        totalRecords: obj.plugins_failed_count,
+      };
+    }
 
     return obj;
   }
@@ -175,7 +270,7 @@ export class HarvesterService implements OnModuleInit {
         try {
           const {sites} = await Sitemap.fetch();
           const itemsCount = sites.length;
-          this.logger.debug('Starting Harvest =>' + itemsCount);
+          this.logger.debug('Starting Harvest => ' + itemsCount);
           const pages = Math.round(itemsCount / 10);
           for (let page_number = 1; page_number <= pages; page_number++) {
             setTimeout(() => {
@@ -186,7 +281,7 @@ export class HarvesterService implements OnModuleInit {
           console.log(error);
         }
       } else {
-        this.logger.debug('Starting Harvest =>' + repo.type);
+        this.logger.debug('Starting Harvest => ' + repo.type);
         indexFetchQueue.add(repo.type, {repo: repo});
       }
     }
@@ -236,12 +331,10 @@ export class HarvesterService implements OnModuleInit {
       if (indexPlugins.filter((plugin) => plugin.value.length > 0).length > 0) {
         for (const plugin of indexPlugins) {
           for (const param of plugin.value) {
-            // await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-            // await this.melDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-            // await this.dspaceAltmetrics.addJobs(indexPluginsQueue, plugin.name, param, index.name);
+            await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
+            await this.melDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
+            await this.dspaceAltmetrics.addJobs(indexPluginsQueue, plugin.name, param, index.name);
             await this.dspaceHealthCheck.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-
-
           }
         }
       }
