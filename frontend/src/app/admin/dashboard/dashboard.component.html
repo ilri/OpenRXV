@@ -4,7 +4,7 @@
       <mat-card-title>
         Harvest Dashboard
 
-        <button style="float: right;" (click)="startReIndex()" color="accent" mat-raised-button>
+        <button style="float: right;" (click)="commitIndex()" color="accent" mat-raised-button>
           Commit Indexing
           <mat-icon>check</mat-icon>
         </button>
@@ -12,13 +12,13 @@
           Start Plugins
           <mat-icon>archive</mat-icon>
         </button>
-        <button class="mr-2" style="float: right;" (click)="startIndex()" color="primary" mat-raised-button>
-          Start Indexing
+        <button class="mr-2" style="float: right;" (click)="startHarvesting()" color="primary" mat-raised-button>
+          Start harvesting
           <mat-icon>archive</mat-icon>
         </button>
 
-        <button class="mr-2" style="float: right;" (click)="stopIndex()" color="warn" mat-raised-button>
-          Stop Indexing
+        <button class="mr-2" style="float: right;" (click)="stopHarvesting()" color="warn" mat-raised-button>
+          Stop harvesting
           <mat-icon>unarchive</mat-icon>
         </button>
 

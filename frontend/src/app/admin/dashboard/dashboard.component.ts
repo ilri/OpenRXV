@@ -3,6 +3,9 @@ import { SettingsService } from '../services/settings.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +16,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private setttingService: SettingsService,
     private activeRoute: ActivatedRoute,
+    public dialog: MatDialog,
+    private toastr: ToastrService,
     ) {}
 
   fetchData = {
@@ -76,28 +81,92 @@ export class DashboardComponent implements OnInit {
     this.Init();
   }
 
-  async startIndex() {
-    await this.setttingService.startIndexing(this.index_name);
-    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
-    await this.Init();
+  async startHarvesting() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to start harvesting?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.setttingService.startHarvesting(this.index_name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          await this.Init();
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
   }
 
-  async startReIndex() {
-    await this.setttingService.startReIndex(this.index_name);
-    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
-    await this.Init();
+  async commitIndex() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to commit the index?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.setttingService.commitIndex(this.index_name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          await this.Init();
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
   }
 
   async startPlugins() {
-    await this.setttingService.startPlugins(this.index_name);
-    this.refreshCounter.plugins.counter = 0;
-    await this.InitPluginsData(this.pluginsActiveStatus);
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to start plugins?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.setttingService.startPlugins(this.index_name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          this.refreshCounter.plugins.counter = 0;
+          await this.InitPluginsData(this.pluginsActiveStatus);
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
   }
 
-  async stopIndex() {
-    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
-    await this.setttingService.stopIndexing(this.index_name);
-    this.Init();
+  async stopHarvesting() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to stop harvesting?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.setttingService.stopHarvesting(this.index_name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          this.Init();
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
   }
 
   async Init() {

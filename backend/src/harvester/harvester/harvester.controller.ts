@@ -24,25 +24,25 @@ export class HarvesterController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('startindex/:index_name')
+  @Get('harvest-start/:index_name')
   async StartIndex(@Param('index_name') index_name: string) {
-    return { message: Date(), start: await this.harvestService.startHarvest(index_name) };
+    return await this.harvestService.startHarvest(index_name);
   }
   @UseGuards(AuthGuard('jwt'))
-  @Get('stopindex/:index_name')
+  @Get('harvest-stop/:index_name')
   async StopIndex(@Param('index_name') index_name: string) {
-    return { message: Date(), start: await this.harvestService.stopHarvest(index_name) };
+    return await this.harvestService.stopHarvest(index_name);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('start-plugins/:index_name')
   async pluginsStart(@Param('index_name') index_name: string) {
-    return { message: Date(), start: await this.harvestService.pluginsStart(index_name) };
+    return await this.harvestService.pluginsStart(index_name);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('start-reindex/:index_name')
+  @Get('commit-index/:index_name')
   async CheckStart(@Param('index_name') index_name: string) {
-    return { message: Date(), start: await this.harvestService.CheckStart(index_name) };
+    return await this.harvestService.commitIndex(index_name);
   }
 }

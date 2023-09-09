@@ -192,19 +192,26 @@ export class HarvesterService implements OnModuleInit {
     if (indexFetchQueue != null) {
       this.logger.debug('Stopping Harvest');
       await indexFetchQueue.pause();
-      // await indexFetchQueue.empty();
+      await indexFetchQueue.empty();
       await indexFetchQueue.clean(0, 'wait');
       await indexFetchQueue.clean(0, 'active');
       await indexFetchQueue.clean(0, 'delayed');
+      await indexFetchQueue.clean(0, 'paused');
     }
 
     const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
     if (indexPluginsQueue != null) {
       await indexPluginsQueue.pause();
-      // await indexPluginsQueue.empty();
+      await indexPluginsQueue.empty();
       await indexPluginsQueue.clean(0, 'wait');
       await indexPluginsQueue.clean(0, 'active');
       await indexPluginsQueue.clean(0, 'delayed');
+      await indexPluginsQueue.clean(0, 'paused');
+    }
+
+    return {
+      success: true,
+      message: 'Harvest stopped successfully'
     }
   }
 
@@ -224,6 +231,13 @@ export class HarvesterService implements OnModuleInit {
     await indexFetchQueue.clean(0, 'delayed');
     await indexFetchQueue.clean(0, 'completed');
     await indexFetchQueue.resume();
+
+    if (!await this.IsIndexable(index_name)) {
+      return {
+        success: false,
+        message: 'harvesting is disabled for this index'
+      }
+    }
 
     for (const repo of settings[index_name].repositories) {
       repo.index_name = index_name;
@@ -251,14 +265,18 @@ export class HarvesterService implements OnModuleInit {
       }
     }
 
-    return 'started';
+    return {
+      success: true,
+      message: 'Harvesting started successfully'
+    }
   }
 
-  async CheckStart(index_name: string) {
+  async commitIndex(index_name: string) {
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     if (indexFetchQueue == null) {
       return;
     }
+
     await indexFetchQueue.pause();
     await indexFetchQueue.empty();
     await indexFetchQueue.clean(0, 'wait');
@@ -266,7 +284,20 @@ export class HarvesterService implements OnModuleInit {
     await indexFetchQueue.clean(0, 'completed');
     await indexFetchQueue.clean(0, 'failed');
     await indexFetchQueue.resume();
+
+    if (!await this.IsIndexable(index_name)) {
+      return {
+        success: false,
+        message: 'harvesting is disabled for this index'
+      }
+    }
+
     await this.Reindex(index_name);
+
+    return {
+      success: true,
+      message: 'Index committed successfully'
+    }
   }
 
   async pluginsStart(index_name: string) {
@@ -287,22 +318,28 @@ export class HarvesterService implements OnModuleInit {
         '../../../data/plugins.json',
     );
     const indexPlugins = plugins.hasOwnProperty(index_name) ? plugins[index_name] : [];
-    const indexes = await this.jsonFilesService.read(
-        '../../../data/indexes.json',
-    );
 
-    const target_index = indexes.filter(d =>  d?.to_be_indexed && d?.name === index_name);
-    for (const index of target_index) {
-      if (indexPlugins.filter((plugin) => plugin.value.length > 0).length > 0) {
-        for (const plugin of indexPlugins) {
-          for (const param of plugin.value) {
-            await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-            await this.melDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-            await this.dspaceAltmetrics.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-            await this.dspaceHealthCheck.addJobs(indexPluginsQueue, plugin.name, param, index.name);
-          }
+    if (!await this.IsIndexable(index_name)) {
+      return {
+        success: false,
+        message: 'harvesting is disabled for this index'
+      }
+    }
+
+    if (indexPlugins.filter((plugin) => plugin.value.length > 0).length > 0) {
+      for (const plugin of indexPlugins) {
+        for (const param of plugin.value) {
+          await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index_name);
+          await this.melDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index_name);
+          await this.dspaceAltmetrics.addJobs(indexPluginsQueue, plugin.name, param, index_name);
+          await this.dspaceHealthCheck.addJobs(indexPluginsQueue, plugin.name, param, index_name);
         }
       }
+    }
+
+    return {
+      success: true,
+      message: 'Plugins started successfully'
     }
   }
 
@@ -397,5 +434,14 @@ export class HarvesterService implements OnModuleInit {
 
       this.logger.debug('Indexing finished');
     }
+  }
+
+  async IsIndexable(index_name) {
+    const indexes = await this.jsonFilesService.read(
+        '../../../data/indexes.json',
+    );
+    const target_index = indexes.filter(d => d?.to_be_indexed && d?.name === index_name);
+
+    return target_index.length > 0
   }
 }
