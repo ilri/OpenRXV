@@ -239,6 +239,17 @@ export class HarvesterService implements OnModuleInit {
       }
     }
 
+    await this.elasticsearchService.indices.delete({
+      index: `${index_name}_temp`,
+      ignore_unavailable: true,
+    });
+    this.logger.debug('Delete temp');
+
+    await this.elasticsearchService.indices.create({
+      index: `${index_name}_temp`,
+    });
+    this.logger.debug('Create temp');
+
     for (const repo of settings[index_name].repositories) {
       repo.index_name = index_name;
       if (repo.type == 'DSpace') {
