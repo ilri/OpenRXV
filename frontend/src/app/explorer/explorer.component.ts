@@ -47,6 +47,7 @@ export class ExplorerComponent implements OnInit {
     fixed: true,
     top: 0,
   };
+  dashboard_name: string;
   async share() {
     this.openDialog(
       location.href.match(/(.*)shared.*/)
@@ -55,6 +56,7 @@ export class ExplorerComponent implements OnInit {
             location.pathname +
             (await this.itemsService.saveShare(
               this.mainBodyBuilderService.getAggAttributes,
+              this.dashboard_name
             )),
     );
   }
@@ -88,6 +90,7 @@ export class ExplorerComponent implements OnInit {
   }
   appearance;
   async ngOnInit() {
+    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const { counters, dashboard, appearance, welcome } = await JSON.parse(
       localStorage.getItem('configs'),
     );
@@ -196,12 +199,11 @@ export class ExplorerComponent implements OnInit {
   }
 
   refresh(): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.mainBodyBuilderService.resetAttributes();
     setTimeout(() => {
       this.store.dispatch(
         new SetQuery({
-          dashboard: dashboard_name ? dashboard_name : 'index',
+          dashboard: this.dashboard_name ? this.dashboard_name : 'index',
           body: this.mainBodyBuilderService.buildMainQuery(0).build(),
         }),
       );

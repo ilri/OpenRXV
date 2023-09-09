@@ -22,19 +22,19 @@ export class ItemsService {
     return this.http.post(this.api_end_point, { dashboard, query });
   }
 
-  async getShare(id: string) {
+  async getShare(id: string, dashboard_name: string) {
     return await this.http
-      .get(environment.api + '/share/' + id)
+      .get(environment.api + `/share/${dashboard_name}/${id}`)
       .pipe(map((data) => data))
       .toPromise();
   }
 
-  async saveShare(attr: any) {
+  async saveShare(attr: any, dashboard_name: string) {
     if (Object.keys(attr).length)
       return (
         '/shared/' +
         (await this.http
-          .post(environment.api + '/share', attr)
+          .post(environment.api + `/share/${dashboard_name}`, attr)
           .pipe(map((data: any) => data._id))
           .toPromise())
       );

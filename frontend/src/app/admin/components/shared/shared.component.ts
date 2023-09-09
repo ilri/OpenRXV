@@ -32,7 +32,7 @@ export class SharedComponent implements OnInit {
 
   async ngOnInit() {
     this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const mappingshared = await this.sharedService.getSharedLinks();
+    const mappingshared = await this.sharedService.getSharedLinks(this.dashboard_name);
     this.dataSource = new MatTableDataSource<any>(mappingshared.hits);
     this.dataSource.paginator = this.paginator;
   }

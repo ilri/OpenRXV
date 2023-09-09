@@ -24,6 +24,7 @@ export class DashboardComponent implements OnInit {
   countersConfig: Array<GeneralConfigs> = [];
   tourConfig: Array<GeneralConfigs> = [];
   oldViewState: Map<string, boolean>;
+  dashboard_name: string;
 
   constructor(
     private readonly store: Store<fromStore.AppState>,
@@ -37,9 +38,8 @@ export class DashboardComponent implements OnInit {
     this.oldViewState = new Map<string, boolean>();
   }
   async getCounters() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const settings = await this.settingsService.readExplorerSettings(
-      dashboard_name ? dashboard_name : undefined,
+      this.dashboard_name ? this.dashboard_name : undefined,
     );
     this.dashboardConfig = settings.dashboard.flat(1);
     this.tourConfig = [settings.welcome];
@@ -55,12 +55,12 @@ export class DashboardComponent implements OnInit {
     );
   }
   async ngOnInit() {
+    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     await this.getCounters();
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const shareID = this.activeRoute.snapshot.paramMap.get('id');
     if (shareID) {
       try {
-        const shareitem: any = await this.itemsService.getShare(shareID);
+        const shareitem: any = await this.itemsService.getShare(shareID, this.dashboard_name);
         if (shareitem) {
           const sprateObjects = Object.keys(shareitem.attr).map(function (key) {
             const obj = {};
@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
     }
     this.store.dispatch(
       new SetQuery({
-        dashboard: dashboard_name,
+        dashboard: this.dashboard_name,
         body: this.bodyBuilderService.buildMainQuery().build(),
       }),
     );
