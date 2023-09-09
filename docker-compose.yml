@@ -1,8 +1,8 @@
 version: '3.1'
 services:
-  elasticsearch_7:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
-    container_name: elasticsearch_7
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.2
+    container_name: elasticsearch
     restart: always
     ports:
       - 127.0.0.1:9200:9200
@@ -22,7 +22,7 @@ services:
     ports:
       - 80:80
     depends_on:
-      - elasticsearch_7
+      - elasticsearch
       - backend
     networks:
       - openrxv
@@ -52,13 +52,13 @@ services:
   kibana:
     container_name: kibana
     restart: always
-    image: docker.elastic.co/kibana/kibana:7.17.4
+    image: docker.elastic.co/kibana/kibana:8.9.2
     depends_on:
-      - elasticsearch_7
+      - elasticsearch
     ports:
       - 127.0.0.1:5601:5601
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch_7:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     networks:
       - openrxv
   backend:
@@ -69,7 +69,7 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     depends_on:
-      - elasticsearch_7
+      - elasticsearch
       - redis
     networks:
       - openrxv
