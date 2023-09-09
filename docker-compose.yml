@@ -14,18 +14,6 @@ services:
       - esData_7:/usr/share/elasticsearch/data:rw
     networks:
       - openrxv
-  frontend:
-    container_name: frontend
-    image: frontend
-    build: frontend
-    restart: always
-    ports:
-      - 80:80
-    depends_on:
-      - elasticsearch
-      - backend
-    networks:
-      - openrxv
   redis:
     container_name: redis
     image: docker.io/redis:7
@@ -75,6 +63,18 @@ services:
       - openrxv
     volumes:
       - ./backend/data:/backend/data
+  frontend:
+    container_name: frontend
+    image: frontend
+    build: frontend
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - elasticsearch
+      - backend
+    networks:
+      - openrxv
 volumes:
   esData_7:
   redisData:
