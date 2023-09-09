@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -218,9 +218,15 @@ export class SettingsService {
         return data;
       });
   }
-  async getHarvesterInfo(index_name: string, type: string, pagination: any) {
+  async getHarvesterInfo(index_name: string, section: string, status: string, pagination: any) {
+    const params = new HttpParams()
+      .set('section', section ? section : '')
+      .set('status', status ? status : '')
+      .set('pageIndex', pagination.pageIndex ? pagination.pageIndex : 0)
+      .set('pageSize', pagination.pageSize ? pagination.pageSize : 5);
+
     return await this.http
-      .post(environment.api + `/harvester/info/` + encodeURIComponent(index_name) + (type ? `/` + encodeURIComponent(type) : ``), pagination)
+      .get(environment.api + `/harvester/info/` + encodeURIComponent(index_name), {params : params})
       .pipe(
         map((data: any) => {
           return data;

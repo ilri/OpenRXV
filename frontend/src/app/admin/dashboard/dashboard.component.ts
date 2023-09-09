@@ -14,66 +14,60 @@ export class DashboardComponent implements OnInit {
     private setttingService: SettingsService,
     private activeRoute: ActivatedRoute,
     ) {}
-  completed_count = 0;
-  active_count = 0;
-  waiting_count = 0;
-  failed_count = 0;
-  failed = {
-    data: new MatTableDataSource<Array<any>>([]),
-    pageIndex: 0,
-    pageSize: 5,
-    totalPages: 0,
-    totalRecords: 0,
-  };
-  completed = {
-    data: new MatTableDataSource<Array<any>>([]),
-    pageIndex: 0,
-    pageSize: 5,
-    totalPages: 0,
-    totalRecords: 0,
-  };
 
-  plugins_completed_count = 0;
-  plugins_active_count = 0;
-  plugins_waiting_count = 0;
-  plugins_failed_count = 0;
-  plugins_failed = {
-    data: new MatTableDataSource<Array<any>>([]),
-    pageIndex: 0,
-    pageSize: 5,
-    totalPages: 0,
-    totalRecords: 0,
-  };
-  plugins_completed = {
-    data: new MatTableDataSource<Array<any>>([]),
-    pageIndex: 0,
-    pageSize: 5,
-    totalPages: 0,
-    totalRecords: 0,
-  };
+  fetchData = {
+    active_count: 0,
+    waiting_count: 0,
+    completed_count: 0,
+    failed_count: 0,
+    stuck_count: 0,
+    table: {
+      data: new MatTableDataSource<Array<any>>([]),
+      pageIndex: 0,
+      pageSize: 5,
+      totalPages: 0,
+      totalRecords: 0,
+    }
+  }
+  pluginsData = {
+    active_count: 0,
+    waiting_count: 0,
+    completed_count: 0,
+    failed_count: 0,
+    stuck_count: 0,
+    table: {
+      data: new MatTableDataSource<Array<any>>([]),
+      pageIndex: 0,
+      pageSize: 5,
+      totalPages: 0,
+      totalRecords: 0,
+    }
+  }
 
   pagination = {
-    completed: {
+    fetch: {
       pageIndex: 0,
       pageSize: 5,
     },
-    failed: {
+    plugins: {
       pageIndex: 0,
       pageSize: 5,
     },
-    plugins_completed: {
-      pageIndex: 0,
-      pageSize: 5,
+  };
+  fetchActiveTable = 'Active';
+  fetchActiveStatus = 'active';
+  pluginsActiveTable = 'Active';
+  pluginsActiveStatus = 'active';
+  refreshCounter = {
+    fetch: {
+      counter: 0,
+      interval: null
     },
-    plugins_failed: {
-      pageIndex: 0,
-      pageSize: 5,
+    plugins: {
+      counter: 0,
+      interval: null
     }
   };
-
-  interval = null;
-  refreshCounter = 0;
-  ngOn;
 
   index_name: string;
 
@@ -81,143 +75,145 @@ export class DashboardComponent implements OnInit {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.Init();
   }
-  ngOnDestroy() {
-    this.clearInterval();
-  }
-  setinterval() {
-    if (!this.interval)
-      this.interval = setInterval(() => {
-        this.Init();
-      }, 6000);
-  }
-
-  clearInterval() {
-    if (this.interval != null) {
-      clearInterval(this.interval);
-      this.interval = null;
-    }
-  }
 
   async startIndex() {
     await this.setttingService.startIndexing(this.index_name);
-    this.refreshCounter = 0;
-    this.Init();
+    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+    await this.Init();
   }
 
   async startReIndex() {
     await this.setttingService.startReIndex(this.index_name);
-    this.refreshCounter = 0;
-    this.Init();
+    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+    await this.Init();
   }
 
   async startPlugins() {
     await this.setttingService.startPlugins(this.index_name);
-    this.refreshCounter = 0;
-    this.Init();
+    this.refreshCounter.plugins.counter = 0;
+    await this.InitPluginsData(this.pluginsActiveStatus);
   }
 
   async stopIndex() {
-    this.refreshCounter = 0;
+    this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
     await this.setttingService.stopIndexing(this.index_name);
     this.Init();
   }
 
-  async Init(tableType: string = null) {
+  async Init() {
+    await this.InitFetchData(this.fetchActiveStatus);
+    await this.InitPluginsData(this.pluginsActiveStatus);
+  }
+
+  async InitFetchData(status: string = null, paginationRefresh: boolean = false) {
     const {
-      type,
-      completed_count,
       active_count,
-      failed_count,
       waiting_count,
-      completed,
-      failed,
-      plugins_completed_count,
-      plugins_active_count,
-      plugins_failed_count,
-      plugins_waiting_count,
-      plugins_completed,
-      plugins_failed,
-    } = await this.setttingService.getHarvesterInfo(this.index_name, tableType, this.pagination);
+      completed_count,
+      failed_count,
+      stuck_count,
+      table,
+    } = await this.setttingService.getHarvesterInfo(this.index_name, 'fetch', status, this.pagination.fetch);
 
-    if(type == null){
-      this.waiting_count = waiting_count;
-      this.active_count = active_count;
-
-      this.plugins_waiting_count = plugins_waiting_count;
-      this.plugins_active_count = plugins_active_count;
+    this.fetchData.active_count = active_count;
+    this.fetchData.waiting_count = waiting_count;
+    this.fetchData.completed_count = completed_count;
+    this.fetchData.failed_count = failed_count;
+    this.fetchData.stuck_count = stuck_count;
+    this.fetchData.table = {
+      data: new MatTableDataSource<Array<any>>(table.data),
+      pageIndex: table.pageIndex,
+      pageSize: table.pageSize,
+      totalPages: table.totalPages,
+      totalRecords: table.totalRecords,
+    };
+    if (this.fetchData.active_count == 0 && this.fetchData.active_count == 0 && this.refreshCounter.fetch.counter >= 3) {
+      if (this.refreshCounter.fetch.interval != null) {
+        clearInterval(this.refreshCounter.fetch.interval);
+        this.refreshCounter.fetch.interval = null;
+      }
     }
 
-
-    if (type == null || type === 'completed') {
-      this.completed_count = completed_count;
-
-      this.completed = {
-        data: new MatTableDataSource<Array<any>>(completed.data),
-        pageIndex: completed.pageIndex,
-        pageSize: completed.pageSize,
-        totalPages: completed.totalPages,
-        totalRecords: completed.totalRecords,
-      };
+    if (this.refreshCounter.fetch.counter == 0) {
+      if (!this.refreshCounter.fetch.interval)
+        this.refreshCounter.fetch.interval = setInterval(() => {
+          this.InitFetchData(this.fetchActiveStatus);
+        }, 6000);
     }
 
-    if (type == null || type === 'failed') {
-      this.failed_count = failed_count;
-
-      this.failed = {
-        data: new MatTableDataSource<Array<any>>(failed.data),
-        pageIndex: failed.pageIndex,
-        pageSize: failed.pageSize,
-        totalPages: failed.totalPages,
-        totalRecords: failed.totalRecords,
-      };
-    }
-
-    if (type == null || type === 'plugins_completed') {
-      this.plugins_completed_count = plugins_completed_count;
-
-      this.plugins_completed = {
-        data: new MatTableDataSource<Array<any>>(plugins_completed.data),
-        pageIndex: plugins_completed.pageIndex,
-        pageSize: plugins_completed.pageSize,
-        totalPages: plugins_completed.totalPages,
-        totalRecords: plugins_completed.totalRecords,
-      };
-    }
-
-    if (type == null || type === 'plugins_failed') {
-      this.plugins_failed_count = plugins_failed_count;
-
-      this.plugins_failed = {
-        data: new MatTableDataSource<Array<any>>(plugins_failed.data),
-        pageIndex: plugins_failed.pageIndex,
-        pageSize: plugins_failed.pageSize,
-        totalPages: plugins_failed.totalPages,
-        totalRecords: plugins_failed.totalRecords,
-      };
-    }
-
-    if (
-      plugins_active_count == 0 &&
-      plugins_waiting_count == 0 &&
-      active_count == 0 &&
-      waiting_count == 0 &&
-      this.refreshCounter >= 3 &&
-      type == null
-    )
-      this.clearInterval();
-
-    if (this.refreshCounter == 0) this.setinterval();
-
-    if (type == null) {
-      this.refreshCounter++;
+    if (!paginationRefresh) {
+      this.refreshCounter.fetch.counter++;
     }
   }
 
-  paginationChanged(event: PageEvent, type: string) {
-    if (this.pagination.hasOwnProperty(type)) {
-      this.pagination[type].pageSize = event.pageSize;
-      this.pagination[type].pageIndex = event.pageIndex;
-      this.Init(type);
+  async InitPluginsData(status: string = null, paginationRefresh: boolean = false) {
+    const {
+      active_count,
+      waiting_count,
+      completed_count,
+      failed_count,
+      stuck_count,
+      table,
+    } = await this.setttingService.getHarvesterInfo(this.index_name, 'plugins', status, this.pagination.plugins);
+
+    this.pluginsData.active_count = active_count;
+    this.pluginsData.waiting_count = waiting_count;
+    this.pluginsData.completed_count = completed_count;
+    this.pluginsData.failed_count = failed_count;
+    this.pluginsData.stuck_count = stuck_count;
+    this.pluginsData.table = {
+      data: new MatTableDataSource<Array<any>>(table.data),
+      pageIndex: table.pageIndex,
+      pageSize: table.pageSize,
+      totalPages: table.totalPages,
+      totalRecords: table.totalRecords,
+    };
+    if (this.pluginsData.active_count == 0 && this.pluginsData.active_count == 0 && this.refreshCounter.plugins.counter >= 3) {
+      if (this.refreshCounter.plugins.interval != null) {
+        clearInterval(this.refreshCounter.plugins.interval);
+        this.refreshCounter.plugins.interval = null;
+      }
+    }
+
+    if (this.refreshCounter.plugins.counter == 0) {
+      if (!this.refreshCounter.plugins.interval)
+        this.refreshCounter.plugins.interval = setInterval(() => {
+          this.InitPluginsData(this.pluginsActiveStatus);
+        }, 6000);
+    }
+
+    if (!paginationRefresh) {
+      this.refreshCounter.plugins.counter++;
+    }
+  }
+
+  async PaginationChanged(event: PageEvent, status: string, section: string) {
+    if (this.pagination.hasOwnProperty(section)) {
+      this.pagination[section].pageSize = event.pageSize;
+      this.pagination[section].pageIndex = event.pageIndex;
+      if (section === 'fetch') {
+        await this.InitFetchData(status, true);
+      } else if (section === 'plugins') {
+        await this.InitPluginsData(status, true);
+      }
+    }
+  }
+
+  async ChangeTable(tableName, status, section) {
+    if (section === 'fetch') {
+      this.fetchActiveTable = tableName;
+      this.fetchActiveStatus = status;
+
+      this.pagination[section].pageSize = 5;
+      this.pagination[section].pageIndex = 0;
+      await this.InitFetchData(status, true);
+    } else if (section === 'plugins') {
+      this.pluginsActiveTable = tableName;
+      this.pluginsActiveStatus = status;
+
+      this.pagination[section].pageSize = 5;
+      this.pagination[section].pageIndex = 0;
+      await this.InitPluginsData(status, true);
     }
   }
 }

@@ -1,13 +1,14 @@
 import { Injectable, Logger, OnModuleInit, HttpService } from '@nestjs/common';
 import * as Bull from 'bull';
+import { Job } from 'bull';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { FetchService } from '../../harvesters/DSpace/fetch.service';
-import { AddMissingItems } from '../../plugins/dspace_add_missing_items/index';
-import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics/index';
-import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views/index';
-import { DSpaceHealthCheck } from '../../plugins/dspace_health_check/index';
-import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views/index';
+import { AddMissingItems } from '../../plugins/dspace_add_missing_items';
+import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
+import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
+import { DSpaceHealthCheck } from '../../plugins/dspace_health_check';
+import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
 
 import Sitemapper from 'sitemapper';
 
@@ -87,50 +88,58 @@ export class HarvesterService implements OnModuleInit {
     return indexFetchQueue != null ? await indexFetchQueue.getJob(id) : null;
   }
 
-  async getInfo(index_name: string, type: string = null, pagination) {
-    const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
-    const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
+  PaginationStartEnd(pageIndex, pageSize, defaultPageSize, defaultPage, total) {
+     pageSize = pageSize > 0 ? pageSize : defaultPageSize;
+     pageIndex = pageIndex >= 0 ? pageIndex : defaultPage;
+
+    let end = total - (pageIndex * pageSize) - 1;
+    // end cannot exceed the total (last item index)
+    end = (end + 1) > total ? (total - 1) : end;
+    // end must be equal or greater than ZERO
+    end = end < 0 ? 0 : end;
+    let start = end - pageSize + 1;
+    // start must be equal or greater than ZERO
+    start = start < 0 ? 0 : start;
+
+    return {
+      start,
+      end,
+      pageSize,
+      pageIndex
+    }
+  }
+
+  ReduceJobsObject(jobs: Array<Job>){
+    return jobs.map((job) => {
+      return {
+        id: job?.id,
+        repository_name: job?.data?.repo?.name,
+        plugin_name: job?.name,
+        page: job?.data?.page,
+        timestamp: job?.timestamp,
+        processedOn: job?.processedOn,
+        finishedOn: job?.finishedOn,
+        attemptsMade: job?.attemptsMade,
+        failedReason: job?.failedReason,
+        is_stuck: job?.data?.is_stuck,
+      };
+    });
+  }
+
+  async getInfo(index_name: string, section: string, status: string = 'active', pageIndex: number = 0, pageSize: number = 5) {
+    const indexQueue = this.registeredQueues.hasOwnProperty(`${index_name}_${section}`) ? this.registeredQueues[`${index_name}_${section}`] : null;
 
     let records = [];
     let defaultPageSize = 5;
     let defaultPage = 0;
-    let start = 0;
-    let end = 0;
-    let pageSize = 0;
-    let pageIndex = 0;
 
     const obj = {
-      type,
       active_count: 0,
       waiting_count: 0,
       completed_count: 0,
       failed_count: 0,
-      plugins_active_count: 0,
-      plugins_waiting_count: 0,
-      plugins_completed_count: 0,
-      plugins_failed_count: 0,
-      completed: {
-        data: [],
-        pageIndex: defaultPage,
-        pageSize: defaultPageSize,
-        totalPages: 0,
-        totalRecords: 0,
-      },
-      failed: {
-        data: [],
-        pageIndex: defaultPage,
-        pageSize: defaultPageSize,
-        totalPages: 0,
-        totalRecords: 0,
-      },
-      plugins_completed: {
-        data: [],
-        pageIndex: defaultPage,
-        pageSize: defaultPageSize,
-        totalPages: 0,
-        totalRecords: 0,
-      },
-      plugins_failed: {
+      stuck_count: 0,
+      table: {
         data: [],
         pageIndex: defaultPage,
         pageSize: defaultPageSize,
@@ -139,85 +148,41 @@ export class HarvesterService implements OnModuleInit {
       },
     };
 
-    if (indexFetchQueue == null || indexPluginsQueue == null) {
+    if (indexQueue == null) {
       return obj;
     }
 
-    if (type == null) {
-      obj.active_count = await indexFetchQueue.getActiveCount();
-      obj.waiting_count = await indexFetchQueue.getWaitingCount();
+    obj.active_count = await indexQueue.getActiveCount();
+    const activeJobs = await indexQueue.getActive();
+    for (let i = 0; i < activeJobs.length; i++) {
+      activeJobs[i].data.isStuck = await activeJobs[i].isStuck();
+      if (activeJobs[i].data.isStuck) {
+        obj.stuck_count++;
+      }
+    }
+    obj.waiting_count = await indexQueue.getWaitingCount();
+    obj.completed_count = await indexQueue.getCompletedCount();
+    obj.failed_count = await indexQueue.getFailedCount();
 
-      obj.plugins_active_count = await indexPluginsQueue.getActiveCount();
-      obj.plugins_waiting_count = await indexPluginsQueue.getWaitingCount();
+    const tableDataCount = obj.hasOwnProperty(`${status}_count`) ? obj[`${status}_count`] : 0;
+    const limits = this.PaginationStartEnd(pageIndex, pageSize, defaultPageSize, defaultPage, tableDataCount);
+    if (status === 'active') {
+      records = this.ReduceJobsObject(activeJobs.splice(limits.start, limits.end + 1));
+    } else if (status === 'waiting') {
+      records = this.ReduceJobsObject(await indexQueue.getWaiting(limits.start, limits.end));
+    } else if (status === 'completed') {
+      records = this.ReduceJobsObject(await indexQueue.getCompleted(limits.start, limits.end));
+    } else if (status === 'failed') {
+      records = this.ReduceJobsObject(await indexQueue.getFailed(limits.start, limits.end));
     }
 
-    if (type == null || type === 'completed') {
-      obj.completed_count = await indexFetchQueue.getCompletedCount();
-
-      pageSize = pagination?.completed?.pageSize > 0 ? pagination?.completed?.pageSize : defaultPageSize;
-      pageIndex = pagination?.completed?.pageIndex > 0 ? pagination?.completed?.pageIndex : defaultPage;
-      end = obj.completed_count - (pageIndex * pageSize) - 1;
-      start = end - pageSize + 1;
-      records = await indexFetchQueue.getCompleted(start, end);
-      obj.completed = {
-        data: records.reverse(),
-        pageIndex: pageIndex,
-        pageSize: pageSize,
-        totalPages: obj.completed_count > 0 ? Math.ceil(obj.completed_count / pageSize) : 0,
-        totalRecords: obj.completed_count,
-      };
-    }
-
-    if (type == null || type === 'failed') {
-      obj.failed_count = await indexFetchQueue.getFailedCount();
-
-      pageSize = pagination?.failed?.pageSize > 0 ? pagination?.failed?.pageSize : defaultPageSize;
-      pageIndex = pagination?.failed?.pageIndex > 0 ? pagination?.failed?.pageIndex : defaultPage;
-      end = obj.failed_count - (pageIndex * pageSize) - 1;
-      start = end - pageSize + 1;
-      records = await indexFetchQueue.getFailed(start, end);
-      obj.failed = {
-        data: records.reverse(),
-        pageIndex: pageIndex,
-        pageSize: pageSize,
-        totalPages: obj.failed_count > 0 ? Math.ceil(obj.failed_count / pageSize) : 0,
-        totalRecords: obj.failed_count,
-      };
-    }
-
-    if (type == null || type === 'plugins_completed') {
-      obj.plugins_completed_count = await indexPluginsQueue.getCompletedCount();
-
-      pageSize = pagination?.plugins_completed?.pageSize > 0 ? pagination?.plugins_completed?.pageSize : defaultPageSize;
-      pageIndex = pagination?.plugins_completed?.pageIndex > 0 ? pagination?.plugins_completed?.pageIndex : defaultPage;
-      end = obj.plugins_completed_count - (pageIndex * pageSize) - 1;
-      start = end - pageSize + 1;
-      records = await indexPluginsQueue.getCompleted(start, end);
-      obj.plugins_completed = {
-        data: records.reverse(),
-        pageIndex: pageIndex,
-        pageSize: pageSize,
-        totalPages: obj.plugins_completed_count > 0 ? Math.ceil(obj.plugins_completed_count / pageSize) : 0,
-        totalRecords: obj.plugins_completed_count,
-      };
-    }
-
-    if (type == null || type === 'plugins_failed') {
-      obj.plugins_failed_count = await indexPluginsQueue.getFailedCount();
-
-      pageSize = pagination?.plugins_failed?.pageSize > 0 ? pagination?.plugins_failed?.pageSize : defaultPageSize;
-      pageIndex = pagination?.plugins_failed?.pageIndex > 0 ? pagination?.plugins_failed?.pageIndex : defaultPage;
-      end = obj.plugins_failed_count - (pageIndex * pageSize) - 1;
-      start = end - pageSize + 1;
-      records = await indexPluginsQueue.getFailed(start, end);
-      obj.plugins_failed = {
-        data: records.reverse(),
-        pageIndex: pageIndex,
-        pageSize: pageSize,
-        totalPages: obj.plugins_failed_count > 0 ? Math.ceil(obj.plugins_failed_count / pageSize) : 0,
-        totalRecords: obj.plugins_failed_count,
-      };
-    }
+    obj.table = {
+      data: records.reverse(),
+      pageIndex: limits.pageIndex,
+      pageSize: limits.pageSize,
+      totalPages: tableDataCount > 0 ? Math.ceil(tableDataCount / limits.pageSize) : 0,
+      totalRecords: tableDataCount,
+    };
 
     return obj;
   }
@@ -227,7 +192,7 @@ export class HarvesterService implements OnModuleInit {
     if (indexFetchQueue != null) {
       this.logger.debug('Stopping Harvest');
       await indexFetchQueue.pause();
-      await indexFetchQueue.empty();
+      // await indexFetchQueue.empty();
       await indexFetchQueue.clean(0, 'wait');
       await indexFetchQueue.clean(0, 'active');
       await indexFetchQueue.clean(0, 'delayed');
@@ -236,7 +201,7 @@ export class HarvesterService implements OnModuleInit {
     const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
     if (indexPluginsQueue != null) {
       await indexPluginsQueue.pause();
-      await indexPluginsQueue.empty();
+      // await indexPluginsQueue.empty();
       await indexPluginsQueue.clean(0, 'wait');
       await indexPluginsQueue.clean(0, 'active');
       await indexPluginsQueue.clean(0, 'delayed');

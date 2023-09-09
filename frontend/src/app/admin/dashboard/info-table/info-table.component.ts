@@ -16,8 +16,10 @@ export class InfoTableComponent implements OnInit {
   displayedColumns: string[] = [
     'id',
     'page',
+    'timestamp',
     'processedOn',
-    'repo',
+    'finishedOn',
+    'repository_name',
     'attemptsMade',
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -47,14 +49,12 @@ export class InfoTableComponent implements OnInit {
       this.displayedColumns = [
         'id',
         'page',
+        'timestamp',
         'processedOn',
-        'name',
+        'finishedOn',
+        'plugin_name',
         'attemptsMade',
       ];
-  }
-
-  ngAfterViewInit() {
-    this._dataSource.paginator = this.paginator;
   }
 
   paginationChanged(event: PageEvent) {

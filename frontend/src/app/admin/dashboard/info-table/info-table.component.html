@@ -3,27 +3,44 @@
         <!-- id Column -->
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef> ID. </th>
-            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+            <td mat-cell *matCellDef="let element">
+              {{element.id}}
+              <mat-icon class="error-tooltip stuck-job-tooltip" *ngIf="element?.isStuck"
+                        matTooltip="Stuck job" matTooltipHideDelay="200" matTooltipPosition="above">error
+              </mat-icon>
+            </td>
         </ng-container>
 
-        <ng-container *ngIf="!plugin" matColumnDef="repo">
+        <ng-container *ngIf="!plugin" matColumnDef="repository_name">
             <th mat-header-cell *matHeaderCellDef> Repository </th>
-            <td mat-cell *matCellDef="let element"> {{element.data.repo.name }} </td>
+            <td mat-cell *matCellDef="let element"> {{element.repository_name }} </td>
         </ng-container>
-        <ng-container *ngIf="plugin" matColumnDef="name">
+
+        <ng-container *ngIf="plugin" matColumnDef="plugin_name">
             <th mat-header-cell *matHeaderCellDef> Plugin Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.name }} </td>
+            <td mat-cell *matCellDef="let element"> {{element.plugin_name }} </td>
         </ng-container>
 
         <ng-container matColumnDef="page">
             <th mat-header-cell *matHeaderCellDef> Page </th>
-            <td mat-cell *matCellDef="let element"> {{element.data.page }} </td>
+            <td mat-cell *matCellDef="let element"> {{element.page }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef> Created </th>
+            <td mat-cell *matCellDef="let element"> {{element.timestamp | date:'medium'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="processedOn">
-            <th mat-header-cell *matHeaderCellDef> Processed On </th>
+            <th mat-header-cell *matHeaderCellDef> Processed </th>
             <td mat-cell *matCellDef="let element"> {{element.processedOn | date:'medium'}} </td>
         </ng-container>
+
+        <ng-container matColumnDef="finishedOn">
+            <th mat-header-cell *matHeaderCellDef> Finished </th>
+            <td mat-cell *matCellDef="let element"> {{element.finishedOn | date:'medium'}} </td>
+        </ng-container>
+
         <ng-container matColumnDef="attemptsMade">
             <th mat-header-cell *matHeaderCellDef> Attempts Made </th>
             <td mat-cell *matCellDef="let element">

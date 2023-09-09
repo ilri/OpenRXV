@@ -10,3 +10,7 @@ td.mat-cell .error-tooltip {
   font-size: 12px;
   height: inherit;
 }
+
+td.mat-cell .error-tooltip.stuck-job-tooltip {
+  color: red;
+}

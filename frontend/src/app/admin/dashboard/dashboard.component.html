@@ -33,63 +33,57 @@
 <div class="row">
   <div class="col-12 pb-3">
     <div class="d-flex w-100 justify-content-between">
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ active_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Active</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Active', 'active', 'fetch')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ fetchData.active_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Active ({{ fetchData.stuck_count }})</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ completed_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Completed</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Waiting', 'waiting', 'fetch')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ fetchData.waiting_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Waiting</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ waiting_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Waiting</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Completed', 'completed', 'fetch')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ fetchData.completed_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Completed</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ failed_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Failed</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Failed', 'failed', 'fetch')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ fetchData.failed_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Failed</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-12">
     <mat-card>
       <mat-card-title>
-        Completed
+        {{ fetchActiveTable }}
       </mat-card-title>
       <mat-card-content>
         <app-info-table
-          [data]="completed.data"
-          [pageIndex]="completed.pageIndex"
-          [pageSize]="completed.pageSize"
-          [totalPages]="completed.totalPages"
-          [totalRecords]="completed.totalRecords"
-          (paginationEvent)="paginationChanged($event, 'completed')"
-        ></app-info-table>
-
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <div class="col-6">
-    <mat-card>
-      <mat-card-title>
-        Failed
-      </mat-card-title>
-      <mat-card-content>
-        <app-info-table
-          [data]="failed.data"
-          [pageIndex]="failed.pageIndex"
-          [pageSize]="failed.pageSize"
-          [totalPages]="failed.totalPages"
-          [totalRecords]="failed.totalRecords"
-          (paginationEvent)="paginationChanged($event, 'failed')"
+          [data]="fetchData.table.data"
+          [pageIndex]="fetchData.table.pageIndex"
+          [pageSize]="fetchData.table.pageSize"
+          [totalPages]="fetchData.table.totalPages"
+          [totalRecords]="fetchData.table.totalRecords"
+          (paginationEvent)="PaginationChanged($event, fetchActiveStatus, 'fetch')"
         ></app-info-table>
 
       </mat-card-content>
@@ -103,65 +97,58 @@
   </div>
   <div class="col-12 pb-3">
     <div class="d-flex w-100 justify-content-between">
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ plugins_active_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Active</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Active', 'active', 'plugins')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ pluginsData.active_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Active ({{ pluginsData.stuck_count }})</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ plugins_completed_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Completed</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Waiting', 'waiting', 'plugins')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ pluginsData.waiting_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Waiting</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ plugins_waiting_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Waiting</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Completed', 'completed', 'plugins')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ pluginsData.completed_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Completed</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light">
-        <mat-card-title>
-          {{ plugins_failed_count }}
-        </mat-card-title>
-        <mat-card-subtitle>Failed</mat-card-subtitle>
+      <mat-card class="counter border-bottom-light"
+                (click)="ChangeTable('Failed', 'failed', 'plugins')">
+        <mat-card-content class="primary-hover">
+          <mat-card-title>
+            {{ pluginsData.failed_count }}
+          </mat-card-title>
+          <mat-card-subtitle>Failed</mat-card-subtitle>
+        </mat-card-content>
       </mat-card>
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-12">
     <mat-card>
       <mat-card-title>
-        Completed
+        {{ pluginsActiveTable }}
       </mat-card-title>
       <mat-card-content>
         <app-info-table
-          [data]="plugins_completed.data"
-          [pageIndex]="plugins_completed.pageIndex"
-          [pageSize]="plugins_completed.pageSize"
-          [totalPages]="plugins_completed.totalPages"
-          [totalRecords]="plugins_completed.totalRecords"
+          [data]="pluginsData.table.data"
+          [pageIndex]="pluginsData.table.pageIndex"
+          [pageSize]="pluginsData.table.pageSize"
+          [totalPages]="pluginsData.table.totalPages"
+          [totalRecords]="pluginsData.table.totalRecords"
           [plugin]="true"
-          (paginationEvent)="paginationChanged($event, 'plugins_completed')"
-        ></app-info-table>
-
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <div class="col-6">
-    <mat-card>
-      <mat-card-title>
-        Failed
-      </mat-card-title>
-      <mat-card-content>
-        <app-info-table
-          [data]="plugins_failed.data"
-          [pageIndex]="plugins_failed.pageIndex"
-          [pageSize]="plugins_failed.pageSize"
-          [totalPages]="plugins_failed.totalPages"
-          [totalRecords]="plugins_failed.totalRecords"
-          [plugin]="true"
-          (paginationEvent)="paginationChanged($event, 'plugins_failed')"
+          (paginationEvent)="PaginationChanged($event, pluginsActiveStatus, 'plugins')"
         ></app-info-table>
 
       </mat-card-content>

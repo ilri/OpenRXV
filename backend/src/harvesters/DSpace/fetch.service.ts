@@ -44,6 +44,8 @@ export class FetchService {
                         await job.progress(60);
                         return await this.process(job, data);
                     }
+                } else {
+                    await job.moveToFailed({message: 'no response'}, true);
                 }
             } catch (e) {
                 await job.moveToFailed(e, true);
