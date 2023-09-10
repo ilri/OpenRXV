@@ -165,9 +165,9 @@ export class SettingsService {
       .toPromise();
   }
 
-  async retreiveMetadata(link, type) {
+  async retreiveMetadata(link, repository_type) {
     return await this.http
-      .get(environment.api + `/settings/${type}/autometa?link=` + link)
+      .get(environment.api + `/settings/repository/metadata-auto-retrieve?repository_type=${repository_type}&link=${link}`)
       .pipe(
         map((data: any) => {
           return data;

@@ -464,116 +464,21 @@ export class SettingsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('DSpace/autometa')
-  async AutoMeta(@Query('link') link: string) {
-    const checkingVersion = this.httpService
-      .get(new URL(link).origin + '/rest/status')
-      .pipe(
-        map(async (response, index) => {
-          if (response.data.apiVersion == undefined) {
-            const data = await this.httpService
-              .get(link + '/items?expand=metadata,parentCommunityList&limit=25')
-              .pipe(
-                map(
-                  (data: any) => {
-                    const merged = {
-                      base: [],
-                      metadata: [],
-                    };
-                    data = data.data.forEach((element) => {
-                      merged.base = Array.from(
-                        new Set(
-                          [].concat.apply(
-                            merged.base,
-                            Object.keys(element).filter(
-                              (d) =>
-                                ['metadata', 'bitstreams', 'expand'].indexOf(
-                                  d,
-                                ) == -1,
-                            ),
-                          ),
-                        ),
-                      );
-                      merged.metadata = Array.from(
-                        new Set(
-                          [].concat.apply(
-                            merged.metadata,
-                            element.metadata.map((item) => {
-                              return item.key;
-                            }),
-                          ),
-                        ),
-                      );
-                    });
-                    return merged;
-                  },
-                  (error) => {},
-                ),
-              )
-              .toPromise();
-
-            return data;
-          } else if (response.data.apiVersion == 6) {
-            const merged = {
-              base: [],
-              metadata: [],
-            };
-            const base = await this.httpService
-              .get(link + '/items?expand=metadata,parentCommunityList&limit=25')
-              .pipe(
-                map(
-                  (data: any) => {
-                    data = data.data.forEach((element) => {
-                      merged.base = Array.from(
-                        new Set(
-                          [].concat.apply(
-                            merged.base,
-                            Object.keys(element).filter(
-                              (d) =>
-                                ['metadata', 'bitstreams', 'expand'].indexOf(
-                                  d,
-                                ) == -1,
-                            ),
-                          ),
-                        ),
-                      );
-                    });
-                    return merged;
-                  },
-                  (error) => {},
-                ),
-              )
-              .toPromise();
-
-            const data = await this.httpService
-              .get(link + '/registries/schema')
-              .pipe(
-                map(
-                  (data: any, index) => {
-                    data = data.data.forEach((element, index) => {
-                      merged.metadata = Array.from(
-                        new Set(
-                          [].concat.apply(
-                            merged.metadata,
-                            element.fields.map((item) => {
-                              return item.name;
-                            }),
-                          ),
-                        ),
-                      );
-                    });
-                    return merged;
-                  },
-                  (error) => {},
-                ),
-              )
-              .toPromise();
-            return data;
-          }
-        }),
-      )
-      .toPromise();
-    return checkingVersion;
+  @Get('repository/metadata-auto-retrieve')
+  async RepositoryMetadataAutoRetrieve(
+      @Query('repository_type') repository_type: string,
+      @Query('link') link: string,
+  ) {
+    if (repository_type === 'DSpace') {
+      return await this.indexMetadataService.DSpaceMetadataAutoRetrieve(link);
+    } else if (repository_type === 'DSpace7') {
+      return await this.indexMetadataService.DSpace7MetadataAutoRetrieve(link);
+    } else {
+      return {
+        base: [],
+        metadata: [],
+      };
+    }
   }
 
   @Post('upload/image')
