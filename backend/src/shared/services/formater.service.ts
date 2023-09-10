@@ -24,45 +24,51 @@ export class FormatService {
     }
   }
 
-  format(json: any, schema: any) {
+  format(harvestedItem: any, schemas: any) {
     const finalValues: any = {};
-    _.each(schema, (item: any, index: string) => {
-      if (json[index]) {
-        if (_.isArray(item)) {
-          _.each(item, (subItem: any) => {
-            const values = json[index]
-              .filter((d: any) => d[Object.keys(subItem.where)[0]] == subItem.where[Object.keys(subItem.where)[0]])
-              .map((d: any) => {
-                const addOn = subItem.addOn ? subItem.addOn : null;
-                const value = d[Object.keys(subItem.value)[0]];
-                const mappedValue = this.mapIt(value, addOn, subItem.value.value);
-                return subItem.prefix ? subItem.prefix + mappedValue : mappedValue;
+    _.each(schemas, (schemaItems: any, schemaName: string) => {
+      if (harvestedItem[schemaName]) {
+        if (_.isArray(schemaItems)) { // These are metadata
+          _.each(schemaItems, (schemaItem: any) => {
+            const schemaValueName = Object.keys(schemaItem.value)[0];
+            const values = harvestedItem[schemaName]
+              .filter((metadataElement: any) => {
+                const schemaKeyName = Object.keys(schemaItem.where)[0];
+                return metadataElement[schemaKeyName] == schemaItem.where[schemaKeyName];
+              })
+              .map((metadataElement: any) => {
+                const addOn = schemaItem.addOn ? schemaItem.addOn : null;
+                const value = metadataElement[schemaValueName];
+                const mappedValue = this.mapIt(value, addOn, schemaItem.value.value);
+                return schemaItem.prefix ? schemaItem.prefix + mappedValue : mappedValue;
               })
                 .filter(v => v !== '' && v != null);
             if (values.length)
-              finalValues[subItem.value[Object.keys(subItem.value)[0]]] =
+              finalValues[schemaItem.value[schemaValueName]] =
                 this.setValue(
-                  finalValues[subItem.value[Object.keys(subItem.value)[0]]],
+                  finalValues[schemaItem.value[schemaValueName]],
                   this.getArrayOrValue(values),
                 );
           });
-        } else if (_.isObject(item)) {
-          if (_.isArray(json[index])) {
-            const mappedValues = json[index].map((d: any) => {
-              this.mapIt(d[Object.keys(item)[0]])
-            })
+        } else if (_.isObject(schemaItems)) { // These are expands (collections, communities, bitstreams, ...)
+          if (_.isArray(harvestedItem[schemaName])) {
+            const metadataField = <string>Object.values(schemaItems)[0];
+            const titleFieldName = Object.keys(schemaItems)[0];
+
+            const mappedValues = harvestedItem[schemaName]
+                .map((metadataElement: any) => this.mapIt(metadataElement[titleFieldName]))
                 .filter(v => v !== '' && v != null);
             const values = this.getArrayOrValue(mappedValues);
             if (values)
-              finalValues[<string>Object.values(item)[0]] = this.setValue(
-                finalValues[<string>Object.values(item)[0]],
+              finalValues[metadataField] = this.setValue(
+                finalValues[metadataField],
                 values,
               );
           }
-        } else {
-          const mappedValue = this.mapIt(json[index]);
+        } else { // These are item basic information (id, name, handle, archived, ...)
+          const mappedValue = this.mapIt(harvestedItem[schemaName]);
           if (mappedValue !== '' && mappedValue != null) {
-            finalValues[index] = mappedValue;
+            finalValues[schemaName] = mappedValue;
           }
         }
       }
