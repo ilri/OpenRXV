@@ -267,7 +267,7 @@ export class HarvesterService implements OnModuleInit {
           const pages = Math.round(itemsCount / 10);
           for (let page_number = 1; page_number <= pages; page_number++) {
             setTimeout(() => {
-              indexFetchQueue.add('DSpace', {page: page_number, repo});
+              indexFetchQueue.add(repo.type, {page: page_number, repo});
             }, page_number <= 5 ? page_number * 500 : 0);
           }
         } catch (error) {

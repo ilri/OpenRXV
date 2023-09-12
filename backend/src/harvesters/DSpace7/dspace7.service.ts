@@ -17,7 +17,7 @@ export class DSpace7Service {
     collectionsFetching: any = {};
 
     async RegisterProcess(queue, name: string, index_name: string) {
-        queue.process(name, 5, async (job: Job<any>) => {
+        queue.process(name, 0, async (job: Job<any>) => {
             try {
                 await job.takeLock();
                 await job.progress(20);
