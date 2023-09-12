@@ -7,7 +7,7 @@
   <mat-drawer-content id="main-content-dashboard">
     <section class="container-fluid">
       <ng-container *ngFor="let conf of tourConfig">
-        <div *ngIf="conf.show" [tourAnchor]="conf.componentConfigs.id">
+        <div *ngIf="conf.show" [tourAnchor]="conf.componentConfigs.id" class="row">
           <app-dynamic
             [componentConfigs]="conf.componentConfigs"
             [comp]="conf.component"
