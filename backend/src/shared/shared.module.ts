@@ -1,4 +1,5 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticService } from './services/elastic/elastic.service';
 import { MetadataService } from './services/metadata.service';

@@ -31,7 +31,7 @@ export class SearchController {
   @Post('/scroll/:scroll')
   async searchScroll(@Body() query: any, @Param('scroll') scroll: string) {
     query['track_total_hits'] = true;
-    const { body } = await this.elasticSearvice.get(query, scroll);
+    const body = await this.elasticSearvice.get(null, query, scroll);
     return body;
   }
 }

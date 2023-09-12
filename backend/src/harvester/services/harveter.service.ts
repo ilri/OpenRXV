@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit, HttpService } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as Bull from 'bull';
 import { Job } from 'bull';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
@@ -21,7 +21,6 @@ export class HarvesterService implements OnModuleInit {
   constructor(
       public readonly elasticsearchService: ElasticsearchService,
       public readonly jsonFilesService: JsonFilesService,
-      private http: HttpService,
       private readonly dspaceService: DSpaceService,
       private readonly dspace7Service: DSpace7Service,
       private readonly addMissingItems: AddMissingItems,
@@ -359,28 +358,26 @@ export class HarvesterService implements OnModuleInit {
 
   async Reindex(index_name: string) {
     this.logger.debug('reindex function is called');
-    let indexes = await this.jsonFilesService.read(
+    const indexes = await this.jsonFilesService.read(
         '../../../data/indexes.json',
     );
 
-    for (let index of indexes.filter((d) => d?.to_be_indexed && d?.name === index_name)) {
+    for (const index of indexes.filter((d) => d?.to_be_indexed && d?.name === index_name)) {
       await this.elasticsearchService.indices.updateAliases({
-        body: {
-          actions: [
-            {
-              remove: {
-                index: `${index.name}_final`,
-                alias: index.name,
-              },
+        actions: [
+          {
+            remove: {
+              index: `${index.name}_final`,
+              alias: index.name,
             },
-            {
-              add: {
-                index: `${index.name}_temp`,
-                alias: index.name,
-              },
+          },
+          {
+            add: {
+              index: `${index.name}_temp`,
+              alias: index.name,
             },
-          ],
-        },
+          },
+        ],
       });
 
       this.logger.debug('updateAliases final to temp');
@@ -396,17 +393,13 @@ export class HarvesterService implements OnModuleInit {
       });
       this.logger.debug('Create final');
 
-      await this.elasticsearchService
-          .reindex(
-              {
+      await this.elasticsearchService.reindex({
                 wait_for_completion: true,
-                body: {
-                  conflicts: 'proceed',
-                  source: {
-                    index: `${index.name}_temp`,
-                  },
-                  dest: {index: `${index.name}_final`},
+                conflicts: 'proceed',
+                source: {
+                  index: `${index.name}_temp`,
                 },
+                dest: {index: `${index.name}_final`},
               },
               {requestTimeout: 2000000},
           )
@@ -414,22 +407,20 @@ export class HarvesterService implements OnModuleInit {
       this.logger.debug('Reindex to final');
 
       await this.elasticsearchService.indices.updateAliases({
-        body: {
-          actions: [
-            {
-              remove: {
-                index: `${index.name}_temp`,
-                alias: index.name,
-              },
+        actions: [
+          {
+            remove: {
+              index: `${index.name}_temp`,
+              alias: index.name,
             },
-            {
-              add: {
-                index: `${index.name}_final`,
-                alias: index.name,
-              },
+          },
+          {
+            add: {
+              index: `${index.name}_final`,
+              alias: index.name,
             },
-          ],
-        },
+          },
+        ],
       });
 
       this.logger.debug('updateAliases temp to final');

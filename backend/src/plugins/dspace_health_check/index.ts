@@ -1,5 +1,6 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchRequest, SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { Job } from 'bull';
 import Sitemapper from 'sitemapper';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
@@ -81,46 +82,44 @@ export class DSpaceHealthCheck {
   }
 
   async deleteDuplicates(job: Job) {
-    const elastic_data = {
+    const elastic_data: SearchRequest = {
       index: job.data.index,
-      body: {
-        size: 0,
-        _source: ['handle'],
-        track_total_hits: true,
-        query: {
-          bool: {
-            must: [
-              {
-                match: {
-                  'repo.keyword': job.data.repo.name,
-                },
+      size: 0,
+      _source: ['handle'],
+      track_total_hits: true,
+      query: {
+        bool: {
+          must: [
+            {
+              match: {
+                'repo.keyword': job.data.repo.name,
               },
-              {
-                exists: { field: 'handle' },
-              },
-            ],
-          },
-        },
-        aggs: {
-          duplicateCount: {
-            terms: {
-              field: 'handle.keyword',
-              min_doc_count: 2,
-              size: 999,
             },
-            aggs: {
-              duplicateDocuments: {
-                top_hits: {
-                  size: 100,
-                  _source: ['handle'],
-                },
+            {
+              exists: { field: 'handle' },
+            },
+          ],
+        },
+      },
+      aggs: {
+        duplicateCount: {
+          terms: {
+            field: 'handle.keyword',
+            min_doc_count: 2,
+            size: 999,
+          },
+          aggs: {
+            duplicateDocuments: {
+              top_hits: {
+                size: 100,
+                _source: ['handle'],
               },
             },
           },
         },
       },
     };
-    const response: any = await this.elasticsearchService
+    const response: SearchResponse = await this.elasticsearchService
       .search(elastic_data)
       .catch((e) => {
         this.logger.error(e);
@@ -131,7 +130,7 @@ export class DSpaceHealthCheck {
     const duplicates = [];
     if (response) {
       this.logger.log('Searching for duplicate handles for ' + job.data.repo);
-      for (const item of response.body.aggregations.duplicateCount.buckets) {
+      for (const item of (response.aggregations.duplicateCount as any).buckets) {
         for (const element of item.duplicateDocuments.hits.hits) {
           let index = 0;
           if (item.duplicateDocuments.hits.hits.length - 1 > index) {
@@ -165,50 +164,52 @@ export class DSpaceHealthCheck {
     return new Promise(async (resolve, reject) => {
       try {
         let allRecords: any = [];
-        const elastic_data = {
+        const elastic_data: SearchRequest = {
           index: repo.index_name,
-          body: {
-            size: 9999,
-            _source: ['handle'],
-            track_total_hits: true,
-            query: {
-              bool: {
-                must: [
-                  {
-                    match: {
-                      'repo.keyword': repo.name,
-                    },
+          size: 9999,
+          _source: ['handle'],
+          track_total_hits: true,
+          query: {
+            bool: {
+              must: [
+                {
+                  match: {
+                    'repo.keyword': repo.name,
                   },
-                  {
-                    exists: { field: 'handle' },
-                  },
-                ],
-              },
+                },
+                {
+                  exists: { field: 'handle' },
+                },
+              ],
             },
           },
           scroll: '10m',
         };
 
-        const getMoreUntilDone = async (response) => {
-          if (response?.body?.hits?.hits) {
-            const handleIDs = response.body.hits.hits
+        const getMoreUntilDone = async (response: SearchResponse) => {
+          if (response?.hits?.hits) {
+            const handleIDs = response.hits.hits
                 .filter((d) => {
-                  if (d._source.handle) return true;
+                  if ((d._source as any).handle) return true;
                   return false;
                 })
-                .map((d) => d._source.handle);
+                .map((d) => (d._source as any).handle);
             allRecords = [...allRecords, ...handleIDs];
-            if (response.body.hits.hits.length != 0) {
-              const response2 = await this.elasticsearchService
+            if (response.hits.hits.length != 0) {
+              const response2: SearchResponse = await this.elasticsearchService
                   .scroll({
-                    scroll_id: <string>response.body._scroll_id,
+                    scroll_id: <string>response._scroll_id,
                     scroll: '10m',
                   })
-                  .catch((e) => this.logger.error(e));
-              await getMoreUntilDone(response2);
+                  .catch((e) => {
+                    this.logger.error(e);
+                    return null;
+                  });
+              if (response2)
+                await getMoreUntilDone(response2);
             } else {
-              this.elasticsearchService.clear_scroll({
-                scroll_id: response.body._scroll_id
+              this.elasticsearchService.clearScroll({
+                scroll_id: response._scroll_id
               }).catch();
               this.logger.log(allRecords.length + ' handles found in ' + repo);
               resolve(allRecords);
@@ -216,7 +217,7 @@ export class DSpaceHealthCheck {
           }
         };
 
-        const response3 = await this.elasticsearchService
+        const response3: SearchResponse = await this.elasticsearchService
           .search(elastic_data)
           .catch((e) => {
             this.logger.error(e);

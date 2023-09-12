@@ -1,7 +1,9 @@
 import { Job } from 'bull';
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ApiResponse } from '@elastic/elasticsearch';
+import { BulkResponse, BulkResponseItem } from '@elastic/elasticsearch/lib/api/types';
 import { FormatService } from '../../shared/services/formater.service';
 
 @Injectable()
@@ -28,9 +30,7 @@ export class DSpaceService {
                     '&limit=10&offset=' +
                     offset;
 
-                const request = await this.http
-                    .get(url)
-                    .toPromise()
+                const request = await lastValueFrom(this.http.get(url))
                     .catch((d) => {
                         job.moveToFailed(new Error(d), true);
                         return null;
@@ -76,17 +76,16 @@ export class DSpaceService {
         }
 
         await job.progress(70);
-
-        const resp: ApiResponse = await this.elasticsearchService.bulk({
+        const resp: BulkResponse = await this.elasticsearchService.bulk({
             refresh: 'wait_for',
-            body: finaldata,
+            operations: finaldata,
         });
         await job.progress(90);
 
-        for (const item of resp.body.items) {
-            if (item.index.status != 200 && item.index.status != 201) {
+        for (const item of resp.items) {
+            if ((item as BulkResponseItem).status != 200 && (item as BulkResponseItem).status != 201) {
                 const error = new Error('error update or create item ');
-                error.stack = item.index;
+                error.stack = (item as BulkResponseItem).error.stack_trace;
                 job.attemptsMade = 10;
                 await job.moveToFailed(error, true);
             }

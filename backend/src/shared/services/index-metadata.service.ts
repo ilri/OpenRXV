@@ -1,5 +1,8 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { IndicesGetMappingResponse } from '@elastic/elasticsearch/lib/api/types';
 import { ElasticService } from './elastic/elastic.service';
 import { map } from 'rxjs/operators';
 
@@ -13,19 +16,19 @@ export class IndexMetadataService extends ElasticService {
     }
 
     async getMetadata(index) {
-        let mappings: any = await this.elasticsearchService.indices.getMapping({
+        const mappings: IndicesGetMappingResponse = await this.elasticsearchService.indices.getMapping({
             index: index,
         });
 
-        return mappings.body[index] ? Object.keys(mappings.body[index].mappings.properties) : mappings.body[index + '_final'] ? Object.keys(mappings.body[index + '_final'].mappings.properties) : [];
+        return mappings[index] ? Object.keys(mappings[index].mappings.properties) : mappings[index + '_final'] ? Object.keys(mappings[index + '_final'].mappings.properties) : [];
     }
 
     async DSpaceMetadataAutoRetrieve(link) {
-        const version = await this.httpService
-            .get(new URL(link).origin + '/rest/status')
-            .pipe(map((d) => d.data))
-            .toPromise()
-            .catch((d) => null);
+        const version = await lastValueFrom(
+            this.httpService
+                .get(new URL(link).origin + '/rest/status')
+                .pipe(map((d) => d.data))
+        ).catch(() => null);
 
         const merged = {
             base: [],
@@ -34,11 +37,11 @@ export class IndexMetadataService extends ElasticService {
 
         if (Number(version?.apiVersion) > 0) {
             const baseFieldsArray = [];
-            const base = await this.httpService
-                .get(`${link}/items?limit=25`)
-                .pipe(map((d) => d.data))
-                .toPromise()
-                .catch((d) => null);
+            const base = await lastValueFrom(
+                this.httpService
+                    .get(`${link}/items?limit=25`)
+                    .pipe(map((d) => d.data))
+            ).catch(() => null);
 
             if (base && Array.isArray(base)) {
                 base.map((item) => {
@@ -53,11 +56,11 @@ export class IndexMetadataService extends ElasticService {
             merged.base = [...new Set(baseFieldsArray)];
 
             const metadataFieldsArray = [];
-            const schemas = await this.httpService
-                .get(`${link}/registries/schema`)
-                .pipe(map((d) => d.data))
-                .toPromise()
-                .catch((d) => null);
+            const schemas = await lastValueFrom(
+                this.httpService
+                    .get(`${link}/registries/schema`)
+                    .pipe(map((d) => d.data))
+            ).catch(() => null);
 
             schemas.map((schema) => {
                 schema.fields.map((field) => {
@@ -77,11 +80,11 @@ export class IndexMetadataService extends ElasticService {
         };
 
         const baseFieldsArray = [];
-        const base = await this.httpService
-            .get(`${link}/discover/search/objects?dsoType=item&embed=thumbnail,owningCollection,mappedCollections&size=25`)
-            .pipe(map((d) => d.data))
-            .toPromise()
-            .catch((d) => null);
+        const base = await lastValueFrom(
+            this.httpService
+                .get(`${link}/discover/search/objects?dsoType=item&embed=thumbnail,owningCollection,mappedCollections&size=25`)
+                .pipe(map((d) => d.data))
+        ).catch(() => null);
         if (base && base?._embedded?.searchResult?._embedded?.objects) {
             base._embedded.searchResult._embedded.objects.map((item) => {
                 const baseFields = Object.keys(item?._embedded?.indexableObject);
@@ -99,20 +102,20 @@ export class IndexMetadataService extends ElasticService {
         }
         merged.base = [...new Set(baseFieldsArray)];
 
-        const schemasPages = await this.httpService
-            .get(`${link}/core/metadatafields?page=0&size=1`)
-            .pipe(map((d) => d.data))
-            .toPromise()
-            .catch((d) => null);
+        const schemasPages = await lastValueFrom(
+            this.httpService
+                .get(`${link}/core/metadatafields?page=0&size=1`)
+                .pipe(map((d) => d.data))
+        ).catch(() => null);
 
         if (schemasPages?.page?.totalElements && schemasPages.page.totalElements > 0) {
             const totalPages = Math.ceil(schemasPages.page.totalElements / 100);
             for (let page = 0; page < totalPages; page++) {
-                const schemas = await this.httpService
-                    .get(`${link}/core/metadatafields?page=${page}&size=100`)
-                    .pipe(map((d) => d.data))
-                    .toPromise()
-                    .catch((d) => null);
+                const schemas = await lastValueFrom(
+                    this.httpService
+                        .get(`${link}/core/metadatafields?page=${page}&size=100`)
+                        .pipe(map((d) => d.data))
+                ).catch(() => null);
                 if (schemas?._embedded?.metadatafields) {
                     for (const fields of schemas._embedded.metadatafields) {
                         const prefix = fields?._embedded?.schema?.prefix;

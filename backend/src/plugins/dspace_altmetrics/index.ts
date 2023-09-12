@@ -1,5 +1,8 @@
-import { Logger, HttpService, Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { BulkResponse, SearchTotalHits, SearchResponse, SearchHit } from '@elastic/elasticsearch/lib/api/types';
 import { Job } from 'bull';
 import { map } from 'rxjs/operators';
 
@@ -23,10 +26,11 @@ export class DSpaceAltmetrics {
 
       await job.progress(20);
       const Allindexing: Array<any> = [];
-      const data: any = await this.http
-          .get(`https://api.altmetric.com/v1/citations/at?num_results=100&handle_prefix=${handle_prefix}&page=${page}`)
-          .pipe(map((data: any) => data.data))
-          .toPromise();
+      const data: any = await lastValueFrom(
+          this.http
+              .get(`https://api.altmetric.com/v1/citations/at?num_results=100&handle_prefix=${handle_prefix}&page=${page}`)
+              .pipe(map((data: any) => data.data))
+      );
       if (data.results) {
         data.results.forEach((element: any) => {
           const altmetric = {
@@ -46,9 +50,9 @@ export class DSpaceAltmetrics {
         });
         await job.progress(80);
         if (Allindexing.length) {
-          const currentResult: any = await this.elasticsearchService.bulk({
+          const currentResult: BulkResponse = await this.elasticsearchService.bulk({
             refresh: 'wait_for',
-            body: Allindexing,
+            operations: Allindexing,
           });
           await job.progress(100);
           return currentResult;
@@ -79,34 +83,40 @@ export class DSpaceAltmetrics {
           },
           scroll: '10m',
         };
-        const response3 = await this.elasticsearchService
+        const response3: SearchResponse = await this.elasticsearchService
             .search(elastic_data)
-            .catch((e) => this.logger.error(e));
-        const getMoreUntilDone = async (response) => {
-          if (response?.body?.hits?.hits) {
-            const handleID = response.body.hits.hits.map((d: any) => {
-              if (d._source.handle) {
-                const obj: any = {};
-                obj[d._source.handle] = d._id;
+            .catch((e) => {
+              this.logger.error(e);
+              return null;
+            });
+        const getMoreUntilDone = async (response: SearchResponse) => {
+          if (response?.hits?.hits) {
+            const handleID = response.hits.hits.map((d: SearchHit) => {
+              if ((d._source as any)?.handle) {
+                const obj = {};
+                obj[(d._source as any)?.handle] = d._id;
                 return obj;
               }
             });
 
             allRecords = [...allRecords, ...handleID];
-            if (response.body.hits.total.value !== allRecords.length) {
-              const response2 = await this.elasticsearchService
+            if ((response.hits.total as SearchTotalHits).value !== allRecords.length) {
+              const response2: SearchResponse = await this.elasticsearchService
                   .scroll({
-                    scroll_id: <string>response.body._scroll_id,
+                    scroll_id: <string>response._scroll_id,
                     scroll: '10m',
                   })
-                  .catch((e) => this.logger.error(e));
+                  .catch((e) => {
+                    this.logger.error(e);
+                    return null;
+                  });
               await getMoreUntilDone(response2);
             } else {
-              this.elasticsearchService.clear_scroll({
-                scroll_id: response.body._scroll_id
+              this.elasticsearchService.clearScroll({
+                scroll_id: response._scroll_id
               }).catch();
-              const finalobj: any = {};
-              allRecords.forEach((element: any) => {
+              const finalobj = {};
+              allRecords.forEach((element) => {
                 finalobj[Object.keys(element)[0]] = Object.values(element)[0];
               });
               resolve(finalobj);
@@ -126,10 +136,11 @@ export class DSpaceAltmetrics {
       return;
 
     try {
-      const items: any = await this.http
-          .get(`https://api.altmetric.com/v1/citations/at?num_results=1&handle_prefix=${data.handle_prefix}&page=1`)
-          .pipe(map((d) => d.data))
-          .toPromise();
+      const items: any = await lastValueFrom(
+          this.http
+              .get(`https://api.altmetric.com/v1/citations/at?num_results=1&handle_prefix=${data.handle_prefix}&page=1`)
+              .pipe(map((d) => d.data))
+      );
       if (items?.query?.total) {
         let currentPage = 0;
         const totalPages = Math.ceil(items.query.total / 100);

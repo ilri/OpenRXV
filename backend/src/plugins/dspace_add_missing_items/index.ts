@@ -1,4 +1,6 @@
-import { Logger, HttpService, Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Job } from 'bull';
 import { map } from 'rxjs/operators';
@@ -19,11 +21,11 @@ export class AddMissingItems {
       const url =
           job.data.itemEndPoint +
           `/${job.data.handle}?expand=metadata,parentCommunityList,parentCollectionList,bitstreams`;
-      const result = await this.http
-          .get(url)
-          .pipe(map((d) => d.data))
-          .toPromise()
-          .catch((d) => null);
+      const result = await lastValueFrom(
+          this.http
+              .get(url)
+              .pipe(map((d) => d.data))
+      ).catch((d) => null);
       await job.progress(50);
       if (result && result.type == 'item') {
         await this.formatService.Init(index_name);
@@ -46,7 +48,7 @@ export class AddMissingItems {
         formated['repo'] = job.data.repo.name;
         await job.progress(70);
         await this.elasticsearchService
-            .index({index: job.data.index, body: formated})
+            .index({index: job.data.index, document: formated})
             .catch((e) => job.moveToFailed(e, true));
         await job.progress(100);
         return 'done';

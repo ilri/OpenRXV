@@ -1,5 +1,8 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { Job } from 'bull';
 import { map } from 'rxjs/operators';
 
@@ -23,45 +26,40 @@ export class DSpaceDownloadsAndViews {
       const page = job.data.page;
       await job.progress(20);
       const toUpdateIndexes: Array<any> = [];
-      const stats = await this.http
-          .get(`${link}?page=${page}&limit=100`)
-          .pipe(map((d) => d.data))
-          .toPromise();
+      const stats = await lastValueFrom(
+          this.http
+              .get(`${link}?page=${page}&limit=100`)
+              .pipe(map((d) => d.data))
+      );
       await job.progress(50);
       if (stats.statistics && stats.statistics.length > 0) {
-        const searchResult = await this.elasticsearchService.search({
+        const searchResult: SearchResponse = await this.elasticsearchService.search({
           index: job.data.index,
-          body: {
-            _source: ['_id', 'id'],
-            track_total_hits: true,
-            size: 100,
-            query: {
-              bool: {
-                must: [
-                  {
-                    match: {
-                      'repo.keyword': job.data.repo,
-                    },
+          _source: ['_id', 'id'],
+          track_total_hits: true,
+          size: 100,
+          query: {
+            bool: {
+              must: [
+                {
+                  match: {
+                    'repo.keyword': job.data.repo,
                   },
-                  {
-                    terms: {
-                      'id.keyword': stats.statistics.map((d) => d.id),
-                    },
+                },
+                {
+                  terms: {
+                    'id.keyword': stats.statistics.map((d) => d.id),
                   },
-                ],
-              },
+                },
+              ],
             },
           },
         });
 
-        if (
-            searchResult &&
-            searchResult.body &&
-            searchResult.body.hits.total.value > 0
-        ) {
+        if (searchResult && (searchResult.hits.total as SearchTotalHits).value > 0) {
           const IDs = {};
-          searchResult.body.hits.hits.forEach((element) => {
-            IDs[element._source.id] = element._id;
+          searchResult.hits.hits.forEach((element) => {
+            IDs[(element._source as any).id] = element._id;
           });
           stats.statistics.forEach((stat: any) => {
             if (IDs[stat.id]) {
@@ -88,7 +86,7 @@ export class DSpaceDownloadsAndViews {
         if (toUpdateIndexes.length > 0) {
           const currentResult = await this.elasticsearchService.bulk({
             refresh: 'wait_for',
-            body: toUpdateIndexes,
+            operations: toUpdateIndexes,
           });
           await job.progress(100);
           return currentResult;
@@ -108,10 +106,11 @@ export class DSpaceDownloadsAndViews {
       return;
 
     try {
-      const stats = await this.http
-          .get(`${data.link}?page=1&limit=1`)
-          .pipe(map((d) => d.data))
-          .toPromise();
+      const stats = await lastValueFrom(
+          this.http
+              .get(`${data.link}?page=1&limit=1`)
+              .pipe(map((d) => d.data))
+      );
       if (stats?.totalPages > 0 || stats?.total_pages > 0) {
         let currentPage = stats.currentPage || stats.current_page;
         const totalPages = Math.ceil((stats.totalPages / 100) || (stats.total_pages / 100));

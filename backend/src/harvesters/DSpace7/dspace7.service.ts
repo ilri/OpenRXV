@@ -1,7 +1,9 @@
 import { Job } from 'bull';
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ApiResponse } from '@elastic/elasticsearch';
+import { BulkResponse, BulkResponseItem } from '@elastic/elasticsearch/lib/api/types';
 import { FormatService } from '../../shared/services/formater.service';
 
 @Injectable()
@@ -33,9 +35,7 @@ export class DSpace7Service {
                     '&size=10&page=' +
                     (job.data.page);
 
-                const request = await this.http
-                    .get(url)
-                    .toPromise()
+                const request = await lastValueFrom(this.http.get(url))
                     .catch((d) => {
                         job.moveToFailed(new Error(d), true);
                         return null;
@@ -85,16 +85,16 @@ export class DSpace7Service {
 
         await job.progress(70);
 
-        const resp: ApiResponse = await this.elasticsearchService.bulk({
+        const resp: BulkResponse = await this.elasticsearchService.bulk({
             refresh: 'wait_for',
-            body: finalData,
+            operations: finalData,
         });
         await job.progress(90);
 
-        for (const item of resp.body.items) {
-            if (item.index.status != 200 && item.index.status != 201) {
+        for (const item of resp.items) {
+            if ((item as BulkResponseItem).status != 200 && (item as BulkResponseItem).status != 201) {
                 const error = new Error('error update or create item ');
-                error.stack = item.index;
+                error.stack = (item as BulkResponseItem).error.stack_trace;
                 job.attemptsMade = 10;
                 await job.moveToFailed(error, true);
             }
@@ -107,22 +107,20 @@ export class DSpace7Service {
         return new Promise(async (resolve) => {
             const communitiesList = {};
 
-            const request = await this.http
-                .get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=1&page=0`)
-                .toPromise()
-                .catch((d) => {
-                    return null;
-                });
+            const request = await lastValueFrom(
+                this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=1&page=0`)
+            ).catch(() => {
+                return null;
+            });
 
             if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
                 const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
                 for (let page = 0; page < totalPages; page++) {
-                    const data = await this.http
-                        .get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=100&page=${page}`)
-                        .toPromise()
-                        .catch((d) => {
-                            return null;
-                        });
+                    const data = await lastValueFrom(
+                        this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=100&page=${page}`)
+                    ).catch((d) => {
+                        return null;
+                    });
                     const communities = data?.data?._embedded?.searchResult?._embedded?.objects;
                     if (communities) {
                         communities.map((communityObject) => {
@@ -173,22 +171,20 @@ export class DSpace7Service {
 
             const collectionsList = {};
             return new Promise(async (resolve) => {
-                const request = await this.http
-                    .get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=1&page=0`)
-                    .toPromise()
-                    .catch((d) => {
-                        return null;
-                    });
+                const request = await lastValueFrom(
+                    this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=1&page=0`)
+                ).catch((d) => {
+                    return null;
+                });
 
                 if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
                     const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
                     for (let page = 0; page < totalPages; page++) {
-                        const data = await this.http
-                            .get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=100&page=${page}`)
-                            .toPromise()
-                            .catch((d) => {
-                                return null;
-                            });
+                        const data = await lastValueFrom(
+                            this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=100&page=${page}`)
+                        ).catch((d) => {
+                            return null;
+                        });
                         const collections = data?.data?._embedded?.searchResult?._embedded?.objects;
                         if (collections) {
                             collections.map((collectionObject) => {

@@ -85,6 +85,10 @@ export class SetupComponent implements OnInit {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.getOutsourcePlugins();
     const data = await this.settingService.read(this.index_name);
+
+    if (data.repositories.length === 0)
+      this.AddNewRepo(false);
+
     data.repositories.forEach((element, repoindex) => {
       if (element.icon)
         this.logo[repoindex] = element.icon;

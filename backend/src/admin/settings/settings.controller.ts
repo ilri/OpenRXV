@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Get,
-  HttpService,
   Query,
   UseInterceptors,
   UploadedFile,
@@ -14,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JsonFilesService } from '../json-files/json-files.service';
-import { map } from 'rxjs/operators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as fs from 'fs';
@@ -26,7 +24,6 @@ import { ElasticService } from 'src/shared/services/elastic/elastic.service';
 export class SettingsController {
   constructor(
     private jsonFilesService: JsonFilesService,
-    private httpService: HttpService,
     private indexMetadataService: IndexMetadataService,
     private elasticSearvice: ElasticService,
   ) {}

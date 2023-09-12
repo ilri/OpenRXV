@@ -1,5 +1,8 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { Job } from 'bull';
 import { map } from 'rxjs/operators';
 const melnumbersUrl =
@@ -26,13 +29,14 @@ export class MELDownloadsAndViews {
 
       const publicationsToUpdate = job.data.ids;
       if (publicationsToUpdate.length > 0) {
-        const stats = await this.http
-            .post(melnumbersUrl,
-                {dspace_item_ids: publicationsToUpdate},
-                {headers: {'Content-Type': 'application/json'}, timeout: 120000},
-            )
-            .pipe(map((d) => d.data))
-            .toPromise();
+        const stats = await lastValueFrom(
+            this.http
+                .post(melnumbersUrl,
+                    {dspace_item_ids: publicationsToUpdate},
+                    {headers: {'Content-Type': 'application/json'}, timeout: 120000},
+                )
+                .pipe(map((d) => d.data))
+        );
         await job.progress(50);
         const finalData: Array<any> = [];
         if (stats && stats.data && stats.data.length > 0) {
@@ -61,7 +65,7 @@ export class MELDownloadsAndViews {
             await this.elasticsearchService
                 .bulk({
                   refresh: 'wait_for',
-                  body: finalData,
+                  operations: finalData,
                 })
                 .catch(async (err: Error) => {
                   await job.moveToFailed(err, true);
@@ -85,24 +89,22 @@ export class MELDownloadsAndViews {
       return;
 
     try {
-      const batch: any = await this.elasticsearchService.search({
+      const batch: SearchResponse = await this.elasticsearchService.search({
         index: `${index_name}_temp`,
         scroll: '5m',
-        body: {
-          size: 100,
-          _source: ['id'],
-          track_total_hits: true,
-          query: {match: {'repo.keyword': data.repo}},
-        },
+        size: 100,
+        _source: ['id'],
+        track_total_hits: true,
+        query: {match: {'repo.keyword': data.repo}},
       });
       data.index_name = `${index_name}_temp`;
-      const scrollId = batch?.body?._scroll_id;
-      let totalPages = Math.ceil((batch?.body?.hits?.total?.value / 100) || 0) - 1;
+      const scrollId = batch?._scroll_id;
+      let totalPages = Math.ceil(((batch?.hits?.total as SearchTotalHits).value / 100) || 0) - 1;
       this.addJob(queue, plugin_name, data, batch);
 
       if (scrollId) {
         for (totalPages; totalPages > 0; totalPages--) {
-          let nextBatch: any = await this.elasticsearchService.scroll({
+          const nextBatch: SearchResponse = await this.elasticsearchService.scroll({
             scroll: '5m',
             scroll_id: scrollId,
           })
@@ -117,8 +119,8 @@ export class MELDownloadsAndViews {
     }
   }
 
-  addJob(queue, plugin_name, data, batch) {
-    const ids = batch?.body?.hits?.hits.map((p: any) => p._source.id);
+  addJob(queue, plugin_name, data, batch: SearchResponse) {
+    const ids = batch?.hits?.hits.map((p: any) => p._source.id);
     if (Array.isArray(ids) && ids.length > 0) {
       data.ids = ids;
       queue.add(plugin_name, data);
