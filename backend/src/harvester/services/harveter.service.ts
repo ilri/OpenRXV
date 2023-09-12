@@ -3,7 +3,7 @@ import * as Bull from 'bull';
 import { Job } from 'bull';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
-import { FetchService } from '../../harvesters/DSpace/fetch.service';
+import { DSpaceService } from '../../harvesters/DSpace/dspace.service';
 import { AddMissingItems } from '../../plugins/dspace_add_missing_items';
 import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
@@ -11,6 +11,7 @@ import { DSpaceHealthCheck } from '../../plugins/dspace_health_check';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
 
 import Sitemapper from 'sitemapper';
+import { DSpace7Service } from "../../harvesters/DSpace7/dspace7.service";
 
 @Injectable()
 export class HarvesterService implements OnModuleInit {
@@ -21,7 +22,8 @@ export class HarvesterService implements OnModuleInit {
       public readonly elasticsearchService: ElasticsearchService,
       public readonly jsonFilesService: JsonFilesService,
       private http: HttpService,
-      private readonly fetchService: FetchService,
+      private readonly dspaceService: DSpaceService,
+      private readonly dspace7Service: DSpace7Service,
       private readonly addMissingItems: AddMissingItems,
       private readonly dspaceAltmetrics: DSpaceAltmetrics,
       private readonly dspaceDownloadsAndViews: DSpaceDownloadsAndViews,
@@ -58,7 +60,8 @@ export class HarvesterService implements OnModuleInit {
         port: parseInt(process.env.REDIS_PORT),
       },
     });
-    await this.fetchService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace', index_name);
+    await this.dspaceService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace', index_name);
+    await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace7', index_name);
 
     this.registeredQueues[`${index_name}_plugins`] = new Bull(`${index_name}_plugins`, {
       defaultJobOptions: {
@@ -252,7 +255,7 @@ export class HarvesterService implements OnModuleInit {
 
     for (const repo of settings[index_name].repositories) {
       repo.index_name = index_name;
-      if (repo.type == 'DSpace') {
+      if (repo.type == 'DSpace' || repo.type === 'DSpace7') {
         const Sitemap = new Sitemapper({
           url: repo.siteMap,
           timeout: 15000, // 15 seconds

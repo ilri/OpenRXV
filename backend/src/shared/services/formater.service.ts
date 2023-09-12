@@ -28,29 +28,29 @@ export class FormatService {
     const finalValues: any = {};
     _.each(schemas, (schemaItems: any, schemaName: string) => {
       if (harvestedItem[schemaName]) {
-        if (_.isArray(schemaItems)) { // These are metadata
+        if (_.isArray(schemaItems)) { // These are metadata and bitstreams
           _.each(schemaItems, (schemaItem: any) => {
             const schemaValueName = Object.keys(schemaItem.value)[0];
+            const schemaKeyName = Object.keys(schemaItem.where)[0];
+            const addOn = schemaItem.addOn ? schemaItem.addOn : null;
+
             const values = harvestedItem[schemaName]
               .filter((metadataElement: any) => {
-                const schemaKeyName = Object.keys(schemaItem.where)[0];
                 return metadataElement[schemaKeyName] == schemaItem.where[schemaKeyName];
               })
               .map((metadataElement: any) => {
-                const addOn = schemaItem.addOn ? schemaItem.addOn : null;
                 const value = metadataElement[schemaValueName];
                 const mappedValue = this.mapIt(value, addOn, schemaItem.value.value);
                 return schemaItem.prefix ? schemaItem.prefix + mappedValue : mappedValue;
               })
                 .filter(v => v !== '' && v != null);
             if (values.length)
-              finalValues[schemaItem.value[schemaValueName]] =
-                this.setValue(
+              finalValues[schemaItem.value[schemaValueName]] = this.setValue(
                   finalValues[schemaItem.value[schemaValueName]],
                   this.getArrayOrValue(values),
-                );
+              );
           });
-        } else if (_.isObject(schemaItems)) { // These are expands (collections, communities, bitstreams, ...)
+        } else if (_.isObject(schemaItems)) { // These are expands (collections, communities, ...)
           if (_.isArray(harvestedItem[schemaName])) {
             const metadataField = <string>Object.values(schemaItems)[0];
             const titleFieldName = Object.keys(schemaItems)[0];
@@ -75,6 +75,106 @@ export class FormatService {
     });
     return finalValues;
   }
+
+  DSpace7Format(harvestedItem: any, schemas: any, collectionList: any) {
+    const finalValues: any = {};
+    const communities = [];
+    _.each(schemas, (schemaItems: any, schemaName: string) => {
+      if (_.isArray(schemaItems)) { // These are metadata
+        if (harvestedItem[schemaName]) {
+          _.each(schemaItems, (schemaItem: any) => {
+            const schemaValueName = Object.keys(schemaItem.value)[0];
+            const schemaKeyName = Object.keys(schemaItem.where)[0];
+            const addOn = schemaItem.addOn ? schemaItem.addOn : null;
+
+            for (const metadataFieldName in harvestedItem[schemaName]) {
+              if (harvestedItem[schemaName].hasOwnProperty(metadataFieldName)) {
+                if (metadataFieldName === schemaItem.where[schemaKeyName]) {
+                  const values = [];
+                  const metadataElements = harvestedItem[schemaName][metadataFieldName];
+                  metadataElements.map((metadataElement) => {
+                    if (metadataElement.hasOwnProperty(schemaValueName)) {
+                      const mappedValue = this.mapIt(metadataElement[schemaValueName], addOn, schemaItem.value.value);
+                      const value = schemaItem.prefix ? schemaItem.prefix + mappedValue : mappedValue;
+                      if (value !== '' && value != null) {
+                        values.push(value);
+                      }
+                    }
+                  });
+                  if (values.length)
+                    finalValues[schemaItem.value[schemaValueName]] = this.setValue(
+                        finalValues[schemaItem.value[schemaValueName]],
+                        this.getArrayOrValue(values),
+                    );
+                }
+              }
+            }
+          });
+        }
+      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunityList') { // These are expands (collections, communities, bitstreams, ...)
+        let embeddedItem = harvestedItem?._embedded && harvestedItem._embedded.hasOwnProperty(schemaName) ? harvestedItem._embedded[schemaName] : null;
+
+        if (embeddedItem?._embedded && embeddedItem._embedded.hasOwnProperty(schemaName)) {
+          embeddedItem = embeddedItem._embedded[schemaName];
+        }
+
+        if (embeddedItem && !_.isArray(embeddedItem) && _.isObject(embeddedItem)) {
+          embeddedItem = [embeddedItem];
+        }
+
+        if (embeddedItem && _.isArray(embeddedItem)) {
+          const metadataField = <string>Object.values(schemaItems)[0];
+          const titleFieldName = Object.keys(schemaItems)[0];
+
+          let values = null;
+          if (schemaName === 'thumbnail') {
+            if (embeddedItem[0]?._links?.content.href) {
+              values = embeddedItem[0]._links.content.href;
+            }
+          } else {
+            const mappedValues = embeddedItem
+                .map((metadataElement: any) => {
+                  if ((schemaName === 'owningCollection' || schemaName === 'mappedCollections') && metadataElement?.uuid) {
+                    if (collectionList.hasOwnProperty(metadataElement.uuid)) {
+                      const collection = collectionList[metadataElement.uuid];
+                      collection.parentCommunities.map((parentCommunity) => {
+                        communities.push(parentCommunity);
+                      });
+                    }
+                  }
+                  return this.mapIt(metadataElement[titleFieldName]);
+                })
+                .filter(v => v !== '' && v != null);
+            values = this.getArrayOrValue(mappedValues);
+          }
+          if (values)
+            finalValues[metadataField] = this.setValue(
+                finalValues[metadataField],
+                values,
+            );
+        }
+      } else { // These are item basic information (id, name, handle, archived, ...)
+        const mappedValue = this.mapIt(harvestedItem[schemaName]);
+        if (mappedValue !== '' && mappedValue != null) {
+          finalValues[schemaName] = mappedValue;
+        }
+      }
+    });
+
+    // Add parentCommunityList
+    if (communities.length > 0 && schemas?.parentCommunityList && _.isObject(schemas.parentCommunityList)) {
+      const metadataField = <string>Object.values(schemas.parentCommunityList)[0];
+      const values = this.getArrayOrValue(communities);
+      if (values)
+        finalValues[metadataField] = this.setValue(
+            finalValues[metadataField],
+            values,
+        );
+    }
+
+    return finalValues;
+  }
+
   setValue(oldvalue, value) {
     if (_.isArray(oldvalue) && _.isArray(value)) return [...oldvalue, ...value];
     else if (_.isArray(oldvalue) && !_.isArray(value)) {

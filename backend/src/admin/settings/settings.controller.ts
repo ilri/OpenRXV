@@ -541,34 +541,37 @@ export class SettingsController {
       const schema = {
         metadata: [],
       };
-      repo.schema
-          .filter(
-              (d) =>
-                  [
-                    'parentCollection',
-                    'parentCollectionList',
-                    'parentCommunityList',
-                  ].indexOf(d.metadata) >= 0,
-          )
-          .forEach((item) => {
-            schema[item.metadata] = {
-              name: item.disply_name,
-            };
-          });
-      repo.schema
-          .filter(
-              (d) =>
-                  [
-                    'parentCollection',
-                    'parentCollectionList',
-                    'parentCommunityList',
-                  ].indexOf(d.metadata) == -1,
-          )
-          .forEach((item) => {
-            schema[item.metadata] = item.disply_name;
-          });
 
-      repo.metadata.forEach((item) => {
+      let objectSchemaList = ['parentCollection', 'parentCollectionList', 'parentCommunityList'];
+      if (repo.type === 'DSpace7'){
+        objectSchemaList = ['owningCollection', 'mappedCollections', 'parentCommunityList', 'thumbnail'];
+      }
+
+      repo.schema.map((item) => {
+        if (objectSchemaList.indexOf(item.metadata) >= 0) {
+          schema[item.metadata] = {
+            name: item.disply_name,
+          };
+        } else {
+          schema[item.metadata] = item.disply_name;
+        }
+      });
+
+      if (repo.type === 'DSpace') {
+        schema['bitstreams'] = [
+          {
+            where: {
+              bundleName: 'THUMBNAIL',
+            },
+            value: {
+              retrieveLink: 'thumbnail',
+            },
+            prefix: repo.itemsEndPoint,
+          },
+        ];
+      }
+
+      repo.metadata.map((item) => {
         const temp = {
           where: {
             key: item.metadata,
@@ -577,20 +580,10 @@ export class SettingsController {
             value: item.disply_name,
           },
         };
-        if (item.addOn) temp['addOn'] = item.addOn;
+        if (item.addOn)
+          temp['addOn'] = item.addOn;
         schema.metadata.push(temp);
       });
-      schema['bitstreams'] = [
-        {
-          where: {
-            bundleName: 'THUMBNAIL',
-          },
-          value: {
-            retrieveLink: 'thumbnail',
-          },
-          prefix: repo.itemsEndPoint,
-        },
-      ];
 
       final['repositories'].push({
         name: repo.name,

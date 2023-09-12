@@ -5,7 +5,7 @@ import { ApiResponse } from '@elastic/elasticsearch';
 import { FormatService } from '../../shared/services/formater.service';
 
 @Injectable()
-export class FetchService {
+export class DSpaceService {
     timeout;
 
     constructor(
@@ -35,8 +35,8 @@ export class FetchService {
                         job.moveToFailed(new Error(d), true);
                         return null;
                     });
-                if (request) {
-                    const data = request.data;
+                const data = request?.data;
+                if (data) {
                     await job.progress(50);
                     if (Array.isArray(data) && data.length == 0) {
                         return 'done';

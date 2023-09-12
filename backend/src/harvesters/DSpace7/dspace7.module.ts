@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { SharedModule } from '../../shared/shared.module';
+import { DSpace7Service } from './dspace7.service';
 @Module({
-  providers: [JsonFilesService],
-  exports: [],
+  providers: [DSpace7Service, JsonFilesService],
+  exports: [DSpace7Service],
   imports: [SharedModule],
   controllers: [],
 })
