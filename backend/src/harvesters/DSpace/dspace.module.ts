@@ -16,7 +16,17 @@ export class DSpaceModule {
   async init() {
     setTimeout(async () => {
       await this.jsonService.save(
-        { name: 'DSpace' },
+        {
+          name: 'DSpace',
+          api_endpoint: {
+            required: true,
+            placeholder: 'https://repo.org/rest'
+          },
+          sitemap_endpoint: {
+            required: true,
+            placeholder: 'https://repo.org/sitemap'
+          },
+        },
         '../../../data/harvestors/DSpace.json',
       );
     }, 500);

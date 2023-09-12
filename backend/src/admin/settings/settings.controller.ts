@@ -353,11 +353,14 @@ export class SettingsController {
 
   @Get('outsourcePlugins')
   async readOutsourcePlugins() {
-    const plugins = await readdirSync(
-      join(__dirname, '../../../data/harvestors'),
-    ).map((data) => {
-      return data.slice(0, -5);
-    });
+    const pluginsFilesDirectory = '../../../data/harvestors';
+    const pluginsFiles = readdirSync(join(__dirname, pluginsFilesDirectory));
+
+    const plugins = [];
+    for (const pluginsFile of pluginsFiles) {
+      plugins.push(await this.jsonFilesService.read(`${pluginsFilesDirectory}/${pluginsFile}`));
+    }
+
     return plugins;
   }
 

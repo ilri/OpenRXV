@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -32,8 +33,9 @@ import { ActivatedRoute } from '@angular/router';
   ]
 })
 export class SetupComponent implements OnInit {
-  isLinear = true;
-  types: any = [];
+  plugins: any = [];
+  activePluginName: any = {};
+  activePlugin: any = {};
   isShown = {
     schema: [],
     fields: [],
@@ -84,8 +86,9 @@ export class SetupComponent implements OnInit {
     this.getOutsourcePlugins();
     const data = await this.settingService.read(this.index_name);
     data.repositories.forEach((element, repoindex) => {
-      if (element.icon) this.logo[repoindex] = element.icon;
-      if (repoindex > 0) this.AddNewRepo();
+      if (element.icon)
+        this.logo[repoindex] = element.icon;
+      this.AddNewRepo(repoindex > 0);
       if (element.metadata)
         element.metadata.forEach((element, index) => {
           if (index > 0)
@@ -99,6 +102,8 @@ export class SetupComponent implements OnInit {
           if (index > 0)
             this.AddNewMetadata(this.repositories.at(repoindex).get('schema'), null);
         });
+      if (element.type)
+        this.PluginChange(element.type, repoindex);
     });
     await this.repositories.patchValue(data.repositories);
   }
@@ -167,11 +172,23 @@ export class SetupComponent implements OnInit {
   }
   getOutsourcePlugins() {
     this.settingService.readOutSourcePlugins().then((plugins) => {
-      this.types = plugins;
+      this.plugins = plugins;
     });
   }
-  AddNewRepo() {
-    this.repositories.push(this.getNewForm());
+  AddNewRepo(createHtml = true) {
+    if (createHtml) {
+      this.repositories.push(this.getNewForm());
+    }
+
+    const repoIndex = this.repositories.length - 1;
+    this.activePluginName[repoIndex] = new BehaviorSubject<any>({});
+    this.activePlugin[repoIndex] = {};
+    this.activePluginName[repoIndex].subscribe(pluginName => {
+      const activePlugin = this.plugins.filter(plugin => plugin.name === pluginName);
+      if (activePlugin.length > 0) {
+        this.activePlugin[repoIndex] = activePlugin[0];
+      }
+    });
   }
   delete(schema: UntypedFormArray, index: number) {
     schema.removeAt(index);
@@ -194,5 +211,10 @@ export class SetupComponent implements OnInit {
       this.isShown[index] = false;
     }
     this.isShown[index] = !this.isShown[index];
+  }
+
+  PluginChange(pluginName, repoindex) {
+    if (this.activePluginName.hasOwnProperty(repoindex))
+      this.activePluginName[repoindex].next(pluginName);
   }
 }
