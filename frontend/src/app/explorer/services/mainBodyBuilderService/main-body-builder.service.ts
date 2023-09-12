@@ -163,8 +163,11 @@ export class MainBodyBuilderService extends BuilderUtilities {
         // else is boolean
       }
     }
-    // bitstreams needed for the images
-    // handle needed for the altmetric
+
+    if (content?.altmetric) {
+      rows.push('handle');
+      rows.push('DOI');
+    }
 
     return rows.filter((d) => d != '');
   }
