@@ -108,7 +108,14 @@ const operations = {
         await operations.writeFile('dashboards', files.templates.dashboards);
     },
     MigratePlugins: async () => {
-        files.templates.plugins[operations.activeIndex.name] = files.old.plugins;
+        files.templates.plugins[operations.activeIndex.name] = files.old.plugins.map((plugin) => {
+            if (plugin.name === 'dspace_health_check') {
+                plugin.value = plugin.value.map((value) => {
+                    return value.sitemapIdentifier = 'handle';
+                });
+            }
+            return plugin;
+        });
         await operations.writeFile('plugins', files.templates.plugins);
     },
     MigrateData: async () => {

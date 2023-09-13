@@ -60,14 +60,14 @@ export class IndexesComponent implements OnInit {
             return x.id;
           })
           .indexOf(id);
-        const deleted = this.indexes[index].hasOwnProperty('id') && this.indexes[index].id != null ? this.indexes[index] : null;
+        const deleted = this.indexes.splice(index, 1)[0];
         const response = await this.settingsService.saveIndexesSettings(this.indexes, false, deleted);
 
         if (response.success === true) {
-          this.indexes.splice(index, 1);
           this.dataSource = new MatTableDataSource<any>(this.indexes);
           this.toastr.success('Index deleted successfully');
         } else {
+          this.indexes.splice(index, 0, deleted);
           const relatedDashboards = response.relatedDashboards.map((dashboard) => {
             return `<li><b>ID: </b>${dashboard.id.substring(0, 2)}, <b>Name: </b>${dashboard.name}</li>`;
           });

@@ -2,13 +2,21 @@ import * as _ from 'underscore';
 import * as ISO from 'iso-3166-1';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
 let mapto: any = null;
 
 @Injectable()
 export class FormatService {
-  constructor(private readonly valuesServes: ValuesService) {}
+  constructor(
+      private readonly valuesServes: ValuesService,
+      private http: HttpService,
+  ) {}
+
+  collections: any = {};
+  collectionsFetching: any = {};
 
   async Init(index_name: string) {
     if (mapto === null) {
@@ -241,5 +249,120 @@ export class FormatService {
   getArrayOrValue(values: Array<any>) {
     if (values.length > 1) return values;
     else return values[0];
+  }
+
+  async getCommunities(endPoint) {
+    return new Promise(async (resolve) => {
+      // Remove the "/" from the end of the endPoint
+      endPoint = endPoint.replace(/\/$/gm, '');
+
+      const communitiesList = {};
+
+      const request = await lastValueFrom(
+          this.http.get(`${endPoint}/discover/search/objects?dsoType=community&size=1&page=0`)
+      ).catch(() => {
+        return null;
+      });
+
+      if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
+        const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
+        for (let page = 0; page < totalPages; page++) {
+          const data = await lastValueFrom(
+              this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=100&page=${page}`)
+          ).catch(() => {
+            return null;
+          });
+          const communities = data?.data?._embedded?.searchResult?._embedded?.objects;
+          if (communities) {
+            communities.map((communityObject) => {
+              const community = communityObject?._embedded?.indexableObject;
+              if (community) {
+                communitiesList[community.uuid] = {
+                  name: community.name,
+                  parent: null
+                }
+                const parentCommunity = community?._embedded?.parentCommunity;
+                if (parentCommunity) {
+                  communitiesList[community.uuid].parent = parentCommunity.uuid
+                }
+              }
+            });
+          }
+        }
+      }
+
+      const communities = {};
+      for (const communityId in communitiesList) {
+        if (communitiesList.hasOwnProperty(communityId)) {
+          const community = communitiesList[communityId];
+          let parentId = community.parent;
+          communities[communityId] = {
+            name: community.name,
+            parents: []
+          }
+          while (parentId) {
+            if (communitiesList.hasOwnProperty(parentId)) {
+              const parent = communitiesList[parentId];
+              communities[communityId].parents.push(parent.name);
+              parentId = parent.parent;
+            }
+          }
+        }
+      }
+
+      resolve(communities);
+    });
+  }
+
+  async getCollections(endPoint, repositoryName) {
+    if (this.collectionsFetching[repositoryName]) {
+      return this.collectionsFetching[repositoryName];
+    } else {
+      const communities = await this.getCommunities(endPoint);
+
+      const collectionsList = {};
+      return new Promise(async (resolve) => {
+        // Remove the "/" from the end of the endPoint
+        endPoint = endPoint.replace(/\/$/gm, '');
+
+        const request = await lastValueFrom(
+            this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&size=1&page=0`)
+        ).catch(() => {
+          return null;
+        });
+
+        if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
+          const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
+          for (let page = 0; page < totalPages; page++) {
+            const data = await lastValueFrom(
+                this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=100&page=${page}`)
+            ).catch(() => {
+              return null;
+            });
+            const collections = data?.data?._embedded?.searchResult?._embedded?.objects;
+            if (collections) {
+              collections.map((collectionObject) => {
+                const collection = collectionObject?._embedded?.indexableObject;
+                if (collection) {
+                  collectionsList[collection.uuid] = {
+                    name: collection.name,
+                    parentCommunities: []
+                  }
+                  const parentCommunity = collection?._embedded?.parentCommunity;
+                  if (parentCommunity && communities.hasOwnProperty(parentCommunity.uuid)) {
+                    const parentCommunities = communities[parentCommunity.uuid].parents;
+                    parentCommunities.push(communities[parentCommunity.uuid].name);
+                    collectionsList[collection.uuid].parentCommunities = [...new Set(parentCommunities)];
+                  }
+                }
+              });
+            }
+          }
+        }
+
+        this.collections[repositoryName] = collectionsList;
+        resolve(true);
+      });
+    }
   }
 }

@@ -1,7 +1,9 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { SearchRequest, SearchResponse } from '@elastic/elasticsearch/lib/api/types';
+import { SearchRequest, SearchResponse, OpenPointInTimeResponse } from '@elastic/elasticsearch/lib/api/types';
 import { Job } from 'bull';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import Sitemapper from 'sitemapper';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 
@@ -11,6 +13,7 @@ export class DSpaceHealthCheck {
   constructor(
     public readonly elasticsearchService: ElasticsearchService,
     public readonly jsonFilesService: JsonFilesService,
+    private http: HttpService,
   ) {}
 
   plugin_name = 'dspace_health_check'
@@ -37,39 +40,67 @@ export class DSpaceHealthCheck {
           url: repo.siteMap,
           timeout: 15000, // 15 seconds
           requestHeaders: {
-            'User-Agent':
-                'OpenRXV harvesting bot; https://github.com/ilri/OpenRXV',
+            'User-Agent': 'OpenRXV harvesting bot; https://github.com/ilri/OpenRXV',
           },
         });
         this.logger.log('Getting ' + job.data.repo + ' sitemap ' + repo.siteMap);
 
         const {sites} = await Sitemap.fetch();
         await job.progress(50);
-        const sitemapHandles = sites.map((d) => d.split('/handle/')[1]);
 
         repo.index_name = job.data.index;
-        const indexedHandles = await this.getHandles(repo).catch((e) => {
+
+        let itemsIdentifiers = [];
+        let sitemapIdentifiers = [];
+        if (job.data?.sitemapIdentifier === 'handle') {
+          sitemapIdentifiers = sites.map((d) => d.split('/handle/')[1]);
+        } else if (job.data?.sitemapIdentifier === 'uuid') {
+          sitemapIdentifiers = sites.map((d) => d.split('/').at(-1));
+        } else {
+          await job.moveToFailed({message: 'sitemapIdentifier is not defined for the plugin'}, true);
+          return {success: false};
+        }
+
+        if (repo.type === 'DSpace7') {
+          const collectionsCommunitiesIds = await this.getCollectionsCommunitiesIds(repo.itemsEndPoint);
+
+          for (let i = 0; i < collectionsCommunitiesIds.length; i++) {
+            const index = sitemapIdentifiers.indexOf(collectionsCommunitiesIds[i]);
+            if (index !== -1) {
+              sitemapIdentifiers.splice(index,1);
+            }
+          }
+        }
+        this.logger.log('Items sitemap identifiers found ' + sitemapIdentifiers.length);
+
+
+        itemsIdentifiers = await this.getIdentifiers(repo, job.data.sitemapIdentifier).catch((e) => {
           job.moveToFailed(e, true);
           return null;
         });
         await job.progress(80);
-        const missingHandles = sitemapHandles.filter(
-            (e) => !indexedHandles.includes(e),
-        );
-        this.logger.log('Missing handles found ' + missingHandles.length);
 
-        for (let i = 0; i < missingHandles.length; i++) {
+        for (let i = 0; i < itemsIdentifiers.length; i++) {
+          const index = sitemapIdentifiers.indexOf(itemsIdentifiers[i]);
+          if (index !== -1) {
+            sitemapIdentifiers.splice(index,1);
+          }
+        }
+        this.logger.log('Missing identifiers found ' + sitemapIdentifiers.length);
+
+        for (let i = 0; i < sitemapIdentifiers.length; i++) {
           await queue.add('dspace_add_missing_items', {
             index: job.data.index,
             repo,
-            handle: missingHandles[i],
+            sitemapIdentifier: job.data.sitemapIdentifier,
+            identifier: sitemapIdentifiers[i],
             itemEndPoint: job.data.itemEndPoint
           }, {
             attempts: 0
           });
         }
         this.logger.log(
-            'Missing handles for ' + job.data.repo + ' added to the Queue',
+            'Missing identifiers for ' + job.data.repo + ' added to the Queue',
         );
         this.logger.log('Finished DSpace health check for ' + job.data.repo);
         await job.progress(100);
@@ -81,11 +112,11 @@ export class DSpaceHealthCheck {
     });
   }
 
-  async deleteDuplicates(job: Job) {
+  async deleteDuplicates(job: Job, sitemapIdentifier) {
     const elastic_data: SearchRequest = {
       index: job.data.index,
       size: 0,
-      _source: ['handle'],
+      _source: [sitemapIdentifier],
       track_total_hits: true,
       query: {
         bool: {
@@ -96,7 +127,7 @@ export class DSpaceHealthCheck {
               },
             },
             {
-              exists: { field: 'handle' },
+              exists: { field: sitemapIdentifier },
             },
           ],
         },
@@ -104,7 +135,7 @@ export class DSpaceHealthCheck {
       aggs: {
         duplicateCount: {
           terms: {
-            field: 'handle.keyword',
+            field: `${sitemapIdentifier}.keyword`,
             min_doc_count: 2,
             size: 999,
           },
@@ -112,7 +143,7 @@ export class DSpaceHealthCheck {
             duplicateDocuments: {
               top_hits: {
                 size: 100,
-                _source: ['handle'],
+                _source: [sitemapIdentifier],
               },
             },
           },
@@ -129,7 +160,7 @@ export class DSpaceHealthCheck {
 
     const duplicates = [];
     if (response) {
-      this.logger.log('Searching for duplicate handles for ' + job.data.repo);
+      this.logger.log('Searching for duplicate identifiers for ' + job.data.repo);
       for (const item of (response.aggregations.duplicateCount as any).buckets) {
         for (const element of item.duplicateDocuments.hits.hits) {
           let index = 0;
@@ -149,7 +180,7 @@ export class DSpaceHealthCheck {
         setTimeout(() => {
           this.logger.log(
             duplicates.length +
-              ' duplicate handles deleted in ' +
+              ' duplicate identifiers deleted in ' +
               job.data.repo,
           );
         }, 2000);
@@ -160,14 +191,20 @@ export class DSpaceHealthCheck {
     return false;
   }
 
-  async getHandles(repo): Promise<any> {
+  async getIdentifiers(repo, sitemapIdentifier): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let allRecords: any = [];
-        const elastic_data: SearchRequest = {
+
+        const openPointInTime: OpenPointInTimeResponse = await this.elasticsearchService.openPointInTime({
           index: repo.index_name,
+          keep_alive: '5m',
+        }).catch(() => {
+          return null;
+        });
+
+        const elastic_data: SearchRequest = {
           size: 9999,
-          _source: ['handle'],
+          _source: [sitemapIdentifier],
           track_total_hits: true,
           query: {
             bool: {
@@ -178,54 +215,56 @@ export class DSpaceHealthCheck {
                   },
                 },
                 {
-                  exists: { field: 'handle' },
+                  exists: {field: sitemapIdentifier},
                 },
               ],
             },
           },
-          scroll: '10m',
+          sort: [{'uuid.keyword': 'asc'}],
         };
 
-        const getMoreUntilDone = async (response: SearchResponse) => {
-          if (response?.hits?.hits) {
-            const handleIDs = response.hits.hits
-                .filter((d) => {
-                  if ((d._source as any).handle) return true;
-                  return false;
-                })
-                .map((d) => (d._source as any).handle);
-            allRecords = [...allRecords, ...handleIDs];
-            if (response.hits.hits.length != 0) {
-              const response2: SearchResponse = await this.elasticsearchService
-                  .scroll({
-                    scroll_id: <string>response._scroll_id,
-                    scroll: '10m',
-                  })
-                  .catch((e) => {
-                    this.logger.error(e);
-                    return null;
-                  });
-              if (response2)
-                await getMoreUntilDone(response2);
-            } else {
-              this.elasticsearchService.clearScroll({
-                scroll_id: response._scroll_id
-              }).catch();
-              this.logger.log(allRecords.length + ' handles found in ' + repo);
-              resolve(allRecords);
-            }
+        if (openPointInTime?.id) {
+          elastic_data.pit = {
+            id: openPointInTime.id,
+            keep_alive: '5m'
+          }
+        }
+
+        const allRecords = [];
+
+        const getMoreUntilDone = async () => {
+          const response: SearchResponse = await this.elasticsearchService
+              .search(elastic_data)
+              .catch((e) => {
+                this.logger.error(e);
+                return null;
+              });
+
+          if (response?.hits?.hits.length > 0) {
+            response.hits.hits
+                .map((d) => {
+                  const identifier = (d._source as any)[sitemapIdentifier];
+                  if (identifier)
+                    allRecords.push(identifier);
+                });
+
+            elastic_data.search_after = response.hits.hits.at(-1).sort;
+
+            await getMoreUntilDone();
           }
         };
 
-        const response3: SearchResponse = await this.elasticsearchService
-          .search(elastic_data)
-          .catch((e) => {
-            this.logger.error(e);
+        await getMoreUntilDone();
+
+        if (openPointInTime?.id) {
+          await this.elasticsearchService.closePointInTime({
+            id: openPointInTime.id,
+          }).catch(() => {
             return null;
           });
+        }
 
-        if (response3) await getMoreUntilDone(response3);
-        else resolve(allRecords);
+        resolve(allRecords);
       } catch (e) {
         this.logger.error(e);
         reject(e);
@@ -248,5 +287,64 @@ export class DSpaceHealthCheck {
         aborted_message: 'Failed to initialize plugin',
       });
     }
+  }
+
+  async getCollectionsCommunitiesIds(endPoint) {
+    // Remove the "/" from the end of the endPoint
+    endPoint = endPoint.replace(/\/$/gm, '');
+
+    const uuids = [];
+    const communitiesRequest = await lastValueFrom(
+        this.http.get(`${endPoint}/discover/search/objects?dsoType=community&size=1&page=0`)
+    ).catch(() => {
+      return null;
+    });
+    if (communitiesRequest?.data?._embedded?.searchResult?.page?.totalElements && communitiesRequest.data._embedded.searchResult.page.totalElements > 0) {
+      const totalPages = Math.ceil(communitiesRequest.data._embedded.searchResult.page.totalElements / 100);
+      for (let page = 0; page < totalPages; page++) {
+        const data = await lastValueFrom(
+            this.http.get(`${endPoint}/discover/search/objects?dsoType=community&size=100&page=${page}`)
+        ).catch(() => {
+          return null;
+        });
+        const communities = data?.data?._embedded?.searchResult?._embedded?.objects;
+        if (communities) {
+          communities.map((communityObject) => {
+            const uuid = communityObject?._embedded?.indexableObject?.uuid;
+            if (uuid) {
+              uuids.push(uuid);
+            }
+          });
+        }
+      }
+    }
+
+    const collectionsRequest = await lastValueFrom(
+        this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&size=1&page=0`)
+    ).catch(() => {
+      return null;
+    });
+
+    if (collectionsRequest?.data?._embedded?.searchResult?.page?.totalElements && collectionsRequest.data._embedded.searchResult.page.totalElements > 0) {
+      const totalPages = Math.ceil(collectionsRequest.data._embedded.searchResult.page.totalElements / 100);
+      for (let page = 0; page < totalPages; page++) {
+        const data = await lastValueFrom(
+            this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&size=100&page=${page}`)
+        ).catch(() => {
+          return null;
+        });
+        const collections = data?.data?._embedded?.searchResult?._embedded?.objects;
+        if (collections) {
+          collections.map((collectionObject) => {
+            const uuid = collectionObject?._embedded?.indexableObject?.uuid;
+            if (uuid) {
+              uuids.push(uuid);
+            }
+          });
+        }
+      }
+    }
+
+    return uuids;
   }
 }

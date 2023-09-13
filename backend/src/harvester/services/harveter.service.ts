@@ -44,45 +44,49 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async RegisterQueue(index_name: string) {
-    this.registeredQueues[`${index_name}_fetch`] = new Bull(`${index_name}_fetch`, {
-      defaultJobOptions: {
-        attempts: 10,
-      },
-      settings: {
-        stalledInterval: 2000,
-        maxStalledCount: 10,
-        retryProcessDelay: 2000,
-        drainDelay: 20000,
-      },
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT),
-      },
-    });
-    await this.dspaceService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace', index_name);
-    await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace7', index_name);
+    if (!this.registeredQueues.hasOwnProperty(`${index_name}_fetch`)) {
+      this.registeredQueues[`${index_name}_fetch`] = new Bull(`${index_name}_fetch`, {
+        defaultJobOptions: {
+          attempts: 10,
+        },
+        settings: {
+          stalledInterval: 2000,
+          maxStalledCount: 10,
+          retryProcessDelay: 2000,
+          drainDelay: 20000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.dspaceService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace', index_name);
+      await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace7', index_name);
+    }
 
-    this.registeredQueues[`${index_name}_plugins`] = new Bull(`${index_name}_plugins`, {
-      defaultJobOptions: {
-        attempts: 5,
-        timeout: 900000,
-      },
-      settings: {
-        lockDuration: 900000,
-        maxStalledCount: 0,
-        retryProcessDelay: 9000,
-        drainDelay: 9000,
-      },
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT),
-      },
-    });
-    await this.addMissingItems.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_add_missing_items', index_name, 5);
-    await this.dspaceAltmetrics.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_altmetrics', 0);
-    await this.dspaceDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_downloads_and_views', 0);
-    await this.dspaceHealthCheck.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_health_check', index_name, 0);
-    await this.melDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'mel_downloads_and_views', 0);
+    if (!this.registeredQueues.hasOwnProperty(`${index_name}_plugins`)) {
+      this.registeredQueues[`${index_name}_plugins`] = new Bull(`${index_name}_plugins`, {
+        defaultJobOptions: {
+          attempts: 5,
+          timeout: 900000,
+        },
+        settings: {
+          lockDuration: 900000,
+          maxStalledCount: 0,
+          retryProcessDelay: 9000,
+          drainDelay: 9000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.addMissingItems.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_add_missing_items', index_name, 5);
+      await this.dspaceAltmetrics.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_altmetrics', 0);
+      await this.dspaceDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_downloads_and_views', 0);
+      await this.dspaceHealthCheck.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_health_check', index_name, 0);
+      await this.melDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'mel_downloads_and_views', 0);
+    }
   }
 
   async getInfoById(index_name: string, id: number) {
@@ -190,6 +194,7 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async stopHarvest(index_name: string) {
+    await this.ReDefineExistingQueues();
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     if (indexFetchQueue != null) {
       this.logger.debug('Stopping Harvest');
@@ -218,6 +223,7 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async startHarvest(index_name: string) {
+    await this.ReDefineExistingQueues();
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     const settings = await this.jsonFilesService.read('../../../data/dataToUse.json');
     if (indexFetchQueue == null || !settings.hasOwnProperty(index_name)) {
@@ -285,6 +291,7 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async commitIndex(index_name: string) {
+    await this.ReDefineExistingQueues();
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     if (indexFetchQueue == null) {
       return;
@@ -314,6 +321,7 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async pluginsStart(index_name: string) {
+    await this.ReDefineExistingQueues();
     const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
     if (indexPluginsQueue == null) {
       return 'Not found';

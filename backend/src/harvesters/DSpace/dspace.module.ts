@@ -24,7 +24,8 @@ export class DSpaceModule {
           },
           sitemap_endpoint: {
             required: true,
-            placeholder: 'https://repo.org/sitemap'
+            placeholder: 'https://repo.org/sitemap',
+            sitemap_identifier: 'handle',
           },
         },
         '../../../data/harvestors/DSpace.json',

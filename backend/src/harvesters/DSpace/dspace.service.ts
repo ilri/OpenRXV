@@ -19,6 +19,9 @@ export class DSpaceService {
 
     async RegisterProcess(queue, name: string, index_name: string) {
         queue.process(name, 5, async (job: Job<any>) => {
+            // Remove the "/" from the end of the job.data.repo.itemsEndPoint
+            job.data.repo.itemsEndPoint = job.data.repo.itemsEndPoint.replace(/\/$/gm, '');
+
             try {
                 await job.takeLock();
                 await job.progress(20);
@@ -82,12 +85,14 @@ export class DSpaceService {
         });
         await job.progress(90);
 
-        for (const item of resp.items) {
-            if ((item as BulkResponseItem).status != 200 && (item as BulkResponseItem).status != 201) {
-                const error = new Error('error update or create item ');
-                error.stack = (item as BulkResponseItem).error.stack_trace;
-                job.attemptsMade = 10;
-                await job.moveToFailed(error, true);
+        if (resp.errors) {
+            for (const item of resp.items) {
+                if (item.index.status != 200 && item.index.status != 201) {
+                    const error = new Error('error update or create item ');
+                    error.stack = item.index.error.stack_trace;
+                    job.attemptsMade = 10;
+                    await job.moveToFailed(error, true);
+                }
             }
         }
         await job.progress(100);

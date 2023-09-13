@@ -15,19 +15,19 @@ export class DSpace7Service {
         private readonly formatService: FormatService,
     ) {}
 
-    collections: any = {};
-    collectionsFetching: any = {};
-
     async RegisterProcess(queue, name: string, index_name: string) {
         queue.process(name, 0, async (job: Job<any>) => {
+            // Remove the "/" from the end of the job.data.repo.itemsEndPoint
+            job.data.repo.itemsEndPoint = job.data.repo.itemsEndPoint.replace(/\/$/gm, '');
+
             try {
                 await job.takeLock();
                 await job.progress(20);
                 await this.formatService.Init(index_name);
 
-                if (!this.collectionsFetching || !this.collectionsFetching.hasOwnProperty(job.data.repo.name) || !this.collectionsFetching[job.data.repo.name])
-                    this.collectionsFetching[job.data.repo.name] = this.getCollections(job.data.repo.itemsEndPoint, job.data.repo.name);
-                await this.collectionsFetching[job.data.repo.name];
+                if (!this.formatService.collectionsFetching || !this.formatService.collectionsFetching.hasOwnProperty(job.data.repo.name) || !this.formatService.collectionsFetching[job.data.repo.name])
+                    this.formatService.collectionsFetching[job.data.repo.name] = this.formatService.getCollections(job.data.repo.itemsEndPoint, job.data.repo.name);
+                await this.formatService.collectionsFetching[job.data.repo.name];
 
                 const url =
                     job.data.repo.itemsEndPoint +
@@ -64,7 +64,7 @@ export class DSpace7Service {
         for (const harvested of data) {
             if (harvested?._embedded?.indexableObject) {
                 const item = harvested._embedded.indexableObject;
-                const formatted = this.formatService.DSpace7Format(item, job.data.repo.schema, this.collections[job.data.repo.name]);
+                const formatted = this.formatService.DSpace7Format(item, job.data.repo.schema, this.formatService.collections[job.data.repo.name]);
 
                 if (job.data.repo.years) {
                     const spleted = job.data.repo.years.split(/_(.+)/);
@@ -91,124 +91,17 @@ export class DSpace7Service {
         });
         await job.progress(90);
 
-        for (const item of resp.items) {
-            if ((item as BulkResponseItem).status != 200 && (item as BulkResponseItem).status != 201) {
-                const error = new Error('error update or create item ');
-                error.stack = (item as BulkResponseItem).error.stack_trace;
-                job.attemptsMade = 10;
-                await job.moveToFailed(error, true);
+        if (resp.errors) {
+            for (const item of resp.items) {
+                if (item.index.status != 200 && item.index.status != 201) {
+                    const error = new Error('error update or create item ');
+                    error.stack = item.index.error.stack_trace;
+                    job.attemptsMade = 10;
+                    await job.moveToFailed(error, true);
+                }
             }
         }
         await job.progress(100);
         return resp;
-    }
-
-    async getCommunities(endPoint) {
-        return new Promise(async (resolve) => {
-            const communitiesList = {};
-
-            const request = await lastValueFrom(
-                this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=1&page=0`)
-            ).catch(() => {
-                return null;
-            });
-
-            if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
-                const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
-                for (let page = 0; page < totalPages; page++) {
-                    const data = await lastValueFrom(
-                        this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=100&page=${page}`)
-                    ).catch((d) => {
-                        return null;
-                    });
-                    const communities = data?.data?._embedded?.searchResult?._embedded?.objects;
-                    if (communities) {
-                        communities.map((communityObject) => {
-                            const community = communityObject?._embedded?.indexableObject;
-                            if (community) {
-                                communitiesList[community.uuid] = {
-                                    name: community.name,
-                                    parent: null
-                                }
-                                const parentCommunity = community?._embedded?.parentCommunity;
-                                if (parentCommunity) {
-                                    communitiesList[community.uuid].parent = parentCommunity.uuid
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-
-            const communities = {};
-            for (const communityId in communitiesList) {
-                if (communitiesList.hasOwnProperty(communityId)) {
-                    const community = communitiesList[communityId];
-                    let parentId = community.parent;
-                    communities[communityId] = {
-                        name: community.name,
-                        parents: []
-                    }
-                    while (parentId) {
-                        if (communitiesList.hasOwnProperty(parentId)) {
-                            const parent = communitiesList[parentId];
-                            communities[communityId].parents.push(parent.name);
-                            parentId = parent.parent;
-                        }
-                    }
-                }
-            }
-
-            resolve(communities);
-        });
-    }
-
-    async getCollections(endPoint, repositoryName) {
-        if (this.collectionsFetching[repositoryName]) {
-            return this.collectionsFetching[repositoryName];
-        } else {
-            const communities = await this.getCommunities(endPoint);
-
-            const collectionsList = {};
-            return new Promise(async (resolve) => {
-                const request = await lastValueFrom(
-                    this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=1&page=0`)
-                ).catch((d) => {
-                    return null;
-                });
-
-                if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
-                    const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
-                    for (let page = 0; page < totalPages; page++) {
-                        const data = await lastValueFrom(
-                            this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=100&page=${page}`)
-                        ).catch((d) => {
-                            return null;
-                        });
-                        const collections = data?.data?._embedded?.searchResult?._embedded?.objects;
-                        if (collections) {
-                            collections.map((collectionObject) => {
-                                const collection = collectionObject?._embedded?.indexableObject;
-                                if (collection) {
-                                    collectionsList[collection.uuid] = {
-                                        name: collection.name,
-                                        parentCommunities: []
-                                    }
-                                    const parentCommunity = collection?._embedded?.parentCommunity;
-                                    if (parentCommunity && communities.hasOwnProperty(parentCommunity.uuid)) {
-                                        const parentCommunities = communities[parentCommunity.uuid].parents;
-                                        parentCommunities.push(communities[parentCommunity.uuid].name);
-                                        collectionsList[collection.uuid].parentCommunities = [...new Set(parentCommunities)];
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-
-                this.collections[repositoryName] = collectionsList;
-                resolve(true);
-            });
-        }
     }
 }
