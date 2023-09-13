@@ -41,6 +41,7 @@ export class SetupComponent implements OnInit {
     fields: [],
   };
   index_name: string;
+  exportLink: string;
 
   baseSchema(metadada = null, disply_name = null, addOn = null) {
     return {
@@ -85,6 +86,7 @@ export class SetupComponent implements OnInit {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.getOutsourcePlugins();
     const data = await this.settingService.read(this.index_name);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
 
     if (data.repositories.length === 0)
       this.AddNewRepo(false);
@@ -127,6 +129,9 @@ export class SetupComponent implements OnInit {
       const settings = { repositories: this.repositories.value };
       await this.settingService.save(settings, this.index_name);
       this.toastr.success('Settings have been saved successfully');
+
+      const data = await this.settingService.read(this.index_name);
+      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
     }
   }
 

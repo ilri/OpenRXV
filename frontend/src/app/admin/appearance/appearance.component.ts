@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AppearanceComponent implements OnInit {
   dashboard_name: string;
+  exportLink: string;
   primary_color = '';
   secondary_color = '';
   appearance;
@@ -57,6 +58,7 @@ export class AppearanceComponent implements OnInit {
     await appearance.chartColors.map((a) => {
       this.colors.push(new UntypedFormControl(a));
     });
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
   }
   colorPickerClose(event, element) {
     this.form.get(element).setValue(event);
@@ -72,11 +74,17 @@ export class AppearanceComponent implements OnInit {
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
-    if (this.form.valid)
+    if (this.form.valid) {
       await this.settingsService.saveAppearanceSettings(
-        dashboard_name,
-        this.form.value,
+          dashboard_name,
+          this.form.value,
       );
+
+      const appearance = await this.settingsService.readAppearanceSettings(
+          dashboard_name,
+      );
+      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
+    }
   }
 
   logoChange(event) {

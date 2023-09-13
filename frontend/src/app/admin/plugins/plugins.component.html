@@ -3,7 +3,12 @@
         <mat-card>
             <mat-card-title>
                 Plugins
-                <button class="save" (click)="save()" color="primary" mat-raised-button>
+                <a style="float: right" [href]="exportLink" [download]="'OpenRXV-index-plugins-' + index_name + '.json'"
+                   color="primary" mat-raised-button>
+                    Export
+                    <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+                </a>
+                <button class="mr-2 save" (click)="save()" color="primary" mat-raised-button>
                     Save
                     <mat-icon>save</mat-icon>
                 </button>

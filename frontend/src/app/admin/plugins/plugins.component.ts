@@ -11,6 +11,7 @@ export class PluginsComponent implements OnInit {
   plugins = [];
   pluginsForms = {};
   index_name: string;
+  exportLink: string;
   constructor(
     private settingsService: SettingsService,
     private activeRoute: ActivatedRoute,
@@ -19,6 +20,7 @@ export class PluginsComponent implements OnInit {
   async ngOnInit() {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.plugins = await this.settingsService.readPluginsSettings(this.index_name);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.plugins));
   }
 
   onEdited(event, name) {
@@ -38,5 +40,7 @@ export class PluginsComponent implements OnInit {
       }),
       this.index_name
     );
+    const plugins = await this.settingsService.readPluginsSettings(this.index_name);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(plugins));
   }
 }

@@ -3,7 +3,12 @@
     <mat-card>
       <mat-card-title>
         Indexes
-        <button style="float: right" (click)="openDialog()" color="primary" mat-raised-button>
+        <a style="float: right" [href]="exportLink" download="OpenRXV-indexes.json" color="primary"
+           mat-raised-button>
+        Export
+          <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+        </a>
+        <button class="mr-2" style="float: right" (click)="openDialog()" color="primary" mat-raised-button>
           ADD
           <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
         </button>

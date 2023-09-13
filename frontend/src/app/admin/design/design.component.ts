@@ -31,6 +31,7 @@ export class DesignComponent implements OnInit {
   filters: Array<any> = [];
   dashboard: Array<any> = [];
   dashboard_name: string;
+  exportLink: string;
   footer: any = null;
   welcome: any;
   welcome_text = '';
@@ -91,6 +92,13 @@ export class DesignComponent implements OnInit {
     this.dashboard = dashboard;
     this.footer = footer;
     this.welcome = welcome;
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({
+      welcome: this.welcome,
+      counters: this.counters,
+      filters: this.filters,
+      dashboard: this.dashboard,
+      footer: this.footer,
+    }));
   }
 
   onAddDashboardComponent(index2, index) {
@@ -193,13 +201,15 @@ export class DesignComponent implements OnInit {
         .length == 0
     ) {
       this.welcome.componentConfigs['text'] = this.welcome_text;
-      await this.settingsService.saveExplorerSettings(dashboard_name, {
+      const data = {
+        welcome: this.welcome,
         counters: this.counters,
         filters: this.filters,
         dashboard: this.dashboard,
         footer: this.footer,
-        welcome: this.welcome,
-      });
+      };
+      await this.settingsService.saveExplorerSettings(dashboard_name, data);
+      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
       this.toastr.success('Settings have been saved successfully');
     } else {
       this.toastr.error('Please set icons of rows before you save');

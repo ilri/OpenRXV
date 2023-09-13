@@ -60,7 +60,7 @@ export class FormIndexComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private toastr: ToastrService,
   ) {}
-  nonWhitespaceRegExp: RegExp = new RegExp('\\S');
+
   populateForm(data = { name: '', description: '', to_be_indexed: false }) {
     this.form = this.fb.group({
       name: [

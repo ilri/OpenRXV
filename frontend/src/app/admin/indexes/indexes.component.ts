@@ -23,6 +23,7 @@ export class IndexesComponent implements OnInit {
   form: FormGroup = new FormGroup({
     indexes: new FormArray([]),
   });
+  exportLink: string;
 
   displayedColumns: string[] = [
     'id',
@@ -66,6 +67,7 @@ export class IndexesComponent implements OnInit {
         if (response.success === true) {
           this.dataSource = new MatTableDataSource<any>(this.indexes);
           this.toastr.success('Index deleted successfully');
+          this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.indexes));
         } else {
           this.indexes.splice(index, 0, deleted);
           const relatedDashboards = response.relatedDashboards.map((dashboard) => {
@@ -97,18 +99,19 @@ export class IndexesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      let indexes = await this.settingsService.readIndexesSettings();
-      this.indexes = indexes;
-      this.dataSource = new MatTableDataSource<any>(indexes);
-      this.dataSource.paginator = this.paginator;
-      this.form.patchValue(indexes);
+      this.refreshData();
     });
   }
   async ngOnInit() {
-    let indexes = await this.settingsService.readIndexesSettings();
+    this.refreshData();
+  }
+
+  async refreshData() {
+    const indexes = await this.settingsService.readIndexesSettings();
     this.indexes = indexes;
     this.dataSource = new MatTableDataSource<any>(indexes);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(indexes);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(indexes));
   }
 }

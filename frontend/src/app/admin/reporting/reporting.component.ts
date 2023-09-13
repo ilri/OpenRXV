@@ -24,6 +24,7 @@ export class ReportingComponent implements OnInit {
   envireoment = environment.api;
   metadata: any;
   dashboard_name: string;
+  exportLink: string;
   displayedColumns: string[] = [
     'title',
     'fileType',
@@ -44,6 +45,7 @@ export class ReportingComponent implements OnInit {
     this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.tableData = new MatTableDataSource<any>(this.reports);
     this.tableData.paginator = this.paginator;
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.reports));
   }
 
   newReport() {
@@ -61,6 +63,7 @@ export class ReportingComponent implements OnInit {
       this.reports = await this.settingsService.readReports(this.dashboard_name);
       this.tableData = new MatTableDataSource<any>(this.reports);
       this.tableData.paginator = this.paginator;
+      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.reports));
     });
   }
 
@@ -80,6 +83,7 @@ export class ReportingComponent implements OnInit {
         );
         this.tableData = new MatTableDataSource<any>(this.reports);
         this.tableData.paginator = this.paginator;
+        this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.reports));
       }
     });
   }
@@ -99,6 +103,7 @@ export class ReportingComponent implements OnInit {
       this.reports = await this.settingsService.readReports(this.dashboard_name);
       this.tableData = new MatTableDataSource<any>(this.reports);
       this.tableData.paginator = this.paginator;
+      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.reports));
     });
   }
   copyMessage(val: string) {

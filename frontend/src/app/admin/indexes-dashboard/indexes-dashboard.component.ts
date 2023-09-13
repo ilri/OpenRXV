@@ -21,6 +21,7 @@ export class IndexesDashboardComponent implements OnInit {
   ) {}
 
   dashboards: any;
+  exportLink: string;
   displayedColumns: string[] = [
     'id',
     'name',
@@ -65,6 +66,7 @@ export class IndexesDashboardComponent implements OnInit {
         this.dataSource = new MatTableDataSource<any>(this.dashboards);
         this.settingsService.saveDashboardsSettings(this.dashboards, false);
         this.toastr.success('Dashboard deleted successfully');
+        this.updateExportLink(this.dashboards);
       }
     });
   }
@@ -76,19 +78,35 @@ export class IndexesDashboardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      let dashboards = await this.settingsService.readDashboardsSettings();
-      this.dashboards = dashboards;
-      this.dataSource = new MatTableDataSource<any>(dashboards);
-      this.dataSource.paginator = this.paginator;
-      this.form.patchValue(dashboards);
+      this.refreshData();
     });
   }
 
   async ngOnInit() {
+    this.refreshData();
+  }
+
+  async refreshData() {
     const dashboards = await this.settingsService.readDashboardsSettings();
     this.dashboards = dashboards;
     this.dataSource = new MatTableDataSource<any>(dashboards);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(dashboards);
+    this.updateExportLink(dashboards);
+  }
+
+  updateExportLink(dashboards) {
+    const dashboardsCopy = JSON.parse(JSON.stringify(dashboards))
+        .map((dashboard) => {
+          for (const key in dashboard) {
+            if (dashboard.hasOwnProperty(key)) {
+              if (dashboard[key] != null && (typeof dashboard[key] === 'object' || Array.isArray(dashboard[key]))) {
+                delete dashboard[key];
+              }
+            }
+          }
+          return dashboard;
+        });
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(dashboardsCopy));
   }
 }

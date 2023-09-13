@@ -26,6 +26,7 @@ export class MappingValuesComponent implements OnInit {
   metadataFields: any;
   index_name: string;
   values_index_name: string;
+  exportLink: string;
 
   openDialog(): void {
     const values = {
@@ -83,9 +84,11 @@ export class MappingValuesComponent implements OnInit {
   async ngOnInit() {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.values_index_name = `${this.index_name}-values`;
+    await this.refreshExportData();
+
     this.metadataFields = await this.metadataService.get(null, this.index_name);
-    const mappingvalues = await this.valuesService.findByTerm(this.term, this.values_index_name);
-    this.dataSource = new MatTableDataSource<Array<any>>(mappingvalues.hits);
+    const mappingValues = await this.valuesService.findByTerm(this.term, this.values_index_name);
+    this.dataSource = new MatTableDataSource<Array<any>>(mappingValues.hits);
     this.dataSource.paginator = this.paginator;
   }
   timeout = null;
@@ -98,5 +101,10 @@ export class MappingValuesComponent implements OnInit {
       this.dataSource = new MatTableDataSource<Array<any>>(data.hits);
       this.dataSource.paginator = this.paginator;
     }, 1000);
+  }
+
+  async refreshExportData() {
+    const mappingValues = await this.valuesService.findByTerm('', this.values_index_name);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(mappingValues.hits));
   }
 }
