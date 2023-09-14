@@ -8,6 +8,11 @@
                     Export
                     <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
                 </a>
+                <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
+                <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+                    Import
+                    <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+                </button>
                 <button class="mr-2 save" (click)="save()" color="primary" mat-raised-button>
                     Save
                     <mat-icon>save</mat-icon>
@@ -20,6 +25,6 @@
     </div>
 
     <div *ngFor="let plugin of plugins;let i = index;" class="col-md-12 pb-5">
-        <app-plugin (onEdit)="onEdited($event,plugin.name)" [plugin]="plugin"></app-plugin>
+        <app-plugin (onEdit)="onEdited($event,plugin.name)" [plugins]="plugins" [pluginIndex]="i"></app-plugin>
     </div>
 </div>

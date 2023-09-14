@@ -10,7 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { JsonFilesService } from '../json-files/json-files.service';
+import { IndexResponse, UpdateResponse } from '@elastic/elasticsearch/lib/api/types';
 import { ValuesService } from '../../shared/services/values.service';
 function isEmpty(obj) {
   for (const prop in obj) {
@@ -25,16 +25,8 @@ function isEmpty(obj) {
 export class ValuesController {
   constructor(
     private elastic: ValuesService,
-    private jsonfielServoce: JsonFilesService,
   ) {}
-  // @Get('import/')
-  // async Import() {
-  //     let values = await this.jsonfielServoce.read('../../../data/mapping.json')
-  //     Object.keys(values).forEach(async key => {
-  //         await this.elastic.add({ find: key, replace: values[key] });
-  //     })
-  //     return values;
-  // }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('term/:term/:index')
   async GetValues(@Param('term') term: any, @Param('index_name') index_name: string) {
@@ -55,13 +47,25 @@ export class ValuesController {
   }
   @UseGuards(AuthGuard('jwt'))
   @Post('')
-  NewValue(@Body() body: any) {
+  async NewValue(@Body() body: any) {
     let index_name = null;
     if (body.hasOwnProperty('index_name')) {
       index_name = body.index_name;
       delete body.index_name;
     }
-    return this.elastic.add(body, index_name);
+    const response: IndexResponse = await this.elastic.add(body, index_name);
+    if (response?._shards?.failed === 0) {
+      return {
+        success: true,
+        message: 'Value mapping saved successfully',
+      }
+    } else {
+      const errors = response?._shards?.failures.map(failure => failure.reason.reason);
+      return {
+        success: false,
+        message: errors.length ? errors.join(', ') : 'Oops! something went wrong',
+      }
+    }
   }
   @UseGuards(AuthGuard('jwt'))
   @Get(':id/:index_name')
@@ -76,13 +80,26 @@ export class ValuesController {
     return this.elastic.delete(id, index_name);
   }
   @Put(':id')
-  updateOneValue(@Param('id') id: string, @Body() body) {
+  async updateOneValue(@Param('id') id: string, @Body() body) {
     let index_name = null;
     if (body.hasOwnProperty('index_name')) {
       index_name = body.index_name;
       delete body.index_name;
     }
-    return this.elastic.update(id, body, index_name);
+
+    const response: UpdateResponse = await this.elastic.update(id, body, index_name);
+    if (response?._shards?.failed === 0) {
+      return {
+        success: true,
+        message: 'Value mapping saved successfully',
+      }
+    } else {
+      const errors = response?._shards?.failures.map(failure => failure.reason.reason);
+      return {
+        success: false,
+        message: errors.length ? errors.join(', ') : 'Oops! something went wrong',
+      }
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))

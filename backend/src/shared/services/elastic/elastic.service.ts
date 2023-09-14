@@ -19,21 +19,21 @@ export class ElasticService {
       const items_final_exist: IndicesExistsResponse =
         await this.elasticsearchService.indices.exists({
           index: `${index.name}_final`,
-        });
+        }).catch();
       const items_temp_exist: IndicesExistsResponse =
         await this.elasticsearchService.indices.exists({
           index: `${index.name}_temp`,
-        });
+        }).catch();
 
 
       if (!items_final_exist)
         await this.elasticsearchService.indices.create({
           index: `${index.name}_final`,
-        });
+        }).catch();
       if (!items_temp_exist)
         await this.elasticsearchService.indices.create({
           index: `${index.name}_temp`,
-        });
+        }).catch();
     }
   }
   async startup() {
@@ -42,35 +42,35 @@ export class ElasticService {
     const values_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-values',
-      });
+      }).catch();
     const users_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-users',
-      });
+      }).catch();
     const shared_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-shared',
-      });
+      }).catch();
 
     if (!shared_exist)
       await this.elasticsearchService.indices.create({
         index: 'openrxv-shared',
-      });
+      }).catch();
     if (!values_exist)
       await this.elasticsearchService.indices.create({
         index: 'openrxv-values',
-      });
+      }).catch();
 
     await this.elasticsearchService.cluster.putSettings({
       transient: {
         'cluster.routing.allocation.disk.threshold_enabled': false,
       },
-    });
+    }).catch();
     await this.elasticsearchService.indices.putSettings({
       settings: {
         'index.blocks.read_only_allow_delete': null,
       },
-    });
+    }).catch();
 
     if (!users_exist) {
       const body = {

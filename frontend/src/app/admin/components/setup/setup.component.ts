@@ -11,6 +11,7 @@ import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
+import { CommonService } from '../../../common.service';
 
 @Component({
   selector: 'app-setup',
@@ -34,12 +35,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SetupComponent implements OnInit {
   plugins: any = [];
-  activePluginName: any = {};
-  activePlugin: any = {};
-  isShown = {
-    schema: [],
-    fields: [],
-  };
+  activePluginName: Array<BehaviorSubject<any>> = [];
+  activePlugin: Array<any> = [];
+  isShown = [];
   index_name: string;
   exportLink: string;
 
@@ -80,6 +78,7 @@ export class SetupComponent implements OnInit {
     private settingService: SettingsService,
     private toastr: ToastrService,
     private activeRoute: ActivatedRoute,
+    private commonService: CommonService,
   ) {}
 
   async ngOnInit() {
@@ -92,27 +91,32 @@ export class SetupComponent implements OnInit {
       this.AddNewRepo(false);
 
     data.repositories.forEach((element, repoindex) => {
-      if (element.icon)
-        this.logo[repoindex] = element.icon;
-      this.AddNewRepo(repoindex > 0);
-      if (element.metadata)
-        element.metadata.forEach((element, index) => {
-          if (index > 0)
-            this.AddNewMetadata(
-              this.repositories.at(repoindex).get('metadata'),
-              null
-            );
-        });
-      if (element.schema)
-        element.schema.forEach((element, index) => {
-          if (index > 0)
-            this.AddNewMetadata(this.repositories.at(repoindex).get('schema'), null);
-        });
-      if (element.type)
-        this.PluginChange(element.type, repoindex);
+      this.populateRepository(element, repoindex);
     });
-    await this.repositories.patchValue(data.repositories);
+    this.repositories.patchValue(data.repositories);
   }
+
+  populateRepository(repository, repositoryIndex){
+    if (repository.icon)
+      this.logo[repositoryIndex] = repository.icon;
+    this.AddNewRepo(repositoryIndex > 0);
+    if (repository.metadata)
+      repository.metadata.forEach((item, index) => {
+        if (index > 0)
+          this.AddNewMetadata(
+              this.repositories.at(repositoryIndex).get('metadata'),
+              null
+          );
+      });
+    if (repository.schema)
+      repository.schema.forEach((item, index) => {
+        if (index > 0)
+          this.AddNewMetadata(this.repositories.at(repositoryIndex).get('schema'), null);
+      });
+    if (repository.type)
+      this.PluginChange(repository.type, repositoryIndex);
+  }
+
   logo = [];
   IconChange(event, index) {
     this.upload(event.target.files[0], index);
@@ -190,6 +194,7 @@ export class SetupComponent implements OnInit {
     }
 
     const repoIndex = this.repositories.length - 1;
+    this.isShown[repoIndex] = 0;
     this.activePluginName[repoIndex] = new BehaviorSubject<any>({});
     this.activePlugin[repoIndex] = {};
     this.activePluginName[repoIndex].subscribe(pluginName => {
@@ -204,6 +209,9 @@ export class SetupComponent implements OnInit {
   }
   deleteRepo(index) {
     this.repositories.removeAt(index);
+    this.isShown.splice(index, 1);
+    this.activePluginName.splice(index, 1);
+    this.activePlugin.splice(index, 1);
   }
 
   AddNewMetadata(schema: any, selector: HTMLElement) {
@@ -225,5 +233,50 @@ export class SetupComponent implements OnInit {
   PluginChange(pluginName, repoindex) {
     if (this.activePluginName.hasOwnProperty(repoindex))
       this.activePluginName[repoindex].next(pluginName);
+  }
+
+  async importJSON(event) {
+    const data: any = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+    const repositories = data.hasOwnProperty('repositories') && Array.isArray(data.repositories) ? data.repositories : [];
+    for (let i = 0; i < repositories.length; i++) {
+      const importedItem = (repositories[i] as any);
+      const repositoryName = importedItem?.name.trim();
+      if (repositoryName !== '') {
+        const repository = {
+          years: importedItem?.years,
+          name: repositoryName,
+          icon: importedItem?.icon,
+          startPage: importedItem?.startPage,
+          type: importedItem?.type,
+          itemsEndPoint: importedItem?.itemsEndPoint,
+          apiKey: importedItem?.apiKey,
+          siteMap: importedItem?.siteMap,
+          allCores: importedItem?.allCores,
+          schema: importedItem?.schema,
+          metadata: importedItem?.metadata,
+        };
+
+        const repositoryIndex = this.repositories.length;
+        this.populateRepository(repository, repositoryIndex);
+        importStatus.success.push(repositoryName);
+        this.repositories.controls[this.repositories.length - 1].setValue(repository);
+      } else {
+        const message = 'Index #' + (i + 1) + ' cannot have empty name';
+        importStatus.failed.push(message);
+      }
+    }
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, repositories.length, 'Repository(ies)');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

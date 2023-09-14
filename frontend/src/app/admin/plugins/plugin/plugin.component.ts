@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
@@ -8,8 +8,10 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './plugin.component.html',
   styleUrls: ['./plugin.component.scss'],
 })
-export class PluginComponent implements OnInit {
-  @Input() plugin: any = null;
+export class PluginComponent implements OnInit, OnChanges {
+  @Input() plugins: any = null;
+  @Input() pluginIndex = 0;
+  plugin: any = null;
   formdata: UntypedFormArray = new UntypedFormArray([]);
   active = false;
   index_name: string;
@@ -41,6 +43,7 @@ export class PluginComponent implements OnInit {
     });
   }
   async ngOnInit() {
+    this.plugin = this.plugins[this.pluginIndex];
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     const repositories = await this.settingService.read(this.index_name);
     this.repositoriesList = repositories?.repositories.map(repository => repository.name);
@@ -54,6 +57,18 @@ export class PluginComponent implements OnInit {
 
     this.formdata.valueChanges.subscribe((d) => this.sendValue());
     this.sendValue();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.plugin = changes.plugins.currentValue[this.pluginIndex];
+    if (this.plugin.importedValues) {
+      this.active = true;
+      this.plugin.importedValues.map((element) => {
+        this.addNew(element);
+      });
+      this.formdata.valueChanges.subscribe((d) => this.sendValue());
+      this.sendValue();
+    }
   }
 
   addNew(value = null) {

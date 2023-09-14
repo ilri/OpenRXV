@@ -7,6 +7,7 @@ import { SettingsService } from '../services/settings.service';
 import { FormIndexComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
+import { CommonService } from '../../common.service';
 
 @Component({
   selector: 'app-indexes',
@@ -18,6 +19,7 @@ export class IndexesComponent implements OnInit {
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private commonService: CommonService,
   ) {}
   indexes: any;
   form: FormGroup = new FormGroup({
@@ -113,5 +115,46 @@ export class IndexesComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(indexes);
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(indexes));
+  }
+
+  async importJSON(event) {
+    const data: [] = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+    for (let i = 0; i < data.length; i++) {
+      const importedItem = (data[i] as any);
+      const indexName = this.commonService.cleanIdNames(importedItem?.name);
+      if (indexName !== '') {
+        const item = {
+          name: indexName,
+          description: importedItem?.description,
+          to_be_indexed: importedItem?.to_be_indexed,
+          created_at: new Date().toLocaleString(),
+        };
+        const response = await this.settingsService.saveIndexesSettings(item, true, null);
+        if (response.success === true) {
+          importStatus.success.push(indexName);
+        } else {
+          const message = indexName + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+          importStatus.failed.push(message);
+        }
+      } else {
+        const message = 'Index #' + (i + 1) + ' cannot have empty name';
+        importStatus.failed.push(message);
+      }
+    }
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Index(es)');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

@@ -180,26 +180,29 @@ export class SettingsController {
       if (isNew) {
         indexes.push({
           id: uuidv4(),
-          name: body.data.name,
-          description: body.data.description,
+          name: body.data?.name,
+          description: body.data?.description,
+          to_be_indexed: body.data?.to_be_indexed,
           created_at: new Date().toLocaleString(),
         });
       } else {
         indexes = body.data;
       }
 
-      // Don't allow empty index names
-      const namesFiltered = indexes.filter(index => index.name.trim().toLowerCase() !== '');
-      if (namesFiltered.length !== indexes.length) {
+      const namesFiltered = [];
+      for (let i = 0; i < indexes.length; i++) {
+        indexes[i].name = this.indexMetadataService.cleanIdNames(indexes[i].name);
+        if (indexes[i].name !== '') {
+          namesFiltered.push(indexes[i].name);
+        }
+      }
+
+      if (namesFiltered.length !== indexes.length) { // Don't allow empty index names
         return {
           success: false,
           message: `Index name cannot be empty`,
         };
-      }
-
-      // If two indexes have the same name, prevent submit
-      const names = indexes.map(index => index.name.trim().toLowerCase());
-      if ((new Set(names)).size !== names.length) {
+      } else if ((new Set(namesFiltered)).size !== namesFiltered.length) { // If two indexes have the same name, prevent submit
         return {
           success: false,
           message: `Index name is already used`,
@@ -317,23 +320,27 @@ export class SettingsController {
     } else {
       dashboards = body.data;
     }
-    // Don't allow empty dashboard names
-    const namesFiltered = dashboards.filter(dashboard => dashboard.name.trim().toLowerCase() !== '');
-    if (namesFiltered.length !== dashboards.length) {
+
+    const namesFiltered = [];
+    for (let i = 0; i < dashboards.length; i++) {
+      dashboards[i].name = this.indexMetadataService.cleanIdNames(dashboards[i].name);
+      if (dashboards[i].name !== '') {
+        namesFiltered.push(dashboards[i].name);
+      }
+    }
+
+    if (namesFiltered.length !== dashboards.length) { // Don't allow empty index names
       return {
         success: false,
         message: `Dashboard name cannot be empty`,
       };
-    }
-
-    // If two dashboards have the same name, prevent submit
-    const names = dashboards.map(dashboard => dashboard.name.trim().toLowerCase());
-    if ((new Set(names)).size !== names.length) {
+    } else if ((new Set(namesFiltered)).size !== namesFiltered.length) { // If two indexes have the same name, prevent submit
       return {
         success: false,
         message: `Dashboard name is already used`,
       };
     }
+
     await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
     return { success: true };
   }

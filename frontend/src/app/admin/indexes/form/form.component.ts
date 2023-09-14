@@ -19,11 +19,15 @@ export class FormIndexComponent implements OnInit {
   form: FormGroup = new FormGroup({});
   async submit() {
     if (this.form.valid && this.data.event == 'New') {
-      this.dialogRef.close(
-        await this.settingsService.saveIndexesSettings(this.form.value, true, null),
-      );
+      const response = await this.settingsService.saveIndexesSettings(this.form.value, true, null);
+      if (response.success === true) {
+        this.dialogRef.close();
+        this.toastr.success('Index saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');
+      }
     } else if (this.form.valid && this.data.event == 'Edit') {
-      let indexes = await this.settingsService.readIndexesSettings();
+      const indexes = await this.settingsService.readIndexesSettings();
       const newIndexesArray = indexes.map((obj) => {
         if (obj.id === this.data.body[0].id) {
           return {

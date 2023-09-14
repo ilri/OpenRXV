@@ -8,6 +8,7 @@ import { RootComponent } from './root/root.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
+import { CommonService } from './common.service';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
@@ -32,7 +33,7 @@ export function tokenGetter() {
       },
     }),
   ],
-  providers: [],
+  providers: [CommonService],
   bootstrap: [RootComponent],
 })
 export class AppModule {}

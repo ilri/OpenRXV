@@ -7,6 +7,8 @@ import { ValuesForm } from './form/values-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CommonService } from '../../../common.service';
 
 @Component({
   selector: 'app-mapping-values',
@@ -19,6 +21,8 @@ export class MappingValuesComponent implements OnInit {
     public dialog: MatDialog,
     private metadataService: MetadataService,
     private activeRoute: ActivatedRoute,
+    private toastr: ToastrService,
+    private commonService: CommonService,
   ) {
   }
 
@@ -40,7 +44,7 @@ export class MappingValuesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.ngOnInit();
+      if (result) this.refreshData();
     });
   }
 
@@ -55,7 +59,7 @@ export class MappingValuesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.valuesService.delete(id, this.values_index_name);
-        this.ngOnInit();
+        this.refreshData();
       }
     });
   }
@@ -70,7 +74,7 @@ export class MappingValuesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.ngOnInit();
+      if (result) this.refreshData();
     });
   }
 
@@ -84,12 +88,8 @@ export class MappingValuesComponent implements OnInit {
   async ngOnInit() {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.values_index_name = `${this.index_name}-values`;
-    await this.refreshExportData();
-
     this.metadataFields = await this.metadataService.get(null, this.index_name);
-    const mappingValues = await this.valuesService.findByTerm(this.term, this.values_index_name);
-    this.dataSource = new MatTableDataSource<Array<any>>(mappingValues.hits);
-    this.dataSource.paginator = this.paginator;
+    await this.refreshData();
   }
   timeout = null;
 
@@ -97,14 +97,68 @@ export class MappingValuesComponent implements OnInit {
     clearTimeout(this.timeout);
     // Make a new timeout set to go off in 1000ms (1 second)
     this.timeout = setTimeout(async () => {
-      const data = await this.valuesService.findByTerm(this.term, this.values_index_name);
-      this.dataSource = new MatTableDataSource<Array<any>>(data.hits);
-      this.dataSource.paginator = this.paginator;
+      await this.refreshData();
     }, 1000);
   }
 
-  async refreshExportData() {
-    const mappingValues = await this.valuesService.findByTerm('', this.values_index_name);
+  async refreshData() {
+    const mappingValues = await this.valuesService.findByTerm(this.term.trim(), this.values_index_name);
+    this.dataSource = new MatTableDataSource<Array<any>>(mappingValues.hits);
+    this.dataSource.paginator = this.paginator;
+
+    await this.refreshExportData(mappingValues);
+  }
+
+  async refreshExportData(mappingValues) {
+    mappingValues = this.term.trim() === '' ? mappingValues : await this.valuesService.findByTerm('', this.values_index_name);
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(mappingValues.hits));
+  }
+
+  async importJSON(event) {
+    const data: [] = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+
+    for (let i = 0; i < data.length; i++) {
+      const importedItem = (data[i] as any);
+      const item = {
+        find: importedItem?.find.trim(),
+        replace: importedItem?.replace.trim(),
+        metadataField: importedItem?.metadataField,
+      };
+      const missingRequiredFields = [];
+      if (item.find === '' || item.find == null) {
+        missingRequiredFields.push('find');
+      }
+      if (item.replace === '' || item.replace == null) {
+        missingRequiredFields.push('replace');
+      }
+      if (missingRequiredFields.length > 0) {
+        const message = 'Mapping #' + (i + 1) + ' is missing required fields: ' + missingRequiredFields.join(' and ');
+        importStatus.failed.push(message);
+      } else {
+        const response = await this.valuesService.post(item, this.values_index_name);
+        if (response.success === true) {
+          importStatus.success.push(item.find);
+        } else {
+          const message = 'Mapping #' + (i + 1) + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+          importStatus.failed.push(message);
+        }
+
+      }
+    }
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Value mapping(s)');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

@@ -132,4 +132,15 @@ export class IndexMetadataService extends ElasticService {
 
         return merged;
     }
+
+    cleanIdNames(name: string): string {
+        name = name.trim();
+        // Replace non-word character with -
+        name = name.replace(/\W|_/g, '-');
+        // Remove duplicated -
+        name = name.replace(/-{2,}/g, '-');
+        // Remove trailing -
+        name = name.replace(/^-|-$/g, '-');
+        return name.toLowerCase();
+    }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { ValuesService } from 'src/app/admin/services/values.service';
 
 @Component({
@@ -16,18 +17,30 @@ export class ValuesForm implements OnInit {
   });
 
   async submit(index_name) {
-    if (this.form.valid && (this.data == null || !this.data?.find))
-      this.dialogRef.close(await this.valuesService.post(this.form.value, index_name));
-    else if (this.form.valid && this.data)
-      this.dialogRef.close(
-        await this.valuesService.put(this.data.id, this.form.value, index_name),
-      );
+    if (this.form.valid && (this.data == null || !this.data?.find)) {
+      const response = await this.valuesService.post(this.form.value, index_name);
+      if (response.success === true) {
+        this.dialogRef.close();
+        this.toastr.success('Value mapping saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');
+      }
+    } else if (this.form.valid && this.data) {
+      const response = await this.valuesService.put(this.data.id, this.form.value, index_name);
+      if (response.success === true) {
+        this.dialogRef.close();
+        this.toastr.success('Value mapping saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');
+      }
+    }
   }
 
   constructor(
     public dialogRef: MatDialogRef<ValuesForm>,
     private valuesService: ValuesService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
