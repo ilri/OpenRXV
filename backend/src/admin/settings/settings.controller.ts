@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync } from 'fs';
+import { HttpService } from '@nestjs/axios';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ElasticService } from 'src/shared/services/elastic/elastic.service';
@@ -26,6 +27,7 @@ export class SettingsController {
     private jsonFilesService: JsonFilesService,
     private indexMetadataService: IndexMetadataService,
     private elasticSearvice: ElasticService,
+    private httpService: HttpService,
   ) {}
   getDirectories = (source) =>
     readdirSync(source, { withFileTypes: true })
@@ -117,12 +119,41 @@ export class SettingsController {
     @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
-    let dashboards = await this.jsonFilesService.read(
+    const dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
-    if (!dashboards) return new NotFoundException();
-    for (let dashboard of dashboards) {
-      if (dashboard.name == dashboard_name) dashboard['reports'] = data;
+    if (!dashboards) {
+      return new NotFoundException();
+    }
+
+    for (const report of data) {
+      if (report.fileType !== 'xlsx') {
+        try {
+          // Imported reports could have the file as URL
+          new URL(report.file);
+          const name = report.title.replace(/\s/g, '-') + '-' + new Date().getTime();
+          const writer = fs.createWriteStream(join(__dirname, '../../../data/files/files/') + name + '.' + report.fileType);
+
+          const response = await this.httpService.axiosRef({
+            url: report.file,
+            method: 'GET',
+            responseType: 'stream',
+          });
+          response.data.pipe(writer);
+          await new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+          });
+
+          report.file = '/files/' + name + '.' + report.fileType;
+        } catch (e) { /* empty */ }
+      }
+    }
+
+    for (const dashboard of dashboards) {
+      if (dashboard.name == dashboard_name) {
+        dashboard['reports'] = data;
+      }
     }
 
     await this.jsonFilesService.save(
@@ -231,8 +262,16 @@ export class SettingsController {
         reports:[],
         appearance: {
           primary_color: '#20a5b7',
+          secondary_color: null,
           website_name: 'OpenRXV',
           logo: null,
+          favIcon: null,
+          tracking_code: null,
+          google_maps_api_key: null,
+          description: null,
+          show_tool_bar: true,
+          show_side_nav: true,
+          show_top_nav: false,
           chartColors: [
             '#427730',
             '#009673',
@@ -295,11 +334,6 @@ export class SettingsController {
           counters: [],
           filters: [],
           dashboard: [],
-          appearance: {
-            primary_color: '#20a5b7',
-            website_name: 'OpenRXV',
-            logo: null,
-          },
           footer: '',
           welcome: {
             show: true,

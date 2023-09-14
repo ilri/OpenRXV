@@ -32,8 +32,10 @@ export class ReprotingFormComponent implements OnInit {
     fileType: new UntypedFormControl(''),
     file: new UntypedFormControl(''),
   });
+  allowedFileTypes: [];
   async ngOnInit() {
     this.dashboard_name = this.data.dashboard_name;
+    this.allowedFileTypes = this.data.allowedFileTypes;
     this.profileForm.get('title').setValue(this.data.form_data.title);
     this.profileForm.get('fileType').setValue(this.data.form_data.fileType);
     this.profileForm.get('file').setValue(this.data.form_data.file);

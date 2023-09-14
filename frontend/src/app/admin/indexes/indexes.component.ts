@@ -101,7 +101,8 @@ export class IndexesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      this.refreshData();
+      if (result)
+        this.refreshData();
     });
   }
   async ngOnInit() {

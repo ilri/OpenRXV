@@ -7,6 +7,7 @@ import { SettingsService } from '../services/settings.service';
 import { FormDashboardsComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
+import { CommonService } from '../../common.service';
 
 @Component({
   selector: 'app-indexes-dashboard',
@@ -18,6 +19,7 @@ export class IndexesDashboardComponent implements OnInit {
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private commonService: CommonService,
   ) {}
 
   dashboards: any;
@@ -43,7 +45,8 @@ export class IndexesDashboardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.ngOnInit();
+      if (result)
+        this.refreshData();
     });
   }
 
@@ -78,7 +81,8 @@ export class IndexesDashboardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      this.refreshData();
+      if (result)
+        this.refreshData();
     });
   }
 
@@ -108,5 +112,58 @@ export class IndexesDashboardComponent implements OnInit {
           return dashboard;
         });
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(dashboardsCopy));
+  }
+
+  async importJSON(event) {
+    const data: [] = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+
+    const availableIndexes = await this.settingsService.readIndexesSettings();
+    const indexesIds = availableIndexes.map(index => index.id);
+
+    for (let i = 0; i < data.length; i++) {
+      const importedItem = (data[i] as any);
+      const dashboardName = this.commonService.cleanIdNames(importedItem?.name);
+
+      if (dashboardName === ''){
+        const message = 'Dashboard #' + (i + 1) + ' cannot have empty name';
+        importStatus.failed.push(message);
+        continue;
+      }
+      if (!indexesIds.includes(importedItem?.index)) {
+        const message = `${dashboardName} linked index ${importedItem?.index} doesn't exist`;
+        importStatus.failed.push(message);
+        continue;
+      }
+      const item = {
+        name: dashboardName,
+        index: importedItem.index,
+        description: importedItem?.description,
+      };
+      const response = await this.settingsService.saveDashboardsSettings(
+        item,
+        true,
+      );
+      if (response.success === true) {
+        importStatus.success.push(dashboardName);
+      } else {
+        const message = dashboardName + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+        importStatus.failed.push(message);
+      }
+    }
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Dashboard(s)');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.refreshData();
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
+import { CommonService } from '../../common.service';
 
 @Component({
   selector: 'app-design',
@@ -26,6 +27,7 @@ export class DesignComponent implements OnInit {
     private settingsService: SettingsService,
     private toastr: ToastrService,
     private activeRoute: ActivatedRoute,
+    private commonService: CommonService,
   ) {}
   counters: Array<any> = [];
   filters: Array<any> = [];
@@ -74,6 +76,35 @@ export class DesignComponent implements OnInit {
     const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings(dashboard_name);
+    if (welcome.componentConfigs && welcome.componentConfigs.text)
+      this.welcome_text = welcome.componentConfigs.text;
+    if (!this.welcome)
+      this.welcome = {
+        show: true,
+        component: 'WelcomeComponent',
+        componentConfigs: {
+          id: 'welcome',
+          description: 'Welcome to AReS - Agricultural Research e-Seeker',
+          title: 'Greetings',
+        } as Tour,
+        tour: true,
+      };
+    this.counters = counters;
+    this.filters = filters;
+    this.dashboard = dashboard;
+    this.footer = footer;
+    this.welcome = welcome;
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({
+      welcome: this.welcome,
+      counters: this.counters,
+      filters: this.filters,
+      dashboard: this.dashboard,
+      footer: this.footer,
+    }));
+  }
+
+  populateForm(settings) {
+    const {counters, filters, dashboard, footer, welcome} = settings;
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -330,5 +361,32 @@ export class DesignComponent implements OnInit {
       },
       tour: true,
     };
+  }
+
+  async importJSON(event) {
+    const importedItem: any = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+
+    const appearance = {
+      counters: importedItem?.counters,
+      filters: importedItem?.filters,
+      dashboard: importedItem?.dashboard,
+      footer: importedItem?.footer,
+      welcome: importedItem?.welcome,
+    }
+    this.populateForm(appearance);
+    importStatus.success.push(importedItem);
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

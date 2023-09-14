@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
@@ -15,14 +15,18 @@ export class FormDashboardsComponent implements OnInit {
   indexes: any;
   async submit() {
     if (this.form.valid && this.data.event == 'New') {
-      this.dialogRef.close(
-        await this.settingsService.saveDashboardsSettings(
-          this.form.value,
-          true,
-        ),
+      const response = await this.settingsService.saveDashboardsSettings(
+        this.form.value,
+        true,
       );
+      if (response.success === true) {
+        this.dialogRef.close(true);
+        this.toastr.success('Dashboard saved successfully');
+      } else {
+        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
+      }
     } else if (this.form.valid && this.data.event == 'Edit') {
-      let dashboards = await this.settingsService.readDashboardsSettings();
+      const dashboards = await this.settingsService.readDashboardsSettings();
       const newDashboardsArray = dashboards.map((obj) => {
         if (obj.id === this.data.body[0].id) {
           return {
@@ -40,7 +44,7 @@ export class FormDashboardsComponent implements OnInit {
         false,
       );
       if (response.success === true) {
-        this.dialogRef.close();
+        this.dialogRef.close(true);
         this.toastr.success('Dashboard saved successfully');
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');

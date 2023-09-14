@@ -21,7 +21,7 @@ export class FormIndexComponent implements OnInit {
     if (this.form.valid && this.data.event == 'New') {
       const response = await this.settingsService.saveIndexesSettings(this.form.value, true, null);
       if (response.success === true) {
-        this.dialogRef.close();
+        this.dialogRef.close(true);
         this.toastr.success('Index saved successfully');
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');
@@ -46,7 +46,7 @@ export class FormIndexComponent implements OnInit {
         null,
       );
       if (response.success === true) {
-        this.dialogRef.close();
+        this.dialogRef.close(true);
         this.toastr.success('Index saved successfully');
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');

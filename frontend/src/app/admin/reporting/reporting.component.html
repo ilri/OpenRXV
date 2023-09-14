@@ -8,6 +8,11 @@
           Export
           <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
         </a>
+        <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
+        <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+          Import
+          <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+        </button>
         <button class="mr-2" mat-raised-button (click)="newReport()" color="primary" style="float: right">
           Add new report
           <mat-icon>add</mat-icon>

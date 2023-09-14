@@ -4,9 +4,11 @@ import {
   UntypedFormControl,
   UntypedFormArray,
 } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { SettingsService } from '../services/settings.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
+import { CommonService } from '../../common.service';
 
 @Component({
   selector: 'app-appearance',
@@ -39,6 +41,8 @@ export class AppearanceComponent implements OnInit {
   constructor(
     private settingsService: SettingsService,
     private activeRoute: ActivatedRoute,
+    private toastr: ToastrService,
+    private commonService: CommonService,
   ) {
   }
   src(value) {
@@ -50,16 +54,22 @@ export class AppearanceComponent implements OnInit {
       dashboard_name,
     );
     this.appearance = appearance;
+    await this.populateForm(appearance);
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
+  }
+
+  async populateForm(appearance) {
     this.form.patchValue(appearance);
     this.primary_color = appearance.primary_color;
     this.secondary_color = appearance.secondary_color;
     this.logo = appearance.logo;
     this.favIcon = appearance.favIcon;
+    this.colors.clear();
     await appearance.chartColors.map((a) => {
       this.colors.push(new UntypedFormControl(a));
     });
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
   }
+
   colorPickerClose(event, element) {
     this.form.get(element).setValue(event);
   }
@@ -103,5 +113,39 @@ export class AppearanceComponent implements OnInit {
   }
   deleteColor(index) {
     this.colors.removeAt(index);
+  }
+
+  async importJSON(event) {
+    const importedItem: any = await this.commonService.importJSON(event);
+    const importStatus = {
+      failed: [],
+      success: [],
+    };
+
+    const appearance = {
+      primary_color: importedItem?.primary_color,
+      secondary_color: importedItem?.secondary_color,
+      website_name: importedItem?.website_name,
+      logo: importedItem?.logo,
+      favIcon: importedItem?.favIcon,
+      tracking_code: importedItem?.tracking_code,
+      show_tool_bar: importedItem?.show_tool_bar,
+      show_side_nav: importedItem?.show_side_nav,
+      show_top_nav: importedItem?.show_top_nav,
+      google_maps_api_key: importedItem?.google_maps_api_key,
+      description: importedItem?.description,
+      chartColors: importedItem?.chartColors,
+    }
+    await this.populateForm(appearance);
+    importStatus.success.push(importedItem);
+
+    const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
+    if (message.type === 'success') {
+      this.toastr.success(message.message, null, {enableHtml: true});
+    } else if (message.type === 'warning') {
+      this.toastr.warning(message.message, null, {enableHtml: true});
+    } else {
+      this.toastr.error(message.message, null, {enableHtml: true});
+    }
   }
 }

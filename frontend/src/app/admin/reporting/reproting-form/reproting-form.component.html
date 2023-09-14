@@ -11,9 +11,7 @@
         <mat-form-field class="w-100">
             <mat-label>File Type</mat-label>
             <mat-select name='fileType' formControlName="fileType">
-                <mat-option value="xlsx">Excel</mat-option>
-                <mat-option value="pdf">PDF</mat-option>
-                <mat-option value="docx">Word</mat-option>
+                <mat-option *ngFor='let type of allowedFileTypes;' value="{{type.extension}}">{{type.label}}</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -60,7 +58,7 @@
 <div mat-dialog-actions align="end">
     <button type="button" mat-raised-button color="warn" (click)="closeForm()">Close<mat-icon>close</mat-icon>
     </button>
-    <button type="button" color="primary" (keyup.enter)="saveForm()" (click)="saveForm()" mat-raised-button 
+    <button type="button" color="primary" (keyup.enter)="saveForm()" (click)="saveForm()" mat-raised-button
     [disabled]="!profileForm.value.title || !profileForm.value.fileType">Save<mat-icon>done</mat-icon></button>
-       
+
 </div>
