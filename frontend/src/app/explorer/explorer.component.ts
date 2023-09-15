@@ -89,12 +89,14 @@ export class ExplorerComponent implements OnInit {
     });
   }
   appearance;
+  index_last_update = null;
   async ngOnInit() {
     this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const { counters, dashboard, appearance, welcome } = await JSON.parse(
+    const { counters, dashboard, appearance, welcome, index_last_update } = await JSON.parse(
       localStorage.getItem('configs'),
     );
     this.appearance = appearance;
+    this.index_last_update = index_last_update;
     if (appearance.logo) this.logo = environment.api + '/' + appearance.logo;
     this.website_name = appearance.website_name;
     localStorage.setItem('primaryColor', appearance.primary_color);

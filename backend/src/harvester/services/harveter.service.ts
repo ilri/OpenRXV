@@ -371,87 +371,93 @@ export class HarvesterService implements OnModuleInit {
 
   async Reindex(index_name: string) {
     this.logger.debug('reindex function is called');
-    const indexes = await this.jsonFilesService.read(
+    const indexes: any[] = await this.jsonFilesService.read(
         '../../../data/indexes.json',
     );
 
-    for (const index of indexes.filter((d) => d?.to_be_indexed && d?.name === index_name)) {
-      await this.elasticsearchService.indices.updateAliases({
-        actions: [
-          {
-            remove: {
-              index: `${index.name}_final`,
-              alias: index.name,
-            },
-          },
-          {
-            add: {
-              index: `${index.name}_temp`,
-              alias: index.name,
-            },
-          },
-        ],
-      });
-
-      this.logger.debug('updateAliases final to temp');
-
-      await this.elasticsearchService.indices.delete({
-        index: `${index.name}_final`,
-        ignore_unavailable: true,
-      });
-      this.logger.debug('Delete final');
-
-      await this.elasticsearchService.indices.create({
-        index: `${index.name}_final`,
-      });
-      this.logger.debug('Create final');
-
-      await this.elasticsearchService.reindex({
-                wait_for_completion: true,
-                conflicts: 'proceed',
-                source: {
-                  index: `${index.name}_temp`,
-                },
-                dest: {index: `${index.name}_final`},
+    for (const index of indexes) {
+      if (index?.to_be_indexed && index?.name === index_name) {
+        await this.elasticsearchService.indices.updateAliases({
+          actions: [
+            {
+              remove: {
+                index: `${index.name}_final`,
+                alias: index.name,
               },
-              {requestTimeout: 2000000},
-          )
-          .catch((e) => this.logger.log(e));
-      this.logger.debug('Reindex to final');
-
-      await this.elasticsearchService.indices.updateAliases({
-        actions: [
-          {
-            remove: {
-              index: `${index.name}_temp`,
-              alias: index.name,
             },
-          },
-          {
-            add: {
-              index: `${index.name}_final`,
-              alias: index.name,
+            {
+              add: {
+                index: `${index.name}_temp`,
+                alias: index.name,
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
 
-      this.logger.debug('updateAliases temp to final');
+        this.logger.debug('updateAliases final to temp');
 
-      await this.elasticsearchService.indices.delete({
-        index: `${index.name}_temp`,
-        ignore_unavailable: true,
-      });
-      this.logger.debug('Delete temp');
+        await this.elasticsearchService.indices.delete({
+          index: `${index.name}_final`,
+          ignore_unavailable: true,
+        });
+        this.logger.debug('Delete final');
 
-      await this.elasticsearchService.indices.create({
-        index: `${index.name}_temp`,
-      });
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_final`,
+        });
+        this.logger.debug('Create final');
 
-      this.logger.debug('Create temp');
+        await this.elasticsearchService.reindex({
+              wait_for_completion: true,
+              conflicts: 'proceed',
+              source: {
+                index: `${index.name}_temp`,
+              },
+              dest: {index: `${index.name}_final`},
+            },
+            {requestTimeout: 2000000},
+        )
+            .catch((e) => this.logger.log(e));
+        this.logger.debug('Reindex to final');
 
-      this.logger.debug('Indexing finished');
+        await this.elasticsearchService.indices.updateAliases({
+          actions: [
+            {
+              remove: {
+                index: `${index.name}_temp`,
+                alias: index.name,
+              },
+            },
+            {
+              add: {
+                index: `${index.name}_final`,
+                alias: index.name,
+              },
+            },
+          ],
+        });
+
+        this.logger.debug('updateAliases temp to final');
+
+        await this.elasticsearchService.indices.delete({
+          index: `${index.name}_temp`,
+          ignore_unavailable: true,
+        });
+        this.logger.debug('Delete temp');
+
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_temp`,
+        });
+
+        this.logger.debug('Create temp');
+
+        this.logger.debug('Indexing finished');
+
+        index.last_update = new Date().toLocaleString();
+      }
     }
+
+    await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
   }
 
   async IsIndexable(index_name) {

@@ -32,6 +32,7 @@ export class IndexesComponent implements OnInit {
     'name',
     'description',
     'created_at',
+    'last_update',
     'actions',
   ];
   dataSource = new MatTableDataSource<any>([]);

@@ -86,7 +86,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('appearance')
   async SaveAppearance(
-    @Body('data') data: any,
+    @Body('data ') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
     let dashboards = await this.jsonFilesService.read(
@@ -425,6 +425,7 @@ export class SettingsController {
       configs[index_name].repositories.map((d) => [(list_icons[d.name] = d.icon)]);
     }
     settings['appearance']['icons'] = list_icons;
+    settings['index_last_update'] = index.last_update;
     return settings;
   }
 
