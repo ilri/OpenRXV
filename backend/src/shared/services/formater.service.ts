@@ -1,5 +1,6 @@
 import * as _ from 'underscore';
-import * as ISO from 'iso-3166-1';
+import CountryISO from '@mohammad231/iso_3166-1';
+import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
@@ -205,8 +206,8 @@ export class FormatService {
   mapIsoToLang = (value: string) =>
     langISO.validate(value) ? langISO.getName(value) : value;
   mapIsoToCountry = (value: string) =>
-    ISO.whereAlpha2(value)
-      ? ISO.whereAlpha2(value).country
+      CountryISO.get({alpha_2: value})
+      ? (CountryISO.get({alpha_2: value}) as Country).name
       : this.capitalizeFirstLetter(value);
 
   mapIt(value: any, addOn = null, metadataField: string = null): string {

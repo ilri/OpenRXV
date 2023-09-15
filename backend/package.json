@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "8.9.0",
+    "@mohammad231/iso_3166-1": "^1.0.0",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/bull": "^10.0.1",
     "@nestjs/common": "^10.2.5",
