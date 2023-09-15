@@ -6,6 +6,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
+import { CommonService } from '../../common.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ export class DashboardComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private commonService: CommonService,
     ) {}
 
   fetchData = {
@@ -26,6 +28,7 @@ export class DashboardComponent implements OnInit {
     completed_count: 0,
     failed_count: 0,
     stuck_count: 0,
+    startedAt: null,
     table: {
       data: new MatTableDataSource<Array<any>>([]),
       pageIndex: 0,
@@ -40,6 +43,7 @@ export class DashboardComponent implements OnInit {
     completed_count: 0,
     failed_count: 0,
     stuck_count: 0,
+    startedAt: null,
     table: {
       data: new MatTableDataSource<Array<any>>([]),
       pageIndex: 0,
@@ -71,6 +75,18 @@ export class DashboardComponent implements OnInit {
     plugins: {
       counter: 0,
       interval: null
+    }
+  };
+  progress = {
+    fetchData: {
+      percentage: 0,
+      estimation: '',
+      totalJobs: 0,
+    },
+    pluginsData: {
+      percentage: 0,
+      estimation: '',
+      totalJobs: 0,
     }
   };
 
@@ -174,13 +190,14 @@ export class DashboardComponent implements OnInit {
     await this.InitPluginsData(this.pluginsActiveStatus);
   }
 
-  async InitFetchData(status: string = null, paginationRefresh: boolean = false) {
+  async InitFetchData(status: string = null, paginationRefresh = false) {
     const {
       active_count,
       waiting_count,
       completed_count,
       failed_count,
       stuck_count,
+      startedAt,
       table,
     } = await this.setttingService.getHarvesterInfo(this.index_name, 'fetch', status, this.pagination.fetch);
 
@@ -189,6 +206,7 @@ export class DashboardComponent implements OnInit {
     this.fetchData.completed_count = completed_count;
     this.fetchData.failed_count = failed_count;
     this.fetchData.stuck_count = stuck_count;
+    this.fetchData.startedAt = startedAt;
     this.fetchData.table = {
       data: new MatTableDataSource<Array<any>>(table.data),
       pageIndex: table.pageIndex,
@@ -196,6 +214,7 @@ export class DashboardComponent implements OnInit {
       totalPages: table.totalPages,
       totalRecords: table.totalRecords,
     };
+    this.CalculateProgress('fetchData');
     if (this.fetchData.active_count == 0 && this.fetchData.active_count == 0 && this.refreshCounter.fetch.counter >= 3) {
       if (this.refreshCounter.fetch.interval != null) {
         clearInterval(this.refreshCounter.fetch.interval);
@@ -215,13 +234,14 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async InitPluginsData(status: string = null, paginationRefresh: boolean = false) {
+  async InitPluginsData(status: string = null, paginationRefresh = false) {
     const {
       active_count,
       waiting_count,
       completed_count,
       failed_count,
       stuck_count,
+      startedAt,
       table,
     } = await this.setttingService.getHarvesterInfo(this.index_name, 'plugins', status, this.pagination.plugins);
 
@@ -230,6 +250,7 @@ export class DashboardComponent implements OnInit {
     this.pluginsData.completed_count = completed_count;
     this.pluginsData.failed_count = failed_count;
     this.pluginsData.stuck_count = stuck_count;
+    this.pluginsData.startedAt = startedAt;
     this.pluginsData.table = {
       data: new MatTableDataSource<Array<any>>(table.data),
       pageIndex: table.pageIndex,
@@ -237,6 +258,7 @@ export class DashboardComponent implements OnInit {
       totalPages: table.totalPages,
       totalRecords: table.totalRecords,
     };
+    this.CalculateProgress('pluginsData');
     if (this.pluginsData.active_count == 0 && this.pluginsData.active_count == 0 && this.refreshCounter.plugins.counter >= 3) {
       if (this.refreshCounter.plugins.interval != null) {
         clearInterval(this.refreshCounter.plugins.interval);
@@ -283,6 +305,26 @@ export class DashboardComponent implements OnInit {
       this.pagination[section].pageSize = 5;
       this.pagination[section].pageIndex = 0;
       await this.InitPluginsData(status, true);
+    }
+  }
+
+  CalculateProgress(section) {
+    this.progress[section].totalJobs = this[section].active_count + this[section].waiting_count + this[section].completed_count;
+    if (this.progress[section].totalJobs > 0) {
+      this.progress[section].percentage = this[section].completed_count / (this.progress[section].totalJobs) * 100;
+    } else {
+      this.progress[section].percentage = 0;
+    }
+
+    if (this[section].startedAt && this[section].completed_count > 0) {
+      const startTime = new Date(this[section].startedAt).getTime();
+      const now = new Date().getTime();
+      const completed = this[section].completed_count;
+      const seconds = (now - startTime) / 1000 / completed * (this[section].waiting_count + this[section].active_count);
+
+      this.progress[section].estimation = this.commonService.HumanReadableTime(seconds);
+    } else {
+      this.progress[section].estimation = '';
     }
   }
 }

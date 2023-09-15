@@ -1,9 +1,37 @@
 .counter {
-  width: 125px;
   text-align: center;
   cursor: pointer;
+  min-width: 100px;
+  width: calc(25% - 75px);
 }
 
 app-info-table {
   min-height: 600px;
 }
+
+.jobs-progress-bar {
+  height: 20px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+
+.jobs-progress-bar-percentage {
+  color: white;
+  position: absolute;
+  top: 2px;
+  left: calc(50% - 32px);
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: normal;
+}
+
+.estimated-time {
+  text-align: right;
+}
+
+.estimated-time-progress-bar {
+  width: 185px;
+  float: right;
+}
+

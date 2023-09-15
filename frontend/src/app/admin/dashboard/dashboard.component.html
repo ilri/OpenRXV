@@ -71,6 +71,17 @@
       </mat-card>
     </div>
   </div>
+  <h3 *ngIf="progress.fetchData.estimation !== '00:00:00'" class="col-12 estimated-time" color="primary">
+    <div>
+      <small>Estimated time</small> {{progress.fetchData.estimation}}
+    </div>
+    <mat-progress-bar class="estimated-time-progress-bar" mode="indeterminate"></mat-progress-bar>
+  </h3>
+  <div *ngIf="progress.fetchData.totalJobs > 0" class="col-12">
+    <mat-progress-bar class="mb-3 jobs-progress-bar" mode="determinate"
+                      [value]="progress.fetchData.percentage"></mat-progress-bar>
+    <h4 class="jobs-progress-bar-percentage">{{progress.fetchData.percentage.toFixed(2)}}%</h4>
+  </div>
   <div class="col-12">
     <mat-card>
       <mat-card-title>
@@ -134,6 +145,17 @@
         </mat-card-content>
       </mat-card>
     </div>
+  </div>
+  <h3 *ngIf="progress.pluginsData.estimation !== '00:00:00'" class="col-12 estimated-time" color="primary">
+    <div>
+      <small>Estimated time</small> {{progress.pluginsData.estimation}}
+    </div>
+    <mat-progress-bar class="estimated-time-progress-bar" mode="indeterminate"></mat-progress-bar>
+  </h3>
+  <div *ngIf="progress.pluginsData.totalJobs > 0" class="col-12">
+    <mat-progress-bar class="mb-3 jobs-progress-bar" mode="determinate"
+                      [value]="progress.pluginsData.percentage"></mat-progress-bar>
+    <h4 class="jobs-progress-bar-percentage">{{progress.pluginsData.percentage.toFixed(2)}}%</h4>
   </div>
   <div class="col-12">
     <mat-card>

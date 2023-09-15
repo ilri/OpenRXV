@@ -136,8 +136,8 @@ export class HarvesterService implements OnModuleInit {
     const indexQueue = this.registeredQueues.hasOwnProperty(`${index_name}_${section}`) ? this.registeredQueues[`${index_name}_${section}`] : null;
 
     let records = [];
-    let defaultPageSize = 5;
-    let defaultPage = 0;
+    const defaultPageSize = 5;
+    const defaultPage = 0;
 
     const obj = {
       active_count: 0,
@@ -145,6 +145,7 @@ export class HarvesterService implements OnModuleInit {
       completed_count: 0,
       failed_count: 0,
       stuck_count: 0,
+      startedAt: null,
       table: {
         data: [],
         pageIndex: defaultPage,
@@ -157,6 +158,10 @@ export class HarvesterService implements OnModuleInit {
     if (indexQueue == null) {
       return obj;
     }
+
+    const firstCompletedJob = await indexQueue.getCompleted(0, 1);
+    obj.startedAt = firstCompletedJob.map(job => job.timestamp);
+    obj.startedAt = obj.startedAt.length > 0 ? obj.startedAt[0] : null;
 
     obj.active_count = await indexQueue.getActiveCount();
     const activeJobs = await indexQueue.getActive();
