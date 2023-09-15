@@ -94,7 +94,17 @@ export class SettingsController {
     );
     if (!dashboards) return new NotFoundException();
     for (let dashboard of dashboards) {
-      if (dashboard.name == dashboard_name) dashboard['appearance'] = data;
+      if (dashboard.name == dashboard_name) {
+        if (data?.logo !== '' && data.logo != null) {
+          data.logo = await this.jsonFilesService.DownloadImportedFile(data.logo, dashboard_name, 'images');
+        }
+        if (data?.favIcon !== '' && data.favIcon != null) {
+          data.favIcon = await this.jsonFilesService.DownloadImportedFile(data.favIcon, dashboard_name, 'images');
+        }
+
+        dashboard['appearance'] = data;
+        break;
+      }
     }
 
     await this.jsonFilesService.save(
@@ -127,26 +137,8 @@ export class SettingsController {
     }
 
     for (const report of data) {
-      if (report.fileType !== 'xlsx') {
-        try {
-          // Imported reports could have the file as URL
-          new URL(report.file);
-          const name = report.title.replace(/\s/g, '-') + '-' + new Date().getTime();
-          const writer = fs.createWriteStream(join(__dirname, '../../../data/files/files/') + name + '.' + report.fileType);
-
-          const response = await this.httpService.axiosRef({
-            url: report.file,
-            method: 'GET',
-            responseType: 'stream',
-          });
-          response.data.pipe(writer);
-          await new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-          });
-
-          report.file = '/files/' + name + '.' + report.fileType;
-        } catch (e) { /* empty */ }
+      if (report.fileType !== 'xlsx' && report?.file !== '') {
+        report.file = '/' + await this.jsonFilesService.DownloadImportedFile(report.file, report.title, 'files');
       }
     }
 
@@ -646,6 +638,14 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post(':index_name')
   async Save(@Body() body: any, @Param('index_name') index_name: string = 'index') {
+    if (body?.repositories && Array.isArray(body.repositories)) {
+      for (const repository of body.repositories) {
+        if (repository?.icon !== '' && repository.icon != null) {
+          repository.icon = await this.jsonFilesService.DownloadImportedFile(repository.icon, repository.name, 'images');
+        }
+      }
+    }
+
     const data = await this.jsonFilesService.read('../../../data/data.json');
     data[index_name] = body;
     await this.jsonFilesService.save(data, '../../../data/data.json');

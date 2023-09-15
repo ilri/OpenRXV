@@ -85,10 +85,14 @@ export class SetupComponent implements OnInit {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.getOutsourcePlugins();
     const data = await this.settingService.read(this.index_name);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
+    this.refreshExportLink(data);
+
+    if (this.repositories.length > 0) {
+      this.repositories.clear();
+    }
 
     if (data.repositories.length === 0)
-      this.AddNewRepo(false);
+      this.AddNewRepo();
 
     data.repositories.forEach((element, repoindex) => {
       this.populateRepository(element, repoindex);
@@ -99,7 +103,7 @@ export class SetupComponent implements OnInit {
   populateRepository(repository, repositoryIndex){
     if (repository.icon)
       this.logo[repositoryIndex] = repository.icon;
-    this.AddNewRepo(repositoryIndex > 0);
+    this.AddNewRepo();
     if (repository.metadata)
       repository.metadata.forEach((item, index) => {
         if (index > 0)
@@ -117,12 +121,27 @@ export class SetupComponent implements OnInit {
       this.PluginChange(repository.type, repositoryIndex);
   }
 
+  refreshExportLink(data) {
+    const repositories = JSON.parse(JSON.stringify(data)).repositories.map((repository) => {
+      if (repository?.icon !== '' && repository.icon != null) {
+        repository.icon = location.origin + environment.api + '/' + repository.icon;
+      }
+      return repository;
+    });
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({repositories: repositories}));
+  }
+
   logo = [];
   IconChange(event, index) {
     this.upload(event.target.files[0], index);
   }
+
   src(value) {
-    return environment.api + '/' + value;
+    try {
+      return new URL(value);
+    } catch (e) {
+      return environment.api + '/' + value;
+    }
   }
   async upload(file: File, index = null) {
     this.logo[index] = await this.settingService.upload(file);
@@ -135,7 +154,7 @@ export class SetupComponent implements OnInit {
       this.toastr.success('Settings have been saved successfully');
 
       const data = await this.settingService.read(this.index_name);
-      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
+      this.refreshExportLink(data);
     }
   }
 
@@ -188,10 +207,8 @@ export class SetupComponent implements OnInit {
       this.plugins = plugins;
     });
   }
-  AddNewRepo(createHtml = true) {
-    if (createHtml) {
-      this.repositories.push(this.getNewForm());
-    }
+  AddNewRepo() {
+    this.repositories.push(this.getNewForm());
 
     const repoIndex = this.repositories.length - 1;
     this.isShown[repoIndex] = 0;

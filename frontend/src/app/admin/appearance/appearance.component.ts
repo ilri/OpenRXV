@@ -46,7 +46,11 @@ export class AppearanceComponent implements OnInit {
   ) {
   }
   src(value) {
-    return environment.api + '/' + value;
+    try {
+      return new URL(value);
+    } catch (e) {
+      return environment.api + '/' + value;
+    }
   }
   async ngOnInit() {
     const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
@@ -55,7 +59,7 @@ export class AppearanceComponent implements OnInit {
     );
     this.appearance = appearance;
     await this.populateForm(appearance);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
+    this.refreshExportLink(appearance);
   }
 
   async populateForm(appearance) {
@@ -68,6 +72,17 @@ export class AppearanceComponent implements OnInit {
     await appearance.chartColors.map((a) => {
       this.colors.push(new UntypedFormControl(a));
     });
+  }
+
+  refreshExportLink(data) {
+    const appearance = JSON.parse(JSON.stringify(data));
+    if (data?.logo !== '' && data.logo != null) {
+      appearance.logo = location.origin + environment.api + '/' + appearance.logo;
+    }
+    if (data?.favIcon !== '' && data.favIcon != null) {
+      appearance.favIcon = location.origin + environment.api + '/' + appearance.favIcon;
+    }
+    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
   }
 
   colorPickerClose(event, element) {
@@ -93,7 +108,7 @@ export class AppearanceComponent implements OnInit {
       const appearance = await this.settingsService.readAppearanceSettings(
           dashboard_name,
       );
-      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
+      this.refreshExportLink(appearance);
     }
   }
 

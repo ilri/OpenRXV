@@ -3,12 +3,16 @@ import * as jsonfile from 'jsonfile';
 import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync, copyFileSync, existsSync, mkdirSync } from 'fs';
+import { HttpService } from '@nestjs/axios';
+const mimeTypes = require('mime-types');
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 @Injectable()
 export class JsonFilesService {
+  constructor(private httpService: HttpService) {
+  }
   async startup() {
     const files = await readdirSync(join(__dirname, '../../../data/templates'));
     for (const file of files)
@@ -61,5 +65,30 @@ export class JsonFilesService {
 
   async read(name) {
     return jsonfile.readFileSync(join(__dirname, name));
+  }
+
+  async DownloadImportedFile(url: string, fileName: string, directory: string) {
+    try {
+      // Imported reports could have the file as URL
+      new URL(url);
+      const response = await this.httpService.axiosRef({
+        url: url,
+        method: 'GET',
+        responseType: 'stream',
+      });
+      const fileType = mimeTypes.extension(response.headers['content-type']);
+      const name = fileName.replace(/\s/g, '-') + '-' + new Date().getTime();
+      const writer = fs.createWriteStream(join(__dirname, '../../../data/files/') + directory + '/' + name + '.' + fileType);
+
+      response.data.pipe(writer);
+      await new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+      });
+
+      return directory + '/' + name + '.' + fileType;
+    } catch (e) { /* empty */
+      return url;
+    }
   }
 }
