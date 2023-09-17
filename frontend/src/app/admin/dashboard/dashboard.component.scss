@@ -35,3 +35,10 @@ app-info-table {
   float: right;
 }
 
+:host ::ng-deep .mdc-linear-progress__primary-bar {
+  background-color: var(--theme-primary-400);
+  .mdc-linear-progress__bar-inner {
+    border-color: var(--theme-primary-400);
+  }
+}
+
