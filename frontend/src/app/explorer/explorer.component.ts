@@ -239,13 +239,7 @@ export class ExplorerComponent implements OnInit {
             content: description,
             title,
             enableBackdrop: true,
-            backdropConfig: {
-              zIndex: '999',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)'
-            },
-            placement: {
-              yPosition: 'above'
-            },
+            rout: id,
             closeOnOutsideClick: true,
             disablePageScrolling: true,
           } as IStepOption)

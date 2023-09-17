@@ -1,4 +1,4 @@
-@import "src/app/explorer/configs/customTheme.scss";
+@import "../../explorer/configs/customTheme.scss";
 .container-admin {
   width: 100%;
 }
@@ -15,7 +15,7 @@ mat-drawer {
   box-shadow: 6px 0 6px rgba(0, 0, 0, 0.1);
 }
 
-.mat-list-item:hover,.mat-list-item.active {
+.mat-mdc-list-item:hover,.mat-list-item.active {
   background-color: #dbdbdb;
   color: map-get($customTheme, 500) !important;
   text-shadow: 0 0 5px #fff;

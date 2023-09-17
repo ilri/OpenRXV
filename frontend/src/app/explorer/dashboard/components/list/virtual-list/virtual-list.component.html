@@ -10,7 +10,8 @@
     class="viewport w-100"
   >
     <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)">
-      <mat-list-item class="p-1" >
+      <mat-list-item class="pt-1 pb-1 pr-1 pl-0" >
+        <span matListItemLine class="item-list-row">
         <ng-container *ngIf="!isSmall">
           <span class="lists_counts">
             {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}%
@@ -19,7 +20,9 @@
         </ng-container>
 
         <div class="w-100">
-          {{ item.key }}
+          <span class="item-list-title">
+            {{ item.key }}
+          </span>
           <small *ngIf="isSmall">
             ( {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}% )
           </small>
@@ -35,6 +38,7 @@
             ></div>
           </div>
         </div>
+        </span>
       </mat-list-item>
     </div>
   </cdk-virtual-scroll-viewport>

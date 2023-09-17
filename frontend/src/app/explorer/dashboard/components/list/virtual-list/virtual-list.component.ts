@@ -60,4 +60,6 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
       this.selectService.resetNotification();
     }
   }
+
+  protected readonly parseFloat = parseFloat;
 }

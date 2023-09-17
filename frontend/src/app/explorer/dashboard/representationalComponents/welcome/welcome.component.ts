@@ -13,19 +13,7 @@ export class WelcomeComponent implements OnInit {
   constructor(private readonly tourService: TourService) {}
 
   ngOnInit(): void {
-    this.tourService.start$.subscribe(() => {
-        this.tourStarted = true;
-        const container = document.getElementsByTagName('mat-sidenav-content');
-        if (container.length) {
-          container[0].classList.add('ngx-ui-tour-md-menu-no-scroll');
-        }
-      });
-    this.tourService.end$.subscribe(() => {
-      const container = document.getElementsByTagName('mat-sidenav-content');
-      if (container.length) {
-        container[0].classList.remove('ngx-ui-tour-md-menu-no-scroll');
-      }
-    });
+    this.tourService.start$.subscribe(() => (this.tourStarted = true),);
   }
 
   toggleElement(): void {

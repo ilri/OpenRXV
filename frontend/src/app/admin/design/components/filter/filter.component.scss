@@ -1,13 +1,17 @@
+
 mat-card-title {
-  font-size: 12px;
+  font-size: small;
   text-align: left;
   //   height: 21px;
   vertical-align: middle;
+
   span {
-    height: 24px;
-    vertical-align: top;
-    padding-top: 3px;
-    display: inline-block;
+    vertical-align: super;
+  }
+
+  mat-icon.label-icon {
+    padding-top: 8px;
+    height: 30px;
   }
 }
 

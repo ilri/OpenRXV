@@ -164,7 +164,6 @@ export class ReportingComponent implements OnInit {
       success: [],
     };
 
-    console.log(data);
     for (let i = 0; i < data.length; i++) {
       const importedItem = (data[i] as any);
       const item = {

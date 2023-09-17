@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12 pb-5">
-    <mat-card>
+    <mat-card appearance="raised">
       <mat-card-title>
         Reports - {{dashboard_name}}
         <a style="float: right" [href]="exportLink" [download]="'OpenRXV-dashboard-reports-' + dashboard_name + '.json'"
@@ -62,7 +62,7 @@
             <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
           </button>
           <a [href]="envireoment + '/settings'+ element.file" download *ngIf="element.fileType != 'xlsx'">
-          <button mat-button>
+            <button color="primary" mat-icon-button>
               <mat-icon>save_alt</mat-icon>
             </button>
           </a>
@@ -73,6 +73,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons
+                   formFieldAppearance="fill"></mat-paginator>
   </div>
 </div>

@@ -111,7 +111,11 @@ const operations = {
         files.templates.plugins[operations.activeIndex.name] = files.old.plugins.map((plugin) => {
             if (plugin.name === 'dspace_health_check') {
                 plugin.value = plugin.value.map((value) => {
-                    return value.sitemapIdentifier = 'handle';
+                    return value.sitemapIdentifier = {
+                        "repo": value.repo,
+                        "itemEndPoint": value.itemEndPoint,
+                        "sitemapIdentifier": "handle"
+                    };
                 });
             }
             return plugin;

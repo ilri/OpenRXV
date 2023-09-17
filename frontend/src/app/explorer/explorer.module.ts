@@ -170,7 +170,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     MatRippleModule,
     MatProgressBarModule,
     NouisliderModule,
-    TourMatMenuModule.forRoot(),
+    TourMatMenuModule,
     ExplorerRoutingModule, // for TourMatMenuModule,
     MdePopoverModule, // https://github.com/angular/material2/issues/2691
     MatSnackBarModule,

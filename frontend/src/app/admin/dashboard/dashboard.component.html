@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12 pb-5">
-    <mat-card>
+    <mat-card appearance="raised">
       <mat-card-title>
         Harvest Dashboard
 
@@ -33,7 +33,7 @@
 <div class="row">
   <div class="col-12 pb-3">
     <div class="d-flex w-100 justify-content-between">
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Active', 'active', 'fetch')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -42,7 +42,7 @@
           <mat-card-subtitle>Active ({{ fetchData.stuck_count }})</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Waiting', 'waiting', 'fetch')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -51,7 +51,7 @@
           <mat-card-subtitle>Waiting</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Completed', 'completed', 'fetch')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -60,7 +60,7 @@
           <mat-card-subtitle>Completed</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Failed', 'failed', 'fetch')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -83,7 +83,7 @@
     <h4 class="jobs-progress-bar-percentage">{{progress.fetchData.percentage.toFixed(2)}}%</h4>
   </div>
   <div class="col-12">
-    <mat-card>
+    <mat-card appearance="raised">
       <mat-card-title>
         {{ fetchActiveTable }}
       </mat-card-title>
@@ -108,7 +108,7 @@
   </div>
   <div class="col-12 pb-3">
     <div class="d-flex w-100 justify-content-between">
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Active', 'active', 'plugins')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -117,7 +117,7 @@
           <mat-card-subtitle>Active ({{ pluginsData.stuck_count }})</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Waiting', 'waiting', 'plugins')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -126,7 +126,7 @@
           <mat-card-subtitle>Waiting</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Completed', 'completed', 'plugins')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -135,7 +135,7 @@
           <mat-card-subtitle>Completed</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
-      <mat-card class="counter border-bottom-light"
+      <mat-card appearance="raised" class="counter border-bottom-light"
                 (click)="ChangeTable('Failed', 'failed', 'plugins')">
         <mat-card-content class="primary-hover">
           <mat-card-title>
@@ -158,7 +158,7 @@
     <h4 class="jobs-progress-bar-percentage">{{progress.pluginsData.percentage.toFixed(2)}}%</h4>
   </div>
   <div class="col-12">
-    <mat-card>
+    <mat-card appearance="raised">
       <mat-card-title>
         {{ pluginsActiveTable }}
       </mat-card-title>

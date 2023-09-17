@@ -86,7 +86,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('appearance')
   async SaveAppearance(
-    @Body('data ') data: any,
+    @Body('data') data: any,
     @Body('dashboard_name') dashboard_name: any,
   ) {
     let dashboards = await this.jsonFilesService.read(

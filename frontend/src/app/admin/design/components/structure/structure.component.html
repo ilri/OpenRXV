@@ -16,12 +16,12 @@
             <div class="row">
                 <div *ngFor="let item of grid ; let i = index;" [ngClass]="item.class">
                     <div class="p-3">
-                        <mat-card *ngIf="!item.component">
+                        <mat-card appearance="raised" *ngIf="!item.component">
                             <button (click)="addComponent(i)" class="w-100" color="primary" mat-button>
                                 <mat-icon>add</mat-icon>
                             </button>
                         </mat-card>
-                        <mat-card *ngIf="item.component">
+                        <mat-card appearance="raised" *ngIf="item.component">
 
                             <mat-card-title>
 

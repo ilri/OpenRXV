@@ -2,15 +2,15 @@
   min-height: 296px;
 }
 
-th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+th.mat-mdc-header-cell, td.mat-mdc-cell, td.mat-mdc-footer-cell {
   padding-left: 5px;
 }
 
-td.mat-cell .error-tooltip {
+td.mat-mdc-cell .error-tooltip {
   font-size: 12px;
   height: inherit;
 }
 
-td.mat-cell .error-tooltip.stuck-job-tooltip {
+td.mat-mdc-cell .error-tooltip.stuck-job-tooltip {
   color: red;
 }

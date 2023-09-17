@@ -3,7 +3,7 @@
 <div mat-dialog-content>
     <div class="row">
         <div cdkDropList (cdkDropListDropped)="drop($event)" class="col-12 drag-list">
-            <mat-card cdkDrag class="drag-item" *ngFor="let item of sortedItems">
+            <mat-card appearance="raised" cdkDrag class="drag-item" *ngFor="let item of sortedItems">
                 <mat-card-title>{{item.componentConfigs.title}}</mat-card-title>
             </mat-card>
         </div>
