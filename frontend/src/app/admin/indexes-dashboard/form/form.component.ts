@@ -62,10 +62,13 @@ export class FormDashboardsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private toastr: ToastrService,
   ) {}
-  populateForm(data) {
+  populateForm(data = { name: '', description: '', index: '', isEdit: false }) {
     this.form = this.fb.group({
       name: [
-        data.name,
+        {
+          value: data.name,
+          disabled: data.isEdit
+        },
         [
           Validators.required,
           NoSapceService.cannotContainSpace,
@@ -83,11 +86,12 @@ export class FormDashboardsComponent implements OnInit {
         name: this.data.body[0].name,
         index: this.data.body[0].index,
         description: this.data.body[0].description,
+        isEdit: true,
       };
-      await this.populateForm(data);
+      this.populateForm(data);
     } else {
-      const data = { name: '', description: '', index: '' };
-      await this.populateForm(data);
+      const data = { name: '', description: '', index: '', isEdit: false };
+      this.populateForm(data);
     }
   }
 }

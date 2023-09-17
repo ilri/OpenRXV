@@ -164,7 +164,7 @@ export class SettingsController {
     if (deleted?.id) {
       // Get the dashboards where the index is used
       const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
-      let relatedDashboards = [];
+      const relatedDashboards = [];
       if (Array.isArray(dashboards) && dashboards.length > 0) {
         dashboards.map((dashboard) => {
           if (dashboard?.index && dashboard.index === deleted.id) {
@@ -178,7 +178,7 @@ export class SettingsController {
 
       // Get the dashboards where the index is used
       const repositories = await this.jsonFilesService.read('../../../data/data.json');
-      let relatedRepositories = [];
+      const relatedRepositories = [];
       if (repositories?.repositories && Array.isArray(repositories.repositories) && repositories.repositories.length > 0) {
         repositories.repositories.map((repository) => {
           if (repository?.index_name && repository.index_name === deleted.name) {
@@ -197,7 +197,18 @@ export class SettingsController {
           relatedRepositories,
         };
       } else {
-        indexes = body.data;
+        let deletedIndexIndex = null;
+
+        for (let i = 0; i < indexes.length; i++) {
+          if (deleted.id === indexes[i].id) {
+            deletedIndexIndex = i;
+            break;
+          }
+        }
+
+        if (deletedIndexIndex) {
+          indexes.splice(deletedIndexIndex, 1);
+        }
       }
     } else {
       if (isNew) {
@@ -209,7 +220,14 @@ export class SettingsController {
           created_at: new Date().toLocaleString(),
         });
       } else {
-        indexes = body.data;
+        indexes = body.data.filter((newDataIndex) => {
+          return indexes.filter((existingDataIndex) => {
+            if (newDataIndex.id === existingDataIndex.id) {
+              newDataIndex.name = existingDataIndex.name;
+              return;
+            }
+          });
+        });
       }
 
       const namesFiltered = [];
@@ -234,7 +252,7 @@ export class SettingsController {
     }
 
     await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
-    this.elasticSearvice.startUpIndexes();
+    await this.elasticSearvice.startUpIndexes();
     return { success: true };
   }
 
@@ -344,6 +362,14 @@ export class SettingsController {
       };
       dashboards.push(newDashboard);
     } else {
+      dashboards = body.data.filter((newDataDashboard) => {
+        return dashboards.filter((existingDataDashboard) => {
+          if (newDataDashboard.id === existingDataDashboard.id) {
+            newDataDashboard.name = existingDataDashboard.name;
+            return;
+          }
+        });
+      });
       dashboards = body.data;
     }
 

@@ -65,10 +65,13 @@ export class FormIndexComponent implements OnInit {
     private toastr: ToastrService,
   ) {}
 
-  populateForm(data = { name: '', description: '', to_be_indexed: false }) {
+  populateForm(data = { name: '', description: '', to_be_indexed: false, isEdit: false }) {
     this.form = this.fb.group({
       name: [
-        data.name,
+        {
+          value: data.name,
+          disabled: data.isEdit
+        },
         [
           Validators.required,
           NoSapceService.cannotContainSpace,
@@ -86,11 +89,12 @@ export class FormIndexComponent implements OnInit {
         name: this.data.body[0].name,
         description: this.data.body[0].description,
         to_be_indexed: this.data.body[0].to_be_indexed,
+        isEdit: true,
       };
-      await this.populateForm(data);
+      this.populateForm(data);
     } else {
-      const data = { name: '', description: '', to_be_indexed: false };
-      await this.populateForm(data);
+      const data = { name: '', description: '', to_be_indexed: false, isEdit: false };
+      this.populateForm(data);
     }
   }
 }
