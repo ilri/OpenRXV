@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { BulkResponse, BulkResponseItem } from '@elastic/elasticsearch/lib/api/types';
+import { BulkResponse } from '@elastic/elasticsearch/lib/api/types';
 import { FormatService } from '../../shared/services/formater.service';
 
 @Injectable()

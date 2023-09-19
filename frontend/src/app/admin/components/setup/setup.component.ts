@@ -101,8 +101,7 @@ export class SetupComponent implements OnInit {
   }
 
   populateRepository(repository, repositoryIndex){
-    if (repository.icon)
-      this.logo[repositoryIndex] = repository.icon;
+    this.logo[repositoryIndex] = repository.icon;
     this.AddNewRepo();
     if (repository.metadata)
       repository.metadata.forEach((item, index) => {
@@ -229,6 +228,7 @@ export class SetupComponent implements OnInit {
     this.isShown.splice(index, 1);
     this.activePluginName.splice(index, 1);
     this.activePlugin.splice(index, 1);
+    this.logo.splice(index, 1);
   }
 
   AddNewMetadata(schema: any, selector: HTMLElement) {

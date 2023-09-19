@@ -275,10 +275,10 @@ export class HarvesterService implements OnModuleInit {
           const itemsCount = sites.length;
           this.logger.debug('Starting Harvest => ' + itemsCount);
           const pages = Math.round(itemsCount / 10);
-          for (let page_number = 1; page_number <= pages; page_number++) {
-            setTimeout(() => {
-              indexFetchQueue.add(repo.type, {page: page_number, repo});
-            }, page_number <= 5 ? page_number * 500 : 0);
+
+          let page_number = repo?.startPage && Number(repo.startPage) >= 0 ? Number(repo.startPage) : 0;
+          for (page_number; page_number <= pages; page_number++) {
+            indexFetchQueue.add(repo.type, {page: page_number, repo});
           }
         } catch (error) {
           console.log(error);

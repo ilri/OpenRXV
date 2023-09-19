@@ -27,13 +27,20 @@ export class MELDownloadsAndViews {
 
       await job.progress(20);
 
-      const publicationsToUpdate = job.data.ids;
+      const publicationsToUpdate = job.data?.ids ? Object.values(job.data.ids) : [];
       if (publicationsToUpdate.length > 0) {
         const stats = await lastValueFrom(
             this.http
                 .post(melnumbersUrl,
-                    {dspace_item_ids: publicationsToUpdate},
-                    {headers: {'Content-Type': 'application/json'}, timeout: 120000},
+                    {
+                      dspace_item_ids: publicationsToUpdate
+                    },
+                    {
+                      headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                      },
+                      timeout: 120000
+                    },
                 )
                 .pipe(map((d) => d.data))
         );
@@ -41,12 +48,18 @@ export class MELDownloadsAndViews {
         const finalData: Array<any> = [];
         if (stats && stats.data && stats.data.length > 0) {
           stats.data.forEach((stat: any) => {
-            const dspace_id = publicationsToUpdate.find((p: any) => p == stat.dspace_item_id)._id;
+            let dspace_id = null;
+            for (const id in job.data.ids) {
+              if (job.data.ids[id] === stat.dspace_item_id) {
+                dspace_id = id;
+                break;
+              }
+            }
             if (dspace_id) {
               finalData.push({
                 update: {
                   _id: dspace_id,
-                  _index: job.data.index,
+                  _index: job.data.index_name,
                 },
               });
               finalData.push({
@@ -120,8 +133,11 @@ export class MELDownloadsAndViews {
   }
 
   addJob(queue, plugin_name, data, batch: SearchResponse) {
-    const ids = batch?.hits?.hits.map((p: any) => p._source.id);
-    if (Array.isArray(ids) && ids.length > 0) {
+    const ids = {};
+    batch?.hits?.hits.map((p: any) => {
+      ids[p._id] = p._source.id;
+    });
+    if (Object.keys(ids).length > 0) {
       data.ids = ids;
       queue.add(plugin_name, data);
     }

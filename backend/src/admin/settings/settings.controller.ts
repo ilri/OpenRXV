@@ -602,19 +602,11 @@ export class SettingsController {
         metadata: [],
       };
 
-      let objectSchemaList = ['parentCollection', 'parentCollectionList', 'parentCommunityList'];
-      if (repo.type === 'DSpace7'){
-        objectSchemaList = ['owningCollection', 'mappedCollections', 'parentCommunityList', 'thumbnail'];
-      }
-
       repo.schema.map((item) => {
-        if (objectSchemaList.indexOf(item.metadata) >= 0) {
-          schema[item.metadata] = {
-            name: item.disply_name,
-          };
-        } else {
-          schema[item.metadata] = item.disply_name;
-        }
+        schema[item.metadata] = {
+          name: item.disply_name,
+          addOn: item.addOn
+        };
       });
 
       if (repo.type === 'DSpace') {

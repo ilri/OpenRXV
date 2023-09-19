@@ -20,7 +20,7 @@ export class ValuesForm implements OnInit {
     if (this.form.valid && (this.data == null || !this.data?.find)) {
       const response = await this.valuesService.post(this.form.value, index_name);
       if (response.success === true) {
-        this.dialogRef.close();
+        this.dialogRef.close(true);
         this.toastr.success('Value mapping saved successfully');
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');
@@ -28,7 +28,7 @@ export class ValuesForm implements OnInit {
     } else if (this.form.valid && this.data) {
       const response = await this.valuesService.put(this.data.id, this.form.value, index_name);
       if (response.success === true) {
-        this.dialogRef.close();
+        this.dialogRef.close(true);
         this.toastr.success('Value mapping saved successfully');
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');

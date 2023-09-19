@@ -59,13 +59,13 @@ export class FormatService {
                   this.getArrayOrValue(values),
               );
           });
-        } else if (_.isObject(schemaItems)) { // These are expands (collections, communities, ...)
-          if (_.isArray(harvestedItem[schemaName])) {
-            const metadataField = <string>Object.values(schemaItems)[0];
-            const titleFieldName = Object.keys(schemaItems)[0];
-
+        } else if (_.isObject(schemaItems)) {
+          const titleFieldName = Object.keys(schemaItems)[0];
+          const metadataField = schemaItems[titleFieldName];
+          const addOn = schemaItems?.addOn;
+          if (_.isArray(harvestedItem[schemaName])) {  // These are expands (collections, communities, ...)
             const mappedValues = harvestedItem[schemaName]
-                .map((metadataElement: any) => this.mapIt(metadataElement[titleFieldName]))
+                .map((metadataElement: any) => this.mapIt(metadataElement[titleFieldName]), addOn)
                 .filter(v => v !== '' && v != null);
             const values = this.getArrayOrValue(mappedValues);
             if (values)
@@ -73,11 +73,11 @@ export class FormatService {
                 finalValues[metadataField],
                 values,
               );
-          }
-        } else { // These are item basic information (id, name, handle, archived, ...)
-          const mappedValue = this.mapIt(harvestedItem[schemaName]);
-          if (mappedValue !== '' && mappedValue != null) {
-            finalValues[schemaName] = mappedValue;
+          } else { // These are item basic information (id, name, handle, archived, ...)
+            const mappedValue = this.mapIt(harvestedItem[schemaName], addOn);
+            if (mappedValue !== '' && mappedValue != null) {
+              finalValues[schemaName] = mappedValue;
+            }
           }
         }
       }
@@ -120,52 +120,55 @@ export class FormatService {
             }
           });
         }
-      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunityList') { // These are expands (collections, communities, bitstreams, ...)
-        let embeddedItem = harvestedItem?._embedded && harvestedItem._embedded.hasOwnProperty(schemaName) ? harvestedItem._embedded[schemaName] : null;
+      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunityList') {
+        const titleFieldName = Object.keys(schemaItems)[0];
+        const metadataField = schemaItems[titleFieldName];
+        const addOn = schemaItems?.addOn;
 
-        if (embeddedItem?._embedded && embeddedItem._embedded.hasOwnProperty(schemaName)) {
-          embeddedItem = embeddedItem._embedded[schemaName];
-        }
-
-        if (embeddedItem && !_.isArray(embeddedItem) && _.isObject(embeddedItem)) {
-          embeddedItem = [embeddedItem];
-        }
-
-        if (embeddedItem && _.isArray(embeddedItem)) {
-          const metadataField = <string>Object.values(schemaItems)[0];
-          const titleFieldName = Object.keys(schemaItems)[0];
-
-          let values = null;
-          if (schemaName === 'thumbnail') {
-            if (embeddedItem[0]?._links?.content.href) {
-              values = embeddedItem[0]._links.content.href;
-            }
-          } else {
-            const mappedValues = embeddedItem
-                .map((metadataElement: any) => {
-                  if ((schemaName === 'owningCollection' || schemaName === 'mappedCollections') && metadataElement?.uuid) {
-                    if (collectionList.hasOwnProperty(metadataElement.uuid)) {
-                      const collection = collectionList[metadataElement.uuid];
-                      collection.parentCommunities.map((parentCommunity) => {
-                        communities.push(parentCommunity);
-                      });
-                    }
-                  }
-                  return this.mapIt(metadataElement[titleFieldName]);
-                })
-                .filter(v => v !== '' && v != null);
-            values = this.getArrayOrValue(mappedValues);
+        if (harvestedItem.hasOwnProperty(schemaName)) { // These are item basic information (id, name, handle, archived, ...)
+          const mappedValue = this.mapIt(harvestedItem[schemaName], addOn);
+          if (mappedValue !== '' && mappedValue != null) {
+            finalValues[schemaName] = mappedValue;
           }
-          if (values)
-            finalValues[metadataField] = this.setValue(
-                finalValues[metadataField],
-                values,
-            );
-        }
-      } else { // These are item basic information (id, name, handle, archived, ...)
-        const mappedValue = this.mapIt(harvestedItem[schemaName]);
-        if (mappedValue !== '' && mappedValue != null) {
-          finalValues[schemaName] = mappedValue;
+        } else { // These are expands (collections, communities, bitstreams, ...)
+          let embeddedItem = harvestedItem?._embedded && harvestedItem._embedded.hasOwnProperty(schemaName) ? harvestedItem._embedded[schemaName] : null;
+
+          if (embeddedItem?._embedded && embeddedItem._embedded.hasOwnProperty(schemaName)) {
+            embeddedItem = embeddedItem._embedded[schemaName];
+          }
+
+          if (embeddedItem && !_.isArray(embeddedItem) && _.isObject(embeddedItem)) {
+            embeddedItem = [embeddedItem];
+          }
+
+          if (embeddedItem && _.isArray(embeddedItem)) {
+            let values = null;
+            if (schemaName === 'thumbnail') {
+              if (embeddedItem[0]?._links?.content.href) {
+                values = embeddedItem[0]._links.content.href;
+              }
+            } else {
+              const mappedValues = embeddedItem
+                  .map((metadataElement: any) => {
+                    if ((schemaName === 'owningCollection' || schemaName === 'mappedCollections') && metadataElement?.uuid) {
+                      if (collectionList.hasOwnProperty(metadataElement.uuid)) {
+                        const collection = collectionList[metadataElement.uuid];
+                        collection.parentCommunities.map((parentCommunity) => {
+                          communities.push(parentCommunity);
+                        });
+                      }
+                    }
+                    return this.mapIt(metadataElement[titleFieldName], addOn);
+                  })
+                  .filter(v => v !== '' && v != null);
+              values = this.getArrayOrValue(mappedValues);
+            }
+            if (values)
+              finalValues[metadataField] = this.setValue(
+                  finalValues[metadataField],
+                  values,
+              );
+          }
         }
       }
     });
@@ -226,6 +229,17 @@ export class FormatService {
           try {
             value = dayjs(value).format('YYYY-MM-DD');
             if (!dayjs(value).isValid()) value = null;
+          } catch (e) {
+            value = null;
+          }
+        }
+        if (addOn == 'datetime') {
+          if (_.isArray(value)) value = value[0];
+          try {
+            value = dayjs(value).format('YYYY-MM-DDTHH:mm:ssZ');
+            if (!dayjs(value).isValid()) {
+              value = null;
+            }
           } catch (e) {
             value = null;
           }
