@@ -20,7 +20,7 @@
         </ng-container>
 
         <div class="w-100">
-          <span class="item-list-title">
+          <span class="item-list-title" [matTooltip]="item.key">
             {{ item.key }}
           </span>
           <small *ngIf="isSmall">

@@ -64,8 +64,13 @@
       .item-list-title {
         line-height: 1;
         padding-right: 35px;
-        overflow: hidden;
         text-wrap: wrap;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        padding-bottom: 1px;
       }
 
       .doc-count {
