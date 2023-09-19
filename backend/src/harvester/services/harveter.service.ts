@@ -245,6 +245,18 @@ export class HarvesterService implements OnModuleInit {
     await indexFetchQueue.clean(0, 'completed');
     await indexFetchQueue.resume();
 
+    const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
+    if (indexPluginsQueue != null) {
+      await indexPluginsQueue.pause();
+      await indexPluginsQueue.empty();
+      await indexPluginsQueue.clean(0, 'failed');
+      await indexPluginsQueue.clean(0, 'wait');
+      await indexPluginsQueue.clean(0, 'active');
+      await indexPluginsQueue.clean(0, 'delayed');
+      await indexPluginsQueue.clean(0, 'completed');
+      await indexPluginsQueue.resume();
+    }
+
     if (!await this.IsIndexable(index_name)) {
       return {
         success: false,
