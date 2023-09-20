@@ -3,8 +3,6 @@ import CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
 let mapto: any = null;
@@ -13,11 +11,7 @@ let mapto: any = null;
 export class FormatService {
   constructor(
       private readonly valuesServes: ValuesService,
-      private http: HttpService,
   ) {}
-
-  collections: any = {};
-  collectionsFetching: any = {};
 
   async Init(index_name: string) {
     if (mapto === null) {
@@ -85,9 +79,18 @@ export class FormatService {
     return finalValues;
   }
 
-  DSpace7Format(harvestedItem: any, schemas: any, collectionList: any) {
+  DSpace7Format(harvestedItem: any, schemas: any) {
     const finalValues: any = {};
-    const communities = [];
+    let communities = [];
+    let communityTitleFieldName = null;
+    let communityMetadataField = null;
+    let communityAddOn = null;
+    if (schemas?.parentCommunity && _.isObject(schemas.parentCommunity)) {
+      communityTitleFieldName = Object.keys(schemas.parentCommunity)[0];
+      communityMetadataField = schemas.parentCommunity[communityTitleFieldName];
+      communityAddOn = schemas.parentCommunity?.addOn;
+    }
+
     _.each(schemas, (schemaItems: any, schemaName: string) => {
       if (_.isArray(schemaItems)) { // These are metadata
         if (harvestedItem[schemaName]) {
@@ -120,7 +123,7 @@ export class FormatService {
             }
           });
         }
-      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunityList') {
+      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunity') {
         const titleFieldName = Object.keys(schemaItems)[0];
         const metadataField = schemaItems[titleFieldName];
         const addOn = schemaItems?.addOn;
@@ -150,13 +153,8 @@ export class FormatService {
             } else {
               const mappedValues = embeddedItem
                   .map((metadataElement: any) => {
-                    if ((schemaName === 'owningCollection' || schemaName === 'mappedCollections') && metadataElement?.uuid) {
-                      if (collectionList.hasOwnProperty(metadataElement.uuid)) {
-                        const collection = collectionList[metadataElement.uuid];
-                        collection.parentCommunities.map((parentCommunity) => {
-                          communities.push(parentCommunity);
-                        });
-                      }
+                    if (metadataElement?._embedded?.parentCommunity) {
+                      communities = this.extractParentCommunities(metadataElement._embedded.parentCommunity, communities, communityTitleFieldName);
                     }
                     return this.mapIt(metadataElement[titleFieldName], addOn);
                   })
@@ -173,18 +171,34 @@ export class FormatService {
       }
     });
 
-    // Add parentCommunityList
-    if (communities.length > 0 && schemas?.parentCommunityList && _.isObject(schemas.parentCommunityList)) {
-      const metadataField = <string>Object.values(schemas.parentCommunityList)[0];
-      const values = this.getArrayOrValue(communities);
+    // Add parentCommunity
+    communities = [...new Set(communities)];
+    if (communities.length > 0 && communityMetadataField) {
+      const mappedValues = communities
+          .map((community: any) => {
+            return this.mapIt(community, communityAddOn);
+          })
+          .filter(v => v !== '' && v != null);
+      const values = this.getArrayOrValue(mappedValues);
+
       if (values)
-        finalValues[metadataField] = this.setValue(
-            finalValues[metadataField],
+        finalValues[communityMetadataField] = this.setValue(
+            finalValues[communityMetadataField],
             values,
         );
     }
 
     return finalValues;
+  }
+
+  extractParentCommunities(metadataElement, communities, metadataField) {
+    if (metadataElement?._embedded?.parentCommunity) {
+      communities = this.extractParentCommunities(metadataElement._embedded.parentCommunity, communities, metadataField);
+    }
+    if (metadataElement.hasOwnProperty(metadataField)) {
+      communities.push(metadataElement[metadataField]);
+    }
+    return communities;
   }
 
   setValue(oldvalue, value) {
@@ -264,120 +278,5 @@ export class FormatService {
   getArrayOrValue(values: Array<any>) {
     if (values.length > 1) return values;
     else return values[0];
-  }
-
-  async getCommunities(endPoint) {
-    return new Promise(async (resolve) => {
-      // Remove the "/" from the end of the endPoint
-      endPoint = endPoint.replace(/\/$/gm, '');
-
-      const communitiesList = {};
-
-      const request = await lastValueFrom(
-          this.http.get(`${endPoint}/discover/search/objects?dsoType=community&size=1&page=0`)
-      ).catch(() => {
-        return null;
-      });
-
-      if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
-        const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
-        for (let page = 0; page < totalPages; page++) {
-          const data = await lastValueFrom(
-              this.http.get(`${endPoint}/discover/search/objects?dsoType=community&embed=parentCommunity&size=100&page=${page}`)
-          ).catch(() => {
-            return null;
-          });
-          const communities = data?.data?._embedded?.searchResult?._embedded?.objects;
-          if (communities) {
-            communities.map((communityObject) => {
-              const community = communityObject?._embedded?.indexableObject;
-              if (community) {
-                communitiesList[community.uuid] = {
-                  name: community.name,
-                  parent: null
-                }
-                const parentCommunity = community?._embedded?.parentCommunity;
-                if (parentCommunity) {
-                  communitiesList[community.uuid].parent = parentCommunity.uuid
-                }
-              }
-            });
-          }
-        }
-      }
-
-      const communities = {};
-      for (const communityId in communitiesList) {
-        if (communitiesList.hasOwnProperty(communityId)) {
-          const community = communitiesList[communityId];
-          let parentId = community.parent;
-          communities[communityId] = {
-            name: community.name,
-            parents: []
-          }
-          while (parentId) {
-            if (communitiesList.hasOwnProperty(parentId)) {
-              const parent = communitiesList[parentId];
-              communities[communityId].parents.push(parent.name);
-              parentId = parent.parent;
-            }
-          }
-        }
-      }
-
-      resolve(communities);
-    });
-  }
-
-  async getCollections(endPoint, repositoryName) {
-    if (this.collectionsFetching[repositoryName]) {
-      return this.collectionsFetching[repositoryName];
-    } else {
-      const communities = await this.getCommunities(endPoint);
-
-      const collectionsList = {};
-      return new Promise(async (resolve) => {
-        // Remove the "/" from the end of the endPoint
-        endPoint = endPoint.replace(/\/$/gm, '');
-
-        const request = await lastValueFrom(
-            this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&size=1&page=0`)
-        ).catch(() => {
-          return null;
-        });
-
-        if (request?.data?._embedded?.searchResult?.page?.totalElements && request.data._embedded.searchResult.page.totalElements > 0) {
-          const totalPages = Math.ceil(request.data._embedded.searchResult.page.totalElements / 100);
-          for (let page = 0; page < totalPages; page++) {
-            const data = await lastValueFrom(
-                this.http.get(`${endPoint}/discover/search/objects?dsoType=collection&embed=parentCommunity&size=100&page=${page}`)
-            ).catch(() => {
-              return null;
-            });
-            const collections = data?.data?._embedded?.searchResult?._embedded?.objects;
-            if (collections) {
-              collections.map((collectionObject) => {
-                const collection = collectionObject?._embedded?.indexableObject;
-                if (collection) {
-                  collectionsList[collection.uuid] = {
-                    name: collection.name,
-                    parentCommunities: []
-                  }
-                  const parentCommunity = collection?._embedded?.parentCommunity;
-                  if (parentCommunity && communities.hasOwnProperty(parentCommunity.uuid)) {
-                    const parentCommunities = communities[parentCommunity.uuid].parents;
-                    parentCommunities.push(communities[parentCommunity.uuid].name);
-                    collectionsList[collection.uuid].parentCommunities = [...new Set(parentCommunities)];
-                  }
-                }
-              });
-            }
-          }
-        }
-
-        this.collections[repositoryName] = collectionsList;
-        resolve(true);
-      });
-    }
   }
 }

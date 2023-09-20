@@ -25,15 +25,13 @@ export class DSpace7Service {
                 await job.progress(20);
                 await this.formatService.Init(index_name);
 
-                if (!this.formatService.collectionsFetching || !this.formatService.collectionsFetching.hasOwnProperty(job.data.repo.name) || !this.formatService.collectionsFetching[job.data.repo.name])
-                    this.formatService.collectionsFetching[job.data.repo.name] = this.formatService.getCollections(job.data.repo.itemsEndPoint, job.data.repo.name);
-                await this.formatService.collectionsFetching[job.data.repo.name];
-
+                // We don't know how many parent communities there are, we will get the first 10 only
+                const owningCollectionEmbed = 'owningCollection/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity';
+                const mappedCollectionsEmbed = 'mappedCollections/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity';
                 const url =
                     job.data.repo.itemsEndPoint +
-                    '/discover/search/objects?dsoType=item&embed=thumbnail,owningCollection,mappedCollections' +
-                    '&size=10&page=' +
-                    (job.data.page);
+                    `/discover/search/objects?dsoType=item&embed=thumbnail,${owningCollectionEmbed},${mappedCollectionsEmbed}` +
+                    `&size=10&page=${job.data.page}`;
 
                 const request = await lastValueFrom(this.http.get(url))
                     .catch((d) => {
@@ -64,7 +62,7 @@ export class DSpace7Service {
         for (const harvested of data) {
             if (harvested?._embedded?.indexableObject) {
                 const item = harvested._embedded.indexableObject;
-                const formatted = this.formatService.DSpace7Format(item, job.data.repo.schema, this.formatService.collections[job.data.repo.name]);
+                const formatted = this.formatService.DSpace7Format(item, job.data.repo.schema);
 
                 if (job.data.repo.years) {
                     const spleted = job.data.repo.years.split(/_(.+)/);

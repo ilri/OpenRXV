@@ -24,12 +24,10 @@ export class AddMissingItems {
             if (job.data.repo.type === 'DSpace') {
                 url = `${job.data.itemEndPoint}/${job.data.identifier}?expand=metadata,parentCommunityList,parentCollectionList,bitstreams`;
             } else if (job.data.repo.type === 'DSpace7') {
-                url = `${job.data.itemEndPoint}/${job.data.identifier}?embed=mappedCollections,owningCollection,thumbnail`;
-
-                if (!this.formatService.collectionsFetching || !Object.hasOwn(this.formatService.collectionsFetching, job.data.repo.name) || !this.formatService.collectionsFetching[job.data.repo.name]) {
-                    this.formatService.collectionsFetching[job.data.repo.name] = this.formatService.getCollections(job.data.repo.itemsEndPoint, job.data.repo.name);
-                }
-                await this.formatService.collectionsFetching[job.data.repo.name];
+                // We don't know how many parent communities there are, we will get the first 10 only
+                const owningCollectionEmbed = 'owningCollection/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity';
+                const mappedCollectionsEmbed = 'mappedCollections/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity/parentCommunity';
+                url = `${job.data.itemEndPoint}/${job.data.identifier}?embed=${owningCollectionEmbed},${mappedCollectionsEmbed},thumbnail`;
             }
             const result = await lastValueFrom(
                 this.http
@@ -44,7 +42,7 @@ export class AddMissingItems {
                 if (job.data.repo.type === 'DSpace') {
                     formatted = this.formatService.format(result, job.data.repo.schema);
                 } else if (job.data.repo.type === 'DSpace7') {
-                    formatted = this.formatService.DSpace7Format(result, job.data.repo.schema, this.formatService.collections[job.data.repo.name]);
+                    formatted = this.formatService.DSpace7Format(result, job.data.repo.schema);
                 }
 
                 if (job.data.repo.years) {
