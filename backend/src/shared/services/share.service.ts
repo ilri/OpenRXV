@@ -18,7 +18,7 @@ export class ShareService extends ElasticService {
       return await this.elasticsearchService.index({
         index: index_name,
         refresh: 'wait_for',
-        document: { created_at: new Date(), hashedItem, attr: item },
+        document: { created_at: new Date(), hashedItem, attr: item.attr, operator: item.operator },
       });
     } else {
       return result.hits[0];

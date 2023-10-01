@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../store';
 import { SetQuery } from '../store';
-import { BodyBuilderService } from '../filters/services/bodyBuilder/body-builder.service';
+import { MainBodyBuilderService } from '../services/mainBodyBuilderService/main-body-builder.service';
 import { ESHttpError } from 'src/app/explorer/store/actions/actions.interfaces';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './representationalComponents/snack/snack.component';
@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
+    private readonly mainBodyBuilderService: MainBodyBuilderService,
     private readonly snackBar: MatSnackBar,
     private readonly itemsService: ItemsService,
     private activeRoute: ActivatedRoute,
@@ -62,25 +62,31 @@ export class DashboardComponent implements OnInit {
       try {
         const shareitem: any = await this.itemsService.getShare(shareID, this.dashboard_name);
         if (shareitem) {
+          this.mainBodyBuilderService.setOrOperator = shareitem?.operator;
+
           const sprateObjects = Object.keys(shareitem.attr).map(function (key) {
             const obj = {};
             obj[key] = shareitem.attr[key];
             return obj;
           });
           sprateObjects.forEach((item: any) => {
-            this.bodyBuilderService.setAggAttributes = item;
+            this.mainBodyBuilderService.setAggAttributes = item;
           });
         } else this.route.navigate(['notfound']);
       } catch (e) {
         this.route.navigate(['notfound']);
       }
     }
-    this.store.dispatch(
-      new SetQuery({
-        dashboard: this.dashboard_name,
-        body: this.bodyBuilderService.buildMainQuery().build(),
-      }),
-    );
+
+
+    setTimeout(() => {
+      this.store.dispatch(
+        new SetQuery({
+          dashboard: this.dashboard_name,
+          body: this.mainBodyBuilderService.buildMainQuery(0).build(),
+        }),
+      );
+    }, 300);
 
     this.store.select(fromStore.getErrors).subscribe((e: ESHttpError) => {
       if (e) {

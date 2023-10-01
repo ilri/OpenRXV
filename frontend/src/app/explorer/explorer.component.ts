@@ -56,7 +56,8 @@ export class ExplorerComponent implements OnInit {
             location.pathname +
             (await this.itemsService.saveShare(
               this.mainBodyBuilderService.getAggAttributes,
-              this.dashboard_name
+              this.dashboard_name,
+              this.orOperator,
             )),
     );
   }

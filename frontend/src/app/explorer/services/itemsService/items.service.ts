@@ -29,12 +29,12 @@ export class ItemsService {
       .toPromise();
   }
 
-  async saveShare(attr: any, dashboard_name: string) {
+  async saveShare(attr: any, dashboard_name: string, operator) {
     if (Object.keys(attr).length)
       return (
         '/shared/' +
         (await this.http
-          .post(environment.api + `/share/${dashboard_name}`, attr)
+          .post(environment.api + `/share/${dashboard_name}`, {attr, operator})
           .pipe(map((data: any) => data._id))
           .toPromise())
       );
