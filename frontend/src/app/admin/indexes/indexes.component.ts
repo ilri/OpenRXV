@@ -8,6 +8,7 @@ import { FormIndexComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-indexes',
@@ -133,7 +134,7 @@ export class IndexesComponent implements OnInit {
           name: indexName,
           description: importedItem?.description,
           to_be_indexed: importedItem?.to_be_indexed,
-          created_at: new Date().toLocaleString(),
+          created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
         const response = await this.settingsService.saveIndexesSettings(item, true, null);
         if (response.success === true) {

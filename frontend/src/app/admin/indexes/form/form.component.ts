@@ -9,6 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-form',
@@ -35,7 +36,7 @@ export class FormIndexComponent implements OnInit {
             name: this.form.value.name,
             description: this.form.value.description,
             to_be_indexed: this.form.value.to_be_indexed,
-            created_at: new Date().toLocaleString(),
+            created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
           };
         }
         return obj;

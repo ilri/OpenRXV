@@ -10,6 +10,7 @@ import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
 import { DSpaceHealthCheck } from '../../plugins/dspace_health_check';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class HarvesterService implements OnModuleInit {
@@ -113,16 +114,16 @@ export class HarvesterService implements OnModuleInit {
     }
   }
 
-  ReduceJobsObject(jobs: Array<Job>){
+  ReduceJobsObject(jobs: Array<Job>) {
     return jobs.map((job) => {
       return {
         id: job?.id,
         repository_name: job?.data?.repo?.name,
         plugin_name: job?.name,
         page: job?.data?.page,
-        timestamp: job?.timestamp,
-        processedOn: job?.processedOn,
-        finishedOn: job?.finishedOn,
+        timestamp: dayjs(job?.timestamp).format('YYYY-MM-DD HH:mm:ss'),
+        processedOn: dayjs(job?.processedOn).format('YYYY-MM-DD HH:mm:ss'),
+        finishedOn: dayjs(job?.finishedOn).format('YYYY-MM-DD HH:mm:ss'),
         attemptsMade: job?.attemptsMade,
         failedReason: job?.failedReason,
         is_stuck: job?.data?.is_stuck,
@@ -450,7 +451,7 @@ export class HarvesterService implements OnModuleInit {
 
         this.logger.debug('Indexing finished');
 
-        index.last_update = new Date().toLocaleString();
+        index.last_update = dayjs().format('YYYY-MM-DD HH:mm:ss');
       }
     }
 

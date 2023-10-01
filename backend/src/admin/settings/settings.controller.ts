@@ -17,10 +17,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as fs from 'fs';
 import { readdirSync } from 'fs';
-import { HttpService } from '@nestjs/axios';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ElasticService } from 'src/shared/services/elastic/elastic.service';
+import * as dayjs from 'dayjs';
 @Controller('settings')
 export class SettingsController {
   constructor(
@@ -216,7 +216,7 @@ export class SettingsController {
           name: body.data?.name,
           description: body.data?.description,
           to_be_indexed: body.data?.to_be_indexed,
-          created_at: new Date().toLocaleString(),
+          created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
         indexes = body.data.filter((newDataIndex) => {
@@ -267,7 +267,7 @@ export class SettingsController {
         name: body.data.name,
         index: body.data.index,
         description: body.data.description,
-        created_at: new Date().toLocaleString(),
+        created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         reports:[],
         appearance: {
           primary_color: '#20a5b7',

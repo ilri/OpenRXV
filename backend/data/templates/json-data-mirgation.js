@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const uuid = require('uuid');
+import * as dayjs from 'dayjs';
 
 const files = {
     old: {
@@ -60,7 +61,7 @@ const operations = {
             id: uuid.v4(),
             name: operations.IsValidName(name, files.templates.indexes, 'name'),
             description: description,
-            created_at: new Date().toLocaleString()
+            created_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
         };
     },
     MigrateIndexes: async () => {
@@ -91,7 +92,7 @@ const operations = {
             explorer,
             reports,
             description,
-            created_at: new Date().toLocaleString()
+            created_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
         }
     },
     MigrateDashboard: async () => {

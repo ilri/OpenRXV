@@ -28,17 +28,17 @@
 
         <ng-container matColumnDef="timestamp">
             <th mat-header-cell *matHeaderCellDef> Created </th>
-            <td mat-cell *matCellDef="let element"> {{element.timestamp | date:'medium'}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.timestamp}} </td>
         </ng-container>
 
         <ng-container matColumnDef="processedOn">
             <th mat-header-cell *matHeaderCellDef> Processed </th>
-            <td mat-cell *matCellDef="let element"> {{element.processedOn | date:'medium'}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.processedOn}} </td>
         </ng-container>
 
         <ng-container matColumnDef="finishedOn">
             <th mat-header-cell *matHeaderCellDef> Finished </th>
-            <td mat-cell *matCellDef="let element"> {{element.finishedOn | date:'medium'}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.finishedOn}} </td>
         </ng-container>
 
         <ng-container matColumnDef="attemptsMade">
