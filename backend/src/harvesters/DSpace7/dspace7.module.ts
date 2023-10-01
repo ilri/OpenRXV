@@ -26,6 +26,10 @@ export class DSpace7Module {
             required: true,
             placeholder: 'https://repo.org/sitemap_index.xml'
           },
+            start_page: {
+            required: false,
+            placeholder: '0'
+          },
         },
         '../../../data/harvestors/DSpace7.json',
       );

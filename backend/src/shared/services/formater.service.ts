@@ -5,7 +5,6 @@ import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
-let mapto: any = null;
 
 @Injectable()
 export class FormatService {
@@ -13,182 +12,16 @@ export class FormatService {
       private readonly valuesServes: ValuesService,
   ) {}
 
-  async Init(index_name: string) {
-    if (mapto === null) {
-      const data = await this.valuesServes.find(null, `${index_name}-values`);
-      const values = {};
-      data.hits.map((d) => {
-        values[d._source.find] = {
-          replace: d._source.replace,
-          metadataField: d._source.metadataField,
-        }
-      });
-      mapto = values;
-    }
-  }
-
-  format(harvestedItem: any, schemas: any) {
-    const finalValues: any = {};
-    _.each(schemas, (schemaItems: any, schemaName: string) => {
-      if (harvestedItem[schemaName]) {
-        if (_.isArray(schemaItems)) { // These are metadata and bitstreams
-          _.each(schemaItems, (schemaItem: any) => {
-            const schemaValueName = Object.keys(schemaItem.value)[0];
-            const schemaKeyName = Object.keys(schemaItem.where)[0];
-            const addOn = schemaItem.addOn ? schemaItem.addOn : null;
-
-            const values = harvestedItem[schemaName]
-              .filter((metadataElement: any) => {
-                return metadataElement[schemaKeyName] == schemaItem.where[schemaKeyName];
-              })
-              .map((metadataElement: any) => {
-                const value = metadataElement[schemaValueName];
-                const mappedValue = this.mapIt(value, addOn, schemaItem.value.value);
-                return schemaItem.prefix ? schemaItem.prefix + mappedValue : mappedValue;
-              })
-                .filter(v => v !== '' && v != null);
-            if (values.length)
-              finalValues[schemaItem.value[schemaValueName]] = this.setValue(
-                  finalValues[schemaItem.value[schemaValueName]],
-                  this.getArrayOrValue(values),
-              );
-          });
-        } else if (_.isObject(schemaItems)) {
-          const titleFieldName = Object.keys(schemaItems)[0];
-          const metadataField = schemaItems[titleFieldName];
-          const addOn = schemaItems?.addOn;
-          if (_.isArray(harvestedItem[schemaName])) {  // These are expands (collections, communities, ...)
-            const mappedValues = harvestedItem[schemaName]
-                .map((metadataElement: any) => this.mapIt(metadataElement[titleFieldName]), addOn)
-                .filter(v => v !== '' && v != null);
-            const values = this.getArrayOrValue(mappedValues);
-            if (values)
-              finalValues[metadataField] = this.setValue(
-                finalValues[metadataField],
-                values,
-              );
-          } else { // These are item basic information (id, name, handle, archived, ...)
-            const mappedValue = this.mapIt(harvestedItem[schemaName], addOn);
-            if (mappedValue !== '' && mappedValue != null) {
-              finalValues[schemaName] = mappedValue;
-            }
-          }
-        }
+  async getMappingValues(index_name: string) {
+    const data = await this.valuesServes.find(null, `${index_name}-values`);
+    const values = {};
+    data.hits.map((d) => {
+      values[d._source.find] = {
+        replace: d._source.replace,
+        metadataField: d._source.metadataField,
       }
     });
-    return finalValues;
-  }
-
-  DSpace7Format(harvestedItem: any, schemas: any) {
-    const finalValues: any = {};
-    let communities = [];
-    let communityTitleFieldName = null;
-    let communityMetadataField = null;
-    let communityAddOn = null;
-    if (schemas?.parentCommunity && _.isObject(schemas.parentCommunity)) {
-      communityTitleFieldName = Object.keys(schemas.parentCommunity)[0];
-      communityMetadataField = schemas.parentCommunity[communityTitleFieldName];
-      communityAddOn = schemas.parentCommunity?.addOn;
-    }
-
-    _.each(schemas, (schemaItems: any, schemaName: string) => {
-      if (_.isArray(schemaItems)) { // These are metadata
-        if (harvestedItem[schemaName]) {
-          _.each(schemaItems, (schemaItem: any) => {
-            const schemaValueName = Object.keys(schemaItem.value)[0];
-            const schemaKeyName = Object.keys(schemaItem.where)[0];
-            const addOn = schemaItem.addOn ? schemaItem.addOn : null;
-
-            for (const metadataFieldName in harvestedItem[schemaName]) {
-              if (harvestedItem[schemaName].hasOwnProperty(metadataFieldName)) {
-                if (metadataFieldName === schemaItem.where[schemaKeyName]) {
-                  const values = [];
-                  const metadataElements = harvestedItem[schemaName][metadataFieldName];
-                  metadataElements.map((metadataElement) => {
-                    if (metadataElement.hasOwnProperty(schemaValueName)) {
-                      const mappedValue = this.mapIt(metadataElement[schemaValueName], addOn, schemaItem.value.value);
-                      const value = schemaItem.prefix ? schemaItem.prefix + mappedValue : mappedValue;
-                      if (value !== '' && value != null) {
-                        values.push(value);
-                      }
-                    }
-                  });
-                  if (values.length)
-                    finalValues[schemaItem.value[schemaValueName]] = this.setValue(
-                        finalValues[schemaItem.value[schemaValueName]],
-                        this.getArrayOrValue(values),
-                    );
-                }
-              }
-            }
-          });
-        }
-      } else if (_.isObject(schemaItems) && schemaName !== 'parentCommunity') {
-        const titleFieldName = Object.keys(schemaItems)[0];
-        const metadataField = schemaItems[titleFieldName];
-        const addOn = schemaItems?.addOn;
-
-        if (harvestedItem.hasOwnProperty(schemaName)) { // These are item basic information (id, name, handle, archived, ...)
-          const mappedValue = this.mapIt(harvestedItem[schemaName], addOn);
-          if (mappedValue !== '' && mappedValue != null) {
-            finalValues[schemaName] = mappedValue;
-          }
-        } else { // These are expands (collections, communities, bitstreams, ...)
-          let embeddedItem = harvestedItem?._embedded && harvestedItem._embedded.hasOwnProperty(schemaName) ? harvestedItem._embedded[schemaName] : null;
-
-          if (embeddedItem?._embedded && embeddedItem._embedded.hasOwnProperty(schemaName)) {
-            embeddedItem = embeddedItem._embedded[schemaName];
-          }
-
-          if (embeddedItem && !_.isArray(embeddedItem) && _.isObject(embeddedItem)) {
-            embeddedItem = [embeddedItem];
-          }
-
-          if (embeddedItem && _.isArray(embeddedItem)) {
-            let values = null;
-            if (schemaName === 'thumbnail') {
-              if (embeddedItem[0]?._links?.content.href) {
-                values = embeddedItem[0]._links.content.href;
-              }
-            } else {
-              const mappedValues = embeddedItem
-                  .map((metadataElement: any) => {
-                    if (metadataElement?._embedded?.parentCommunity) {
-                      communities = this.extractParentCommunities(metadataElement._embedded.parentCommunity, communities, communityTitleFieldName);
-                    }
-                    return this.mapIt(metadataElement[titleFieldName], addOn);
-                  })
-                  .filter(v => v !== '' && v != null);
-              values = this.getArrayOrValue(mappedValues);
-            }
-            if (values)
-              finalValues[metadataField] = this.setValue(
-                  finalValues[metadataField],
-                  values,
-              );
-          }
-        }
-      }
-    });
-
-    // Add parentCommunity
-    communities = [...new Set(communities)];
-    if (communities.length > 0 && communityMetadataField) {
-      const mappedValues = communities
-          .map((community: any) => {
-            return this.mapIt(community, communityAddOn);
-          })
-          .filter(v => v !== '' && v != null);
-      const values = this.getArrayOrValue(mappedValues);
-
-      if (values)
-        finalValues[communityMetadataField] = this.setValue(
-            finalValues[communityMetadataField],
-            values,
-        );
-    }
-
-    return finalValues;
+    return values;
   }
 
   extractParentCommunities(metadataElement, communities, metadataField) {
@@ -222,12 +55,22 @@ export class FormatService {
 
   mapIsoToLang = (value: string) =>
     langISO.validate(value) ? langISO.getName(value) : value;
-  mapIsoToCountry = (value: string) =>
-      CountryISO.get({alpha_2: value})
-      ? (CountryISO.get({alpha_2: value}) as Country).name
-      : this.capitalizeFirstLetter(value);
 
-  mapIt(value: any, addOn = null, metadataField: string = null): string {
+  mapIsoToCountry(value: string) {
+    const country = CountryISO.get({alpha_2: value}) as Country;
+    return country ? country.name : this.capitalizeFirstLetter(value);
+  }
+
+  mapCountryToIso(value: string) {
+    const country = CountryISO.get({
+      name: value,
+      common_name: value,
+      official_name: value,
+    }) as Country;
+    return country ? country.alpha_2 : null;
+  }
+
+  mapIt(value: any, addOn = null, metadataField: string = null, mapto: any = {}): string {
     if (addOn) {
       if (typeof value === 'string' || value instanceof String) {
         if (addOn == 'country')

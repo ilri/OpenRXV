@@ -4,14 +4,12 @@ import { Job } from 'bull';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 import { DSpaceService } from '../../harvesters/DSpace/dspace.service';
+import { DSpace7Service } from '../../harvesters/DSpace7/dspace7.service';
 import { AddMissingItems } from '../../plugins/dspace_add_missing_items';
 import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
 import { DSpaceHealthCheck } from '../../plugins/dspace_health_check';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
-
-import Sitemapper from 'sitemapper';
-import { DSpace7Service } from "../../harvesters/DSpace7/dspace7.service";
 
 @Injectable()
 export class HarvesterService implements OnModuleInit {
@@ -60,8 +58,8 @@ export class HarvesterService implements OnModuleInit {
           port: parseInt(process.env.REDIS_PORT),
         },
       });
-      await this.dspaceService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace', index_name);
-      await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`], 'DSpace7', index_name);
+      await this.dspaceService.RegisterProcess(this.registeredQueues[`${index_name}_fetch`]);
+      await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`]);
     }
 
     if (!this.registeredQueues.hasOwnProperty(`${index_name}_plugins`)) {
@@ -277,24 +275,11 @@ export class HarvesterService implements OnModuleInit {
 
     for (const repo of settings[index_name].repositories) {
       repo.index_name = index_name;
-      if (repo.type == 'DSpace' || repo.type === 'DSpace7') {
-        const Sitemap = new Sitemapper({
-          url: repo.siteMap,
-          timeout: 15000, // 15 seconds
-        });
-        try {
-          const {sites} = await Sitemap.fetch();
-          const itemsCount = sites.length;
-          this.logger.debug('Starting Harvest => ' + itemsCount);
-          const pages = Math.round(itemsCount / 10);
 
-          let page_number = repo?.startPage && Number(repo.startPage) >= 0 ? Number(repo.startPage) : 0;
-          for (page_number; page_number <= pages; page_number++) {
-            indexFetchQueue.add(repo.type, {page: page_number, repo});
-          }
-        } catch (error) {
-          console.log(error);
-        }
+      if (repo.type === 'DSpace') {
+        await this.dspaceService.addJobs(indexFetchQueue, repo);
+      } else if (repo.type === 'DSpace7') {
+        await this.dspace7Service.addJobs(indexFetchQueue, repo);
       } else {
         this.logger.debug('Starting Harvest => ' + repo.type);
         indexFetchQueue.add(repo.type, {repo: repo});

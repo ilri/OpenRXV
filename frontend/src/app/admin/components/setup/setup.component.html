@@ -74,17 +74,18 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-12">
+          <div class="col-12" *ngIf="activePlugin[repoindex]?.start_page">
             <mat-form-field class="w-100">
-              <mat-label
-              >Start from page number (0, unless you know what you are
-                doing)</mat-label
-              >
+              <mat-label>
+                Start from page number ({{activePlugin[repoindex]?.start_page?.placeholder}}, unless you know what you
+                are doing)
+              </mat-label>
               <input
                 matInput
                 type="number"
                 formControlName="startPage"
-                placeholder="0"
+                [placeholder]="activePlugin[repoindex]?.start_page?.placeholder"
+                [required]="activePlugin[repoindex]?.start_page?.required"
                 required
               />
             </mat-form-field>

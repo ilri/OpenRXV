@@ -27,7 +27,6 @@ export class SettingsController {
     private jsonFilesService: JsonFilesService,
     private indexMetadataService: IndexMetadataService,
     private elasticSearvice: ElasticService,
-    private httpService: HttpService,
   ) {}
   getDirectories = (source) =>
     readdirSync(source, { withFileTypes: true })

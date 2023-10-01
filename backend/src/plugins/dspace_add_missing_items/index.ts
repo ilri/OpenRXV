@@ -4,14 +4,16 @@ import { HttpService } from '@nestjs/axios';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Job } from 'bull';
 import { map } from 'rxjs/operators';
-import { FormatService } from '../../shared/services/formater.service';
+import { DSpaceService } from '../../harvesters/DSpace/dspace.service';
+import { DSpace7Service } from '../../harvesters/DSpace7/dspace7.service';
 
 @Injectable()
 export class AddMissingItems {
     constructor(
         private http: HttpService,
         public readonly elasticsearchService: ElasticsearchService,
-        private formatService: FormatService,
+        private readonly dspaceService: DSpaceService,
+        private readonly dspace7Service: DSpace7Service,
     ) {}
 
     async start(queue, name: string, index_name: string, concurrency: number) {
@@ -37,12 +39,13 @@ export class AddMissingItems {
             await job.progress(50);
 
             if (result && result.type == 'item') {
-                await this.formatService.Init(index_name);
                 let formatted;
                 if (job.data.repo.type === 'DSpace') {
-                    formatted = this.formatService.format(result, job.data.repo.schema);
+                    const mappingValues = this.dspaceService.getMappingValues(job.data.index, false);
+                    formatted = this.dspaceService.formatter(result, job.data.repo.schema, mappingValues);
                 } else if (job.data.repo.type === 'DSpace7') {
-                    formatted = this.formatService.DSpace7Format(result, job.data.repo.schema);
+                    const mappingValues = this.dspace7Service.getMappingValues(job.data.index, false);
+                    formatted = this.dspace7Service.formatter(result, job.data.repo.schema, mappingValues);
                 }
 
                 if (job.data.repo.years) {
