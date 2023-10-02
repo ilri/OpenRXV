@@ -181,7 +181,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     MatDividerModule,
     ClipboardModule,
     AgmCoreModule.forRoot({
-      apiKey: 'initial api key',
+      apiKey: '',
     }),
     AgmSnazzyInfoWindowModule,
   ],
