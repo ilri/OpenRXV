@@ -59,7 +59,7 @@ export class SetupComponent implements OnInit {
 
   repositories: UntypedFormArray = new UntypedFormArray([this.getNewForm()]);
 
-  getNewForm() {
+  getNewForm(addBaseSchema = true) {
     return new UntypedFormGroup({
       years: new UntypedFormControl(),
       name: new UntypedFormControl(),
@@ -70,8 +70,8 @@ export class SetupComponent implements OnInit {
       apiKey: new UntypedFormControl(),
       siteMap: new UntypedFormControl(),
       allCores: new UntypedFormControl(),
-      schema: new UntypedFormArray([new UntypedFormGroup(this.baseSchema())]),
-      metadata: new UntypedFormArray([new UntypedFormGroup(this.baseSchema())]),
+      schema: new UntypedFormArray(addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : []),
+      metadata: new UntypedFormArray(addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : []),
     });
   }
   constructor(
@@ -102,19 +102,17 @@ export class SetupComponent implements OnInit {
 
   populateRepository(repository, repositoryIndex){
     this.logo[repositoryIndex] = repository.icon;
-    this.AddNewRepo();
+    this.AddNewRepo(false);
     if (repository.metadata)
       repository.metadata.forEach((item, index) => {
-        if (index > 0)
-          this.AddNewMetadata(
-              this.repositories.at(repositoryIndex).get('metadata'),
-              null
-          );
+        this.AddNewMetadata(
+          this.repositories.at(repositoryIndex).get('metadata'),
+          null
+        );
       });
     if (repository.schema)
       repository.schema.forEach((item, index) => {
-        if (index > 0)
-          this.AddNewMetadata(this.repositories.at(repositoryIndex).get('schema'), null);
+        this.AddNewMetadata(this.repositories.at(repositoryIndex).get('schema'), null);
       });
     if (repository.type)
       this.PluginChange(repository.type, repositoryIndex);
@@ -206,8 +204,8 @@ export class SetupComponent implements OnInit {
       this.plugins = plugins;
     });
   }
-  AddNewRepo() {
-    this.repositories.push(this.getNewForm());
+  AddNewRepo(addBaseSchema = true) {
+    this.repositories.push(this.getNewForm(addBaseSchema));
 
     const repoIndex = this.repositories.length - 1;
     this.isShown[repoIndex] = 0;
