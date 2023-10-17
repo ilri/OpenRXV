@@ -644,8 +644,8 @@ export class HarvesterService implements OnModuleInit {
     queue.process(`${index_name}: Auto commit start`, 1, async (job: Job<any>) => {
       console.log('job.data.index_name commit => ', job.data.index_name)
       await job.takeLock();
-      const isPluginsFinished = await this.IsQueueFinished(`${job.data.index_name}_plugins`);
-      if (!isPluginsFinished) {
+      const queueDependenciesFinished = await this.QueueDependenciesFinished(`${job.data.index_name}_auto_commit`);
+      if (!queueDependenciesFinished) {
         await job.moveToFailed({message: 'Plugins in progress'}, true);
       } else {
         const response: any = await this.commitIndex(job.data.index_name);
@@ -673,6 +673,14 @@ export class HarvesterService implements OnModuleInit {
     }
     if (!queue) {
       return true;
+    }
+
+    let jobsCount = 0;
+    Object.values(await queue.getJobCounts()).map((count: number) => {
+      jobsCount += count;
+    });
+    if (jobsCount === 0) {
+      return false;
     }
 
     const activeCount = await queue.getActiveCount();
@@ -722,5 +730,52 @@ export class HarvesterService implements OnModuleInit {
 
   async ClearDrainPendingQueues() {
     await this.jsonFilesService.save([], '../../../data/drainPendingQueues.json');
+  }
+
+  async QueueDependenciesFinished(queue_name) {
+    let queueContainerName = null;
+    let queueName = null;
+    if (queue_name !== null && typeof queue_name === 'object') {
+      queueContainerName = Object.keys(queue_name)?.[0] as string;
+      queueName = Object.values(queue_name)?.[0] as string;
+    } else {
+      queueContainerName = null;
+      queueName = queue_name;
+    }
+    if (!queueName) {
+      return false;
+    }
+
+    const drainPendingQueues = await this.jsonFilesService.read('../../../data/drainPendingQueues.json');
+    const drainPendingQueuesFiltered = drainPendingQueues.filter(drainPendingQueue => {
+      let queueContainerNameFiltered = null;
+      let queueNameFiltered = null;
+      if (drainPendingQueue.queue_name !== null && typeof drainPendingQueue.queue_name === 'object') {
+        queueContainerNameFiltered = Object.keys(drainPendingQueue.queue_name)?.[0] as string;
+        queueNameFiltered = Object.values(drainPendingQueue.queue_name)?.[0] as string;
+      } else {
+        queueContainerNameFiltered = null;
+        queueNameFiltered = drainPendingQueue.queue_name;
+      }
+      if (queueContainerNameFiltered === queueContainerName && queueNameFiltered === queueName) {
+        return drainPendingQueue;
+      }
+    });
+
+    for (let i = 0; i < drainPendingQueuesFiltered.length; i++) {
+      const drainPendingQueue = drainPendingQueuesFiltered[i];
+
+      const isQueueFinished = await this.IsQueueFinished(drainPendingQueue.queue_name);
+      if (!isQueueFinished) {
+        let dependenciesFinished = true;
+        for (const dependency of drainPendingQueue.dependencies) {
+          if (!await this.IsQueueFinished(dependency)) {
+            dependenciesFinished = false;
+          }
+        }
+
+        return dependenciesFinished;
+      }
+    }
   }
 }

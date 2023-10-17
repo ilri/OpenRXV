@@ -49,31 +49,22 @@ export class TasksService {
     const drainPendingQueues = await this.jsonFilesService.read('../../../data/drainPendingQueues.json');
     for (let i = 0; i < drainPendingQueues.length; i++) {
       const drainPendingQueue = drainPendingQueues[i];
+      const dependenciesFinished = await this.harvester.QueueDependenciesFinished(drainPendingQueue.queue_name);
 
-      const isQueueFinished = await this.harvester.IsQueueFinished(drainPendingQueue.queue_name);
-      if (!isQueueFinished) {
-        let dependenciesFinished = true;
-        for (const dependency of drainPendingQueue.dependencies) {
-          if (!await this.harvester.IsQueueFinished(dependency)) {
-            dependenciesFinished = false;
-          }
+      if (dependenciesFinished) {
+        let queue = null;
+        if (drainPendingQueue.queue_name !== null && typeof drainPendingQueue.queue_name === 'object') {
+          const queueContainerName = Object.keys(drainPendingQueue.queue_name)?.[0] as string;
+          const queueName = Object.values(drainPendingQueue.queue_name)?.[0] as string;
+          queue = this.harvester.registeredQueues?.[queueContainerName]?.[queueName];
+        } else {
+          queue = this.harvester.registeredQueues?.[drainPendingQueue.queue_name];
         }
-
-        if (dependenciesFinished) {
-          let queue = null;
-          if (drainPendingQueue.queue_name !== null && typeof drainPendingQueue.queue_name === 'object') {
-            const queueContainerName = Object.keys(drainPendingQueue.queue_name)?.[0] as string;
-            const queueName = Object.values(drainPendingQueue.queue_name)?.[0] as string;
-            queue = this.harvester.registeredQueues?.[queueContainerName]?.[queueName];
-          } else {
-            queue = this.harvester.registeredQueues?.[drainPendingQueue.queue_name];
-          }
-          if (queue) {
-            console.log('queue resumed => ', JSON.stringify(drainPendingQueue.queue_name));
-            queue.resume();
-          } else {
-            console.log('queue not found => ', JSON.stringify(drainPendingQueue.queue_name))
-          }
+        if (queue) {
+          console.log('queue resumed => ', JSON.stringify(drainPendingQueue.queue_name));
+          queue.resume();
+        } else {
+          console.log('queue not found => ', JSON.stringify(drainPendingQueue.queue_name))
         }
       }
     }
