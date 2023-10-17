@@ -10,6 +10,7 @@ import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
 import * as dayjs from 'dayjs';
+import { SearchResponse, SearchRequest, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 
 @Injectable()
 export class HarvesterService implements OnModuleInit {
@@ -99,6 +100,8 @@ export class HarvesterService implements OnModuleInit {
         defaultJobOptions: {
           attempts: 5,
           timeout: 900000,
+          removeOnComplete: true,
+          removeOnFail: true,
         },
         settings: {
           lockDuration: 900000,
@@ -444,6 +447,7 @@ export class HarvesterService implements OnModuleInit {
       const autoCommitQueue = this.registeredQueues.hasOwnProperty(`${index_name}_auto_commit`) ? this.registeredQueues[`${index_name}_auto_commit`] : null;
       if (autoCommitQueue) {
         autoCommitQueue.add(`${index_name}: Auto commit start`, {index_name});
+        autoCommitQueue.pause();
       }
     }
 
@@ -460,13 +464,12 @@ export class HarvesterService implements OnModuleInit {
       return;
     }
 
-    await indexFetchQueue.pause();
-    await indexFetchQueue.empty();
-    await indexFetchQueue.clean(0, 'wait');
-    await indexFetchQueue.clean(0, 'active');
-    await indexFetchQueue.clean(0, 'completed');
-    await indexFetchQueue.clean(0, 'failed');
-    await indexFetchQueue.resume();
+    if (!await this.IsQueueFinished(`${index_name}_fetch`)) {
+      return {
+        success: false,
+        message: 'Harvesting still in progress'
+      }
+    }
 
     if (!await this.IsIndexable(index_name)) {
       return {
@@ -475,11 +478,11 @@ export class HarvesterService implements OnModuleInit {
       }
     }
 
-    await this.Reindex(index_name);
+    const response = await this.Reindex(index_name);
 
     return {
-      success: true,
-      message: 'Index committed successfully'
+      success: response.success,
+      message: response.message,
     }
   }
 
@@ -548,6 +551,27 @@ export class HarvesterService implements OnModuleInit {
 
     for (const index of indexes) {
       if (index?.to_be_indexed && index?.name === index_name) {
+        try {
+          const options: SearchRequest = {
+            index: `${index.name}_temp`,
+            size: 0,
+            track_total_hits: true,
+          };
+          const items: SearchResponse = await this.elasticsearchService.search(options);
+          const totalHits = items?.hits?.total as SearchTotalHits;
+          if (!(totalHits?.value > 0)) {
+            return {
+              success: false,
+              message: 'Index is empty'
+            }
+          }
+        } catch (e) {
+          return {
+            success: false,
+            message: 'Index is not found'
+          }
+        }
+
         await this.elasticsearchService.indices.updateAliases({
           actions: [
             {
@@ -629,6 +653,11 @@ export class HarvesterService implements OnModuleInit {
     }
 
     await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
+
+    return {
+      success: true,
+      message: 'Index committed successfully'
+    }
   }
 
   async IsIndexable(index_name) {
@@ -642,7 +671,7 @@ export class HarvesterService implements OnModuleInit {
 
   async RegisterAutoCommitProcess(queue, index_name) {
     queue.process(`${index_name}: Auto commit start`, 1, async (job: Job<any>) => {
-      console.log('job.data.index_name commit => ', job.data.index_name)
+      console.log('Auto commit => ', job.data.index_name)
       await job.takeLock();
       const queueDependenciesFinished = await this.QueueDependenciesFinished(`${job.data.index_name}_auto_commit`);
       if (!queueDependenciesFinished) {
@@ -658,7 +687,7 @@ export class HarvesterService implements OnModuleInit {
     });
   }
 
-  async IsQueueFinished(queue_name) {
+  async IsQueueEmpty(queue_name) {
     let queue = null;
     if (typeof queue_name === 'string') {
       queue = this.registeredQueues.hasOwnProperty(queue_name) ? this.registeredQueues[queue_name] : null;
@@ -681,6 +710,24 @@ export class HarvesterService implements OnModuleInit {
     });
     if (jobsCount === 0) {
       return false;
+    }
+  }
+
+  async IsQueueFinished(queue_name) {
+    let queue = null;
+    if (typeof queue_name === 'string') {
+      queue = this.registeredQueues.hasOwnProperty(queue_name) ? this.registeredQueues[queue_name] : null;
+    } else if (queue_name && typeof queue_name === 'object') {
+      const queueContainerName = Object.keys(queue_name)?.[0] as string;
+      const queueName = Object.values(queue_name)?.[0] as string;
+      if (queueContainerName && queueName) {
+        if (this.registeredQueues?.[queueContainerName]?.[queueName]) {
+          queue = this.registeredQueues[queueContainerName][queueName];
+        }
+      }
+    }
+    if (!queue) {
+      return true;
     }
 
     const activeCount = await queue.getActiveCount();
@@ -766,7 +813,8 @@ export class HarvesterService implements OnModuleInit {
       const drainPendingQueue = drainPendingQueuesFiltered[i];
 
       const isQueueFinished = await this.IsQueueFinished(drainPendingQueue.queue_name);
-      if (!isQueueFinished) {
+      const isQueueEmpty = await this.IsQueueEmpty(drainPendingQueue.queue_name);
+      if (!isQueueEmpty && !isQueueFinished) {
         let dependenciesFinished = true;
         for (const dependency of drainPendingQueue.dependencies) {
           if (!await this.IsQueueFinished(dependency)) {
