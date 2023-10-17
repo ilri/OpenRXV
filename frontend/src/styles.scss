@@ -281,20 +281,31 @@ mat-paginator .mat-mdc-select-trigger {
 }
 
 .alert {
+  margin: 0 0 15px 0;
   padding: 10px;
-  color: white;
-  margin-bottom: 15px;
+  border-left: 5px solid #eee;
+  color: black;
   display: block;
+  line-height: 1.2;
+  font-weight: 300;
 }
 
-.alert-success {
-  background-color: #51a351;
+.alert.alert-success {
+  background-color: #c0edf1;
+  border-color: #58d0da;
 }
 
-.alert-warning {
-  background-color: #f89406;
+.alert.alert-info {
+  background-color: #f5f8fd;
+  border-color: #8bb4e7;
 }
 
-.alert-danger {
-  background-color: #bd362f;
+.alert.alert-warning {
+  background-color: #faeaa9;
+  border-color: #f3cc31;
+}
+
+.alert.alert-danger {
+  background-color: #fef7f8;
+  border-color: #f0868e;
 }

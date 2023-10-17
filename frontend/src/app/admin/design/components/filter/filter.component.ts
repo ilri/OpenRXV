@@ -50,6 +50,12 @@ export class FilterComponent implements OnInit {
               type: 'text',
               required: true,
             },
+            {
+              name: 'is_advanced',
+              label: 'Advanced search',
+              type: 'checkbox',
+              required: false,
+            },
           ],
         ];
         break;

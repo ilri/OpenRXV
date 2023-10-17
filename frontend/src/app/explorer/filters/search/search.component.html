@@ -3,14 +3,15 @@
   <input (keyup.enter)="onClick()" matInput type="search" [(ngModel)]="searchTerm" #search
   [placeholder]="componentConfigs.placeholder"/>
   <button
-    aria-label="Search Button"
     mat-button
     matSuffix
     mat-stroked-button
-    aria-label="search"
+    aria-label="Search"
     (click)="onClick()"
     color="primary"
+    [matTooltip]="componentConfigs?.is_advanced ? 'The reserved characters are: + - = && || > < ! ( ) { } [ ] ^ &quot; ~ * ? : \\ /' : ''"
   >
     Search
+    <mat-icon *ngIf="componentConfigs?.is_advanced">error</mat-icon>
   </button>
 </mat-form-field>

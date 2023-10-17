@@ -63,7 +63,13 @@
                     </div>
                 </div>
 
-
+              <p *ngSwitchCase="'checkbox'">
+                  <mat-checkbox [formControlName]="control.name"
+                                [required]="control.required">{{control.label}}</mat-checkbox>
+                <span class="alert alert-info w-100">
+                  Advanced search allows inserting special query parameters to be used in the search input.
+                </span>
+              </p>
 
             </ng-container>
         </ng-container>

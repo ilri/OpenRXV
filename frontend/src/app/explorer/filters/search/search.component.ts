@@ -75,15 +75,27 @@ export class SearchComponent extends ParentComponent implements OnInit {
   private applySearchTerm(): void {
     const { type } = this.componentConfigs as ComponentSearchConfigs;
     if (type === searchOptions.allSearch) {
-      this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
-        query: {
-          query_string: {
-            type: 'best_fields',
-            minimum_should_match: 2,
-            query: this.prepareQueryString(this.searchTerm),
+      if (this.componentConfigs.is_advanced) {
+          this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
+            query: {
+              query_string: {
+                fuzziness: 'auto',
+                default_operator: 'AND',
+                query: this.searchTerm,
+              },
+            },
+          };
+      } else {
+        this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
+          query: {
+            query_string: {
+              type: 'best_fields',
+              minimum_should_match: 2,
+              query: this.prepareQueryString(this.searchTerm),
+            },
           },
-        },
-      };
+        };
+      }
     } else {
       this.bodyBuilderService.setAggAttributes = this.searchTerm;
     }

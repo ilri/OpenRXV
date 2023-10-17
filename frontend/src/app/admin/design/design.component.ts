@@ -315,6 +315,7 @@ export class DesignComponent implements OnInit {
 
     if (obj.placeholder) temp['placeholder'] = obj.placeholder;
     if (obj.description) temp['description'] = obj.description;
+    if (obj.is_advanced) temp['is_advanced'] = obj.is_advanced;
 
     if (obj.border) temp['border'] = obj.border;
 
