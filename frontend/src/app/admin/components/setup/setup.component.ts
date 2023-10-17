@@ -9,6 +9,7 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
 
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../common.service';
@@ -77,11 +78,13 @@ export class SetupComponent implements OnInit {
   constructor(
     private settingService: SettingsService,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private activeRoute: ActivatedRoute,
     private commonService: CommonService,
   ) {}
 
   async ngOnInit() {
+    await this.spinner.show();
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.getOutsourcePlugins();
     const data = await this.settingService.read(this.index_name);
@@ -98,6 +101,7 @@ export class SetupComponent implements OnInit {
       this.populateRepository(element, repoindex);
     });
     this.repositories.patchValue(data.repositories);
+    await this.spinner.hide();
   }
 
   populateRepository(repository, repositoryIndex){
@@ -146,12 +150,14 @@ export class SetupComponent implements OnInit {
   }
   async submit() {
     if (this.repositories.valid) {
+      await this.spinner.show();
       const settings = { repositories: this.repositories.value };
       await this.settingService.save(settings, this.index_name);
       this.toastr.success('Settings have been saved successfully');
 
       const data = await this.settingService.read(this.index_name);
       this.refreshExportLink(data);
+      await this.spinner.hide();
     }
   }
 
@@ -161,6 +167,7 @@ export class SetupComponent implements OnInit {
       this.toastr.error('REST API endpoint is not defined');
       return;
     }
+    await this.spinner.show();
     const schema = <UntypedFormArray>repo.get('schema');
     const metadata = <UntypedFormArray>repo.get('metadata');
     const data = await this.settingService.retreiveMetadata(
@@ -198,6 +205,7 @@ export class SetupComponent implements OnInit {
           new UntypedFormGroup(this.baseSchema(element, element as string)),
         );
       });
+    await this.spinner.hide();
   }
   getOutsourcePlugins() {
     this.settingService.readOutSourcePlugins().then((plugins) => {
@@ -251,6 +259,7 @@ export class SetupComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: any = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -285,6 +294,7 @@ export class SetupComponent implements OnInit {
       }
     }
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, repositories.length, 'Repository(ies)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

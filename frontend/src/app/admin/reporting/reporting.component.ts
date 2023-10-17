@@ -10,6 +10,7 @@ import { DocComponent } from './doc/doc.component';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../common.service';
 
 @Component({
@@ -54,6 +55,7 @@ export class ReportingComponent implements OnInit {
     private metadataService: MetadataService,
     private activeRoute: ActivatedRoute,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
   ) {}
 
@@ -65,10 +67,12 @@ export class ReportingComponent implements OnInit {
   }
 
   async refreshData() {
+    await this.spinner.show();
     this.reports = await this.settingsService.readReports(this.dashboard_name);
     this.tableData = new MatTableDataSource<any>(this.reports);
     this.tableData.paginator = this.paginator;
     this.refreshExportLink();
+    await this.spinner.hide();
   }
 
   refreshExportLink() {
@@ -110,13 +114,15 @@ export class ReportingComponent implements OnInit {
     });
     dialog.afterClosed().subscribe(async (result) => {
       if (result) {
+        await this.spinner.show();
         this.reports.splice(index, 1);
         this.settingsService.saveReportsSettings(
           this.reports,
           this.dashboard_name,
         );
-        await this.refreshData();
+        await this.spinner.hide();
         this.toastr.success('Report deleted successfully');
+        await this.refreshData();
       }
     });
   }
@@ -158,6 +164,7 @@ export class ReportingComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: [] = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -202,6 +209,7 @@ export class ReportingComponent implements OnInit {
       this.dashboard_name,
     );
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Report(s)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

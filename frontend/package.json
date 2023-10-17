@@ -51,6 +51,7 @@
     "ng2-nouislider": "^1.7.13",
     "ngx-color-picker": "^14.0.0",
     "ngx-loading": "^15.0.0",
+    "ngx-spinner": "^15.0.1",
     "ngx-toastr": "^15.2.2",
     "ngx-ui-tour-md-menu": "^10.7.0",
     "nouislider": "^15.7.1",

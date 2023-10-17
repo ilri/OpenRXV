@@ -8,7 +8,6 @@ import { DSpace7Service } from '../../harvesters/DSpace7/dspace7.service';
 import { AddMissingItems } from '../../plugins/dspace_add_missing_items';
 import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
-import { DSpaceHealthCheck } from '../../plugins/dspace_health_check';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
 import * as dayjs from 'dayjs';
 
@@ -25,13 +24,13 @@ export class HarvesterService implements OnModuleInit {
       private readonly addMissingItems: AddMissingItems,
       private readonly dspaceAltmetrics: DSpaceAltmetrics,
       private readonly dspaceDownloadsAndViews: DSpaceDownloadsAndViews,
-      private readonly dspaceHealthCheck: DSpaceHealthCheck,
       private readonly melDownloadsAndViews: MELDownloadsAndViews,
   ) {}
 
   registeredQueues = {}
 
   async onModuleInit() {
+    await this.ClearDrainPendingQueues();
     await this.ReDefineExistingQueues();
   }
 
@@ -63,8 +62,40 @@ export class HarvesterService implements OnModuleInit {
       await this.dspace7Service.RegisterProcess(this.registeredQueues[`${index_name}_fetch`]);
     }
 
+    if (!this.registeredQueues.hasOwnProperty(`${index_name}_auto_commit`)) {
+      this.registeredQueues[`${index_name}_auto_commit`] = new Bull(`${index_name}_auto_commit`, {
+        defaultJobOptions: {
+          attempts: 10,
+          priority: 999,
+          delay: 200,
+          backoff: {
+            type: 'exponential',
+            delay: 60000,
+          },
+        },
+        settings: {
+          stalledInterval: 2000,
+          maxStalledCount: 10,
+          retryProcessDelay: 2000,
+          drainDelay: 20000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.RegisterAutoCommitProcess(this.registeredQueues[`${index_name}_auto_commit`], index_name);
+      await this.registeredQueues[`${index_name}_auto_commit`].pause();
+      await this.RegisterDrainPendingQueues(`${index_name}_auto_commit`, [`${index_name}_fetch`]);
+    }
+
     if (!this.registeredQueues.hasOwnProperty(`${index_name}_plugins`)) {
-      this.registeredQueues[`${index_name}_plugins`] = new Bull(`${index_name}_plugins`, {
+      this.registeredQueues[`${index_name}_plugins`] = {};
+    }
+
+    if (!this.registeredQueues[`${index_name}_plugins`].hasOwnProperty(`dspace_add_missing_items`)) {
+      const name = `${index_name}_plugins_dspace_add_missing_items`;
+      this.registeredQueues[`${index_name}_plugins`].dspace_add_missing_items = new Bull(name, {
         defaultJobOptions: {
           attempts: 5,
           timeout: 900000,
@@ -73,18 +104,77 @@ export class HarvesterService implements OnModuleInit {
           lockDuration: 900000,
           maxStalledCount: 0,
           retryProcessDelay: 9000,
-          drainDelay: 9000,
+          drainDelay: 20000,
         },
         redis: {
           host: process.env.REDIS_HOST,
           port: parseInt(process.env.REDIS_PORT),
         },
       });
-      await this.addMissingItems.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_add_missing_items', index_name, 5);
-      await this.dspaceAltmetrics.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_altmetrics', 0);
-      await this.dspaceDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_downloads_and_views', 0);
-      await this.dspaceHealthCheck.start(this.registeredQueues[`${index_name}_plugins`], 'dspace_health_check', index_name, 0);
-      await this.melDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`], 'mel_downloads_and_views', 0);
+      await this.addMissingItems.start(this.registeredQueues[`${index_name}_plugins`].dspace_add_missing_items, name, index_name, 5);
+    }
+
+    if (!this.registeredQueues[`${index_name}_plugins`].hasOwnProperty(`dspace_altmetrics`)) {
+      const name = `${index_name}_plugins_dspace_altmetrics`;
+      this.registeredQueues[`${index_name}_plugins`].dspace_altmetrics = new Bull(name, {
+        defaultJobOptions: {
+          attempts: 5,
+          timeout: 900000,
+        },
+        settings: {
+          lockDuration: 900000,
+          maxStalledCount: 0,
+          retryProcessDelay: 9000,
+          drainDelay: 20000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.dspaceAltmetrics.start(this.registeredQueues[`${index_name}_plugins`].dspace_altmetrics, name, 5);
+    }
+
+    if (!this.registeredQueues[`${index_name}_plugins`].hasOwnProperty(`dspace_downloads_and_views`)) {
+      const name = `${index_name}_plugins_dspace_downloads_and_views`;
+      this.registeredQueues[`${index_name}_plugins`].dspace_downloads_and_views = new Bull(name, {
+        defaultJobOptions: {
+          attempts: 5,
+          timeout: 900000,
+        },
+        settings: {
+          lockDuration: 900000,
+          maxStalledCount: 0,
+          retryProcessDelay: 9000,
+          drainDelay: 20000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.dspaceDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`].dspace_downloads_and_views, name, 5);
+    }
+
+    if (!this.registeredQueues[`${index_name}_plugins`].hasOwnProperty(`mel_downloads_and_views`)) {
+      const name = `${index_name}_plugins_mel_downloads_and_views`;
+      this.registeredQueues[`${index_name}_plugins`].mel_downloads_and_views = new Bull(name, {
+        defaultJobOptions: {
+          attempts: 5,
+          timeout: 900000,
+        },
+        settings: {
+          lockDuration: 900000,
+          maxStalledCount: 0,
+          retryProcessDelay: 9000,
+          drainDelay: 20000,
+        },
+        redis: {
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT),
+        },
+      });
+      await this.melDownloadsAndViews.start(this.registeredQueues[`${index_name}_plugins`].mel_downloads_and_views, name, 5);
     }
   }
 
@@ -132,7 +222,14 @@ export class HarvesterService implements OnModuleInit {
   }
 
   async getInfo(index_name: string, section: string, status: string = 'active', pageIndex: number = 0, pageSize: number = 5) {
-    const indexQueue = this.registeredQueues.hasOwnProperty(`${index_name}_${section}`) ? this.registeredQueues[`${index_name}_${section}`] : null;
+    let indexQueue = null;
+    if (section === 'fetch') {
+      indexQueue = this.registeredQueues.hasOwnProperty(`${index_name}_${section}`) ? this.registeredQueues[`${index_name}_${section}`] : null;
+    } else {
+      if (this.registeredQueues.hasOwnProperty(`${index_name}_plugins`)) {
+        indexQueue = this.registeredQueues[`${index_name}_plugins`].hasOwnProperty(section) ? this.registeredQueues[`${index_name}_plugins`][section] : null;
+      }
+    }
 
     let records = [];
     const defaultPageSize = 5;
@@ -208,16 +305,18 @@ export class HarvesterService implements OnModuleInit {
       await indexFetchQueue.clean(0, 'active');
       await indexFetchQueue.clean(0, 'delayed');
       await indexFetchQueue.clean(0, 'paused');
+      await indexFetchQueue.resume();
     }
-
-    const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
-    if (indexPluginsQueue != null) {
-      await indexPluginsQueue.pause();
-      await indexPluginsQueue.empty();
-      await indexPluginsQueue.clean(0, 'wait');
-      await indexPluginsQueue.clean(0, 'active');
-      await indexPluginsQueue.clean(0, 'delayed');
-      await indexPluginsQueue.clean(0, 'paused');
+    const autoCommitQueue = this.registeredQueues.hasOwnProperty(`${index_name}_auto_commit`) ? this.registeredQueues[`${index_name}_auto_commit`] : null;
+    if (autoCommitQueue != null) {
+      this.logger.debug('Stopping auto commit');
+      await autoCommitQueue.pause();
+      await autoCommitQueue.empty();
+      await autoCommitQueue.clean(0, 'wait');
+      await autoCommitQueue.clean(0, 'active');
+      await autoCommitQueue.clean(0, 'delayed');
+      await autoCommitQueue.clean(0, 'paused');
+      await autoCommitQueue.pause();
     }
 
     return {
@@ -226,7 +325,41 @@ export class HarvesterService implements OnModuleInit {
     }
   }
 
-  async startHarvest(index_name: string) {
+  async stopAll(index_name: string) {
+    await this.stopHarvest(index_name);
+    await this.pluginsStop(index_name, null);
+
+    return {
+      success: true,
+      message: 'Harvest and plugins stopped successfully'
+    }
+  }
+
+  async pluginsStop(index_name: string, plugin_name: string = null) {
+    await this.ReDefineExistingQueues();
+
+    const indexPluginsQueues = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
+    if (indexPluginsQueues != null) {
+      for (const queueName in indexPluginsQueues) {
+        if ((plugin_name == null || plugin_name === queueName) && indexPluginsQueues?.[queueName]) {
+          const indexPluginsQueue = indexPluginsQueues[queueName];
+          await indexPluginsQueue.pause();
+          await indexPluginsQueue.empty();
+          await indexPluginsQueue.clean(0, 'wait');
+          await indexPluginsQueue.clean(0, 'active');
+          await indexPluginsQueue.clean(0, 'delayed');
+          await indexPluginsQueue.clean(0, 'paused');
+        }
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Plugin stopped successfully'
+    }
+  }
+
+  async startHarvest(index_name: string, autoHarvesting = false) {
     await this.ReDefineExistingQueues();
     const indexFetchQueue = this.registeredQueues.hasOwnProperty(`${index_name}_fetch`) ? this.registeredQueues[`${index_name}_fetch`] : null;
     const settings = await this.jsonFilesService.read('../../../data/dataToUse.json');
@@ -234,7 +367,7 @@ export class HarvesterService implements OnModuleInit {
       return 'Not found';
     }
 
-    this.logger.debug('Starting Harvest');
+    this.logger.debug('Starting Harvest ' + index_name);
     await indexFetchQueue.pause();
     await indexFetchQueue.empty();
     await indexFetchQueue.clean(0, 'failed');
@@ -242,18 +375,38 @@ export class HarvesterService implements OnModuleInit {
     await indexFetchQueue.clean(0, 'active');
     await indexFetchQueue.clean(0, 'delayed');
     await indexFetchQueue.clean(0, 'completed');
+    await indexFetchQueue.clean(0, 'paused');
     await indexFetchQueue.resume();
 
-    const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
-    if (indexPluginsQueue != null) {
-      await indexPluginsQueue.pause();
-      await indexPluginsQueue.empty();
-      await indexPluginsQueue.clean(0, 'failed');
-      await indexPluginsQueue.clean(0, 'wait');
-      await indexPluginsQueue.clean(0, 'active');
-      await indexPluginsQueue.clean(0, 'delayed');
-      await indexPluginsQueue.clean(0, 'completed');
-      await indexPluginsQueue.resume();
+    const autoCommitQueue = this.registeredQueues.hasOwnProperty(`${index_name}_auto_commit`) ? this.registeredQueues[`${index_name}_auto_commit`] : null;
+    if (autoCommitQueue != null) {
+      await autoCommitQueue.pause();
+      await autoCommitQueue.empty();
+      await autoCommitQueue.clean(0, 'failed');
+      await autoCommitQueue.clean(0, 'wait');
+      await autoCommitQueue.clean(0, 'active');
+      await autoCommitQueue.clean(0, 'delayed');
+      await autoCommitQueue.clean(0, 'completed');
+      await autoCommitQueue.clean(0, 'paused');
+      await autoCommitQueue.pause();
+    }
+
+    const indexPluginsQueues = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
+    if (indexPluginsQueues != null) {
+      for (const queueName in indexPluginsQueues) {
+        if (indexPluginsQueues?.[queueName]) {
+          const indexPluginsQueue = indexPluginsQueues[queueName];
+          await indexPluginsQueue.pause();
+          await indexPluginsQueue.empty();
+          await indexPluginsQueue.clean(0, 'failed');
+          await indexPluginsQueue.clean(0, 'wait');
+          await indexPluginsQueue.clean(0, 'active');
+          await indexPluginsQueue.clean(0, 'delayed');
+          await indexPluginsQueue.clean(0, 'completed');
+          await indexPluginsQueue.clean(0, 'paused');
+          await indexPluginsQueue.resume();
+        }
+      }
     }
 
     if (!await this.IsIndexable(index_name)) {
@@ -267,12 +420,12 @@ export class HarvesterService implements OnModuleInit {
       index: `${index_name}_temp`,
       ignore_unavailable: true,
     });
-    this.logger.debug('Delete temp');
+    this.logger.debug(`${index_name}: Delete temp`);
 
     await this.elasticsearchService.indices.create({
       index: `${index_name}_temp`,
     });
-    this.logger.debug('Create temp');
+    this.logger.debug(`${index_name}: Create temp`);
 
     for (const repo of settings[index_name].repositories) {
       repo.index_name = index_name;
@@ -282,8 +435,15 @@ export class HarvesterService implements OnModuleInit {
       } else if (repo.type === 'DSpace7') {
         await this.dspace7Service.addJobs(indexFetchQueue, repo);
       } else {
-        this.logger.debug('Starting Harvest => ' + repo.type);
+        this.logger.debug(`${index_name}: Starting Harvest => ${repo.type}`);
         indexFetchQueue.add(repo.type, {repo: repo});
+      }
+    }
+
+    if (autoHarvesting) {
+      const autoCommitQueue = this.registeredQueues.hasOwnProperty(`${index_name}_auto_commit`) ? this.registeredQueues[`${index_name}_auto_commit`] : null;
+      if (autoCommitQueue) {
+        autoCommitQueue.add(`${index_name}: Auto commit start`, {index_name});
       }
     }
 
@@ -323,21 +483,27 @@ export class HarvesterService implements OnModuleInit {
     }
   }
 
-  async pluginsStart(index_name: string) {
+  async pluginsStart(index_name: string, plugin_name: string = null) {
     await this.ReDefineExistingQueues();
-    const indexPluginsQueue = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
-    if (indexPluginsQueue == null) {
+    const indexPluginsQueues = this.registeredQueues.hasOwnProperty(`${index_name}_plugins`) ? this.registeredQueues[`${index_name}_plugins`] : null;
+    if (indexPluginsQueues == null) {
       return 'Not found';
     }
 
-    await indexPluginsQueue.pause();
-    await indexPluginsQueue.empty();
-    await indexPluginsQueue.clean(0, 'failed');
-    await indexPluginsQueue.clean(0, 'wait');
-    await indexPluginsQueue.clean(0, 'active');
-    await indexPluginsQueue.clean(0, 'delayed');
-    await indexPluginsQueue.clean(0, 'completed');
-    await indexPluginsQueue.resume();
+    for (const queueName in indexPluginsQueues) {
+      if ((plugin_name == null || plugin_name === queueName) && indexPluginsQueues?.[queueName]) {
+        const indexPluginsQueue = indexPluginsQueues[queueName];
+        await indexPluginsQueue.pause();
+        await indexPluginsQueue.empty();
+        await indexPluginsQueue.clean(0, 'failed');
+        await indexPluginsQueue.clean(0, 'wait');
+        await indexPluginsQueue.clean(0, 'active');
+        await indexPluginsQueue.clean(0, 'delayed');
+        await indexPluginsQueue.clean(0, 'completed');
+        await indexPluginsQueue.resume();
+      }
+    }
+
     const plugins = await this.jsonFilesService.read(
         '../../../data/plugins.json',
     );
@@ -353,17 +519,24 @@ export class HarvesterService implements OnModuleInit {
     if (indexPlugins.filter((plugin) => plugin.value.length > 0).length > 0) {
       for (const plugin of indexPlugins) {
         for (const param of plugin.value) {
-          await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index_name);
-          await this.melDownloadsAndViews.addJobs(indexPluginsQueue, plugin.name, param, index_name);
-          await this.dspaceAltmetrics.addJobs(indexPluginsQueue, plugin.name, param, index_name);
-          await this.dspaceHealthCheck.addJobs(indexPluginsQueue, plugin.name, param, index_name);
+          const name = `${index_name}_plugins_${plugin.name}`;
+          if (plugin_name == null || plugin_name === plugin.name)
+            if (plugin.name === 'dspace_add_missing_items' && indexPluginsQueues?.dspace_add_missing_items) {
+              await this.addMissingItems.addJobs(indexPluginsQueues.dspace_add_missing_items, name, param, index_name);
+            } else if (plugin.name === 'dspace_downloads_and_views' && indexPluginsQueues?.dspace_downloads_and_views) {
+              await this.dspaceDownloadsAndViews.addJobs(indexPluginsQueues.dspace_downloads_and_views, name, param, index_name);
+            } else if (plugin.name === 'mel_downloads_and_views' && indexPluginsQueues?.mel_downloads_and_views) {
+              await this.melDownloadsAndViews.addJobs(indexPluginsQueues.mel_downloads_and_views, name, param, index_name);
+            } else if (plugin.name === 'dspace_altmetrics' && indexPluginsQueues?.dspace_altmetrics) {
+              await this.dspaceAltmetrics.addJobs(indexPluginsQueues.dspace_altmetrics, name, param, index_name);
+            }
         }
       }
     }
 
     return {
       success: true,
-      message: 'Plugins started successfully'
+      message: 'Plugin started successfully'
     }
   }
 
@@ -465,5 +638,89 @@ export class HarvesterService implements OnModuleInit {
     const target_index = indexes.filter(d => d?.to_be_indexed && d?.name === index_name);
 
     return target_index.length > 0
+  }
+
+  async RegisterAutoCommitProcess(queue, index_name) {
+    queue.process(`${index_name}: Auto commit start`, 1, async (job: Job<any>) => {
+      console.log('job.data.index_name commit => ', job.data.index_name)
+      await job.takeLock();
+      const isPluginsFinished = await this.IsQueueFinished(`${job.data.index_name}_plugins`);
+      if (!isPluginsFinished) {
+        await job.moveToFailed({message: 'Plugins in progress'}, true);
+      } else {
+        const response: any = await this.commitIndex(job.data.index_name);
+        if (response?.success && response.success === true) {
+          await job.progress(100);
+        } else {
+          await job.moveToFailed({message: response?.message ? response.message : 'Oops! something went wrong'}, true);
+        }
+      }
+    });
+  }
+
+  async IsQueueFinished(queue_name) {
+    let queue = null;
+    if (typeof queue_name === 'string') {
+      queue = this.registeredQueues.hasOwnProperty(queue_name) ? this.registeredQueues[queue_name] : null;
+    } else if (queue_name && typeof queue_name === 'object') {
+      const queueContainerName = Object.keys(queue_name)?.[0] as string;
+      const queueName = Object.values(queue_name)?.[0] as string;
+      if (queueContainerName && queueName) {
+        if (this.registeredQueues?.[queueContainerName]?.[queueName]) {
+          queue = this.registeredQueues[queueContainerName][queueName];
+        }
+      }
+    }
+    if (!queue) {
+      return true;
+    }
+
+    const activeCount = await queue.getActiveCount();
+    if (activeCount > 0) {
+      return false;
+    }
+
+    const waitingCount = await queue.getWaitingCount();
+    if (waitingCount > 0) {
+      return false;
+    }
+
+    const delayedCount = await queue.getDelayedCount();
+    if (delayedCount > 0) {
+      return false;
+    }
+
+    const pausedCount = await queue.getPausedCount();
+    if (pausedCount > 0) {
+      return false;
+    }
+
+    let stuckCount = 0;
+    const activeJobs = await queue.getActive();
+    for (let i = 0; i < activeJobs.length; i++) {
+      activeJobs[i].data.isStuck = await activeJobs[i].isStuck();
+      if (activeJobs[i].data.isStuck) {
+        stuckCount++;
+      }
+    }
+    if (stuckCount > 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async RegisterDrainPendingQueues(queue_name: any, dependencies: any) {
+    const drainPendingQueues = await this.jsonFilesService.read('../../../data/drainPendingQueues.json')
+        .catch(e => []);
+    drainPendingQueues.push({
+      queue_name,
+      dependencies
+    });
+    await this.jsonFilesService.save(drainPendingQueues, '../../../data/drainPendingQueues.json');
+  }
+
+  async ClearDrainPendingQueues() {
+    await this.jsonFilesService.save([], '../../../data/drainPendingQueues.json');
   }
 }

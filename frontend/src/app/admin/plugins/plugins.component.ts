@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../common.service';
 
 @Component({
@@ -19,13 +20,16 @@ export class PluginsComponent implements OnInit {
     private settingsService: SettingsService,
     private activeRoute: ActivatedRoute,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
     ) {}
 
   async ngOnInit() {
+    await this.spinner.show();
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     this.plugins = await this.settingsService.readPluginsSettings(this.index_name);
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.plugins));
+    await this.spinner.hide();
   }
 
   onEdited(event, name) {
@@ -33,6 +37,7 @@ export class PluginsComponent implements OnInit {
   }
 
   async save() {
+    await this.spinner.show();
     const final = Object.values(this.pluginsForms)
       .filter((data: any) => data.active)
       .filter((data: any) => data.form.valid);
@@ -47,9 +52,12 @@ export class PluginsComponent implements OnInit {
     );
     const plugins = await this.settingsService.readPluginsSettings(this.index_name);
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(plugins));
+    this.toastr.success('Saved successfully');
+    await this.spinner.hide();
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: any = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -74,6 +82,7 @@ export class PluginsComponent implements OnInit {
       }
     }
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Plugin(s)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

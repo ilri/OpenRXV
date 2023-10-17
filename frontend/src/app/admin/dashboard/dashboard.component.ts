@@ -15,85 +15,65 @@ import { CommonService } from '../../common.service';
 })
 export class DashboardComponent implements OnInit {
   constructor(
-    private setttingService: SettingsService,
+    private settingsService: SettingsService,
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
     private toastr: ToastrService,
     private commonService: CommonService,
     ) {}
 
-  fetchData = {
-    active_count: 0,
-    waiting_count: 0,
-    completed_count: 0,
-    failed_count: 0,
-    stuck_count: 0,
-    startedAt: null,
-    table: {
-      data: new MatTableDataSource<Array<any>>([]),
-      pageIndex: 0,
-      pageSize: 5,
-      totalPages: 0,
-      totalRecords: 0,
-    }
-  }
-  pluginsData = {
-    active_count: 0,
-    waiting_count: 0,
-    completed_count: 0,
-    failed_count: 0,
-    stuck_count: 0,
-    startedAt: null,
-    table: {
-      data: new MatTableDataSource<Array<any>>([]),
-      pageIndex: 0,
-      pageSize: 5,
-      totalPages: 0,
-      totalRecords: 0,
-    }
-  }
-
-  pagination = {
-    fetch: {
-      pageIndex: 0,
-      pageSize: 5,
-    },
-    plugins: {
-      pageIndex: 0,
-      pageSize: 5,
-    },
-  };
-  fetchActiveTable = 'Active';
-  fetchActiveStatus = 'active';
-  pluginsActiveTable = 'Active';
-  pluginsActiveStatus = 'active';
-  refreshCounter = {
-    fetch: {
-      counter: 0,
-      interval: null
-    },
-    plugins: {
-      counter: 0,
-      interval: null
-    }
-  };
-  progress = {
-    fetchData: {
-      percentage: 0,
-      estimation: '',
-      totalJobs: 0,
-    },
-    pluginsData: {
-      percentage: 0,
-      estimation: '',
-      totalJobs: 0,
-    }
-  };
+  availableSections = [];
+  tablesData: any = {};
+  pagination: any = {};
+  activeTables: any = {};
+  refreshCounter: any = {};
+  progress: any = {};
 
   index_name: string;
 
   async ngOnInit() {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
+
+    const availableSections = await this.settingsService.readPluginsSettings(this.index_name);
+    this.availableSections = availableSections.filter((plugin) => plugin?.values && plugin.values.length > 0);
+    this.availableSections.unshift({
+      name: 'fetch',
+      display_name: 'Harvest',
+    });
+    for (const availableSection of this.availableSections) {
+      this.tablesData[availableSection.name] = {
+        active_count: 0,
+        waiting_count: 0,
+        completed_count: 0,
+        failed_count: 0,
+        stuck_count: 0,
+        startedAt: null,
+        table: {
+          data: new MatTableDataSource<Array<any>>([]),
+          pageIndex: 0,
+          pageSize: 5,
+          totalPages: 0,
+          totalRecords: 0,
+        }
+      };
+      this.pagination[availableSection.name] = {
+        pageIndex: 0,
+        pageSize: 5,
+      };
+      this.activeTables[availableSection.name] = {
+        table: 'Active',
+        status: 'active',
+      };
+      this.refreshCounter[availableSection.name] = {
+        counter: 0,
+        interval: null,
+      };
+      this.progress[availableSection.name] = {
+        percentage: 0,
+        estimation: '',
+        totalJobs: 0,
+      };
+    }
     this.Init();
   }
 
@@ -107,10 +87,12 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.setttingService.startHarvesting(this.index_name);
+        const response = await this.settingsService.startHarvesting(this.index_name);
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
-          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          for (const availableSection of this.availableSections) {
+            this.refreshCounter[availableSection.name].counter = 0;
+          }
           await this.Init();
         } else {
           this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
@@ -129,10 +111,12 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.setttingService.commitIndex(this.index_name);
+        const response = await this.settingsService.commitIndex(this.index_name);
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
-          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          for (const availableSection of this.availableSections) {
+            this.refreshCounter[availableSection.name].counter = 0;
+          }
           await this.Init();
         } else {
           this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
@@ -141,21 +125,51 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  async startPlugins() {
+  async startPlugin(plugin) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
       data: {
         title: '',
-        subtitle: 'Are you sure you want to start plugins?',
+        subtitle: `Are you sure you want to start the plugin <b>${plugin.display_name}</b>?`,
       },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.setttingService.startPlugins(this.index_name);
+        const response = await this.settingsService.startPlugin(this.index_name, plugin.name);
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
-          this.refreshCounter.plugins.counter = 0;
-          await this.InitPluginsData(this.pluginsActiveStatus);
+          for (const availableSection of this.availableSections) {
+            if (availableSection.name === plugin.name) {
+              this.refreshCounter[availableSection.name].counter = 0;
+              await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+            }
+          }
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
+  }
+
+  async stopPlugin(plugin) {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: `Are you sure you want to stop the plugin <b>${plugin.display_name}</b>?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.settingsService.stopPlugin(this.index_name, plugin.name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          for (const availableSection of this.availableSections) {
+            if (availableSection.name === plugin.name) {
+              this.refreshCounter[availableSection.name].counter = 0;
+              await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+            }
+          }
         } else {
           this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
         }
@@ -173,10 +187,34 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.setttingService.stopHarvesting(this.index_name);
+        const response = await this.settingsService.stopHarvesting(this.index_name);
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
-          this.refreshCounter.fetch.counter = this.refreshCounter.plugins.counter = 0;
+          this.refreshCounter.fetch.counter = 0;
+          await this.InitFetchData(this.activeTables?.fetch?.status);
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+      }
+    });
+  }
+
+  async stopAll() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to stop harvesting and plugins?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        const response = await this.settingsService.stopAll(this.index_name);
+        if (response.success) {
+          this.toastr.success(response?.message ? response.message : 'Success');
+          for (const availableSection of this.availableSections) {
+            this.refreshCounter[availableSection.name].counter = 0;
+          }
           this.Init();
         } else {
           this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
@@ -186,8 +224,12 @@ export class DashboardComponent implements OnInit {
   }
 
   async Init() {
-    await this.InitFetchData(this.fetchActiveStatus);
-    await this.InitPluginsData(this.pluginsActiveStatus);
+    await this.InitFetchData(this.activeTables?.fetch?.status);
+    for (const availableSection of this.availableSections) {
+      if (availableSection.name !== 'fetch') {
+        await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+      }
+    }
   }
 
   async InitFetchData(status: string = null, paginationRefresh = false) {
@@ -199,23 +241,23 @@ export class DashboardComponent implements OnInit {
       stuck_count,
       startedAt,
       table,
-    } = await this.setttingService.getHarvesterInfo(this.index_name, 'fetch', status, this.pagination.fetch);
+    } = await this.settingsService.getHarvesterInfo(this.index_name, 'fetch', status, this.pagination.fetch);
 
-    this.fetchData.active_count = active_count;
-    this.fetchData.waiting_count = waiting_count;
-    this.fetchData.completed_count = completed_count;
-    this.fetchData.failed_count = failed_count;
-    this.fetchData.stuck_count = stuck_count;
-    this.fetchData.startedAt = startedAt;
-    this.fetchData.table = {
+    this.tablesData.fetch.active_count = active_count;
+    this.tablesData.fetch.waiting_count = waiting_count;
+    this.tablesData.fetch.completed_count = completed_count;
+    this.tablesData.fetch.failed_count = failed_count;
+    this.tablesData.fetch.stuck_count = stuck_count;
+    this.tablesData.fetch.startedAt = startedAt;
+    this.tablesData.fetch.table = {
       data: new MatTableDataSource<Array<any>>(table.data),
       pageIndex: table.pageIndex,
       pageSize: table.pageSize,
       totalPages: table.totalPages,
       totalRecords: table.totalRecords,
     };
-    this.CalculateProgress('fetchData');
-    if (this.fetchData.active_count == 0 && this.fetchData.active_count == 0 && this.refreshCounter.fetch.counter >= 3) {
+    this.CalculateProgress('fetch');
+    if (this.tablesData.fetch.active_count == 0 && this.tablesData.fetch.active_count == 0 && this.refreshCounter.fetch.counter >= 3) {
       if (this.refreshCounter.fetch.interval != null) {
         clearInterval(this.refreshCounter.fetch.interval);
         this.refreshCounter.fetch.interval = null;
@@ -225,7 +267,7 @@ export class DashboardComponent implements OnInit {
     if (this.refreshCounter.fetch.counter == 0) {
       if (!this.refreshCounter.fetch.interval)
         this.refreshCounter.fetch.interval = setInterval(() => {
-          this.InitFetchData(this.fetchActiveStatus);
+          this.InitFetchData(this.activeTables?.fetch?.status);
         }, 6000);
     }
 
@@ -234,47 +276,49 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async InitPluginsData(status: string = null, paginationRefresh = false) {
-    const {
-      active_count,
-      waiting_count,
-      completed_count,
-      failed_count,
-      stuck_count,
-      startedAt,
-      table,
-    } = await this.setttingService.getHarvesterInfo(this.index_name, 'plugins', status, this.pagination.plugins);
+  async InitPluginsData(plugin: any, status: string = null, paginationRefresh = false) {
+    if (plugin?.name) {
+      const {
+        active_count,
+        waiting_count,
+        completed_count,
+        failed_count,
+        stuck_count,
+        startedAt,
+        table,
+      } = await this.settingsService.getHarvesterInfo(this.index_name, plugin.name, status, this.pagination[plugin.name]);
 
-    this.pluginsData.active_count = active_count;
-    this.pluginsData.waiting_count = waiting_count;
-    this.pluginsData.completed_count = completed_count;
-    this.pluginsData.failed_count = failed_count;
-    this.pluginsData.stuck_count = stuck_count;
-    this.pluginsData.startedAt = startedAt;
-    this.pluginsData.table = {
-      data: new MatTableDataSource<Array<any>>(table.data),
-      pageIndex: table.pageIndex,
-      pageSize: table.pageSize,
-      totalPages: table.totalPages,
-      totalRecords: table.totalRecords,
-    };
-    this.CalculateProgress('pluginsData');
-    if (this.pluginsData.active_count == 0 && this.pluginsData.active_count == 0 && this.refreshCounter.plugins.counter >= 3) {
-      if (this.refreshCounter.plugins.interval != null) {
-        clearInterval(this.refreshCounter.plugins.interval);
-        this.refreshCounter.plugins.interval = null;
+      this.tablesData[plugin.name].active_count = active_count;
+      this.tablesData[plugin.name].waiting_count = waiting_count;
+      this.tablesData[plugin.name].completed_count = completed_count;
+      this.tablesData[plugin.name].failed_count = failed_count;
+      this.tablesData[plugin.name].stuck_count = stuck_count;
+      this.tablesData[plugin.name].startedAt = startedAt;
+      this.tablesData[plugin.name].table = {
+        data: new MatTableDataSource<Array<any>>(table.data),
+        pageIndex: table.pageIndex,
+        pageSize: table.pageSize,
+        totalPages: table.totalPages,
+        totalRecords: table.totalRecords,
+      };
+      this.CalculateProgress(plugin.name);
+      if (this.tablesData[plugin.name].active_count == 0 && this.tablesData[plugin.name].active_count == 0 && this.refreshCounter[plugin.name].counter >= 3) {
+        if (this.refreshCounter[plugin.name].interval != null) {
+          clearInterval(this.refreshCounter[plugin.name].interval);
+          this.refreshCounter[plugin.name].interval = null;
+        }
       }
-    }
 
-    if (this.refreshCounter.plugins.counter == 0) {
-      if (!this.refreshCounter.plugins.interval)
-        this.refreshCounter.plugins.interval = setInterval(() => {
-          this.InitPluginsData(this.pluginsActiveStatus);
-        }, 6000);
-    }
+      if (this.refreshCounter[plugin.name].counter == 0) {
+        if (!this.refreshCounter[plugin.name].interval)
+          this.refreshCounter[plugin.name].interval = setInterval(() => {
+            this.InitPluginsData(plugin, this.activeTables?.[plugin.name].status);
+          }, 6000);
+      }
 
-    if (!paginationRefresh) {
-      this.refreshCounter.plugins.counter++;
+      if (!paginationRefresh) {
+        this.refreshCounter[plugin.name].counter++;
+      }
     }
   }
 
@@ -284,43 +328,51 @@ export class DashboardComponent implements OnInit {
       this.pagination[section].pageIndex = event.pageIndex;
       if (section === 'fetch') {
         await this.InitFetchData(status, true);
-      } else if (section === 'plugins') {
-        await this.InitPluginsData(status, true);
+      } else {
+        for (const availablePlugin of this.availableSections) {
+          if (section === availablePlugin.name) {
+            await this.InitPluginsData(availablePlugin, status, true);
+          }
+        }
       }
     }
   }
 
   async ChangeTable(tableName, status, section) {
     if (section === 'fetch') {
-      this.fetchActiveTable = tableName;
-      this.fetchActiveStatus = status;
+      this.activeTables.fetch.table = tableName;
+      this.activeTables.fetch.status = status;
 
       this.pagination[section].pageSize = 5;
       this.pagination[section].pageIndex = 0;
       await this.InitFetchData(status, true);
-    } else if (section === 'plugins') {
-      this.pluginsActiveTable = tableName;
-      this.pluginsActiveStatus = status;
+    } else {
+      this.activeTables[section].table = tableName;
+      this.activeTables[section].status = status;
 
       this.pagination[section].pageSize = 5;
       this.pagination[section].pageIndex = 0;
-      await this.InitPluginsData(status, true);
+      for (const availablePlugin of this.availableSections) {
+        if (section === availablePlugin.name) {
+          await this.InitPluginsData(availablePlugin, status, true);
+        }
+      }
     }
   }
 
   CalculateProgress(section) {
-    this.progress[section].totalJobs = this[section].active_count + this[section].waiting_count + this[section].completed_count;
+    this.progress[section].totalJobs = this.tablesData[section].active_count + this.tablesData[section].waiting_count + this.tablesData[section].completed_count;
     if (this.progress[section].totalJobs > 0) {
-      this.progress[section].percentage = this[section].completed_count / (this.progress[section].totalJobs) * 100;
+      this.progress[section].percentage = this.tablesData[section].completed_count / (this.progress[section].totalJobs) * 100;
     } else {
       this.progress[section].percentage = 0;
     }
 
-    if (this[section].startedAt && this[section].completed_count > 0) {
-      const startTime = new Date(this[section].startedAt).getTime();
+    if (this.tablesData[section].startedAt && this.tablesData[section].completed_count > 0) {
+      const startTime = new Date(this.tablesData[section].startedAt).getTime();
       const now = new Date().getTime();
-      const completed = this[section].completed_count;
-      const seconds = (now - startTime) / 1000 / completed * (this[section].waiting_count + this[section].active_count);
+      const completed = this.tablesData[section].completed_count;
+      const seconds = (now - startTime) / 1000 / completed * (this.tablesData[section].waiting_count + this.tablesData[section].active_count);
 
       this.progress[section].estimation = this.commonService.HumanReadableTime(seconds);
     } else {

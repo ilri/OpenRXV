@@ -275,3 +275,26 @@ mat-paginator .mat-mdc-select-trigger {
 .mat-mdc-raised-button.mat-primary {
   --mdc-protected-button-label-text-color: var(--theme-primary-contrast-500);
 }
+
+.mat-mdc-checkbox {
+  margin-left: -10px;
+}
+
+.alert {
+  padding: 10px;
+  color: white;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.alert-success {
+  background-color: #51a351;
+}
+
+.alert-warning {
+  background-color: #f89406;
+}
+
+.alert-danger {
+  background-color: #bd362f;
+}

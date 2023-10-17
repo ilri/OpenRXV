@@ -216,6 +216,13 @@ export class SettingsController {
           name: body.data?.name,
           description: body.data?.description,
           to_be_indexed: body.data?.to_be_indexed,
+          auto_harvest: body.data?.auto_harvest,
+          interval: body.data?.interval,
+          interval_month: body.data?.interval_month,
+          interval_month_day: body.data?.interval_month_day,
+          interval_week_day: body.data?.interval_week_day,
+          interval_hour: body.data?.interval_hour,
+          interval_minute: body.data?.interval_minute,
           created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {

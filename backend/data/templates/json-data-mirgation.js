@@ -109,8 +109,10 @@ const operations = {
         await operations.writeFile('dashboards', files.templates.dashboards);
     },
     MigratePlugins: async () => {
+        files.old.plugins = files.old.plugins.filter(plugin => plugin.name !== 'dspace_add_missing_items');
         files.templates.plugins[operations.activeIndex.name] = files.old.plugins.map((plugin) => {
             if (plugin.name === 'dspace_health_check') {
+                plugin.name = 'dspace_add_missing_items';
                 plugin.value = plugin.value.map((value) => {
                     return value.sitemapIdentifier = {
                         "repo": value.repo,

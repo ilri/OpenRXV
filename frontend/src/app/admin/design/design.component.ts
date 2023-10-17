@@ -13,6 +13,7 @@ import { SortComponent } from './components/sort/sort.component';
 import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
 
@@ -26,6 +27,7 @@ export class DesignComponent implements OnInit {
     public dialog: MatDialog,
     private settingsService: SettingsService,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private activeRoute: ActivatedRoute,
     private commonService: CommonService,
   ) {}
@@ -73,6 +75,7 @@ export class DesignComponent implements OnInit {
     });
   }
   async ngOnInit() {
+    await this.spinner.show();
     const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings(dashboard_name);
@@ -101,6 +104,7 @@ export class DesignComponent implements OnInit {
       dashboard: this.dashboard,
       footer: this.footer,
     }));
+    await this.spinner.hide();
   }
 
   populateForm(settings) {
@@ -231,6 +235,7 @@ export class DesignComponent implements OnInit {
       this.dashboard.filter((d) => d.filter((e) => e.scroll == null).length > 0)
         .length == 0
     ) {
+      await this.spinner.show();
       this.welcome.componentConfigs['text'] = this.welcome_text;
       const data = {
         welcome: this.welcome,
@@ -242,6 +247,7 @@ export class DesignComponent implements OnInit {
       await this.settingsService.saveExplorerSettings(dashboard_name, data);
       this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
       this.toastr.success('Settings have been saved successfully');
+      await this.spinner.hide();
     } else {
       this.toastr.error('Please set icons of rows before you save');
     }
@@ -364,6 +370,7 @@ export class DesignComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const importedItem: any = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -380,6 +387,7 @@ export class DesignComponent implements OnInit {
     this.populateForm(appearance);
     importStatus.success.push(importedItem);
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

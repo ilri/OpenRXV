@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import * as dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,9 @@ export class SettingsService {
       .toPromise();
   }
   async saveIndexesSettings(data, isNew: boolean, deleted: any) {
+    if (data?.interval_date) {
+      data.interval_date = dayjs(data.interval_date).format('YYYY-MM-DD');
+    }
     return await this.http
       .post(environment.api + '/settings/indexes', { data, isNew, deleted })
       .pipe(
@@ -235,9 +239,20 @@ export class SettingsService {
       .toPromise();
   }
 
-  async startPlugins(index_name: string) {
+  async startPlugin(index_name: string, plugin_name: string) {
     return await this.http
-      .get(environment.api + `/harvester/start-plugins/${index_name}`)
+      .get(environment.api + `/harvester/start-plugins/${index_name}/${plugin_name}`)
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async stopPlugin(index_name: string, plugin_name: string) {
+    return await this.http
+      .get(environment.api + `/harvester/stop-plugins/${index_name}/${plugin_name}`)
       .pipe(
         map((data: any) => {
           return data;
@@ -269,6 +284,17 @@ export class SettingsService {
   async stopHarvesting(index_name: string) {
     return await this.http
       .get(environment.api + `/harvester/harvest-stop/${index_name}`)
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async stopAll(index_name: string) {
+    return await this.http
+      .get(environment.api + `/harvester/harvest-stop-all/${index_name}`)
       .pipe(
         map((data: any) => {
           return data;

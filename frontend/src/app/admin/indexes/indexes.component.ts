@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { FormIndexComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
 import * as dayjs from 'dayjs';
@@ -20,6 +21,7 @@ export class IndexesComponent implements OnInit {
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
   ) {}
   indexes: any;
@@ -60,6 +62,7 @@ export class IndexesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        await this.spinner.show();
         const index = this.indexes
           .map((x) => {
             return x.id;
@@ -67,6 +70,7 @@ export class IndexesComponent implements OnInit {
           .indexOf(id);
         const deleted = this.indexes.splice(index, 1)[0];
         const response = await this.settingsService.saveIndexesSettings(this.indexes, false, deleted);
+        await this.spinner.hide();
 
         if (response.success === true) {
           this.dataSource = new MatTableDataSource<any>(this.indexes);
@@ -112,15 +116,18 @@ export class IndexesComponent implements OnInit {
   }
 
   async refreshData() {
+    await this.spinner.show();
     const indexes = await this.settingsService.readIndexesSettings();
     this.indexes = indexes;
     this.dataSource = new MatTableDataSource<any>(indexes);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(indexes);
     this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(indexes));
+    await this.spinner.hide();
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: [] = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -149,6 +156,7 @@ export class IndexesComponent implements OnInit {
       }
     }
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Index(es)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

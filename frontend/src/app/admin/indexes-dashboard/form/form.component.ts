@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
 import * as dayjs from 'dayjs';
@@ -15,7 +16,12 @@ export class FormDashboardsComponent implements OnInit {
   form: any;
   indexes: any;
   async submit() {
-    if (this.form.valid && this.data.event == 'New') {
+    if (!this.form.valid) {
+      this.toastr.error('You have some errors. Please check the form.');
+      return;
+    }
+    await this.spinner.show();
+    if (this.data.event == 'New') {
       const response = await this.settingsService.saveDashboardsSettings(
         this.form.value,
         true,
@@ -26,7 +32,7 @@ export class FormDashboardsComponent implements OnInit {
       } else {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
       }
-    } else if (this.form.valid && this.data.event == 'Edit') {
+    } else if (this.data.event == 'Edit') {
       const dashboards = await this.settingsService.readDashboardsSettings();
       const newDashboardsArray = dashboards.map((obj) => {
         if (obj.id === this.data.body[0].id) {
@@ -51,6 +57,7 @@ export class FormDashboardsComponent implements OnInit {
         this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
       }
     }
+    await this.spinner.hide();
   }
   onNoClick(e): void {
     e.preventDefault();
@@ -62,6 +69,7 @@ export class FormDashboardsComponent implements OnInit {
     private settingsService: SettingsService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
   ) {}
   populateForm(data = { name: '', description: '', index: '', isEdit: false }) {
     this.form = this.fb.group({
@@ -81,6 +89,7 @@ export class FormDashboardsComponent implements OnInit {
     });
   }
   async ngOnInit() {
+    await this.spinner.show();
     this.indexes = await this.settingsService.readIndexesSettings();
     if (this.data.event == 'Edit') {
       const data = {
@@ -94,5 +103,6 @@ export class FormDashboardsComponent implements OnInit {
       const data = { name: '', description: '', index: '', isEdit: false };
       this.populateForm(data);
     }
+    await this.spinner.hide();
   }
 }

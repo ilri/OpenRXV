@@ -1,4 +1,4 @@
-import {Controller, UseGuards, Get, Post, Param, Query} from '@nestjs/common';
+import {Controller, UseGuards, Get, Param, Query} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { HarvesterService } from '../services/harveter.service';
 
@@ -35,9 +35,27 @@ export class HarvesterController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('start-plugins/:index_name')
-  async pluginsStart(@Param('index_name') index_name: string) {
-    return await this.harvestService.pluginsStart(index_name);
+  @Get('harvest-stop-all/:index_name')
+  async StopAll(@Param('index_name') index_name: string) {
+    return await this.harvestService.stopAll(index_name);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('start-plugins/:index_name/:plugin_name')
+  async pluginsStart(
+      @Param('index_name') index_name: string,
+      @Param('plugin_name') plugin_name: string,
+  ) {
+    return await this.harvestService.pluginsStart(index_name, plugin_name);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('stop-plugins/:index_name/:plugin_name')
+  async pluginsStop(
+      @Param('index_name') index_name: string,
+      @Param('plugin_name') plugin_name: string,
+  ) {
+    return await this.harvestService.pluginsStop(index_name, plugin_name);
   }
 
   @UseGuards(AuthGuard('jwt'))

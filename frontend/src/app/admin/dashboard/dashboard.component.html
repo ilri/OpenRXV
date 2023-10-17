@@ -3,25 +3,14 @@
     <mat-card appearance="raised">
       <mat-card-title>
         Harvest Dashboard
-
         <button style="float: right;" (click)="commitIndex()" color="accent" mat-raised-button>
           Commit Indexing
           <mat-icon>check</mat-icon>
         </button>
-        <button class="mr-2" style="float: right;" (click)="startPlugins()" color="primary" mat-raised-button>
-          Start Plugins
-          <mat-icon>archive</mat-icon>
+        <button class="mr-2" style="float: right;" (click)="stopAll()" color="warn" mat-raised-button>
+          Stop harvesting and plugins
+          <mat-icon>block</mat-icon>
         </button>
-        <button class="mr-2" style="float: right;" (click)="startHarvesting()" color="primary" mat-raised-button>
-          Start harvesting
-          <mat-icon>archive</mat-icon>
-        </button>
-
-        <button class="mr-2" style="float: right;" (click)="stopHarvesting()" color="warn" mat-raised-button>
-          Stop harvesting
-          <mat-icon>unarchive</mat-icon>
-        </button>
-
         <button class="mr-2" style="float: right;" (click)="Init()" mat-raised-button>
           Refresh
           <mat-icon>refresh</mat-icon>
@@ -30,147 +19,98 @@
     </mat-card>
   </div>
 </div>
-<div class="row">
+
+<div *ngFor="let availableSection of availableSections" class="row pt-3">
+  <div class="col-6">
+    <h3>{{availableSection.display_name}}</h3>
+  </div>
+  <div class="col-md-6 harvest-table-tools mb-2">
+    <ng-container *ngIf="availableSection.name === 'fetch'">
+      <button class="mr-2" (click)="startHarvesting()" color="primary" mat-raised-button>
+        Start
+        <mat-icon>archive</mat-icon>
+      </button>
+      <button (click)="stopHarvesting()" color="warn" mat-raised-button>
+        Stop
+        <mat-icon>block</mat-icon>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="availableSection.name !== 'fetch'">
+      <button class="mr-2" (click)="startPlugin(availableSection)" color="primary" mat-raised-button>
+        Start
+        <mat-icon>archive</mat-icon>
+      </button>
+      <button (click)="stopPlugin(availableSection)" color="warn" mat-raised-button>
+        Stop
+        <mat-icon>block</mat-icon>
+      </button>
+    </ng-container>
+  </div>
   <div class="col-12 pb-3">
     <div class="d-flex w-100 justify-content-between">
       <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Active', 'active', 'fetch')">
+                (click)="ChangeTable('Active', 'active', availableSection.name)">
         <mat-card-content class="primary-hover">
           <mat-card-title>
-            {{ fetchData.active_count }}
+            {{ tablesData?.[availableSection.name].active_count }}
           </mat-card-title>
-          <mat-card-subtitle>Active ({{ fetchData.stuck_count }})</mat-card-subtitle>
+          <mat-card-subtitle>Active ({{ tablesData?.[availableSection.name].stuck_count }})</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
       <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Waiting', 'waiting', 'fetch')">
+                (click)="ChangeTable('Waiting', 'waiting', availableSection.name)">
         <mat-card-content class="primary-hover">
           <mat-card-title>
-            {{ fetchData.waiting_count }}
+            {{ tablesData?.[availableSection.name].waiting_count }}
           </mat-card-title>
           <mat-card-subtitle>Waiting</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
       <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Completed', 'completed', 'fetch')">
+                (click)="ChangeTable('Completed', 'completed', availableSection.name)">
         <mat-card-content class="primary-hover">
           <mat-card-title>
-            {{ fetchData.completed_count }}
+            {{ tablesData?.[availableSection.name].completed_count }}
           </mat-card-title>
           <mat-card-subtitle>Completed</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
       <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Failed', 'failed', 'fetch')">
+                (click)="ChangeTable('Failed', 'failed', availableSection.name)">
         <mat-card-content class="primary-hover">
           <mat-card-title>
-            {{ fetchData.failed_count }}
+            {{ tablesData?.[availableSection.name].failed_count }}
           </mat-card-title>
           <mat-card-subtitle>Failed</mat-card-subtitle>
         </mat-card-content>
       </mat-card>
     </div>
   </div>
-  <h3 *ngIf="progress.fetchData.estimation && progress.fetchData.estimation !== '00:00:00'" class="col-12 estimated-time" color="primary">
+  <h3 *ngIf="progress?.[availableSection.name].estimation && progress?.[availableSection.name].estimation !== '00:00:00'" class="col-12 estimated-time" color="primary">
     <div>
-      <small>Estimated time</small> {{progress.fetchData.estimation}}
+      <small>Estimated time</small> {{progress?.[availableSection.name].estimation}}
     </div>
     <mat-progress-bar class="estimated-time-progress-bar" mode="indeterminate"></mat-progress-bar>
   </h3>
-  <div *ngIf="progress.fetchData.totalJobs > 0" class="col-12">
+  <div *ngIf="progress?.[availableSection.name].totalJobs > 0" class="col-12">
     <mat-progress-bar class="mb-3 jobs-progress-bar" mode="determinate"
-                      [value]="progress.fetchData.percentage"></mat-progress-bar>
-    <h4 class="jobs-progress-bar-percentage">{{progress.fetchData.percentage.toFixed(2)}}%</h4>
+                      [value]="progress?.[availableSection.name].percentage"></mat-progress-bar>
+    <h4 class="jobs-progress-bar-percentage">{{progress?.[availableSection.name].percentage.toFixed(2)}}%</h4>
   </div>
   <div class="col-12">
     <mat-card appearance="raised">
       <mat-card-title>
-        {{ fetchActiveTable }}
+        {{ activeTables?.[availableSection.name]?.table }}
       </mat-card-title>
       <mat-card-content>
         <app-info-table
-          [data]="fetchData.table.data"
-          [pageIndex]="fetchData.table.pageIndex"
-          [pageSize]="fetchData.table.pageSize"
-          [totalPages]="fetchData.table.totalPages"
-          [totalRecords]="fetchData.table.totalRecords"
-          (paginationEvent)="PaginationChanged($event, fetchActiveStatus, 'fetch')"
-        ></app-info-table>
-
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-</div>
-<div class="row pt-3">
-  <div class="col-12">
-    <h3>Plugins</h3>
-  </div>
-  <div class="col-12 pb-3">
-    <div class="d-flex w-100 justify-content-between">
-      <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Active', 'active', 'plugins')">
-        <mat-card-content class="primary-hover">
-          <mat-card-title>
-            {{ pluginsData.active_count }}
-          </mat-card-title>
-          <mat-card-subtitle>Active ({{ pluginsData.stuck_count }})</mat-card-subtitle>
-        </mat-card-content>
-      </mat-card>
-      <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Waiting', 'waiting', 'plugins')">
-        <mat-card-content class="primary-hover">
-          <mat-card-title>
-            {{ pluginsData.waiting_count }}
-          </mat-card-title>
-          <mat-card-subtitle>Waiting</mat-card-subtitle>
-        </mat-card-content>
-      </mat-card>
-      <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Completed', 'completed', 'plugins')">
-        <mat-card-content class="primary-hover">
-          <mat-card-title>
-            {{ pluginsData.completed_count }}
-          </mat-card-title>
-          <mat-card-subtitle>Completed</mat-card-subtitle>
-        </mat-card-content>
-      </mat-card>
-      <mat-card appearance="raised" class="counter border-bottom-light"
-                (click)="ChangeTable('Failed', 'failed', 'plugins')">
-        <mat-card-content class="primary-hover">
-          <mat-card-title>
-            {{ pluginsData.failed_count }}
-          </mat-card-title>
-          <mat-card-subtitle>Failed</mat-card-subtitle>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
-  <h3 *ngIf="progress.pluginsData.estimation && progress.pluginsData.estimation !== '00:00:00'" class="col-12 estimated-time" color="primary">
-    <div>
-      <small>Estimated time</small> {{progress.pluginsData.estimation}}
-    </div>
-    <mat-progress-bar class="estimated-time-progress-bar" mode="indeterminate"></mat-progress-bar>
-  </h3>
-  <div *ngIf="progress.pluginsData.totalJobs > 0" class="col-12">
-    <mat-progress-bar class="mb-3 jobs-progress-bar" mode="determinate"
-                      [value]="progress.pluginsData.percentage"></mat-progress-bar>
-    <h4 class="jobs-progress-bar-percentage">{{progress.pluginsData.percentage.toFixed(2)}}%</h4>
-  </div>
-  <div class="col-12">
-    <mat-card appearance="raised">
-      <mat-card-title>
-        {{ pluginsActiveTable }}
-      </mat-card-title>
-      <mat-card-content>
-        <app-info-table
-          [data]="pluginsData.table.data"
-          [pageIndex]="pluginsData.table.pageIndex"
-          [pageSize]="pluginsData.table.pageSize"
-          [totalPages]="pluginsData.table.totalPages"
-          [totalRecords]="pluginsData.table.totalRecords"
-          [plugin]="true"
-          (paginationEvent)="PaginationChanged($event, pluginsActiveStatus, 'plugins')"
+          [data]="tablesData?.[availableSection.name].table.data"
+          [pageIndex]="tablesData?.[availableSection.name].table.pageIndex"
+          [pageSize]="tablesData?.[availableSection.name].table.pageSize"
+          [totalPages]="tablesData?.[availableSection.name].table.totalPages"
+          [totalRecords]="tablesData?.[availableSection.name].table.totalRecords"
+          [availableSection]="true"
+          (paginationEvent)="PaginationChanged($event, activeTables?.[availableSection.name]?.status, availableSection.name)"
         ></app-info-table>
 
       </mat-card-content>

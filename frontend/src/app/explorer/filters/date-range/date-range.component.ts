@@ -7,44 +7,18 @@ import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { RangeService } from '../services/range/range.service';
-import { DateAdapter, NativeDateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
-import { formatDate } from '@angular/common';
 
 import * as dayjs from 'dayjs';
 
 import { ActivatedRoute } from '@angular/router';
 // eslint-disable-next-line no-duplicate-imports
 
-export const ISO_8601_date_format = {
-  parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
-  display: {
-    dateInput: 'input',
-    monthYearLabel: {year: 'numeric', month: 'short'},
-    dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
-    monthYearA11yLabel: {year: 'numeric', month: 'long'}
-  }
-};
-
-class PickDateAdapter extends NativeDateAdapter {
-  format(date: Date, displayFormat: string): string {
-    if (displayFormat === 'input') {
-      return formatDate(date, 'YYYY-MM-dd', this.locale);
-    } else {
-      return date.toDateString();
-    }
-  }
-}
-
 @ComponentLookup('DateRangeComponent')
 @Component({
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
-  providers: [
-    RangeService,
-    {provide: DateAdapter, useClass: PickDateAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format}
-  ]
+  providers: [RangeService]
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
   fromDate = null;

@@ -5,6 +5,7 @@ import { FormDialogComponent } from '../../design/components/form-dialog/form-di
 import { MetadataService } from '../../services/metadata.service';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-reproting-form',
@@ -18,6 +19,7 @@ export class ReprotingFormComponent implements OnInit {
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private metadataService: MetadataService,
+    private spinner: NgxSpinnerService,
   ) {}
   preReport: any;
   preform: any;
@@ -79,12 +81,14 @@ export class ReprotingFormComponent implements OnInit {
     this.profileForm.value.file = await this.settingsService.uploadFile(file);
   }
 
-  saveDate() {
-    this.settingsService.saveReportsSettings(
+  async saveDate() {
+    await this.spinner.show();
+    await this.settingsService.saveReportsSettings(
       this.data.reports,
       this.dashboard_name,
     );
     this.dialogRef.close(this.formValues);
+    await this.spinner.hide();
   }
   deleteSource(index) {
     this.labels.splice(index, 1);

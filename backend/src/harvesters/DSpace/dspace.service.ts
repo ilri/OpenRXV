@@ -56,7 +56,10 @@ export class DSpaceService {
                         return 'done';
                     } else {
                         await job.progress(60);
-                        return await this.process(job, data);
+                        const response = await this.process(job, data);
+                        if (response) {
+                            await job.progress(100);
+                        }
                     }
                 } else {
                     await job.moveToFailed({message: 'no response'}, true);
@@ -106,9 +109,10 @@ export class DSpaceService {
                     await job.moveToFailed(error, true);
                 }
             }
+            return false;
+        } else {
+            return true;
         }
-        await job.progress(100);
-        return resp;
     }
 
     async addJobs(queue, repository) {

@@ -10,6 +10,8 @@ import {
 } from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
 import { Observable } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 export function existValidator(usersService: UsersService): AsyncValidatorFn {
   if (usersService)
@@ -42,18 +44,27 @@ export class FormComponent implements OnInit {
     return this.form.get('email');
   }
   async submit() {
-    if (this.form.valid && this.data == null)
+    if (!this.form.valid) {
+      this.toastr.error('You have some errors. Please check the form.');
+      return;
+    }
+    await this.spinner.show();
+    if (this.data == null)
       this.dialogRef.close(await this.userService.PostUser(this.form.value));
-    else if (this.form.valid && this.data)
+    else if (this.data)
       this.dialogRef.close(
         await this.userService.updateUser(this.data.id, this.form.value),
       );
+    this.toastr.success('User saved successfully');
+    await this.spinner.hide();
   }
 
   constructor(
     public dialogRef: MatDialogRef<FormComponent>,
     private userService: UsersService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
   ) {}
 
   ngOnInit(): void {

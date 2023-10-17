@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { FormDashboardsComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
 
@@ -19,6 +20,7 @@ export class IndexesDashboardComponent implements OnInit {
     private settingsService: SettingsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
   ) {}
 
@@ -60,6 +62,7 @@ export class IndexesDashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        await this.spinner.show();
         const dashboard = this.dashboards
           .map((x) => {
             return x.id;
@@ -67,7 +70,8 @@ export class IndexesDashboardComponent implements OnInit {
           .indexOf(id);
         this.dashboards.splice(dashboard, 1);
         this.dataSource = new MatTableDataSource<any>(this.dashboards);
-        this.settingsService.saveDashboardsSettings(this.dashboards, false);
+        await this.settingsService.saveDashboardsSettings(this.dashboards, false);
+        await this.spinner.hide();
         this.toastr.success('Dashboard deleted successfully');
         this.updateExportLink(this.dashboards);
       }
@@ -91,12 +95,14 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   async refreshData() {
+    await this.spinner.show();
     const dashboards = await this.settingsService.readDashboardsSettings();
     this.dashboards = dashboards;
     this.dataSource = new MatTableDataSource<any>(dashboards);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(dashboards);
     this.updateExportLink(dashboards);
+    await this.spinner.hide();
   }
 
   updateExportLink(dashboards) {
@@ -115,6 +121,7 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: [] = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -155,6 +162,7 @@ export class IndexesDashboardComponent implements OnInit {
       }
     }
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Dashboard(s)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

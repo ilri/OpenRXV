@@ -206,7 +206,7 @@ export class DSpaceAltmetrics {
   }
 
   async addJobs(queue, plugin_name, data, index_name: string) {
-    if (plugin_name !== this.plugin_name)
+    if (plugin_name !== `${index_name}_plugins_${this.plugin_name}`)
       return;
 
     try {
@@ -236,6 +236,13 @@ export class DSpaceAltmetrics {
               page: currentPage,
               index: `${index_name}_temp`,
               api_version: 'explorer'
+            }, {
+              priority: 2,
+              delay: 200,
+              backoff: {
+                type: 'exponential',
+                delay: 1000,
+              },
             });
           }
         }
@@ -253,6 +260,13 @@ export class DSpaceAltmetrics {
               page: currentPage,
               index: `${index_name}_temp`,
               api_version: 'v1'
+            }, {
+              priority: 2,
+              delay: 200,
+              backoff: {
+                type: 'exponential',
+                delay: 1000,
+              },
             });
           }
         }
@@ -261,6 +275,10 @@ export class DSpaceAltmetrics {
       await queue.add(plugin_name, {
         aborted: true,
         aborted_message: 'Failed to initialize plugin',
+      }, {
+        attempts: 0,
+        priority: 2,
+        delay: 200,
       });
     }
   }

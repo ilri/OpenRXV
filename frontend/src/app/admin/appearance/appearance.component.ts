@@ -5,6 +5,7 @@ import {
   UntypedFormArray,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { SettingsService } from '../services/settings.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
@@ -42,6 +43,7 @@ export class AppearanceComponent implements OnInit {
     private settingsService: SettingsService,
     private activeRoute: ActivatedRoute,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
   ) {
   }
@@ -100,6 +102,7 @@ export class AppearanceComponent implements OnInit {
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
     if (this.form.valid) {
+      await this.spinner.show();
       await this.settingsService.saveAppearanceSettings(
           dashboard_name,
           this.form.value,
@@ -109,6 +112,8 @@ export class AppearanceComponent implements OnInit {
           dashboard_name,
       );
       this.refreshExportLink(appearance);
+      this.toastr.success('Saved successfully');
+      await this.spinner.hide();
     }
   }
 
@@ -131,6 +136,7 @@ export class AppearanceComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const importedItem: any = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -154,6 +160,7 @@ export class AppearanceComponent implements OnInit {
     await this.populateForm(appearance);
     importStatus.success.push(importedItem);
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});

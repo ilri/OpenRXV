@@ -4,3 +4,12 @@
 .border {
     border: 1px solid #f00;
 }
+
+.interval-settings {
+  display: flex;
+  flex-direction: row;
+}
+
+.interval-settings mat-form-field:not(:first-child) {
+  padding-left: .5rem;
+}

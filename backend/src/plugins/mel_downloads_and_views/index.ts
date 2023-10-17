@@ -98,7 +98,7 @@ export class MELDownloadsAndViews {
   }
 
   async addJobs(queue, plugin_name, data, index_name: string) {
-    if (plugin_name !== this.plugin_name)
+    if (plugin_name !== `${index_name}_plugins_${this.plugin_name}`)
       return;
 
     try {
@@ -128,6 +128,10 @@ export class MELDownloadsAndViews {
       await queue.add(plugin_name, {
         aborted: true,
         aborted_message: 'Failed to initialize plugin',
+      }, {
+        attempts: 0,
+        priority: 2,
+        delay: 200,
       });
     }
   }
@@ -139,7 +143,14 @@ export class MELDownloadsAndViews {
     });
     if (Object.keys(ids).length > 0) {
       data.ids = ids;
-      queue.add(plugin_name, data);
+      queue.add(plugin_name, data, {
+        priority: 2,
+        delay: 200,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      });
     }
   }
 }

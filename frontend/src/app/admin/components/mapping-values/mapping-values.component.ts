@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../common.service';
 
 @Component({
@@ -22,6 +23,7 @@ export class MappingValuesComponent implements OnInit {
     private metadataService: MetadataService,
     private activeRoute: ActivatedRoute,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private commonService: CommonService,
   ) {
   }
@@ -58,12 +60,16 @@ export class MappingValuesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        await this.spinner.show();
         await this.valuesService.delete(id, this.values_index_name);
+        await this.spinner.hide();
+        this.toastr.success('Value mapping deleted successfully');
         this.refreshData();
       }
     });
   }
   async toEdit(id) {
+    await this.spinner.show();
     const values = await this.valuesService.findOne(id, this.values_index_name);
     values.metadataFields = this.metadataFields;
     values.values_index_name = this.values_index_name;
@@ -73,6 +79,7 @@ export class MappingValuesComponent implements OnInit {
       data: values
     });
 
+    await this.spinner.hide();
     dialogRef.afterClosed().subscribe((result) => {
       if (result) this.refreshData();
     });
@@ -102,11 +109,13 @@ export class MappingValuesComponent implements OnInit {
   }
 
   async refreshData() {
+    await this.spinner.show();
     const mappingValues = await this.valuesService.findByTerm(this.term.trim(), this.values_index_name);
     this.dataSource = new MatTableDataSource<Array<any>>(mappingValues.hits);
     this.dataSource.paginator = this.paginator;
 
     await this.refreshExportData(mappingValues);
+    await this.spinner.hide();
   }
 
   async refreshExportData(mappingValues) {
@@ -115,6 +124,7 @@ export class MappingValuesComponent implements OnInit {
   }
 
   async importJSON(event) {
+    await this.spinner.show();
     const data: [] = await this.commonService.importJSON(event);
     const importStatus = {
       failed: [],
@@ -150,6 +160,7 @@ export class MappingValuesComponent implements OnInit {
       }
     }
 
+    await this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Value mapping(s)');
     if (message.type === 'success') {
       this.toastr.success(message.message, null, {enableHtml: true});
