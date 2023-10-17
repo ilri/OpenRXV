@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const uuid = require('uuid');
-import * as dayjs from 'dayjs';
+const dayjs = require('dayjs');
 
 const files = {
     old: {
