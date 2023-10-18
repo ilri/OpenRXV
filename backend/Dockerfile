@@ -1,4 +1,4 @@
-FROM docker.io/node:18-bookworm
+FROM docker.io/node:20-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y \
     && apt install -y --no-install-recommends unoconv libreoffice-writer \
@@ -13,4 +13,4 @@ RUN cp example.env .env \
     && npm run copy:assets \
     && npm run build
 
-CMD ["./wait-for-elasticsearch.sh", "http://elasticsearch_7:9200", "--", "node", "dist/main"]
+CMD ["./wait-for-elasticsearch.sh", "http://elasticsearch:9200", "--", "node", "dist/main"]
