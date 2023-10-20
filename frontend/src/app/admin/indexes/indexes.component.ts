@@ -141,6 +141,13 @@ export class IndexesComponent implements OnInit {
           name: indexName,
           description: importedItem?.description,
           to_be_indexed: importedItem?.to_be_indexed,
+          auto_harvest: importedItem?.auto_harvest,
+          interval: importedItem?.interval,
+          interval_month: importedItem?.interval_month,
+          interval_month_day: importedItem?.interval_month_day,
+          interval_week_day: importedItem?.interval_week_day,
+          interval_hour: importedItem?.interval_hour,
+          interval_minute: importedItem?.interval_minute,
           created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
         const response = await this.settingsService.saveIndexesSettings(item, true, null);
