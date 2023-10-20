@@ -4,6 +4,9 @@ const fs = require('fs');
 const uuid = require('uuid');
 const dayjs = require('dayjs');
 
+const OPENRXV_FINAL_INDEX = 'openrxv-items-final';
+const OPENRXV_TEMP_INDEX = 'openrxv-items-temp';
+const OPENRXV_ALIAS = 'openrxv-items';
 const files = {
     old: {
         appearance: {},
@@ -61,7 +64,8 @@ const operations = {
             id: uuid.v4(),
             name: operations.IsValidName(name, files.templates.indexes, 'name'),
             description: description,
-            created_at: dayjs().format('YYYY-MM-DD HH:mm:ss')
+            created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            to_be_indexed: true
         };
     },
     MigrateIndexes: async () => {
@@ -133,6 +137,58 @@ const operations = {
         files.templates.dataToUse[operations.activeIndex.name] = files.old.dataToUse;
         await operations.writeFile('dataToUse', files.templates.dataToUse);
     },
+    MigrateElasticsearchIndexes: (indexType, newIndexName, newIndexAlias, oldIndexName) => {
+        console.log(`${styles.yellow}${styles.bold}Delete the new index if exists${styles.default}`);
+        console.log(`> curl -X DELETE elasticsearch:9200/${newIndexName}?ignore_unavailable=true`);
+
+        console.log(`${styles.yellow}${styles.bold}Create the new index${styles.default}`);
+        console.log(`> curl -X PUT elasticsearch:9200/${newIndexName}`);
+
+        console.log(`${styles.yellow}${styles.bold}Move data to the new index${styles.default}`);
+        console.log(`> curl -X POST elasticsearch:9200/_reindex?wait_for_completion=true -H "Content-Type:application/json" -d '{
+                "conflicts": "proceed",
+                "source": {
+                    "index": "${oldIndexName}"
+                },
+                "dest": {
+                    "index": "${newIndexName}"
+                }
+            }'`);
+
+        if (indexType === 'main') {
+            console.log(`${styles.yellow}${styles.bold}Remove old aliases and create new one${styles.default}`);
+            console.log(`> curl -X POST elasticsearch:9200/_aliases -H "Content-Type:application/json" -d '{
+                "actions": [
+                    {
+                        "remove": {
+                            "index": "${oldIndexName}",
+                            "alias": "${OPENRXV_ALIAS}"
+                        }
+                    },
+                    {
+                        "remove": {
+                            "index": "${OPENRXV_TEMP_INDEX}",
+                            "alias": "${OPENRXV_ALIAS}"
+                        }
+                    },
+                    {
+                        "add": {
+                            "index": "${newIndexName}",
+                            "alias": "${newIndexAlias}"
+                        }
+                    }
+                ]
+            }'`);
+        }
+
+        console.log(`${styles.yellow}${styles.bold}Delete old index${styles.default}`);
+        console.log(`> curl -X DELETE elasticsearch:9200/${oldIndexName}?ignore_unavailable=true`);
+
+        if (indexType === 'main') {
+            console.log(`${styles.yellow}${styles.bold}Delete old temp index${styles.default}`);
+            console.log(`> curl -X DELETE elasticsearch:9200/${OPENRXV_TEMP_INDEX}?ignore_unavailable=true`);
+        }
+    }
 };
 
 (async () => {
@@ -154,7 +210,7 @@ const operations = {
     }
 
     if (hasErrors) {
-        console.log('Fix issues first')
+        console.log(`${styles.bold}${styles.red}Fix issues first${styles.default}`);
     } else {
         await operations.MigrateIndexes();
         await operations.MigrateDashboard();
@@ -162,7 +218,35 @@ const operations = {
         await operations.MigrateData();
         await operations.MigrateDataToUse();
 
-        console.log(JSON.stringify(operations.activeIndex));
+        console.log(`${styles.bold}Migrated index name: ${styles.green}${operations.activeIndex.name}${styles.default}`);
+
+        console.log(`${styles.bold}####################################${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}## ${styles.yellow}Migrating the main items index${styles.default}${styles.bold} ##${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}####################################${styles.default}`);
+        operations.MigrateElasticsearchIndexes('main', operations.activeIndex.name, `${operations.activeIndex.name}_final`, OPENRXV_FINAL_INDEX);
+
+        console.log(`${styles.bold}####################################${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}## ${styles.yellow}  Migrating the values index  ${styles.default}${styles.bold} ##${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}####################################${styles.default}`);
+        operations.MigrateElasticsearchIndexes('values', `${operations.activeIndex.name}-values`, null, 'openrxv-values');
+
+        console.log(`${styles.bold}####################################${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}## ${styles.yellow}  Migrating the shared index  ${styles.default}${styles.bold} ##${styles.default}`);
+        console.log(`${styles.bold}##                                ##${styles.default}`);
+        console.log(`${styles.bold}####################################${styles.default}`);
+        operations.MigrateElasticsearchIndexes('values', `${operations.activeIndex.name}-shared`, null, 'openrxv-shared');
     }
 })();
 
+const styles = {
+    red: '\x1b[31m',
+    yellow: '\x1b[33m',
+    green: '\x1b[32m',
+    bold: '\x1b[1m',
+    default: '\x1b[0m'
+}
