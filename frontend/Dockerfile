@@ -3,7 +3,6 @@ RUN npm --version \
     && npm install -g @angular/cli@15 \
     && rm -rf ~/.npm
 RUN mkdir /frontend
-RUN ls /frontend
 COPY src /frontend/src
 COPY angular.json package.json package-lock.json tsconfig.json /frontend/
 WORKDIR /frontend

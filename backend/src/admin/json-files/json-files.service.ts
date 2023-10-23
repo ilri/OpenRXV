@@ -96,7 +96,6 @@ export class JsonFilesService {
     );
     let dashboard;
     if (dashboard_name === 'DEFAULT_DASHBOARD' || dashboard_name === '' || dashboard_name === 'null' || dashboard_name == null) {
-      console.log('default dashboard');
       dashboard = dashboards.find(dashboard => {
         if (dashboard?.is_default && dashboard.is_default === true) {
           return dashboard;
@@ -107,7 +106,6 @@ export class JsonFilesService {
         return dashboards[0];
       }
     } else {
-      console.log('not dashboard => ', dashboard_name + '==');
       dashboard = dashboards.find(dashboard => {
         if (dashboard.name === dashboard_name) {
           return dashboard;

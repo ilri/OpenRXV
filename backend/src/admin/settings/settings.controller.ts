@@ -390,7 +390,8 @@ export class SettingsController {
     }
 
     const prohibitedNames = [
-      'admin'
+      'admin',
+      'api'
     ];
     const namesFiltered = [];
     let prohibitedName = false;
