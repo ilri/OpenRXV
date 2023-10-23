@@ -14,6 +14,7 @@ import * as dayjs from 'dayjs';
 })
 export class FormDashboardsComponent implements OnInit {
   form: any;
+  defaultDashboard: string;
   indexes: any;
   async submit() {
     if (!this.form.valid) {
@@ -25,6 +26,7 @@ export class FormDashboardsComponent implements OnInit {
       const response = await this.settingsService.saveDashboardsSettings(
         this.form.value,
         true,
+        this.defaultDashboard,
       );
       if (response.success === true) {
         this.dialogRef.close(true);
@@ -49,6 +51,7 @@ export class FormDashboardsComponent implements OnInit {
       const response = await this.settingsService.saveDashboardsSettings(
         newDashboardsArray,
         false,
+        this.defaultDashboard,
       );
       if (response.success === true) {
         this.dialogRef.close(true);
@@ -90,6 +93,7 @@ export class FormDashboardsComponent implements OnInit {
   }
   async ngOnInit() {
     await this.spinner.show();
+    this.defaultDashboard = this.data.defaultDashboard;
     this.indexes = await this.settingsService.readIndexesSettings();
     if (this.data.event == 'Edit') {
       const data = {

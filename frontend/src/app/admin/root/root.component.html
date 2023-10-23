@@ -43,11 +43,11 @@
            [routerLinkActiveOptions]="{ exact: true }">
           Reporting
         </a>
-        <a mat-list-item [routerLink]="'/admin/shared/' + dashboard_name" routerLinkActive="active"
+        <a mat-list-item [routerLink]="'/admin/sharedlinks/' + dashboard_name" routerLinkActive="active"
            [routerLinkActiveOptions]="{ exact: true }">
           Shared links
         </a>
-        <a mat-list-item [href]="'dashboard/' + dashboard_name" target="_blank">
+        <a mat-list-item [href]="dashboard_name" target="_blank">
           View Dashboard
         </a>
       </mat-nav-list>

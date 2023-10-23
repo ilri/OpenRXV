@@ -72,9 +72,9 @@ export class DashboardComponent implements OnInit {
           sprateObjects.forEach((item: any) => {
             this.mainBodyBuilderService.setAggAttributes = item;
           });
-        } else this.route.navigate(['notfound']);
+        } else this.route.navigate(['admin/indexes']);
       } catch (e) {
-        this.route.navigate(['notfound']);
+        this.route.navigate(['admin/indexes']);
       }
     }
 

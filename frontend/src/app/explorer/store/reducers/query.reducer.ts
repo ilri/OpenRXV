@@ -7,7 +7,7 @@ export interface QueryState {
 
 const initialState: QueryState = {
   body: null,
-  dashboard: 'index',
+  dashboard: 'DEFAULT_DASHBOARD',
 };
 
 export function reducer(

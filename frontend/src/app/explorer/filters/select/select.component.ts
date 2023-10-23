@@ -127,7 +127,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
 
     this.store.dispatch(
       new fromStore.SetQuery({
-        dashboard: dashboard_name ? dashboard_name : 'index',
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
         body: query.build(),
       }),
     );
@@ -179,7 +179,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
     };
     const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     return {
-      dashboard: dashboard_name ? dashboard_name : 'index',
+      dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
       query: this.selectService.buildquery(bq).build(),
     };
   }

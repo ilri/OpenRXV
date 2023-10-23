@@ -83,7 +83,7 @@ const routes: Routes = [
         data: {parentRoute: 'indexes-dashboards'},
       },
       {
-        path: 'shared/:dashboard_name',
+        path: 'sharedlinks/:dashboard_name',
         component: SharedComponent,
         canActivate: [AdminGuard],
         data: {parentRoute: 'indexes-dashboards'},

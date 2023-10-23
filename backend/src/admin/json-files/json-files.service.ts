@@ -30,15 +30,13 @@ export class JsonFilesService {
       });
   }
   async getIndexFromDashboard(dashboard_name) {
-    let dashboards = await this.read('../../../data/dashboards.json');
-    let indexes = await this.read('../../../data/indexes.json');
-    if (!dashboards) return new NotFoundException();
+    const dashboard = await this.GetDashboard(dashboard_name);
+    if (!dashboard) return new NotFoundException();
+    const indexes = await this.read('../../../data/indexes.json');
 
-    const index_id = dashboards.filter((d) => (d.name == dashboard_name))[0]
-      .index;
+    const index_id = dashboard.index;
 
-    const index_name = indexes.filter((d) => (d.id == index_id))[0].name;
-    return index_name;
+    return indexes.filter((d) => (d.id == index_id))[0].name;
   }
   async createifnotexist() {
     const directory = join(__dirname, '../../../data/harvestors');
@@ -90,5 +88,32 @@ export class JsonFilesService {
     } catch (e) { /* empty */
       return url;
     }
+  }
+
+  async GetDashboard(dashboard_name: string = 'DEFAULT_DASHBOARD') {
+    const dashboards = await this.read(
+        '../../../data/dashboards.json',
+    );
+    let dashboard;
+    if (dashboard_name === 'DEFAULT_DASHBOARD' || dashboard_name === '' || dashboard_name === 'null' || dashboard_name == null) {
+      console.log('default dashboard');
+      dashboard = dashboards.find(dashboard => {
+        if (dashboard?.is_default && dashboard.is_default === true) {
+          return dashboard;
+        }
+      });
+      // If no default dashboard is defined, return the first dashboard
+      if (!dashboard && dashboards.length > 0) {
+        return dashboards[0];
+      }
+    } else {
+      console.log('not dashboard => ', dashboard_name + '==');
+      dashboard = dashboards.find(dashboard => {
+        if (dashboard.name === dashboard_name) {
+          return dashboard;
+        }
+      });
+    }
+    return dashboard;
   }
 }

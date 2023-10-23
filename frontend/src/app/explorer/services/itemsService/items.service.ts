@@ -17,7 +17,7 @@ export class ItemsService {
 
   getItems(
     query: ElasticsearchQuery,
-    dashboard: string = 'index',
+    dashboard: string = 'DEFAULT_DASHBOARD',
   ): Observable<ElasticsearchResponse> {
     return this.http.post(this.api_end_point, { dashboard, query });
   }

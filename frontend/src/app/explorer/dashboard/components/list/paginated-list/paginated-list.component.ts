@@ -94,7 +94,7 @@ export class PaginatedListComponent implements OnInit {
     dialogRef.componentInstance.query = this.store.select(fromStore.getQuery);
     dialogRef.componentInstance.dashboard = dashboard_name
       ? dashboard_name
-      : 'index';
+      : 'DEFAULT_DASHBOARD';
   }
 
   private dispatchAction(spo: SortPaginationOptions): void {

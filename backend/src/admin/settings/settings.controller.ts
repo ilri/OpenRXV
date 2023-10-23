@@ -65,13 +65,15 @@ export class SettingsController {
   @Post('explorer')
   async SaveExplorer(
     @Body('data') data: any,
-    @Body('dashboard_name') dashboard_name: any,
+    @Body('dashboard_name') dashboard_name: any = 'DEFAULT_DASHBOARD',
   ) {
-    let dashboards = await this.jsonFilesService.read(
+    const dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
-    for (let dashboard of dashboards) {
+    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) return new NotFoundException();
+
+    for (const dashboard of dashboards) {
       if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
     }
 
@@ -86,13 +88,15 @@ export class SettingsController {
   @Post('appearance')
   async SaveAppearance(
     @Body('data') data: any,
-    @Body('dashboard_name') dashboard_name: any,
+    @Body('dashboard_name') dashboard_name: any = 'DEFAULT_DASHBOARD',
   ) {
-    let dashboards = await this.jsonFilesService.read(
+    const dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
-    for (let dashboard of dashboards) {
+    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) return new NotFoundException();
+
+    for (const dashboard of dashboards) {
       if (dashboard.name == dashboard_name) {
         if (data?.logo !== '' && data.logo != null) {
           data.logo = await this.jsonFilesService.DownloadImportedFile(data.logo, dashboard_name, 'images');
@@ -114,10 +118,8 @@ export class SettingsController {
     return { success: true };
   }
   @Get(['appearance', 'appearance/:name'])
-  async ReadAppearance(@Param('name') name: string = 'index') {
-    const dashboard = (
-      await this.jsonFilesService.read('../../../data/dashboards.json')
-    ).filter((d) => d.name == name)[0];
+  async ReadAppearance(@Param('name') name: string = 'DEFAULT_DASHBOARD') {
+    const dashboard = await this.jsonFilesService.GetDashboard(name);
     if (!dashboard) throw new NotFoundException();
 
     return dashboard.appearance;
@@ -126,12 +128,15 @@ export class SettingsController {
   @Post('reportings')
   async SaveReports(
     @Body('data') data: any,
-    @Body('dashboard_name') dashboard_name: any,
+    @Body('dashboard_name') dashboard_name: any = 'DEFAULT_DASHBOARD',
   ) {
     const dashboards = await this.jsonFilesService.read(
       '../../../data/dashboards.json',
     );
     if (!dashboards) {
+      return new NotFoundException();
+    }
+    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) {
       return new NotFoundException();
     }
 
@@ -264,7 +269,11 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('dashboards')
-  async SaveDashboards(@Body() body: any, @Body('isNew') isNew: boolean) {
+  async SaveDashboards(
+      @Body() body: any,
+      @Body('isNew') isNew: boolean,
+      @Body('defaultDashboard') defaultDashboard: string,
+  ) {
     let dashboards = await this.jsonFilesService.read(
         '../../../data/dashboards.json',
     );
@@ -365,6 +374,7 @@ export class SettingsController {
             tour: true,
           },
         },
+        is_default: defaultDashboard === body.data.name,
       };
       dashboards.push(newDashboard);
     } else {
@@ -379,11 +389,18 @@ export class SettingsController {
       dashboards = body.data;
     }
 
+    const prohibitedNames = [
+      'admin'
+    ];
     const namesFiltered = [];
+    let prohibitedName = false;
     for (let i = 0; i < dashboards.length; i++) {
       dashboards[i].name = this.indexMetadataService.cleanIdNames(dashboards[i].name);
       if (dashboards[i].name !== '') {
         namesFiltered.push(dashboards[i].name);
+        if (prohibitedNames.indexOf(dashboards[i].name) !== -1) {
+          prohibitedName = true;
+        }
       }
     }
 
@@ -392,6 +409,11 @@ export class SettingsController {
         success: false,
         message: `Dashboard name cannot be empty`,
       };
+    } else if (prohibitedName) {
+      return {
+        success: false,
+        message: `Dashboard name cannot be "` + prohibitedNames.join(', ') + `"`,
+      };
     } else if ((new Set(namesFiltered)).size !== namesFiltered.length) { // If two indexes have the same name, prevent submit
       return {
         success: false,
@@ -399,15 +421,44 @@ export class SettingsController {
       };
     }
 
+    let hasDefaultDashboard = false;
+    dashboards = dashboards.map(dashboard => {
+      dashboard.is_default = defaultDashboard === dashboard.name;
+      if (dashboard.is_default) {
+        hasDefaultDashboard = true;
+      }
+      return dashboard;
+    });
+    // If none of the dashboards is set to be default, set the first as default
+    if (!hasDefaultDashboard && dashboards.length > 0) {
+      dashboards[0].is_default = true;
+    }
+
     await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
     return { success: true };
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('defaultdashboard')
+  async SetDefaultDashboards(@Body('defaultDashboard') defaultDashboard: string) {
+    let dashboards = await this.jsonFilesService.read(
+        '../../../data/dashboards.json',
+    );
+    dashboards = dashboards.map(dashboard => {
+      dashboard.is_default = defaultDashboard === dashboard.name;
+      return dashboard;
+    });
+    await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
+
+    return {
+      success: true,
+      message: `Dashboard ${defaultDashboard} is set as default`,
+    };
+  }
+
   @Get(['reports', 'reports/:name'])
-  async ReadReports(@Param('name') name: string = 'index') {
-    const dashboard = (
-      await this.jsonFilesService.read('../../../data/dashboards.json')
-    ).filter((d) => d.name == name)[0];
+  async ReadReports(@Param('name') name: string = 'DEFAULT_DASHBOARD') {
+    const dashboard = await this.jsonFilesService.GetDashboard(name);
     if (!dashboard) throw new NotFoundException();
 
     return dashboard.reports;
@@ -437,10 +488,8 @@ export class SettingsController {
   }
 
   @Get(['explorer', 'explorer/:name'])
-  async ReadExplorer(@Param('name') name: string = 'index') {
-    const dashboard = (
-      await this.jsonFilesService.read('../../../data/dashboards.json')
-    ).filter((d) => d.name == name)[0];
+  async ReadExplorer(@Param('name') name: string = 'DEFAULT_DASHBOARD') {
+    const dashboard = await this.jsonFilesService.GetDashboard(name);
     if (!dashboard) throw new NotFoundException();
 
     const index = (
@@ -471,7 +520,7 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Get(['metadata/:name/:index', 'metadata/:name', 'metadata'])
   async getMetadata(
-      @Param('name') name: string = 'index',
+      @Param('name') name: string = 'DEFAULT_DASHBOARD',
       @Param('index') index_name: string = null,
   ) {
     index_name = index_name != null && index_name !== '' && index_name !== 'null' ? index_name : await this.jsonFilesService.getIndexFromDashboard(name);

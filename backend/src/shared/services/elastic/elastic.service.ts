@@ -84,13 +84,8 @@ export class ElasticService {
       await this.add(body);
     }
   }
-  async search(query, size = 10, scroll: string = null, dashboard = null) {
-    let index_name;
-
-    if (dashboard == null)
-      index_name = await this.jsonFilesService.getIndexFromDashboard('index');
-    else
-      index_name = await this.jsonFilesService.getIndexFromDashboard(dashboard);
+  async search(query, size = 10, scroll: string = null, dashboard = 'DEFAULT_DASHBOARD') {
+    const index_name = await this.jsonFilesService.getIndexFromDashboard(dashboard);
     try {
       const options: SearchRequest = {
         index: index_name,

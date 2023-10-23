@@ -33,7 +33,7 @@ export class SettingsService {
   }
 
   async readAppearanceSettings(name) {
-    if (name == null) name = 'index';
+    if (name == null) name = 'DEFAULT_DASHBOARD';
     return await this.http
       .get(`${environment.api}/settings/appearance/${name}`)
       .pipe(
@@ -88,9 +88,20 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async saveDashboardsSettings(data, isNew: boolean) {
+  async saveDashboardsSettings(data, isNew: boolean, defaultDashboard: string) {
     return await this.http
-      .post(environment.api + '/settings/dashboards', { data, isNew })
+      .post(environment.api + '/settings/dashboards', { data, isNew, defaultDashboard })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async setDashboardAsDefault(defaultDashboard) {
+    return await this.http
+      .post(environment.api + '/settings/defaultdashboard', {defaultDashboard})
       .pipe(
         map((data: any) => {
           return data;
@@ -109,8 +120,8 @@ export class SettingsService {
       )
       .toPromise();
   }
-  async readReports(dashboard = 'index') {
-    if (dashboard == null) dashboard = 'index';
+  async readReports(dashboard = 'DEFAULT_DASHBOARD') {
+    if (dashboard == null) dashboard = 'DEFAULT_DASHBOARD';
     return await this.http
       .get(`${environment.api}/settings/reports/${dashboard}`)
       .pipe(
@@ -121,8 +132,8 @@ export class SettingsService {
       .toPromise();
   }
 
-  async readExplorerSettings(dashboard_name = 'index') {
-    if (dashboard_name == null) dashboard_name = 'index';
+  async readExplorerSettings(dashboard_name = 'DEFAULT_DASHBOARD') {
+    if (dashboard_name == null) dashboard_name = 'DEFAULT_DASHBOARD';
     return await this.http
       .get(`${environment.api}/settings/explorer/${dashboard_name}`)
       .pipe(
@@ -132,7 +143,7 @@ export class SettingsService {
       )
       .toPromise()
       .catch((e) => {
-        this.route.navigate(['notfound']);
+        this.route.navigate(['admin/indexes']);
         return undefined;
       });
   }

@@ -65,7 +65,7 @@ export class ListComponent extends ParentComponent implements OnInit {
 
     this.store.dispatch(
       new fromStore.SetQuery({
-        dashboard: dashboard_name ? dashboard_name : 'index',
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
         body: query.build(),
       }),
     );

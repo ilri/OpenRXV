@@ -61,6 +61,17 @@
         <td mat-cell *matCellDef="let element">{{ element.created_at }}</td>
       </ng-container>
 
+      <!-- Default Column -->
+      <ng-container matColumnDef="is_default">
+        <th mat-header-cell *matHeaderCellDef>Is Default</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon aria-hidden="false" aria-label="Set as default" matTooltip="Set as default"
+                    [class]="element?.is_default ? 'dashboard-default-icon is_default' : 'dashboard-default-icon'"
+                    (click)="setAsDefault(element.name, element?.is_default)"
+          >done_outline</mat-icon>
+        </td>
+      </ng-container>
+
       <!-- actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -120,7 +131,7 @@
           </a>
           <a
             matTooltip="Shared links"
-            [routerLink]="'/admin/shared/' + element.name"
+            [routerLink]="'/admin/sharedlinks/' + element.name"
             color="primary"
             mat-icon-button
             routerLinkActive="active"
@@ -132,7 +143,7 @@
           </a>
           <a
             matTooltip="View Dashboard"
-            [href]="'dashboard/' + element.name"
+            [href]="element.name"
             color="primary"
             mat-icon-button
             target="_blank"

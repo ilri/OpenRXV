@@ -10,8 +10,7 @@ export class ShareService extends ElasticService {
     super(elasticsearchService);
   }
 
-  async saveShare(item, dashboard_name: string) {
-    const index_name = dashboard_name === '' || dashboard_name == null ? this.index : `${dashboard_name}-shared`;
+  async saveShare(item, index_name: string) {
     const hashedItem = hash(item);
     const result = await this.find({ 'hashedItem.keyword': hashedItem }, index_name);
     if ((result.total as SearchTotalHits).value == 0) {

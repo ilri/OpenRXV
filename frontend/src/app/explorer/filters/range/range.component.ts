@@ -69,7 +69,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
 
     this.store.dispatch(
       new fromStore.SetQuery({
-        dashboard: dashboard_name ? dashboard_name : 'index',
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
         body: query.build(),
       }),
     );
@@ -143,7 +143,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
   private async getYears(
     caller?: ResetCaller,
     force = false,
-    dashboard_name ='index',
+    dashboard_name ='DEFAULT_DASHBOARD',
   ) {
     return await new Promise((resolve, reject) => {
       const qb: BuildQueryObj = {

@@ -28,7 +28,7 @@ export class ExportController {
         fileName,
         file,
         webSiteName,
-        dashboard,
+        dashboard = 'DEFAULT_DASHBOARD',
       } = body;
 
       const index_name = await this.jsonfielServoce.getIndexFromDashboard(

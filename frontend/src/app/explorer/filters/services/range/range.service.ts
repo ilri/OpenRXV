@@ -70,7 +70,7 @@ export class RangeService {
   getYears(
     query: ElasticsearchQuery,
     force = false,
-    dashboard_name = 'index',
+    dashboard_name = 'DEFAULT_DASHBOARD',
   ): Observable<number[]> {
     return this.getYearsFromStore().pipe(
       switchMap((buckets: Array<Bucket>) =>

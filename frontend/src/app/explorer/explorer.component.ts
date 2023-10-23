@@ -206,7 +206,7 @@ export class ExplorerComponent implements OnInit {
     setTimeout(() => {
       this.store.dispatch(
         new SetQuery({
-          dashboard: this.dashboard_name ? this.dashboard_name : 'index',
+          dashboard: this.dashboard_name ? this.dashboard_name : 'DEFAULT_DASHBOARD',
           body: this.mainBodyBuilderService.buildMainQuery(0).build(),
         }),
       );

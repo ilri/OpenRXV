@@ -32,6 +32,7 @@ export class IndexesDashboardComponent implements OnInit {
     'description',
     'index',
     'created_at',
+    'is_default',
     'actions',
   ];
   dataSource = new MatTableDataSource<any>([]);
@@ -41,9 +42,10 @@ export class IndexesDashboardComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   openDialog() {
+    const defaultDashboard = this.dashboards.find((x) => x?.is_default);
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: { event: 'New', body: {} },
+      data: { event: 'New', body: {}, defaultDashboard: defaultDashboard?.name },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -69,19 +71,24 @@ export class IndexesDashboardComponent implements OnInit {
           })
           .indexOf(id);
         this.dashboards.splice(dashboard, 1);
-        this.dataSource = new MatTableDataSource<any>(this.dashboards);
-        await this.settingsService.saveDashboardsSettings(this.dashboards, false);
+        const defaultDashboard = this.dashboards.find((x) => x?.is_default);
+        await this.settingsService.saveDashboardsSettings(this.dashboards, false, defaultDashboard?.name);
         await this.spinner.hide();
         this.toastr.success('Dashboard deleted successfully');
-        this.updateExportLink(this.dashboards);
+        this.refreshData();
       }
     });
   }
 
   editDashboard(id) {
+    const defaultDashboard = this.dashboards.find((x) => x?.is_default);
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: { event: 'Edit', body: this.dashboards.filter((x) => x.id == id) },
+      data: {
+        event: 'Edit',
+        body: this.dashboards.filter((x) => x.id == id),
+        defaultDashboard: defaultDashboard?.name,
+      },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
@@ -110,7 +117,7 @@ export class IndexesDashboardComponent implements OnInit {
         .map((dashboard) => {
           for (const key in dashboard) {
             if (dashboard.hasOwnProperty(key)) {
-              if (dashboard[key] != null && (typeof dashboard[key] === 'object' || Array.isArray(dashboard[key]))) {
+              if (dashboard[key] != null && (typeof dashboard[key] === 'object' || Array.isArray(dashboard[key])) || key === 'is_default') {
                 delete dashboard[key];
               }
             }
@@ -135,7 +142,7 @@ export class IndexesDashboardComponent implements OnInit {
       const importedItem = (data[i] as any);
       const dashboardName = this.commonService.cleanIdNames(importedItem?.name);
 
-      if (dashboardName === ''){
+      if (dashboardName === '') {
         const message = 'Dashboard #' + (i + 1) + ' cannot have empty name';
         importStatus.failed.push(message);
         continue;
@@ -150,9 +157,12 @@ export class IndexesDashboardComponent implements OnInit {
         index: importedItem.index,
         description: importedItem?.description,
       };
+
+      const defaultDashboard = importedItem?.is_default ? dashboardName : this.dashboards.find((x) => x?.is_default)?.name;
       const response = await this.settingsService.saveDashboardsSettings(
         item,
         true,
+        defaultDashboard,
       );
       if (response.success === true) {
         importStatus.success.push(dashboardName);
@@ -173,5 +183,32 @@ export class IndexesDashboardComponent implements OnInit {
     } else {
       this.toastr.error(message.message, null, {enableHtml: true});
     }
+  }
+
+  async setAsDefault(defaultDashboard: string, isDefault: boolean) {
+    if (isDefault) {
+      this.toastr.warning(`This dashboard is the default dashboard`);
+      return;
+    }
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: '',
+        subtitle: 'Are you sure you want to set this dashboard as default?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.spinner.show();
+        const response = await this.settingsService.setDashboardAsDefault(defaultDashboard);
+        await this.spinner.hide();
+        if (response.success) {
+          this.toastr.success(response.message);
+        } else {
+          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+        }
+        await this.refreshData();
+      }
+    });
   }
 }
