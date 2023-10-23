@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RootComponent } from './root/root.component';
-import { LoginComponent } from './login/login.component';
 import { AdminGuard } from './admin.guard';
 import { UsersComponent } from './components/users/users.component';
 import { MappingValuesComponent } from './components/mapping-values/mapping-values.component';
@@ -17,10 +16,6 @@ import { IndexesComponent } from './indexes/indexes.component';
 import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
 
 const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
   {
     path: 'admin',
     component: RootComponent,

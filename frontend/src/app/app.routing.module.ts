@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { IndexesComponent } from './admin/indexes/indexes.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
 
 const routes: Routes = [
-  { path: '**', component: IndexesComponent },
-  { path: 'notfound', component: IndexesComponent },
+  { path: '**', component: NotfoundComponent },
+  { path: 'notfound', component: NotfoundComponent },
 ];
 
 @NgModule({

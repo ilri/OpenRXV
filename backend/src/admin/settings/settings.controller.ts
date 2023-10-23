@@ -391,7 +391,10 @@ export class SettingsController {
 
     const prohibitedNames = [
       'admin',
-      'api'
+      'api',
+      'notfound',
+      'shared',
+      'login',
     ];
     const namesFiltered = [];
     let prohibitedName = false;
