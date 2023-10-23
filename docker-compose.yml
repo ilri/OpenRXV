@@ -26,7 +26,7 @@ services:
       - openrxv
   bullboard_openrxv:
     container_name: bullboard_openrxv
-    image: deadly0/bull-board
+    image: docker.io/deadly0/bull-board
     restart: always
     volumes:
       - ./redisData:/data
