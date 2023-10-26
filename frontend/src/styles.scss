@@ -309,3 +309,14 @@ mat-paginator .mat-mdc-select-trigger {
   background-color: #fef7f8;
   border-color: #f0868e;
 }
+
+.admin-dashboard-header {
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  width: calc(100% - 260px);
+}
+
+.admin-dashboard-content {
+  padding-top: 80px;
+}
