@@ -10,7 +10,7 @@ const crypto = require('crypto');
 @Injectable()
 export class DSpaceAltmetrics {
   private logger = new Logger('DSpaceAltmetrics');
-  handlesIds: any = null;
+  identifiers: any = null;
   constructor(
     private http: HttpService,
     public readonly elasticsearchService: ElasticsearchService,
@@ -30,8 +30,8 @@ export class DSpaceAltmetrics {
 
   async AltmetricV1Api(job: Job<any>) {
     const page = job.data.page;
-    if (page == 1) this.handlesIds = null;
-    this.handlesIds = await this.generateCache(job.data.index);
+    if (page == 1) this.identifiers = null;
+    this.identifiers = await this.generateCache(job.data.index);
     const handle_prefix = job.data.handle_prefix;
 
     await job.progress(20);
@@ -48,14 +48,35 @@ export class DSpaceAltmetrics {
           readers: element.readers_count, //attributes > readers > mendeley
           mentions: element.cited_by_posts_count, //attributes > mentions (values count)
         };
-        if (this.handlesIds[element.handle]) {
-          Allindexing.push({
-            update: {
-              _index: job.data.index,
-              _id: this.handlesIds[element.handle],
-            },
-          });
-          Allindexing.push({doc: {altmetric}});
+
+        let itemIds = [];
+        if (element?.handles && Array.isArray(element.handles)) {
+          for (const handle of element.handles) {
+            if (this.identifiers.handle[handle]) {
+              itemIds.push(this.identifiers.handle[handle]);
+            }
+          }
+        }
+        if (this.identifiers.handle[element.handle]) {
+          itemIds.push(this.identifiers.handle[element.handle]);
+        }
+        if (this.identifiers.doi[element.doi]) {
+          itemIds.push(this.identifiers.doi[element.doi]);
+        }
+
+        itemIds = itemIds.filter((value, index, array) => {
+          return array.indexOf(value) === index && value !== '' && value != null;
+        });
+        if (itemIds.length > 0) {
+          for (const itemId of itemIds) {
+            Allindexing.push({
+              update: {
+                _index: job.data.index,
+                _id: itemId,
+              },
+            });
+            Allindexing.push({doc: {altmetric}});
+          }
         }
       });
       await job.progress(80);
@@ -74,8 +95,8 @@ export class DSpaceAltmetrics {
 
   async AltmetricExplorerApi(job: Job<any>) {
     const page = job.data.page;
-    if (page == 1) this.handlesIds = null;
-    this.handlesIds = await this.generateCache(job.data.index);
+    if (page == 1) this.identifiers = null;
+    this.identifiers = await this.generateCache(job.data.index);
     const handle_prefix = job.data.handle_prefix;
 
     await job.progress(20);
@@ -109,17 +130,35 @@ export class DSpaceAltmetrics {
             readers: readers,
             mentions: mentions,
           };
+
+          let itemIds = [];
           if (element.attributes?.identifiers?.handles && Array.isArray(element.attributes.identifiers.handles)) {
             for (const handle of element.attributes.identifiers.handles)
-              if (this.handlesIds[handle]) {
-                Allindexing.push({
-                  update: {
-                    _index: job.data.index,
-                    _id: this.handlesIds[handle],
-                  },
-                });
-                Allindexing.push({doc: {altmetric}});
+              if (this.identifiers.handle[handle]) {
+                itemIds.push(this.identifiers.handle[handle]);
               }
+          }
+
+          if (element.attributes?.identifiers?.dois && Array.isArray(element.attributes.identifiers.dois)) {
+            for (const doi of element.attributes.identifiers.dois)
+              if (this.identifiers.doi[doi]) {
+                itemIds.push(this.identifiers.doi[doi]);
+              }
+          }
+
+          itemIds = itemIds.filter((value, index, array) => {
+            return array.indexOf(value) === index;
+          });
+          if (itemIds.length > 0) {
+            for (const itemId of itemIds) {
+              Allindexing.push({
+                update: {
+                  _index: job.data.index,
+                  _id: itemId,
+                },
+              });
+              Allindexing.push({doc: {altmetric}});
+            }
           }
         }
       });
@@ -140,19 +179,39 @@ export class DSpaceAltmetrics {
   async generateCache(index) {
     return new Promise(async (resolve, reject) => {
       try {
-        if (this.handlesIds != null) {
-          resolve(this.handlesIds);
+        if (this.identifiers != null) {
+          resolve(this.identifiers);
           return;
         }
-        let allRecords: any = [];
+        const allRecords: any = {
+          handle: [],
+          doi: [],
+        };
         const elastic_data = {
           index: index,
           body: {
             size: 500,
-            _source: ['handle'],
+            _source: ['handle', 'DOI'],
             track_total_hits: true,
             query: {
-              exists: { field: 'handle' },
+              bool: {
+                filter: {
+                  bool: {
+                    should: [
+                      {
+                        exists: {
+                          field: 'DOI'
+                        }
+                      },
+                      {
+                        exists: {
+                          field: 'handle'
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
             },
           },
           scroll: '10m',
@@ -165,16 +224,32 @@ export class DSpaceAltmetrics {
             });
         const getMoreUntilDone = async (response: SearchResponse) => {
           if (response?.hits?.hits) {
-            const handleID = response.hits.hits.map((d: SearchHit) => {
-              if ((d._source as any)?.handle) {
+            const handleID = [];
+            const DOIs = [];
+            response.hits.hits.map((item: SearchHit) => {
+              const data = item._source as any;
+
+              if (data?.handle) {
                 const obj = {};
-                obj[(d._source as any)?.handle] = d._id;
-                return obj;
+                obj[data?.handle] = item._id;
+                handleID.push(obj);
+              }
+
+              if (data?.DOI) {
+                const doiLink = data?.DOI;
+                const regex = /.*(\s|(dx\.doi\.org\/)|(doi\.org\/)|(doi:\s*))\/?:?(10\..*)/;
+                const match = regex.exec(doiLink);
+                if (match && match?.[5]) {
+                  const obj = {};
+                  obj[match?.[5]] = item._id;
+                  DOIs.push(obj);
+                }
               }
             });
 
-            allRecords = [...allRecords, ...handleID];
-            if ((response.hits.total as SearchTotalHits).value !== allRecords.length) {
+            allRecords.handle = [...allRecords.handle, ...handleID];
+            allRecords.doi = [...allRecords.doi, ...DOIs];
+            if ((response.hits.total as SearchTotalHits).value !== allRecords.handle.length) {
               const response2: SearchResponse = await this.elasticsearchService
                   .scroll({
                     scroll_id: <string>response._scroll_id,
@@ -189,11 +264,18 @@ export class DSpaceAltmetrics {
               this.elasticsearchService.clearScroll({
                 scroll_id: response._scroll_id
               }).catch();
-              const finalobj = {};
-              allRecords.forEach((element) => {
-                finalobj[Object.keys(element)[0]] = Object.values(element)[0];
+              const handlesObject = {};
+              allRecords.handle.forEach((element) => {
+                handlesObject[Object.keys(element)[0]] = Object.values(element)[0];
               });
-              resolve(finalobj);
+              const DOIsObject = {};
+              allRecords.doi.forEach((element) => {
+                DOIsObject[Object.keys(element)[0]] = Object.values(element)[0];
+              });
+              resolve({
+                handle: handlesObject,
+                doi: DOIsObject
+              });
             }
           }
         };

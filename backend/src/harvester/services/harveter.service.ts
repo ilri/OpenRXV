@@ -100,8 +100,6 @@ export class HarvesterService implements OnModuleInit {
         defaultJobOptions: {
           attempts: 5,
           timeout: 900000,
-          removeOnComplete: true,
-          removeOnFail: true,
         },
         settings: {
           lockDuration: 900000,
