@@ -15,9 +15,16 @@ mat-drawer {
   box-shadow: 6px 0 6px rgba(0, 0, 0, 0.1);
 }
 
-.mat-mdc-list-item:hover,.mat-list-item.active {
+:host ::ng-deep .mat-mdc-list-item:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+:host ::ng-deep .mat-mdc-list-item.active {
   background-color: #dbdbdb;
-  color: map-get($customTheme, 500) !important;
+}
+
+:host ::ng-deep .mat-mdc-list-item.active .mdc-list-item__primary-text {
+  color: var(--theme-primary-500) !important;
   text-shadow: 0 0 5px #fff;
 }
 

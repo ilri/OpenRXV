@@ -3,7 +3,7 @@
     <mat-card appearance="raised">
       <mat-card-title>
         Harvest Dashboard
-        <button style="float: right;" (click)="commitIndex()" color="accent" mat-raised-button>
+        <button style="float: right;" (click)="commitIndex()" color="primary" mat-raised-button>
           Commit Indexing
           <mat-icon>check</mat-icon>
         </button>
@@ -27,23 +27,23 @@
     </div>
     <div class="col-md-6 harvest-table-tools mb-2">
       <ng-container *ngIf="availableSection.name === 'fetch'">
-        <button class="mr-2" (click)="startHarvesting()" color="primary" mat-raised-button>
-          Start
-          <mat-icon>archive</mat-icon>
-        </button>
-        <button (click)="stopHarvesting()" color="warn" mat-raised-button>
+        <button class="mr-2" (click)="stopHarvesting()" color="warn" mat-raised-button>
           Stop
           <mat-icon>block</mat-icon>
+        </button>
+        <button (click)="startHarvesting()" color="primary" mat-raised-button>
+          Start
+          <mat-icon>archive</mat-icon>
         </button>
       </ng-container>
       <ng-container *ngIf="availableSection.name !== 'fetch'">
-        <button class="mr-2" (click)="startPlugin(availableSection)" color="primary" mat-raised-button>
-          Start
-          <mat-icon>archive</mat-icon>
-        </button>
-        <button (click)="stopPlugin(availableSection)" color="warn" mat-raised-button>
+        <button class="mr-2" (click)="stopPlugin(availableSection)" color="warn" mat-raised-button>
           Stop
           <mat-icon>block</mat-icon>
+        </button>
+        <button (click)="startPlugin(availableSection)" color="primary" mat-raised-button>
+          Start
+          <mat-icon>archive</mat-icon>
         </button>
       </ng-container>
     </div>
