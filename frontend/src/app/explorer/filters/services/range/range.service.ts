@@ -67,17 +67,25 @@ export class RangeService {
    * * if we do we simply retutn an observable of the years
    * * else we get them from the server.
    */
-  getYears(query: ElasticsearchQuery, force = false): Observable<number[]> {
+  getYears(
+    query: ElasticsearchQuery,
+    force = false,
+    dashboard_name = 'DEFAULT_DASHBOARD',
+  ): Observable<number[]> {
     return this.getYearsFromStore().pipe(
       switchMap((buckets: Array<Bucket>) =>
         buckets && buckets.length && !force
           ? of(buckets.map(({ key }) => +key))
-          : this.httpGetYears(query),
+          : this.httpGetYears(query, dashboard_name),
       ),
     );
   }
-  getMaxAndMin(query: ElasticsearchQuery, force = false): any {
-    return this.httpGetMinAndMax(query);
+  getMaxAndMin(
+    query: ElasticsearchQuery,
+    force = false,
+    dashboard_name,
+  ): any {
+    return this.httpGetMinAndMax(query, dashboard_name);
   }
 
   buildquery(bq: BuildQueryObj): bodybuilder.Bodybuilder {
@@ -109,28 +117,35 @@ export class RangeService {
     return this.store.select(fromStore.getBuckets, this.source).pipe(first());
   }
 
-  private httpGetYears(query: ElasticsearchQuery): Observable<number[]> {
-    return this.http.post(this.api_end_point, query).pipe(
-      tap((res: ElasticsearchResponse) =>
-        this.store.dispatch(new fromStore.GetDataSuccess(res, false)),
-      ),
-      map((d: ElasticsearchResponse) =>
-        d.aggregations[this.source].buckets.map((year: Bucket) => +year.key),
-      ),
-    );
+  private httpGetYears(
+    query: ElasticsearchQuery,
+    dashboard_name,
+  ): Observable<number[]> {
+    return this.http
+      .post(this.api_end_point, { dashboard: dashboard_name, query })
+      .pipe(
+        tap((res: ElasticsearchResponse) =>
+          this.store.dispatch(new fromStore.GetDataSuccess(res, false)),
+        ),
+        map((d: ElasticsearchResponse) =>
+          d.aggregations[this.source].buckets.map((year: Bucket) => +year.key),
+        ),
+      );
   }
 
-  private httpGetMinAndMax(query: ElasticsearchQuery) {
-    return this.http.post(this.api_end_point, query).pipe(
-      tap((res: ElasticsearchResponse) =>
-        this.store.dispatch(new fromStore.GetDataSuccess(res, false)),
-      ),
-      map((d: ElasticsearchResponse) => {
-        const obj = {};
-        obj[`min_${this.source}`] = d.aggregations[`min_${this.source}`];
-        obj[`max_${this.source}`] = d.aggregations[`max_${this.source}`];
-        return obj;
-      }),
-    );
+  private httpGetMinAndMax(query: ElasticsearchQuery, dashboard_name) {
+    return this.http
+      .post(this.api_end_point, { dashboard: dashboard_name, query })
+      .pipe(
+        tap((res: ElasticsearchResponse) =>
+          this.store.dispatch(new fromStore.GetDataSuccess(res, false)),
+        ),
+        map((d: ElasticsearchResponse) => {
+          const obj = {};
+          obj[`min_${this.source}`] = d.aggregations[`min_${this.source}`];
+          obj[`max_${this.source}`] = d.aggregations[`max_${this.source}`];
+          return obj;
+        }),
+      );
   }
 }

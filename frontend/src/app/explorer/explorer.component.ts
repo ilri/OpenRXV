@@ -4,7 +4,7 @@ import * as fromStore from './store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
-import { TourService, IStepOption } from 'ngx-tour-md-menu';
+import { TourService, IStepOption } from 'ngx-ui-tour-md-menu';
 import {
   GeneralConfigs,
   ComponentCounterConfigs,
@@ -20,6 +20,7 @@ import { environment } from 'src/environments/environment';
 import { InViewState } from './store/reducers/items.reducer';
 import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'explorer-root',
@@ -46,6 +47,7 @@ export class ExplorerComponent implements OnInit {
     fixed: true,
     top: 0,
   };
+  dashboard_name: string;
   async share() {
     this.openDialog(
       location.href.match(/(.*)shared.*/)
@@ -54,6 +56,8 @@ export class ExplorerComponent implements OnInit {
             location.pathname +
             (await this.itemsService.saveShare(
               this.mainBodyBuilderService.getAggAttributes,
+              this.dashboard_name,
+              this.orOperator,
             )),
     );
   }
@@ -68,6 +72,7 @@ export class ExplorerComponent implements OnInit {
     private readonly screenSizeService: ScreenSizeService,
     private readonly itemsService: ItemsService,
     public dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
   ) {
     this.orOperator = false;
     this.orAndToolTip = orAndToolTip;
@@ -84,11 +89,15 @@ export class ExplorerComponent implements OnInit {
       data: { link },
     });
   }
-
+  appearance;
+  index_last_update = null;
   async ngOnInit() {
-    const { counters, dashboard, appearance, welcome } = await JSON.parse(
+    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const { counters, dashboard, appearance, welcome, index_last_update } = await JSON.parse(
       localStorage.getItem('configs'),
     );
+    this.appearance = appearance;
+    this.index_last_update = index_last_update;
     if (appearance.logo) this.logo = environment.api + '/' + appearance.logo;
     this.website_name = appearance.website_name;
     localStorage.setItem('primaryColor', appearance.primary_color);
@@ -196,7 +205,10 @@ export class ExplorerComponent implements OnInit {
     this.mainBodyBuilderService.resetAttributes();
     setTimeout(() => {
       this.store.dispatch(
-        new SetQuery(this.mainBodyBuilderService.buildMainQuery(0).build()),
+        new SetQuery({
+          dashboard: this.dashboard_name ? this.dashboard_name : 'DEFAULT_DASHBOARD',
+          body: this.mainBodyBuilderService.buildMainQuery(0).build(),
+        }),
       );
     }, 300);
   }
@@ -228,6 +240,9 @@ export class ExplorerComponent implements OnInit {
             content: description,
             title,
             enableBackdrop: true,
+            rout: id,
+            closeOnOutsideClick: true,
+            disablePageScrolling: true,
           } as IStepOption)
         );
       })

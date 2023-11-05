@@ -1,4 +1,5 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticService } from './services/elastic/elastic.service';
 import { MetadataService } from './services/metadata.service';
@@ -7,9 +8,7 @@ import { ShareService } from './services/share.service';
 import { StartupService } from './services/startup/startup.service';
 import { ConfigModule } from '@nestjs/config';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
-import { FormatSearvice } from './services/formater.service';
-import { HarvesterService } from '../harvester/services/harveter.service';
-import { BullModule } from '@nestjs/bull';
+import { FormatService } from './services/formater.service';
 import { IndexMetadataService } from './services/index-metadata.service';
 
 @Module({
@@ -23,39 +22,6 @@ import { IndexMetadataService } from './services/index-metadata.service';
         'User-Agent': 'OpenRXV harvesting bot; https://github.com/ilri/OpenRXV',
       },
     }),
-    BullModule.registerQueue({
-      name: 'fetch',
-      defaultJobOptions: {
-        attempts: 10,
-      },
-      settings: {
-        stalledInterval: 2000,
-        maxStalledCount: 10,
-        retryProcessDelay: 2000,
-        drainDelay: 20000,
-      },
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT),
-      },
-    }),
-    BullModule.registerQueue({
-      name: 'plugins',
-      defaultJobOptions: {
-        attempts: 5,
-        timeout: 900000,
-      },
-      settings: {
-        lockDuration: 900000,
-        maxStalledCount: 0,
-        retryProcessDelay: 9000,
-        drainDelay: 9000,
-      },
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT),
-      },
-    }),
   ],
   providers: [
     ElasticService,
@@ -64,14 +30,12 @@ import { IndexMetadataService } from './services/index-metadata.service';
     ShareService,
     StartupService,
     JsonFilesService,
-    FormatSearvice,
-    HarvesterService,
+    FormatService,
     IndexMetadataService,
   ],
 
   exports: [
     SharedModule,
-    BullModule,
     ElasticsearchModule,
     ElasticService,
     MetadataService,
@@ -79,8 +43,7 @@ import { IndexMetadataService } from './services/index-metadata.service';
     ShareService,
     HttpModule,
     JsonFilesService,
-    FormatSearvice,
-    HarvesterService,
+    FormatService,
     IndexMetadataService,
   ],
 })

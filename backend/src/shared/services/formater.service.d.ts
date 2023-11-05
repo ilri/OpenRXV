@@ -1,7 +1,4 @@
-import { HarvesterService } from '../../../harvester/services/harveter.service';
 export declare class FormatSearvice {
-  private readonly harvesterService;
-  constructor(harvesterService: HarvesterService);
   Init(): Promise<void>;
   format(json: any, schema: any): any;
   setValue(oldvalue: any, value: any): any;

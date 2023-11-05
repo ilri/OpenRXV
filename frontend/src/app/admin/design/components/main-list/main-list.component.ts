@@ -4,6 +4,7 @@ import {
   UntypedFormControl,
   UntypedFormGroup,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { MetadataService } from 'src/app/admin/services/metadata.service';
 })
 export class MainListComponent implements OnInit {
   @Input() baseForm: UntypedFormGroup = null;
+  @Input() dashbard_name: string = null;
   content;
   tagsControls = [];
   filterOptions = [];
@@ -53,12 +55,16 @@ export class MainListComponent implements OnInit {
       disply_name: new UntypedFormControl(element ? element.disply_name : ''),
     };
   }
-  constructor(private metadataService: MetadataService) {}
+  constructor(
+    private metadataService: MetadataService,
+    private activeRoute: ActivatedRoute,
+  ) {}
 
   async ngOnInit() {
+
     if (this.baseForm.get('content'))
       this.content = this.baseForm.get('content').value;
-    this.metadata = await this.metadataService.get();
+    this.metadata = await this.metadataService.get(this.dashbard_name, null);
     if (this.content && this.content.tags)
       this.content.tags.forEach((element) => {
         this.tagsControls.push(new UntypedFormGroup(this.baseTags(element)));

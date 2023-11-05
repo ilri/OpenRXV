@@ -4,9 +4,9 @@
   [filterOptions]="content.filterOptions"
 ></app-filter-paginated-list>
 
-<div
+<div style="min-height: 140px"
   *ngFor="let h of hits"
-  class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3"
+  class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3 zaza"
 >
   <div class="col-md-2 col-xs-12 text-center">
     <app-pub-image  [content]="content" [source]="h._source"></app-pub-image>
@@ -25,7 +25,7 @@
     <div *ngIf="h._source.DOI; else altmetricHandle"
       data-badge-popover="left"
       data-badge-type="medium-donut"
-      [attr.data-doi]="h._source.DOI"
+      [attr.data-doi]="h._source.DOI.constructor.name === 'Array' && h._source.DOI.length > 0 ? h._source.DOI[0] : h._source.DOI"
       data-hide-no-mentions="true"
       class="altmetric-embed sm-text-center"
     ></div>

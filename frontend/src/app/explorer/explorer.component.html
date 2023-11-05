@@ -1,80 +1,240 @@
-<mat-toolbar color="primary" class="toolbar-style">
+<mat-toolbar
+  *ngIf="appearance?.show_tool_bar"
+  color="primary"
+  class="toolbar-style"
+>
   <mat-toolbar-row>
-    <img *ngIf="logo" [src]="logo" [attr.alt]="website_name" class="nab-bar-images" />
-    <span class="website_name" *ngIf="!logo">{{website_name}}</span>
-    <button matTooltip="Open Filters drawer" mat-icon-button aria-label="refresh page button" class="end"
-      (click)="openNavAndDisableIgnoreMouseEvent()">
+    <img
+      *ngIf="logo"
+      [src]="logo"
+      [attr.alt]="website_name"
+      class="nab-bar-images"
+    />
+    <span class="website_name" *ngIf="!logo">{{ website_name }}</span>
+    <button
+      matTooltip="Open Filters drawer"
+      mat-icon-button
+      aria-label="refresh page button"
+      class="end"
+      (click)="openNavAndDisableIgnoreMouseEvent()"
+    >
       <mat-icon>search</mat-icon>
     </button>
-    <button [matTooltip]="'Share '+website_name+' and your search results with others'" *ngIf="!isSmall" mat-icon-button
-      (click)="share()" aria-label="refresh page button">
+    <button
+      [matTooltip]="
+        'Share ' + website_name + ' and your search results with others'
+      "
+      *ngIf="!isSmall"
+      mat-icon-button
+      (click)="share()"
+      aria-label="refresh page button"
+    >
       <mat-icon>share</mat-icon>
     </button>
-    <button matTooltip="Reset All Filters" mat-icon-button (click)="refresh()" aria-label="refresh page button">
+    <button
+      matTooltip="Reset All Filters"
+      mat-icon-button
+      (click)="refresh()"
+      aria-label="refresh page button"
+    >
       <mat-icon>loop</mat-icon>
     </button>
-    <button matTooltip="Take a tour" *ngIf="!isSmall" mat-icon-button (click)="startTour()"
-      aria-label="refresh page button">
+    <button
+      matTooltip="Take a tour"
+      *ngIf="!isSmall"
+      mat-icon-button
+      (click)="startTour()"
+      aria-label="refresh page button"
+    >
       <mat-icon>contact_support</mat-icon>
     </button>
-    <button matTooltip="About Us" mat-icon-button (click)="seeAbout()" aria-label="About Us">
+    <button
+      matTooltip="About Us"
+      mat-icon-button
+      (click)="seeAbout()"
+      aria-label="About Us"
+    >
       <mat-icon>info</mat-icon>
     </button>
+
+    <button
+            matTooltip="Last updated on {{index_last_update}}"
+            matTooltipClass="multiline-tooltip"
+            mat-icon-button
+            aria-label="Data last updated on {{index_last_update}}"
+    >
+      <mat-icon>av_timer</mat-icon>
+    </button>
+
   </mat-toolbar-row>
 </mat-toolbar>
-<tour-step-template></tour-step-template>
-<mat-sidenav-container (document:mousemove)="onMouseMove($event)" [hasBackdrop]="false" class="mb-0 pb-0 main-container"
-  fullscreen>
-  <mat-sidenav #drawer [mode]="isSmall ? 'over' : 'over'" [fixedInViewport]="options.fixed" [fixedTopGap]="options.top"
-    [fixedBottomGap]="options.bottom" [autoFocus]="false" id="drawer">
-    <mat-nav-list *ngIf="render" class="m-2">
-      <div class="row">
-        <div class="col-12">
-          <mat-icon style="float: left;line-height: 1.9;">filter_list_alt</mat-icon>
-          <h4 style="float: left; height: 40px; margin: 0px; line-height: 2.8;"> Filters</h4>
-          <button style="float: right;" (click)="sidenav.close()" mat-icon-button color="warn"
-            aria-label="Example icon button with a heart icon">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="col-12">
-          <hr>
-        </div>
-        <div class="col-6">
-          <button mat-button mat-raised-button (click)="addRemoveOrOperator()" color="primary" class="w-100">
-            Operator
-            <ng-container *ngIf="orOperator; else and">
-              <strong>OR</strong>
-            </ng-container>
-            <ng-template #and>
-              <strong>AND</strong>
-            </ng-template>
-            <mat-icon aria-label="Button that displays a tooltip when focused or hovered over"
-              [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="hover">
-              error
-            </mat-icon>
-            <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
-              <app-icons-with-text [text]="orAndToolTip"></app-icons-with-text>
-            </mde-popover>
-          </button>
-        </div>
-        <div class="col-6">
-          <button mat-button mat-raised-button (click)="refresh()" color="primary" class="w-100">
-            Reset Filters
-            <mat-icon>
-              refresh
-            </mat-icon>
-          </button>
+<mat-toolbar
+  *ngIf="appearance?.show_top_nav"
+  color="primary"
+  class="toolbar-style top_nav"
+>
+  <app-scroll-to  *ngIf="appearance?.show_side_nav" class="in-tool-bar"></app-scroll-to>
+  <button
+    matTooltip="Open Filters drawer"
+    mat-icon-button
+    aria-label="refresh page button"
+    class="end"
+    (click)="openNavAndDisableIgnoreMouseEvent()"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+  <button
+    matTooltip="Reset All Filters"
+    mat-icon-button
+    (click)="refresh()"
+    aria-label="refresh page button"
+  >
+    <mat-icon>loop</mat-icon>
+  </button>
+  <button
+    matTooltip="Take a tour"
+    *ngIf="!isSmall"
+    mat-icon-button
+    (click)="startTour()"
+    aria-label="refresh page button"
+  >
+    <mat-icon>contact_support</mat-icon>
+  </button>
+  <button
+    matTooltip="About Us"
+    mat-icon-button
+    (click)="seeAbout()"
+    aria-label="About Us"
+  >
+    <mat-icon>info</mat-icon>
+  </button>
 
+  <button
+    matTooltip="Last updated on {{index_last_update}}"
+    matTooltipClass="multiline-tooltip"
+    mat-icon-button
+    aria-label="Data last updated on {{index_last_update}}"
+  >
+    <mat-icon>av_timer</mat-icon>
+  </button>
+
+</mat-toolbar>
+<!--  -->
+
+<div
+  [ngClass]="{
+    show_tool_bar: appearance?.show_tool_bar,
+    show_top_nav: appearance?.show_top_nav
+  }"
+  class="flex-explorer"
+>
+  <app-scroll-to *ngIf="appearance?.show_side_nav && !appearance?.show_top_nav"></app-scroll-to>
+  <tour-step-template></tour-step-template>
+  <mat-sidenav-container
+    (document:mousemove)="onMouseMove($event)"
+    [hasBackdrop]="false"
+    class="mb-0 pb-0 main-container"
+    fullscreen
+  >
+    <mat-sidenav
+      [ngClass]="{
+        show_tool_bar: appearance?.show_tool_bar,
+        show_top_nav: appearance?.show_top_nav
+      }"
+      #drawer
+      [mode]="isSmall ? 'over' : 'over'"
+      [fixedInViewport]="options.fixed"
+      [fixedTopGap]="options.top"
+      [fixedBottomGap]="options.bottom"
+      [autoFocus]="false"
+      id="drawer"
+    >
+      <mat-nav-list *ngIf="render" class="m-2">
+        <div class="row">
+          <div class="col-12">
+            <mat-icon style="float: left; line-height: 1.9"
+              >filter_list_alt</mat-icon
+            >
+            <h4
+              style="float: left; height: 40px; margin: 0px; line-height: 2.8"
+            >
+              Filters
+            </h4>
+            <button
+              style="float: right"
+              (click)="sidenav.close()"
+              mat-icon-button
+              color="warn"
+              aria-label="Example icon button with a heart icon"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="col-12">
+            <hr />
+          </div>
+          <div class="col-6">
+            <button
+              mat-button
+              mat-raised-button
+              (click)="addRemoveOrOperator()"
+              color="primary"
+              class="w-100"
+            >
+              Operator
+              <ng-container *ngIf="orOperator; else and">
+                <strong>OR</strong>
+              </ng-container>
+              <ng-template #and>
+                <strong>AND</strong>
+              </ng-template>
+              <mat-icon
+                aria-label="Button that displays a tooltip when focused or hovered over"
+                [mdePopoverTriggerFor]="appPopover"
+                mdePopoverTriggerOn="hover"
+              >
+                error
+              </mat-icon>
+              <mde-popover
+                #appPopover="mdePopover"
+                [mdePopoverOverlapTrigger]="false"
+              >
+                <app-icons-with-text
+                  [text]="orAndToolTip"
+                ></app-icons-with-text>
+              </mde-popover>
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              mat-button
+              mat-raised-button
+              (click)="refresh()"
+              color="primary"
+              class="w-100"
+            >
+              Reset Filters
+              <mat-icon> refresh </mat-icon>
+            </button>
+          </div>
+          <div class="col-12">
+            <app-filters></app-filters>
+            <ngx-loading [show]="loading$ | async"></ngx-loading>
+          </div>
         </div>
-        <div class="col-12">
-          <app-filters></app-filters>
-          <ngx-loading [show]="loading$ | async"></ngx-loading>
-        </div>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="mb-0 pb-0">
+      <div class="xxxloading">
+        {{ primaryColor
+        }}<ngx-loading-bar
+          [color]="primaryColor"
+          fixed
+          ref="http"
+        ></ngx-loading-bar>
       </div>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content class="mb-0 pb-0">
-    <app-dashboard></app-dashboard>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+
+      <app-dashboard></app-dashboard>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

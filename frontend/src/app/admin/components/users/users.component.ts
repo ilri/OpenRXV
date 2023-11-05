@@ -5,6 +5,8 @@ import { UsersService } from '../../services/users.service';
 import { FormComponent } from './form/form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-users',
@@ -12,7 +14,12 @@ import { ConfirmationComponent } from '../confirmation/confirmation.component';
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit {
-  constructor(private usersService: UsersService, public dialog: MatDialog) {}
+  constructor(
+    private usersService: UsersService,
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+  ) {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(FormComponent, {
@@ -35,18 +42,23 @@ export class UsersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
+        await this.spinner.show();
         await this.usersService.deleteUser(id);
+        await this.spinner.hide();
+        this.toastr.success('User deleted successfully');
         this.ngOnInit();
       }
     });
   }
   async toEdit(id) {
+    await this.spinner.show();
     const user = await this.usersService.getUser(id);
 
     const dialogRef = this.dialog.open(FormComponent, {
       width: '30%',
       data: user,
     });
+    await this.spinner.hide();
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) this.ngOnInit();
@@ -66,8 +78,10 @@ export class UsersComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   async ngOnInit() {
+    await this.spinner.show();
     const users = await this.usersService.getUsers();
     this.dataSource = new MatTableDataSource<any>(users.hits);
     this.dataSource.paginator = this.paginator;
+    await this.spinner.hide();
   }
 }

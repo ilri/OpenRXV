@@ -1,8 +1,8 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
-    <p>{{data.subtitle}}</p>
+    <p [innerHTML]="data.subtitle"></p>
 </div>
 <div mat-dialog-actions align="end" >
-    <button mat-raised-button color="default" [mat-dialog-close]="false">No <mat-icon>close</mat-icon></button>
-    <button mat-raised-button color="warn"  [mat-dialog-close]="true">Yes <mat-icon>done</mat-icon></button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="false">No <mat-icon>close</mat-icon></button>
+    <button mat-raised-button color="primary"  [mat-dialog-close]="true">Yes <mat-icon>done</mat-icon></button>
 </div>

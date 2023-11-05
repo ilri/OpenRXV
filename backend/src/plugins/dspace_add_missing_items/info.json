@@ -1,13 +1,30 @@
 {
     "name": "dspace_add_missing_items",
     "display_name": "DSpace Add Missing Items",
-    "description": "DSpace add missing items (this is used by the health check plugin, do not activate manually).",
-    "multiple": "false",
+    "description": "DSpace add missing items.",
+    "multiple": "true",
+    "source": [
+        "handle"
+    ],
     "params": [
         {
             "name": "repo",
             "label": "Repository name",
+            "type": "select",
+            "items": "repositoriesList",
+            "required": true
+        },
+        {
+            "name": "itemEndPoint",
+            "label": "Link to DSpace REST API endpoint (Handle/UUID as per the repository sitemap structure)",
             "type": "text",
+            "required": true
+        },
+        {
+            "name": "sitemapIdentifier",
+            "label": "Item identifier in the repository sitemap structure",
+            "type": "select",
+            "items": ["handle", "uuid"],
             "required": true
         }
     ]

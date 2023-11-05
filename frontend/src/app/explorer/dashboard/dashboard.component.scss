@@ -7,6 +7,10 @@
   overflow: hidden !important;
 }
 
-.mat-tab-body.mat-tab-body-active {
+.mat-mdc-tab-body.mat-tab-body-active {
   overflow-y: hidden !important;
+}
+
+:host ::ng-deep .mat-expansion-panel-header {
+  height: 64px;
 }

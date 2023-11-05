@@ -10,6 +10,18 @@
             "label": "Handle prefix",
             "type": "text",
             "required": true
+        },
+        {
+            "name": "explorer_api_key",
+            "label": "Altmetric Explorer API key",
+            "type": "text",
+            "required": false
+        },
+        {
+            "name": "explorer_api_secret",
+            "label": "Altmetric Explorer API secret",
+            "type": "text",
+            "required": false
         }
     ]
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
 import tinycolor from 'tinycolor2';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
 import { get } from 'scriptjs';
@@ -23,40 +23,49 @@ declare let dataLayer: any;
 export class RootComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');
   loadSettigs = false;
+  dashboard_name: string;
   constructor(
     private titleService: Title,
     private readonly settingsService: SettingsService,
     private router: Router,
     private meta: Meta,
+    private activeRoute: ActivatedRoute,
   ) {}
 
   primaryColorPalette;
   async ngOnInit() {
-    const settings = await this.settingsService.readExplorerSettings();
-    this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
-    await localStorage.setItem('configs', JSON.stringify(settings));
-    if (
-      (!settings.counters && !settings.dashboard) ||
-      settings.dashboard.length == 0
-    ) {
-      this.router.navigate(['/admin']);
-    }
-    this.loadSettigs = true;
-    if (settings.appearance.primary_color) {
-      this.savePrimaryColor(
-        settings.appearance.primary_color,
-        settings.appearance.secondary_color,
-      );
-      this.titleService.setTitle(settings.appearance.website_name);
-      this.meta.updateTag({
-        name: 'og:description',
-        content: settings.appearance.description,
-      });
-    }
+    this.router.events.subscribe(async (event) => {
+      if (event instanceof NavigationEnd) {
+        this.dashboard_name = this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
+        const settings = await this.settingsService.readExplorerSettings(this.dashboard_name);
 
-    if (settings.appearance.tracking_code) {
-      this.setupGoogleAnalytics(settings.appearance.tracking_code);
-    }
+        this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
+        await localStorage.setItem('configs', JSON.stringify(settings));
+        if (
+          (!settings.counters && !settings.dashboard) ||
+          settings.dashboard.length == 0
+        ) {
+          if(!event.urlAfterRedirects.includes('admin'))
+          this.router.navigate(['/admin']);
+        }
+        this.loadSettigs = true;
+        if (settings.appearance.primary_color) {
+          this.savePrimaryColor(
+            settings.appearance.primary_color,
+            settings.appearance.secondary_color,
+          );
+          this.titleService.setTitle(settings.appearance.website_name);
+          this.meta.updateTag({
+            name: 'og:description',
+            content: settings.appearance.description,
+          });
+        }
+
+        if (settings.appearance.tracking_code) {
+          this.setupGoogleAnalytics(settings.appearance.tracking_code);
+        }
+      }
+    });
   }
 
   setupGoogleAnalytics(tracking_code) {

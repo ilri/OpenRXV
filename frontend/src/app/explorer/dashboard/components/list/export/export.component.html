@@ -18,7 +18,7 @@
     <ng-container *ngIf="delegationArr; else loadingFirstTime">
       <mat-list>
         <ng-container *ngFor="let delegation of delegationArr">
-    
+
             <a [attr.download]="delegation.loaded ? delegation.fileName : null"
               [attr.target]="delegation.loaded ? '_blank' : null" class="w-100"
               [ngClass]="{ disable: !delegation.loaded }" [href]="
@@ -28,7 +28,7 @@
               " (click)="prevent($event, delegation)">
               <ng-container *ngTemplateOutlet="info"></ng-container>
             </a>
-       
+
           <ng-template #info>
             <mat-list-item [ngClass]="{
                 disable: !delegation.loaded
@@ -40,12 +40,12 @@
               <div>
                 <ng-template #loaded>
                   <button mat-flat-button color="primary" class="w-100" (click)="markAsDownloaded(delegation)">
-                    <h4 mat-line>
-                      <mat-icon [inline]="true" *ngIf="delegation.downloaded">
+                    <span mat-line>
+                      <mat-icon class="downloaded" *ngIf="delegation.downloaded">
                         done_all
                       </mat-icon>
                       Download {{ delegation.name }}
-                    </h4>
+                    </span>
                   </button>
                 </ng-template>
               </div>

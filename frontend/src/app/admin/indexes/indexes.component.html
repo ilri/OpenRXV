@@ -1,0 +1,97 @@
+<div class="row admin-dashboard-header">
+  <div class="col-md-12 pb-5">
+    <mat-card appearance="raised">
+      <mat-card-title>
+        Indexes
+        <a style="float: right" [href]="exportLink" download="OpenRXV-indexes.json" color="primary"
+           mat-raised-button>
+        Export
+          <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+        </a>
+        <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
+        <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+          Import
+          <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+        </button>
+        <button class="mr-2" style="float: right" (click)="openDialog()" color="primary" mat-raised-button>
+          ADD
+          <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
+        </button>
+      </mat-card-title>
+    </mat-card>
+  </div>
+</div>
+
+<div class="row admin-dashboard-content">
+  <div class="col-12 pb-3">
+    <!-- <p>{{dataSource | json}}</p> -->
+    <table mat-table [dataSource]="dataSource" style="width: 100%;">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID. </th>
+        <td mat-cell *matCellDef="let element"> {{element.id.substr(0,2)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef> Created At </th>
+        <td mat-cell *matCellDef="let element"> {{element.created_at}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="last_update">
+        <th mat-header-cell *matHeaderCellDef> Last Updated At </th>
+        <td mat-cell *matCellDef="let element"> {{element.last_update}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button (click)="deleteIndex(element.id)" color="primary" mat-icon-button>
+            <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
+          </button>
+          <button (click)="editIndex(element.id)" color="primary" mat-icon-button>
+            <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
+          </button>
+          <a matTooltip="Harvest dashboard" [routerLink]="'/admin/harvester/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Harvest dashboard">dashboard</mat-icon>
+          </a>
+          <a matTooltip="Repositories" [routerLink]="'/admin/setup/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Repositories">all_inbox</mat-icon>
+          </a>
+          <a matTooltip="Plugins" [routerLink]="'/admin/plugins/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Plugins">account_tree</mat-icon>
+          </a>
+          <a matTooltip="Value Mappings" [routerLink]="'/admin/mapping-values/' + element.name" color="primary"
+             mat-icon-button
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon aria-hidden="false" aria-label="Value Mappings">find_replace</mat-icon>
+          </a>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

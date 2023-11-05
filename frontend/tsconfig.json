@@ -9,11 +9,19 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2021",
-    "typeRoots": ["node_modules/@types"],
-    "types": ["node"],
+    "target": "ES2022",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ],
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2021", "dom"],
-    "resolveJsonModule": true
+    "lib": [
+      "es2021",
+      "dom"
+    ],
+    "resolveJsonModule": true,
+    "useDefineForClassFields": false
   }
 }

@@ -20,6 +20,7 @@ import * as fromStore from '../../store';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('SelectComponent')
 @Component({
   selector: 'app-select',
@@ -42,6 +43,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
     private readonly selectService: SelectService,
     private readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    private activeRoute: ActivatedRoute,
   ) {
     super();
     this.filterOptions = [];
@@ -121,7 +123,14 @@ export class SelectComponent extends ParentComponent implements OnInit {
       this.selectService.addAttributeToMainQuery({
         [source]: selectedOptions.map((b: Bucket) => b.key),
       } as QueryFilterAttribute);
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+        body: query.build(),
+      }),
+    );
     this.selectService.resetNotification();
   }
 
@@ -168,7 +177,11 @@ export class SelectComponent extends ParentComponent implements OnInit {
       size: this.size,
       term: this.typedTerm ? this.typedTerm : null,
     };
-    return this.selectService.buildquery(bq).build();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    return {
+      dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+      query: this.selectService.buildquery(bq).build(),
+    };
   }
 
   private getData(queryBody: ElasticsearchQuery): void {

@@ -1,10 +1,8 @@
-@import "../../scss/responsive.scss";
+@import '../../scss/responsive.scss';
 
 .mat-toolbar-row {
-  // height: 80px !important;
   display: flex !important;
   flex-direction: row !important;
-  // justify-content: space-between !important;
   justify-content: flex-start !important;
 }
 
@@ -22,14 +20,26 @@ button {
 
 ::ng-deep .mat-drawer-inner-container {
   overflow-x: hidden !important;
+  padding-top: 0;
+}
+::ng-deep .show_top_nav .mat-drawer-inner-container {
+  padding-top: 40px;
+}
+::ng-deep .show_tool_bar .mat-drawer-inner-container {
+  padding-top: 75px;
+}
+.in-tool-bar {
+  width: 100%;
 }
 
 .toolbar-style {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  position: relative;
-  z-index: 0 !important;
+  position: fixed;
+  z-index: 800;
 }
-
+.top_nav.toolbar-style {
+  height: 40px;
+}
 #drawer {
   max-width: 25% !important;
   min-width: 25% !important;
@@ -53,5 +63,21 @@ button {
 
 .mat-drawer-container {
   position: inherit !important;
+  display: block !important;
+  width: 100%;
+}
+.flex-explorer {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  gap: 0px;
+  height: 99%;
+  padding-top: 0;
 }
 
+.show_top_nav.flex-explorer {
+  padding-top: 40px !important;
+}
+.show_tool_bar.flex-explorer {
+  padding-top: 75px !important;
+}

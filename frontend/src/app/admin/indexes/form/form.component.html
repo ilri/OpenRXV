@@ -1,0 +1,81 @@
+<h1 mat-dialog-title>{{ data.event }} Index</h1>
+<!-- <p *ngIf="form">{{this.form | json}}</p> -->
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="">
+    <!-- <p *ngIf="this.form.value">{{this.form.value | json}}</p> -->
+    <div mat-dialog-content class="w-100">
+        <p class="w-100 ">
+            <mat-form-field class="w-100">
+                <input type="text" matInput placeholder="Name" class="w-100" formControlName="name">
+                <mat-error *ngIf="form?.controls?.name?.errors?.required">Name is required</mat-error>
+                <mat-error *ngIf="form?.controls?.name?.errors?.cannotContainSpace">Name can not contain space.</mat-error>
+                <mat-error *ngIf="form?.controls?.name?.errors?.lowercaseValidator">Name can not contain lowercase.</mat-error>
+            </mat-form-field>
+        </p>
+        <p class="w-100">
+            <mat-checkbox formControlName="to_be_indexed">Enable Indexing</mat-checkbox>
+        </p>
+        <p class="w-100">
+            <mat-checkbox formControlName="auto_harvest">Auto harvest</mat-checkbox>
+        </p>
+        <p *ngIf="autoHarvest" class="w-100">
+          <span class="alert alert-warning">
+            Auto harvest will only trigger the harvester and will not trigger plugins.
+          </span>
+        </p>
+        <p *ngIf="autoHarvest" class="w-100">
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Interval</mat-label>
+                <mat-select class="w-100" formControlName="interval">
+                    <mat-option value="daily">Daily</mat-option>
+                    <mat-option value="weekly">Weekly</mat-option>
+                    <mat-option value="monthly">Monthly</mat-option>
+                    <mat-option value="yearly">Yearly</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </p>
+        <p *ngIf="selectedInterval != null && selectedInterval !== ''" class="w-100 interval-settings">
+          <mat-form-field *ngIf="selectedInterval === 'yearly'" appearance="fill">
+            <mat-label>Month</mat-label>
+            <mat-select formControlName="interval_month">
+              <mat-option *ngFor="let month of months" [value]="month.key">{{month.value}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+            <mat-form-field *ngIf="selectedInterval === 'monthly' || selectedInterval === 'yearly'" appearance="fill">
+                <mat-label>Day</mat-label>
+                <mat-select formControlName="interval_month_day">
+                    <mat-option *ngFor="let monthDay of monthDays" [value]="monthDay">{{monthDay}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="selectedInterval === 'weekly'" appearance="fill">
+                <mat-label>Day</mat-label>
+                <mat-select formControlName="interval_week_day">
+                    <mat-option *ngFor="let weekDay of weekDays" [value]="weekDay.key">{{weekDay.value}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Hour</mat-label>
+                <mat-select formControlName="interval_hour">
+                    <mat-option *ngFor="let hour of hours" [value]="hour">{{hour}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Minute</mat-label>
+                <mat-select formControlName="interval_minute">
+                    <mat-option *ngFor="let minute of minutes" [value]="minute">{{minute}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </p>
+        <p class="w-100">
+            <mat-form-field class="w-100">
+                <textarea type="text" matInput rows="5" class="w-100" placeholder="Description" formControlName="description"></textarea>
+            </mat-form-field>
+        </p>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button type="button" mat-raised-button color="default" (click)="onNoClick($event)">Close <mat-icon>close
+            </mat-icon></button>
+        <button type="button" color="primary" (keyup.enter)="submit()" (click)="submit()" mat-raised-button>Submit
+            <mat-icon>done</mat-icon></button>
+    </div>
+</form>

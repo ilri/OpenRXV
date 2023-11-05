@@ -54,6 +54,11 @@ export class UsersController {
   }
   @Put(':id')
   updateOneUser(@Param('id') id: string, @Body() body) {
+    if (body.password) {
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(body.password, salt);
+      body.password = hash;
+    }
     return this.elastic.update(id, body);
   }
 

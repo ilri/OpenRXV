@@ -1,8 +1,8 @@
 version: '3.1'
 services:
-  elasticsearch_7:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
-    container_name: elasticsearch_7
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.2
+    container_name: elasticsearch
     restart: always
     ports:
       - 127.0.0.1:9200:9200
@@ -12,18 +12,6 @@ services:
       - "ES_JAVA_OPTS=-Xms1536m -Xmx1536m -Dlog4j2.formatMsgNoLookups=true"
     volumes:
       - esData_7:/usr/share/elasticsearch/data:rw
-    networks:
-      - openrxv
-  frontend:
-    container_name: frontend
-    image: frontend
-    build: frontend
-    restart: always
-    ports:
-      - 80:80
-    depends_on:
-      - elasticsearch_7
-      - backend
     networks:
       - openrxv
   redis:
@@ -36,16 +24,29 @@ services:
       - 127.0.0.1:6379:6379
     networks:
       - openrxv
+  bullboard_openrxv:
+    container_name: bullboard_openrxv
+    image: docker.io/deadly0/bull-board
+    restart: always
+    volumes:
+      - ./redisData:/data
+    ports:
+      - 3457:3000
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - openrxv
   kibana:
     container_name: kibana
     restart: always
-    image: docker.elastic.co/kibana/kibana:7.17.4
+    image: docker.elastic.co/kibana/kibana:8.9.2
     depends_on:
-      - elasticsearch_7
+      - elasticsearch
     ports:
       - 127.0.0.1:5601:5601
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch_7:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     networks:
       - openrxv
   backend:
@@ -56,12 +57,24 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     depends_on:
-      - elasticsearch_7
+      - elasticsearch
       - redis
     networks:
       - openrxv
     volumes:
       - ./backend/data:/backend/data
+  frontend:
+    container_name: frontend
+    image: frontend
+    build: frontend
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - elasticsearch
+      - backend
+    networks:
+      - openrxv
 volumes:
   esData_7:
   redisData:

@@ -22,6 +22,7 @@ import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * declare is used to tell TypeScript compiler that the variable has been created elsewhere.
@@ -51,6 +52,7 @@ export class ListComponent extends ParentComponent implements OnInit {
     public readonly cdr: ChangeDetectorRef,
     private readonly selectService: SelectService,
     private readonly bodyBuilderService: BodyBuilderService,
+    private activeRoute: ActivatedRoute,
   ) {
     super();
   }
@@ -59,7 +61,14 @@ export class ListComponent extends ParentComponent implements OnInit {
     this.filterd = false;
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery(source as string);
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+        body: query.build(),
+      }),
+    );
     this.selectService.resetNotification();
   }
   ngOnInit(): void {

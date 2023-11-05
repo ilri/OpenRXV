@@ -51,7 +51,7 @@ import { VirtualListComponent } from './dashboard/components/list/virtual-list/v
 import { FilterPaginatedListComponent } from './dashboard/components/list/paginated-list/filter-paginated-list/filter-paginated-list.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
-import { TourMatMenuModule } from 'ngx-tour-md-menu';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { WelcomeComponent } from './dashboard/representationalComponents/welcome/welcome.component';
 import { MdePopoverModule } from '@material-extended/mde';
 import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';
@@ -85,7 +85,10 @@ import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemap
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 import { agmConfigFactory } from './services/agm';
-
+// for HttpClient import:
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+// for Router import:
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 @NgModule({
   declarations: [
     ExplorerComponent,
@@ -130,6 +133,10 @@ import { agmConfigFactory } from './services/agm';
     GooglemapsComponent,
   ],
   imports: [
+        // for HttpClient use:
+        LoadingBarHttpClientModule,
+        // for Router use:
+        LoadingBarRouterModule,
     BrowserAnimationsModule,
     HttpClientModule,
     BrowserModule,
@@ -163,7 +170,7 @@ import { agmConfigFactory } from './services/agm';
     MatRippleModule,
     MatProgressBarModule,
     NouisliderModule,
-    TourMatMenuModule.forRoot(),
+    TourMatMenuModule,
     ExplorerRoutingModule, // for TourMatMenuModule,
     MdePopoverModule, // https://github.com/angular/material2/issues/2691
     MatSnackBarModule,
@@ -174,7 +181,7 @@ import { agmConfigFactory } from './services/agm';
     MatDividerModule,
     ClipboardModule,
     AgmCoreModule.forRoot({
-      apiKey: 'initial api key',
+      apiKey: '',
     }),
     AgmSnazzyInfoWindowModule,
   ],

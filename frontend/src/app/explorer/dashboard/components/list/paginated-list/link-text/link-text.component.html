@@ -6,7 +6,7 @@
     rel="noopener"
   >
     <img
-      *ngIf="source[content.icon]"
+      *ngIf="source[content.icon] && appearance.icons[content.icon] != null"
       style="max-width: 30px"
       [src]="getIcon(source[content.icon])"
     />

@@ -5,6 +5,7 @@ import { FormDialogComponent } from '../../design/components/form-dialog/form-di
 import { MetadataService } from '../../services/metadata.service';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-reproting-form',
@@ -18,6 +19,7 @@ export class ReprotingFormComponent implements OnInit {
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private metadataService: MetadataService,
+    private spinner: NgxSpinnerService,
   ) {}
   preReport: any;
   preform: any;
@@ -26,18 +28,22 @@ export class ReprotingFormComponent implements OnInit {
   initialForm;
   metadata: any;
   labels = [];
+  dashboard_name: string;
   profileForm = new UntypedFormGroup({
     title: new UntypedFormControl(''),
     fileType: new UntypedFormControl(''),
     file: new UntypedFormControl(''),
   });
+  allowedFileTypes: [];
   async ngOnInit() {
+    this.dashboard_name = this.data.dashboard_name;
+    this.allowedFileTypes = this.data.allowedFileTypes;
     this.profileForm.get('title').setValue(this.data.form_data.title);
     this.profileForm.get('fileType').setValue(this.data.form_data.fileType);
     this.profileForm.get('file').setValue(this.data.form_data.file);
     this.formValues = Object.assign({}, this.data.form_data);
     this.initialForm = Object.getOwnPropertyDescriptors(this.data.form_data);
-    this.metadata = await this.metadataService.get();
+    this.metadata = await this.metadataService.get(this.dashboard_name, null);
     if (this.data.form_data.fileType == 'xlsx')
       this.labels = this.formValues.tags;
   }
@@ -75,9 +81,14 @@ export class ReprotingFormComponent implements OnInit {
     this.profileForm.value.file = await this.settingsService.uploadFile(file);
   }
 
-  saveDate() {
-    this.settingsService.saveReportsSettings(this.data.reports);
+  async saveDate() {
+    await this.spinner.show();
+    await this.settingsService.saveReportsSettings(
+      this.data.reports,
+      this.dashboard_name,
+    );
     this.dialogRef.close(this.formValues);
+    await this.spinner.hide();
   }
   deleteSource(index) {
     this.labels.splice(index, 1);

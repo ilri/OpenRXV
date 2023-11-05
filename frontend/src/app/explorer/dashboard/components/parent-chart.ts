@@ -10,6 +10,7 @@ import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { SelectService } from '../../filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
+import { ActivatedRoute } from '@angular/router';
 
 @Directive()
 export class ParentChart extends ParentComponent {
@@ -19,6 +20,7 @@ export class ParentChart extends ParentComponent {
     public readonly cms: ChartMathodsService,
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
+    public activeRoute: ActivatedRoute,
   ) {
     super();
     this.buildOptions = new EventEmitter<Array<Bucket>>();
@@ -49,7 +51,14 @@ export class ParentChart extends ParentComponent {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery(source, name);
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+        body: query.build(),
+      }),
+    );
     this.selectService.resetNotification();
   }
   resetQ() {
@@ -57,7 +66,14 @@ export class ParentChart extends ParentComponent {
 
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery(source);
-    this.store.dispatch(new fromStore.SetQuery(query.build()));
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+    this.store.dispatch(
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+        body: query.build(),
+      }),
+    );
     setTimeout(() => {
       this.selectService.resetNotification();
     }, 5000);

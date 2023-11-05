@@ -13,6 +13,7 @@ import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('SearchComponent')
 @Component({
   selector: 'app-search',
@@ -26,6 +27,7 @@ export class SearchComponent extends ParentComponent implements OnInit {
   constructor(
     private readonly bodyBuilderService: BodyBuilderService,
     private readonly store: Store<fromStore.AppState>,
+    private activeRoute: ActivatedRoute
   ) {
     super();
   }
@@ -73,15 +75,27 @@ export class SearchComponent extends ParentComponent implements OnInit {
   private applySearchTerm(): void {
     const { type } = this.componentConfigs as ComponentSearchConfigs;
     if (type === searchOptions.allSearch) {
-      this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
-        query: {
-          query_string: {
-            type: 'best_fields',
-            minimum_should_match: 2,
-            query: this.prepareQueryString(this.searchTerm),
+      if (this.componentConfigs.is_advanced) {
+          this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
+            query: {
+              query_string: {
+                fuzziness: 'auto',
+                default_operator: 'AND',
+                query: this.searchTerm,
+              },
+            },
+          };
+      } else {
+        this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
+          query: {
+            query_string: {
+              type: 'best_fields',
+              minimum_should_match: 2,
+              query: this.prepareQueryString(this.searchTerm),
+            },
           },
-        },
-      };
+        };
+      }
     } else {
       this.bodyBuilderService.setAggAttributes = this.searchTerm;
     }
@@ -116,9 +130,17 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   private dispatchActions() {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
     this.bodyBuilderService.resetOtherComponent({ caller: 'search' });
     this.store.dispatch(
-      new fromStore.SetQuery(this.bodyBuilderService.buildMainQuery().build()),
+
+      new fromStore.SetQuery({
+        dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+        body: this.bodyBuilderService.buildMainQuery().build(),
+      }
+
+        ),
     );
   }
 

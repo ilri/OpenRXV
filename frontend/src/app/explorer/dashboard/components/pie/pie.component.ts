@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { ActivatedRoute } from '@angular/router';
 @ComponentLookup('PieComponent')
 @Component({
   selector: 'app-pie',
@@ -31,14 +32,18 @@ export class PieComponent extends ParentChart implements OnInit {
     public readonly selectService: SelectService,
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
+    activatedRoute: ActivatedRoute,
   ) {
-    super(cms, selectService, store);
+    super(cms, selectService, store, activatedRoute);
   }
   colors: string[];
   filterd = false;
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
-    const appearance = await this.settingsService.readAppearanceSettings();
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const appearance = await this.settingsService.readAppearanceSettings(
+      dashboard_name,
+    );
     this.colors = appearance.chartColors;
     this.init('pie');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

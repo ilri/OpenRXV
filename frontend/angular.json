@@ -25,7 +25,10 @@
             "assets": ["src/favicon.ico", "src/assets",
                 { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
+            ],
             "scripts": ["src/alt.js"],
             "vendorChunk": true,
             "extractLicenses": false,
@@ -115,5 +118,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

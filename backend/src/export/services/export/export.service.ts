@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { FileType } from 'src/shared/models/types.helpers';
 import {
-  BodyResponse,
-  Hits,
   ExporterResponse,
 } from 'src/shared/models/ResponseBody.modal';
-import { ApiResponse } from '@elastic/elasticsearch';
+import { SearchResponse, SearchHitsMetadata, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { Response as ExpressRes } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as PizZip from 'pizzip';
-import * as Docxtemplater from 'docxtemplater';
+const Docxtemplater = require("docxtemplater");
 import * as libre from 'libreoffice-convert';
 const expressions = require('angular-expressions');
 const assign = require('lodash/assign');
@@ -24,7 +22,7 @@ export class ExportService {
   a;
   async downloadFile(
     res: ExpressRes,
-    { body: { hits, _scroll_id } }: ApiResponse<BodyResponse>,
+    { hits, _scroll_id }: SearchResponse,
     type: FileType,
     part: number,
     fileNameg: string,
@@ -40,13 +38,14 @@ export class ExportService {
         return;
       }
 
+      const totalHits = hits.total as SearchTotalHits;
       const response: ExporterResponse = {
         end: hits.hits.length === 0,
         scrollId: _scroll_id,
         fileName: `${this.a}`,
         path: '/downloads',
         per_doc_size: 2000,
-        total: hits.total.value,
+        total: totalHits.value,
       };
 
       let filePath: string;
@@ -82,7 +81,7 @@ export class ExportService {
 
   private async createDocx(
     fileName: string,
-    hits: Hits,
+    hits: SearchHitsMetadata,
     query: any,
     part,
     websiteName,
@@ -215,7 +214,7 @@ export class ExportService {
         selectQuery: select ? select.replace(/:/g, '= ') : '',
         sortingType: sort,
         sortedBy: sortBy,
-        total: hits.total.value,
+        total: (hits.total as SearchTotalHits).value,
       });
       doc.render();
       const buf = doc.getZip().generate({ type: 'nodebuffer' });
@@ -235,7 +234,7 @@ export class ExportService {
     }
   }
 
-  private async createXlsx(body, file, part, websiteName) {
+  private async createXlsx(body: SearchHitsMetadata, file, part, websiteName) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('sheet', {
       pageSetup: { paperSize: 20, orientation: 'landscape', fitToPage: true },

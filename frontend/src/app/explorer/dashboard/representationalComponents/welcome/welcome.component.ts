@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TourService } from 'ngx-tour-md-menu';
-import { INgxmStepOption } from 'ngx-tour-md-menu/lib/step-option.interface';
+import { TourService } from 'ngx-ui-tour-md-menu';
 import { ComponentLookup } from '../../components/dynamic/lookup.registry';
 @ComponentLookup('WelcomeComponent')
 @Component({
@@ -14,9 +13,7 @@ export class WelcomeComponent implements OnInit {
   constructor(private readonly tourService: TourService) {}
 
   ngOnInit(): void {
-    this.tourService.start$.subscribe(
-      (inso: INgxmStepOption) => (this.tourStarted = true),
-    );
+    this.tourService.start$.subscribe(() => (this.tourStarted = true),);
   }
 
   toggleElement(): void {

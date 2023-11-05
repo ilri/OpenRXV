@@ -9,9 +9,9 @@ import { map } from 'rxjs/operators';
 export class SharedService {
   constructor(private http: HttpClient) {}
 
-  async getSharedLinks() {
+  async getSharedLinks(dashboard_name: string) {
     return await this.http
-      .get(environment.api + '/share')
+      .get(environment.api + `/share/${dashboard_name}`)
       .pipe(
         map((data: any) => {
           data.hits = data.hits.map((element) => {

@@ -1,4 +1,4 @@
-<mat-card *ngIf="plugin">
+<mat-card appearance="raised" *ngIf="plugin">
     <mat-card-title>
         {{plugin.display_name}}
         <mat-checkbox [labelPosition]="'before'" (change)="activeChange()" style="float: right;" [(ngModel)]="active">Active</mat-checkbox>

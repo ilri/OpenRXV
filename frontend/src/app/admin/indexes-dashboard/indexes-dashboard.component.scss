@@ -1,0 +1,15 @@
+.w-100 {
+  width: 100% !important;
+}
+
+.dashboard-default-icon {
+  cursor: pointer;
+  transition: color ease-in-out 0.3s;
+}
+
+.dashboard-default-icon.is_default {
+  color: #51A351;
+}
+.dashboard-default-icon:hover {
+  color: #5090d0;
+}

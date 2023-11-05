@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RootComponent } from './root/root.component';
-import { LoginComponent } from './login/login.component';
 import { AdminGuard } from './admin.guard';
 import { UsersComponent } from './components/users/users.component';
 import { MappingValuesComponent } from './components/mapping-values/mapping-values.component';
@@ -13,41 +12,80 @@ import { DesignComponent } from './design/design.component';
 import { AppearanceComponent } from './appearance/appearance.component';
 import { PluginsComponent } from './plugins/plugins.component';
 import { ReportingComponent } from './reporting/reporting.component';
+import { IndexesComponent } from './indexes/indexes.component';
+import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   {
     path: 'admin',
     component: RootComponent,
     children: [
-      { path: '', component: DashboardComponent, canActivate: [AdminGuard] },
       {
-        path: 'dashboard',
+        path: '',
+        component: IndexesComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'indexes',
+        component: IndexesComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'harvester/:index_name',
         component: DashboardComponent,
         canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes'},
       },
       {
-        path: 'appearance',
-        component: AppearanceComponent,
-        canActivate: [AdminGuard],
-      },
-      { path: 'users', component: UsersComponent, canActivate: [AdminGuard] },
-      { path: 'shared', component: SharedComponent, canActivate: [AdminGuard] },
-      {
-        path: 'mapping-values',
+        path: 'mapping-values/:index_name',
         component: MappingValuesComponent,
         canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes'},
       },
-      { path: 'setup', component: SetupComponent, canActivate: [AdminGuard] },
       {
-        path: 'plugins',
+        path: 'setup/:index_name',
+        component: SetupComponent,
+        canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes'},
+      },
+      {
+        path: 'plugins/:index_name',
         component: PluginsComponent,
         canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes'},
       },
-      { path: 'design', component: DesignComponent, canActivate: [AdminGuard] },
       {
-        path: 'reporting',
+        path: 'indexes-dashboards',
+        component: IndexesDashboardComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: 'appearance/:dashboard_name',
+        component: AppearanceComponent,
+        canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes-dashboards'},
+      },
+      {
+        path: 'design/:dashboard_name',
+        component: DesignComponent,
+        canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes-dashboards'},
+      },
+      {
+        path: 'reporting/:dashboard_name',
         component: ReportingComponent,
+        canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes-dashboards'},
+      },
+      {
+        path: 'sharedlinks/:dashboard_name',
+        component: SharedComponent,
+        canActivate: [AdminGuard],
+        data: {parentRoute: 'indexes-dashboards'},
+      },
+      {
+        path: 'users',
+        component: UsersComponent,
         canActivate: [AdminGuard],
       },
     ],

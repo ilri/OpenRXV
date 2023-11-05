@@ -24,3 +24,15 @@
       }
     }
   }
+
+.list-fields {
+  max-height: 390px;
+  overflow-y: auto;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.14);
+  scroll-behavior: smooth;
+}
+
+.show-hide-repository-icon {
+  line-height: inherit;
+  cursor: pointer;
+}

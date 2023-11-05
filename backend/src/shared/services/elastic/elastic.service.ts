@@ -1,65 +1,78 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { Update } from '@elastic/elasticsearch/api/requestParams';
-import { ApiResponse } from '@elastic/elasticsearch';
+import { UpdateRequest, IndicesExistsResponse, SearchResponse, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import * as bcrypt from 'bcrypt';
+import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 @Injectable()
 export class ElasticService {
   index = 'openrxv-users';
-  constructor(public readonly elasticsearchService: ElasticsearchService) {}
+  constructor(
+    public readonly elasticsearchService: ElasticsearchService,
+    private readonly jsonFilesService: JsonFilesService = null,
+  ) {}
+
+  async startUpIndexes() {
+    const indexes = await this.jsonFilesService.read(
+      '../../../data/indexes.json',
+    );
+    for (const index of indexes) {
+      const items_final_exist: IndicesExistsResponse =
+        await this.elasticsearchService.indices.exists({
+          index: `${index.name}_final`,
+        }).catch();
+      const items_temp_exist: IndicesExistsResponse =
+        await this.elasticsearchService.indices.exists({
+          index: `${index.name}_temp`,
+        }).catch();
+
+
+      if (!items_final_exist)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_final`,
+        }).catch();
+      if (!items_temp_exist)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}_temp`,
+        }).catch();
+    }
+  }
   async startup() {
-    const values_exist: ApiResponse =
+    await this.startUpIndexes();
+
+    const values_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-values',
-      });
-    const users_exist: ApiResponse =
+      }).catch();
+    const users_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-users',
-      });
-    const shared_exist: ApiResponse =
+      }).catch();
+    const shared_exist: IndicesExistsResponse =
       await this.elasticsearchService.indices.exists({
         index: 'openrxv-shared',
-      });
-    const items_final_exist: ApiResponse =
-      await this.elasticsearchService.indices.exists({
-        index: process.env.OPENRXV_FINAL_INDEX,
-      });
-    const items_temp_exist: ApiResponse =
-      await this.elasticsearchService.indices.exists({
-        index: process.env.OPENRXV_TEMP_INDEX,
-      });
+      }).catch();
 
-    if (!items_final_exist.body)
-      await this.elasticsearchService.indices.create({
-        index: process.env.OPENRXV_FINAL_INDEX,
-      });
-    if (!items_temp_exist.body)
-      await this.elasticsearchService.indices.create({
-        index: process.env.OPENRXV_TEMP_INDEX,
-      });
-    if (!shared_exist.body)
+    if (!shared_exist)
       await this.elasticsearchService.indices.create({
         index: 'openrxv-shared',
-      });
-    if (!values_exist.body)
+      }).catch();
+    if (!values_exist)
       await this.elasticsearchService.indices.create({
         index: 'openrxv-values',
-      });
+      }).catch();
 
     await this.elasticsearchService.cluster.putSettings({
-      body: {
-        transient: {
-          'cluster.routing.allocation.disk.threshold_enabled': false,
-        },
+      transient: {
+        'cluster.routing.allocation.disk.threshold_enabled': false,
       },
-    });
+    }).catch();
     await this.elasticsearchService.indices.putSettings({
-      body: {
+      settings: {
         'index.blocks.read_only_allow_delete': null,
       },
-    });
+    }).catch();
 
-    if (!users_exist.body) {
+    if (!users_exist) {
       const body = {
         name: 'admin',
         role: 'Admin',
@@ -67,61 +80,56 @@ export class ElasticService {
         password: 'admin',
       };
       const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(body.password, salt);
-      body.password = hash;
+      body.password = bcrypt.hashSync(body.password, salt);
       await this.add(body);
     }
   }
-  async search(query, size = 10, scroll: string = null) {
+  async search(query, size = 10, scroll: string = null, dashboard = 'DEFAULT_DASHBOARD') {
+    const index_name = await this.jsonFilesService.getIndexFromDashboard(dashboard);
     try {
-      const options: any = {
-        index: process.env.OPENRXV_ALIAS,
-        method: 'POST',
-        // size: size,
-        // scroll:'10m',
-        body: query,
+      const options: SearchRequest = {
+        index: index_name,
+        ...query,
       };
       if (scroll) options.scroll = scroll;
       if (size) options.size = size;
-      const { body } = await this.elasticsearchService.search(options);
-      return body;
+
+
+      return await this.elasticsearchService.search(options);
     } catch (e) {
       return e;
     }
   }
 
-  async add(item) {
+  async add(item, index_name = this.index) {
     item['created_at'] = new Date();
-    const { body } = await this.elasticsearchService.index({
-      index: this.index,
+    return await this.elasticsearchService.index({
+      index: index_name,
       refresh: 'wait_for',
-      body: item,
+      document: item,
     });
-    return body;
   }
-  async update(id, item) {
-    const update: Update = {
+  async update(id, item, index_name = this.index) {
+    const update: UpdateRequest = {
       id,
-      index: this.index,
+      index: index_name,
       refresh: 'wait_for',
-      body: { doc: item },
+      doc: item,
     };
     return this.elasticsearchService.update(update);
   }
 
-  async delete(id) {
-    const { body } = await this.elasticsearchService.delete({
-      index: this.index,
+  async delete(id, index_name = this.index) {
+    return await this.elasticsearchService.delete({
+      index: index_name,
       refresh: 'wait_for',
       id,
     });
-
-    return body._source;
   }
 
-  async findOne(id) {
-    const { body } = await this.elasticsearchService.get({
-      index: this.index,
+  async findOne(id, index_name = this.index) {
+    const body = await this.elasticsearchService.get({
+      index: index_name,
 
       id,
     });
@@ -129,7 +137,7 @@ export class ElasticService {
     return body._source;
   }
 
-  async findByTerm(term = '') {
+  async findByTerm(term = '', index_name = this.index) {
     try {
       let obj;
       if (term != '')
@@ -142,30 +150,27 @@ export class ElasticService {
         obj = {
           match_all: {},
         };
-      const { body } = await this.elasticsearchService.search({
-        index: this.index,
-        method: 'POST',
+      const response = await this.elasticsearchService.search({
+        index: index_name,
         from: 0,
         size: 9999,
-        body: {
-          track_total_hits: true,
+        track_total_hits: true,
 
-          query: obj,
-          sort: [
-            {
-              created_at: {
-                order: 'desc',
-              },
+        query: obj,
+        sort: [
+          {
+            created_at: {
+              order: 'desc',
             },
-          ],
-        },
+          },
+        ],
       });
-      return body.hits;
+      return response.hits;
     } catch (e) {
       return { total: { value: 0, relation: 'eq' }, max_score: null, hits: [] };
     }
   }
-  async find(obj: Object = null) {
+  async find(obj: object = null, index_name = this.index) {
     try {
       if (obj) obj = { bool: { filter: { term: obj } } };
       else
@@ -173,42 +178,37 @@ export class ElasticService {
           match_all: {},
         };
 
-      const { body } = await this.elasticsearchService.search({
-        index: this.index,
+      const response = await this.elasticsearchService.search({
+        index: index_name,
         from: 0,
-        method: 'POST',
         size: 9999,
-        body: {
-          track_total_hits: true,
-          query: obj,
-          sort: {
-            created_at: {
-              order: 'desc',
-            },
+        track_total_hits: true,
+        query: obj,
+        sort: {
+          created_at: {
+            order: 'desc',
           },
         },
       });
-      return body.hits;
+      return response.hits;
     } catch (e) {
       return { total: { value: 0, relation: 'eq' }, max_score: null, hits: [] };
     }
   }
 
-  async get(q: any, scrollId?: string) {
+  async get(index_name, q: object, scrollId?: string) {
     try {
-      let scrollSearch: any;
+      let scrollSearch: SearchResponse;
       if (scrollId) {
         scrollSearch = await this.elasticsearchService.scroll({
           scroll_id: scrollId,
           scroll: '10m',
-          method: 'POST',
         });
       } else {
         scrollSearch = await this.elasticsearchService.search({
-          index: process.env.OPENRXV_ALIAS,
+          index: index_name,
           scroll: '10m',
-          method: 'POST',
-          body: { ...q },
+          ...q,
         });
       }
       return scrollSearch;

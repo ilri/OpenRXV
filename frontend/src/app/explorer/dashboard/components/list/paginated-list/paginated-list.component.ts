@@ -19,6 +19,7 @@ import {
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { skip } from 'rxjs/operators';
 import { ExportComponent } from '../export/export.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-paginated-list',
@@ -47,6 +48,7 @@ export class PaginatedListComponent implements OnInit {
     private readonly store: Store<fromStore.AppState>,
     private readonly mainBodyBuilderService: MainBodyBuilderService,
     private readonly dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
   ) {
     this.flag = true;
   }
@@ -81,6 +83,8 @@ export class PaginatedListComponent implements OnInit {
   }
 
   exportFile(file): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
     const dialogRef = this.dialog.open(ExportComponent, {
       width: '400px',
       disableClose: true,
@@ -88,15 +92,20 @@ export class PaginatedListComponent implements OnInit {
     dialogRef.componentInstance.type = file.type;
     dialogRef.componentInstance.file = file.file;
     dialogRef.componentInstance.query = this.store.select(fromStore.getQuery);
+    dialogRef.componentInstance.dashboard = dashboard_name
+      ? dashboard_name
+      : 'DEFAULT_DASHBOARD';
   }
 
   private dispatchAction(spo: SortPaginationOptions): void {
+    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.store.dispatch(
-      new fromStore.SetQuery(
-        this.mainBodyBuilderService
+      new fromStore.SetQuery({
+        dashboard: dashboard_name,
+        body: this.mainBodyBuilderService
           .buildMainQuery(spo.reset ? 0 : spo.pageEvent.pageIndex * 10, false)
           .build(),
-      ),
+      }),
     );
   }
 
@@ -117,7 +126,7 @@ export class PaginatedListComponent implements OnInit {
       .pipe(skip(1))
       .subscribe(
         (b: QueryState) =>
-          b.body.from === 0 &&
+          b?.body?.from === 0 &&
           this.paginationAtt.pageIndex !== 0 &&
           this.resetPagination(),
       );

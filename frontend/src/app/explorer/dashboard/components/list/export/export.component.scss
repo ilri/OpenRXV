@@ -5,8 +5,13 @@ a {
     cursor: default;
   }
 }
-.mat-list-item {
+.mat-mdc-list-item {
   &:hover:not(.disable) {
     cursor: pointer;
   }
+}
+
+mat-icon.downloaded {
+  font-size: inherit;
+  line-height: inherit;
 }

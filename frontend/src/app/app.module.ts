@@ -8,10 +8,35 @@ import { RootComponent } from './root/root.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { CommonService } from './common.service';
+import { DateAdapter, NativeDateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { formatDate } from '@angular/common';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+
+export const ISO_8601_date_format = {
+  parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+  display: {
+    dateInput: 'input',
+    monthYearLabel: {year: 'numeric', month: 'short'},
+    dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
+    monthYearA11yLabel: {year: 'numeric', month: 'long'}
+  }
+};
+
+class PickDateAdapter extends NativeDateAdapter {
+  format(date: Date, displayFormat: string): string {
+    if (displayFormat === 'input') {
+      return formatDate(date, 'YYYY-MM-dd', this.locale);
+    } else {
+      return date.toDateString();
+    }
+  }
+}
+
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
@@ -23,11 +48,8 @@ export function tokenGetter() {
     AdminModule,
     CommonModule,
     AppRoutingModule,
-    // for HttpClient use:
-    LoadingBarHttpClientModule,
-    // for Router use:
-    LoadingBarRouterModule,
     ToastrModule.forRoot(),
+    NgxSpinnerModule.forRoot({ type: 'ball-8bits' }),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -36,7 +58,11 @@ export function tokenGetter() {
       },
     }),
   ],
-  providers: [],
+  providers: [
+    CommonService,
+    {provide: DateAdapter, useClass: PickDateAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format}
+  ],
   bootstrap: [RootComponent],
 })
 export class AppModule {}

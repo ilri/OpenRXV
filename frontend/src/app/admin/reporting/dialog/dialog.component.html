@@ -1,8 +1,13 @@
-<div class="modal-body">
-    <p><strong>Are you sure you want to delete <span class="text-primary">"{{data.reportData.title}}"</span> Report</strong></p>
-    <p>All information associated with this report will be permanently deleted.</p>
+<h1 mat-dialog-title>Confirmation</h1>
+<div mat-dialog-content>
+  <p>
+    <strong>
+      Are you sure you want to delete<span class="text-primary">"{{data.reportData.title}}"</span> Report
+    </strong>
+  </p>
+  <p>All information associated with this report will be permanently deleted.</p>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-raised-button (click)="Cancel()" ngbAutofocus>cancel</button>
-    <button mat-raised-button color="warn" (click)="Delete()">Delete</button>
+  <button mat-raised-button (click)="Cancel()" ngbAutofocus>cancel</button>
+  <button mat-raised-button color="warn" (click)="Delete()">Delete</button>
 </div>

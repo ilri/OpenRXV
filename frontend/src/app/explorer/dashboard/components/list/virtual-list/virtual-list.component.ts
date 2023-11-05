@@ -11,6 +11,7 @@ import { ScreenSizeService } from 'src/app/explorer/services/screenSize/screen-s
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-virtual-list',
@@ -30,6 +31,7 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     private readonly store: Store<fromStore.AppState>,
     private readonly screenSizeService: ScreenSizeService,
     public readonly selectService: SelectService,
+    public activeRoute: ActivatedRoute,
   ) {
     super();
   }
@@ -47,8 +49,17 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
       const { source } = this.componentConfigs as ComponentFilterConfigs;
       const query: bodybuilder.Bodybuilder =
         this.selectService.addNewValueAttributetoMainQuery(source, value);
-      this.store.dispatch(new fromStore.SetQuery(query.build()));
+      const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+      this.store.dispatch(
+        new fromStore.SetQuery({
+          dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
+          body: query.build(),
+        }),
+      );
       this.selectService.resetNotification();
     }
   }
+
+  protected readonly parseFloat = parseFloat;
 }
