@@ -263,7 +263,7 @@ export class SettingsController {
     }
 
     await this.jsonFilesService.save(indexes, '../../../data/indexes.json');
-    await this.elasticSearvice.startUpIndexes();
+    await this.elasticSearvice.startUpIndexes(indexes);
     return { success: true };
   }
 

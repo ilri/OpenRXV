@@ -225,7 +225,7 @@ const operations = {
         console.log(`${styles.bold}## ${styles.yellow}Migrating the main items index${styles.default}${styles.bold} ##${styles.default}`);
         console.log(`${styles.bold}##                                ##${styles.default}`);
         console.log(`${styles.bold}####################################${styles.default}`);
-        operations.MigrateElasticsearchIndexes('main', operations.activeIndex.name, `${operations.activeIndex.name}_final`, OPENRXV_FINAL_INDEX);
+        operations.MigrateElasticsearchIndexes('main', `${operations.activeIndex.name}_final`, operations.activeIndex.name, OPENRXV_FINAL_INDEX);
 
         console.log(`${styles.bold}####################################${styles.default}`);
         console.log(`${styles.bold}##                                ##${styles.default}`);
