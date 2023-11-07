@@ -1,4 +1,4 @@
-import {Controller, UseGuards, Get, Param, Query} from '@nestjs/common';
+import { Controller, UseGuards, Get, Param, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { HarvesterService } from '../services/harveter.service';
 
@@ -8,18 +8,27 @@ export class HarvesterController {
   @UseGuards(AuthGuard('jwt'))
   @Get('info/:index_name')
   async getInfo(
-      @Param('index_name') index_name: string,
-      @Query('section') section: string,
-      @Query('status') status: string,
-      @Query('pageIndex') pageIndex: number,
-      @Query('pageSize') pageSize: number,
+    @Param('index_name') index_name: string,
+    @Query('section') section: string,
+    @Query('status') status: string,
+    @Query('pageIndex') pageIndex: number,
+    @Query('pageSize') pageSize: number,
   ) {
-    return await this.harvestService.getInfo(index_name, section, status, pageIndex, pageSize);
+    return await this.harvestService.getInfo(
+      index_name,
+      section,
+      status,
+      pageIndex,
+      pageSize,
+    );
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('info/:index_name/:id')
-  async getInfoByID(@Param('index_name') index_name: string, @Param('id') job_id: number) {
+  async getInfoByID(
+    @Param('index_name') index_name: string,
+    @Param('id') job_id: number,
+  ) {
     return await this.harvestService.getInfoById(index_name, job_id);
   }
 
@@ -43,8 +52,8 @@ export class HarvesterController {
   @UseGuards(AuthGuard('jwt'))
   @Get('start-plugins/:index_name/:plugin_name')
   async pluginsStart(
-      @Param('index_name') index_name: string,
-      @Param('plugin_name') plugin_name: string,
+    @Param('index_name') index_name: string,
+    @Param('plugin_name') plugin_name: string,
   ) {
     return await this.harvestService.pluginsStart(index_name, plugin_name);
   }
@@ -52,8 +61,8 @@ export class HarvesterController {
   @UseGuards(AuthGuard('jwt'))
   @Get('stop-plugins/:index_name/:plugin_name')
   async pluginsStop(
-      @Param('index_name') index_name: string,
-      @Param('plugin_name') plugin_name: string,
+    @Param('index_name') index_name: string,
+    @Param('plugin_name') plugin_name: string,
   ) {
     return await this.harvestService.pluginsStop(index_name, plugin_name);
   }

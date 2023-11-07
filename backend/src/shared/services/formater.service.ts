@@ -8,9 +8,7 @@ const langISO = require('iso-639-1');
 
 @Injectable()
 export class FormatService {
-  constructor(
-      private readonly valuesServes: ValuesService,
-  ) {}
+  constructor(private readonly valuesServes: ValuesService) {}
 
   async getMappingValues(index_name: string) {
     const data = await this.valuesServes.find(null, `${index_name}-values`);
@@ -19,14 +17,18 @@ export class FormatService {
       values[d._source.find] = {
         replace: d._source.replace,
         metadataField: d._source.metadataField,
-      }
+      };
     });
     return values;
   }
 
   extractParentCommunities(metadataElement, communities, metadataField) {
     if (metadataElement?._embedded?.parentCommunity) {
-      communities = this.extractParentCommunities(metadataElement._embedded.parentCommunity, communities, metadataField);
+      communities = this.extractParentCommunities(
+        metadataElement._embedded.parentCommunity,
+        communities,
+        metadataField,
+      );
     }
     if (metadataElement.hasOwnProperty(metadataField)) {
       communities.push(metadataElement[metadataField]);
@@ -57,7 +59,7 @@ export class FormatService {
     langISO.validate(value) ? langISO.getName(value) : value;
 
   mapIsoToCountry(value: string) {
-    const country = CountryISO.get({alpha_2: value}) as Country;
+    const country = CountryISO.get({ alpha_2: value }) as Country;
     return country ? country.name : this.capitalizeFirstLetter(value);
   }
 
@@ -70,7 +72,12 @@ export class FormatService {
     return country ? country.alpha_2 : null;
   }
 
-  mapIt(value: any, addOn = null, metadataField: string = null, mapto: any = {}): string {
+  mapIt(
+    value: any,
+    addOn = null,
+    metadataField: string = null,
+    mapto: any = {},
+  ): string {
     if (addOn) {
       if (typeof value === 'string' || value instanceof String) {
         if (addOn == 'country')

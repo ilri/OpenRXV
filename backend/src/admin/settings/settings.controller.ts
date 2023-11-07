@@ -39,7 +39,9 @@ export class SettingsController {
     const plugins_values = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
-    const index_plugins_values = plugins_values.hasOwnProperty(index_name) ? plugins_values[index_name] : [];
+    const index_plugins_values = plugins_values.hasOwnProperty(index_name)
+      ? plugins_values[index_name]
+      : [];
 
     const info = [];
     plugins.forEach(async (plugin) => {
@@ -55,10 +57,18 @@ export class SettingsController {
   }
 
   @Post('plugins/:index_name')
-  async savePlugins(@Body() body: any, @Param('index_name') index_name: string = 'index') {
-    const plugins_values = await this.jsonFilesService.read('../../../data/plugins.json');
+  async savePlugins(
+    @Body() body: any,
+    @Param('index_name') index_name: string = 'index',
+  ) {
+    const plugins_values = await this.jsonFilesService.read(
+      '../../../data/plugins.json',
+    );
     plugins_values[index_name] = body;
-    return await this.jsonFilesService.save(plugins_values, '../../../data/plugins.json');
+    return await this.jsonFilesService.save(
+      plugins_values,
+      '../../../data/plugins.json',
+    );
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -71,7 +81,8 @@ export class SettingsController {
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
-    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) return new NotFoundException();
+    if (!(await this.jsonFilesService.GetDashboard(dashboard_name)))
+      return new NotFoundException();
 
     for (const dashboard of dashboards) {
       if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
@@ -94,15 +105,24 @@ export class SettingsController {
       '../../../data/dashboards.json',
     );
     if (!dashboards) return new NotFoundException();
-    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) return new NotFoundException();
+    if (!(await this.jsonFilesService.GetDashboard(dashboard_name)))
+      return new NotFoundException();
 
     for (const dashboard of dashboards) {
       if (dashboard.name == dashboard_name) {
         if (data?.logo !== '' && data.logo != null) {
-          data.logo = await this.jsonFilesService.DownloadImportedFile(data.logo, dashboard_name, 'images');
+          data.logo = await this.jsonFilesService.DownloadImportedFile(
+            data.logo,
+            dashboard_name,
+            'images',
+          );
         }
         if (data?.favIcon !== '' && data.favIcon != null) {
-          data.favIcon = await this.jsonFilesService.DownloadImportedFile(data.favIcon, dashboard_name, 'images');
+          data.favIcon = await this.jsonFilesService.DownloadImportedFile(
+            data.favIcon,
+            dashboard_name,
+            'images',
+          );
         }
 
         dashboard['appearance'] = data;
@@ -136,13 +156,19 @@ export class SettingsController {
     if (!dashboards) {
       return new NotFoundException();
     }
-    if (!await this.jsonFilesService.GetDashboard(dashboard_name)) {
+    if (!(await this.jsonFilesService.GetDashboard(dashboard_name))) {
       return new NotFoundException();
     }
 
     for (const report of data) {
       if (report.fileType !== 'xlsx' && report?.file !== '') {
-        report.file = '/' + await this.jsonFilesService.DownloadImportedFile(report.file, report.title, 'files');
+        report.file =
+          '/' +
+          (await this.jsonFilesService.DownloadImportedFile(
+            report.file,
+            report.title,
+            'files',
+          ));
       }
     }
 
@@ -162,12 +188,20 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('indexes')
-  async SaveIndexes(@Body() body: any, @Body('isNew') isNew: boolean, @Body('deleted') deleted: any) {
-    let indexes = await this.jsonFilesService.read('../../../data/indexes.json');
+  async SaveIndexes(
+    @Body() body: any,
+    @Body('isNew') isNew: boolean,
+    @Body('deleted') deleted: any,
+  ) {
+    let indexes = await this.jsonFilesService.read(
+      '../../../data/indexes.json',
+    );
 
     if (deleted?.id) {
       // Get the dashboards where the index is used
-      const dashboards = await this.jsonFilesService.read('../../../data/dashboards.json');
+      const dashboards = await this.jsonFilesService.read(
+        '../../../data/dashboards.json',
+      );
       const relatedDashboards = [];
       if (Array.isArray(dashboards) && dashboards.length > 0) {
         dashboards.map((dashboard) => {
@@ -181,11 +215,20 @@ export class SettingsController {
       }
 
       // Get the dashboards where the index is used
-      const repositories = await this.jsonFilesService.read('../../../data/data.json');
+      const repositories = await this.jsonFilesService.read(
+        '../../../data/data.json',
+      );
       const relatedRepositories = [];
-      if (repositories?.repositories && Array.isArray(repositories.repositories) && repositories.repositories.length > 0) {
+      if (
+        repositories?.repositories &&
+        Array.isArray(repositories.repositories) &&
+        repositories.repositories.length > 0
+      ) {
         repositories.repositories.map((repository) => {
-          if (repository?.index_name && repository.index_name === deleted.name) {
+          if (
+            repository?.index_name &&
+            repository.index_name === deleted.name
+          ) {
             relatedRepositories.push({
               name: repository.name,
             });
@@ -243,18 +286,22 @@ export class SettingsController {
 
       const namesFiltered = [];
       for (let i = 0; i < indexes.length; i++) {
-        indexes[i].name = this.indexMetadataService.cleanIdNames(indexes[i].name);
+        indexes[i].name = this.indexMetadataService.cleanIdNames(
+          indexes[i].name,
+        );
         if (indexes[i].name !== '') {
           namesFiltered.push(indexes[i].name);
         }
       }
 
-      if (namesFiltered.length !== indexes.length) { // Don't allow empty index names
+      if (namesFiltered.length !== indexes.length) {
+        // Don't allow empty index names
         return {
           success: false,
           message: `Index name cannot be empty`,
         };
-      } else if ((new Set(namesFiltered)).size !== namesFiltered.length) { // If two indexes have the same name, prevent submit
+      } else if (new Set(namesFiltered).size !== namesFiltered.length) {
+        // If two indexes have the same name, prevent submit
         return {
           success: false,
           message: `Index name is already used`,
@@ -270,12 +317,12 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Post('dashboards')
   async SaveDashboards(
-      @Body() body: any,
-      @Body('isNew') isNew: boolean,
-      @Body('defaultDashboard') defaultDashboard: string,
+    @Body() body: any,
+    @Body('isNew') isNew: boolean,
+    @Body('defaultDashboard') defaultDashboard: string,
   ) {
     let dashboards = await this.jsonFilesService.read(
-        '../../../data/dashboards.json',
+      '../../../data/dashboards.json',
     );
     if (isNew) {
       const newDashboard = {
@@ -284,7 +331,7 @@ export class SettingsController {
         index: body.data.index,
         description: body.data.description,
         created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-        reports:[],
+        reports: [],
         appearance: {
           primary_color: '#20a5b7',
           secondary_color: null,
@@ -389,17 +436,13 @@ export class SettingsController {
       dashboards = body.data;
     }
 
-    const prohibitedNames = [
-      'admin',
-      'api',
-      'notfound',
-      'shared',
-      'login',
-    ];
+    const prohibitedNames = ['admin', 'api', 'notfound', 'shared', 'login'];
     const namesFiltered = [];
     let prohibitedName = false;
     for (let i = 0; i < dashboards.length; i++) {
-      dashboards[i].name = this.indexMetadataService.cleanIdNames(dashboards[i].name);
+      dashboards[i].name = this.indexMetadataService.cleanIdNames(
+        dashboards[i].name,
+      );
       if (dashboards[i].name !== '') {
         namesFiltered.push(dashboards[i].name);
         if (prohibitedNames.indexOf(dashboards[i].name) !== -1) {
@@ -408,7 +451,8 @@ export class SettingsController {
       }
     }
 
-    if (namesFiltered.length !== dashboards.length) { // Don't allow empty index names
+    if (namesFiltered.length !== dashboards.length) {
+      // Don't allow empty index names
       return {
         success: false,
         message: `Dashboard name cannot be empty`,
@@ -416,9 +460,11 @@ export class SettingsController {
     } else if (prohibitedName) {
       return {
         success: false,
-        message: `Dashboard name cannot be "` + prohibitedNames.join(', ') + `"`,
+        message:
+          `Dashboard name cannot be "` + prohibitedNames.join(', ') + `"`,
       };
-    } else if ((new Set(namesFiltered)).size !== namesFiltered.length) { // If two indexes have the same name, prevent submit
+    } else if (new Set(namesFiltered).size !== namesFiltered.length) {
+      // If two indexes have the same name, prevent submit
       return {
         success: false,
         message: `Dashboard name is already used`,
@@ -426,7 +472,7 @@ export class SettingsController {
     }
 
     let hasDefaultDashboard = false;
-    dashboards = dashboards.map(dashboard => {
+    dashboards = dashboards.map((dashboard) => {
       dashboard.is_default = defaultDashboard === dashboard.name;
       if (dashboard.is_default) {
         hasDefaultDashboard = true;
@@ -438,21 +484,29 @@ export class SettingsController {
       dashboards[0].is_default = true;
     }
 
-    await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
+    await this.jsonFilesService.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
     return { success: true };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('defaultdashboard')
-  async SetDefaultDashboards(@Body('defaultDashboard') defaultDashboard: string) {
+  async SetDefaultDashboards(
+    @Body('defaultDashboard') defaultDashboard: string,
+  ) {
     let dashboards = await this.jsonFilesService.read(
-        '../../../data/dashboards.json',
+      '../../../data/dashboards.json',
     );
-    dashboards = dashboards.map(dashboard => {
+    dashboards = dashboards.map((dashboard) => {
       dashboard.is_default = defaultDashboard === dashboard.name;
       return dashboard;
     });
-    await this.jsonFilesService.save(dashboards, '../../../data/dashboards.json');
+    await this.jsonFilesService.save(
+      dashboards,
+      '../../../data/dashboards.json',
+    );
 
     return {
       success: true,
@@ -475,7 +529,11 @@ export class SettingsController {
 
     const plugins = [];
     for (const pluginsFile of pluginsFiles) {
-      plugins.push(await this.jsonFilesService.read(`${pluginsFilesDirectory}/${pluginsFile}`));
+      plugins.push(
+        await this.jsonFilesService.read(
+          `${pluginsFilesDirectory}/${pluginsFile}`,
+        ),
+      );
     }
 
     return plugins;
@@ -497,7 +555,7 @@ export class SettingsController {
     if (!dashboard) throw new NotFoundException();
 
     const index = (
-        await this.jsonFilesService.read('../../../data/indexes.json')
+      await this.jsonFilesService.read('../../../data/indexes.json')
     ).filter((d) => d.id === dashboard.index)[0];
     if (!index) throw new NotFoundException();
     const index_name = index.name;
@@ -506,8 +564,14 @@ export class SettingsController {
     const configs = await this.jsonFilesService.read('../../../data/data.json');
     settings['appearance'] = dashboard.appearance;
     const list_icons = {};
-    if (index_name && configs.hasOwnProperty(index_name) && configs[index_name].repositories) {
-      configs[index_name].repositories.map((d) => [(list_icons[d.name] = d.icon)]);
+    if (
+      index_name &&
+      configs.hasOwnProperty(index_name) &&
+      configs[index_name].repositories
+    ) {
+      configs[index_name].repositories.map((d) => [
+        (list_icons[d.name] = d.icon),
+      ]);
     }
     settings['appearance']['icons'] = list_icons;
     settings['index_last_update'] = index.last_update;
@@ -518,21 +582,28 @@ export class SettingsController {
   @Get(['', ':index_name'])
   async Read(@Param('index_name') index_name: string = 'index') {
     const data = await this.jsonFilesService.read('../../../data/data.json');
-    return data.hasOwnProperty(index_name) ? data[index_name] : {repositories: []};
+    return data.hasOwnProperty(index_name)
+      ? data[index_name]
+      : { repositories: [] };
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get(['metadata/:name/:index', 'metadata/:name', 'metadata'])
   async getMetadata(
-      @Param('name') name: string = 'DEFAULT_DASHBOARD',
-      @Param('index') index_name: string = null,
+    @Param('name') name: string = 'DEFAULT_DASHBOARD',
+    @Param('index') index_name: string = null,
   ) {
-    index_name = index_name != null && index_name !== '' && index_name !== 'null' ? index_name : await this.jsonFilesService.getIndexFromDashboard(name);
+    index_name =
+      index_name != null && index_name !== '' && index_name !== 'null'
+        ? index_name
+        : await this.jsonFilesService.getIndexFromDashboard(name);
     let dspace_altmetrics: any;
     let dspace_downloads_and_views: any;
     let mel_downloads_and_views: any;
     const data = await this.jsonFilesService.read('../../../data/data.json');
-    const index_data = data.hasOwnProperty(index_name) ? data[index_name] : {repositories: []};
+    const index_data = data.hasOwnProperty(index_name)
+      ? data[index_name]
+      : { repositories: [] };
     const plugins = await this.jsonFilesService.read(
       '../../../data/plugins.json',
     );
@@ -540,8 +611,7 @@ export class SettingsController {
     let medatadataKeys = [];
     try {
       medatadataKeys = await this.indexMetadataService.getMetadata(index_name);
-    } catch (e) {
-    }
+    } catch (e) {}
 
     const meta = [];
     for (let i = 0; i < plugins.length; i++) {
@@ -571,7 +641,7 @@ export class SettingsController {
 
     const merged = [].concat.apply(
       [],
-        index_data.repositories.map((d) => [...d.schema, ...d.metadata]),
+      index_data.repositories.map((d) => [...d.schema, ...d.metadata]),
     );
 
     return [
@@ -585,8 +655,8 @@ export class SettingsController {
   @UseGuards(AuthGuard('jwt'))
   @Get('repository/metadata-auto-retrieve')
   async RepositoryMetadataAutoRetrieve(
-      @Query('repository_type') repository_type: string,
-      @Query('link') link: string,
+    @Query('repository_type') repository_type: string,
+    @Query('link') link: string,
   ) {
     if (repository_type === 'DSpace') {
       return await this.indexMetadataService.DSpaceMetadataAutoRetrieve(link);
@@ -664,7 +734,7 @@ export class SettingsController {
       repo.schema.map((item) => {
         schema[item.metadata] = {
           name: item.disply_name,
-          addOn: item.addOn
+          addOn: item.addOn,
         };
       });
 
@@ -691,8 +761,7 @@ export class SettingsController {
             value: item.disply_name,
           },
         };
-        if (item.addOn)
-          temp['addOn'] = item.addOn;
+        if (item.addOn) temp['addOn'] = item.addOn;
         schema.metadata.push(temp);
       });
 
@@ -715,11 +784,18 @@ export class SettingsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post(':index_name')
-  async Save(@Body() body: any, @Param('index_name') index_name: string = 'index') {
+  async Save(
+    @Body() body: any,
+    @Param('index_name') index_name: string = 'index',
+  ) {
     if (body?.repositories && Array.isArray(body.repositories)) {
       for (const repository of body.repositories) {
         if (repository?.icon !== '' && repository.icon != null) {
-          repository.icon = await this.jsonFilesService.DownloadImportedFile(repository.icon, repository.name, 'images');
+          repository.icon = await this.jsonFilesService.DownloadImportedFile(
+            repository.icon,
+            repository.name,
+            'images',
+          );
         }
       }
     }
@@ -729,7 +805,9 @@ export class SettingsController {
     await this.jsonFilesService.save(data, '../../../data/data.json');
 
     const formattedData = this.format(body);
-    const dataToUse = await this.jsonFilesService.read('../../../data/dataToUse.json');
+    const dataToUse = await this.jsonFilesService.read(
+      '../../../data/dataToUse.json',
+    );
     dataToUse[index_name] = formattedData;
     await this.jsonFilesService.save(dataToUse, '../../../data/dataToUse.json');
 

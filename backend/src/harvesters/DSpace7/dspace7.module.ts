@@ -20,15 +20,15 @@ export class DSpace7Module {
           name: 'DSpace7',
           api_endpoint: {
             required: true,
-            placeholder: 'https://repo.org/server/api'
+            placeholder: 'https://repo.org/server/api',
           },
           sitemap_endpoint: {
             required: true,
-            placeholder: 'https://repo.org/sitemap_index.xml'
+            placeholder: 'https://repo.org/sitemap_index.xml',
           },
-            start_page: {
+          start_page: {
             required: false,
-            placeholder: '0'
+            placeholder: '0',
           },
         },
         '../../../data/harvestors/DSpace7.json',

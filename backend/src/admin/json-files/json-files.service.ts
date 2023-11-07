@@ -11,8 +11,7 @@ function timeout(ms) {
 
 @Injectable()
 export class JsonFilesService {
-  constructor(private httpService: HttpService) {
-  }
+  constructor(private httpService: HttpService) {}
   async startup() {
     const files = await readdirSync(join(__dirname, '../../../data/templates'));
     for (const file of files)
@@ -36,7 +35,7 @@ export class JsonFilesService {
 
     const index_id = dashboard.index;
 
-    return indexes.filter((d) => (d.id == index_id))[0].name;
+    return indexes.filter((d) => d.id == index_id)[0].name;
   }
   async createifnotexist() {
     const directory = join(__dirname, '../../../data/harvestors');
@@ -76,7 +75,14 @@ export class JsonFilesService {
       });
       const fileType = mimeTypes.extension(response.headers['content-type']);
       const name = fileName.replace(/\s/g, '-') + '-' + new Date().getTime();
-      const writer = fs.createWriteStream(join(__dirname, '../../../data/files/') + directory + '/' + name + '.' + fileType);
+      const writer = fs.createWriteStream(
+        join(__dirname, '../../../data/files/') +
+          directory +
+          '/' +
+          name +
+          '.' +
+          fileType,
+      );
 
       response.data.pipe(writer);
       await new Promise((resolve, reject) => {
@@ -85,18 +91,22 @@ export class JsonFilesService {
       });
 
       return directory + '/' + name + '.' + fileType;
-    } catch (e) { /* empty */
+    } catch (e) {
+      /* empty */
       return url;
     }
   }
 
   async GetDashboard(dashboard_name: string = 'DEFAULT_DASHBOARD') {
-    const dashboards = await this.read(
-        '../../../data/dashboards.json',
-    );
+    const dashboards = await this.read('../../../data/dashboards.json');
     let dashboard;
-    if (dashboard_name === 'DEFAULT_DASHBOARD' || dashboard_name === '' || dashboard_name === 'null' || dashboard_name == null) {
-      dashboard = dashboards.find(dashboard => {
+    if (
+      dashboard_name === 'DEFAULT_DASHBOARD' ||
+      dashboard_name === '' ||
+      dashboard_name === 'null' ||
+      dashboard_name == null
+    ) {
+      dashboard = dashboards.find((dashboard) => {
         if (dashboard?.is_default && dashboard.is_default === true) {
           return dashboard;
         }
@@ -106,7 +116,7 @@ export class JsonFilesService {
         return dashboards[0];
       }
     } else {
-      dashboard = dashboards.find(dashboard => {
+      dashboard = dashboards.find((dashboard) => {
         if (dashboard.name === dashboard_name) {
           return dashboard;
         }

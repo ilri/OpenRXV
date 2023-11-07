@@ -10,7 +10,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { IndexResponse, UpdateResponse } from '@elastic/elasticsearch/lib/api/types';
+import {
+  IndexResponse,
+  UpdateResponse,
+} from '@elastic/elasticsearch/lib/api/types';
 import { ValuesService } from '../../shared/services/values.service';
 function isEmpty(obj) {
   for (const prop in obj) {
@@ -23,13 +26,14 @@ function isEmpty(obj) {
 }
 @Controller('values')
 export class ValuesController {
-  constructor(
-    private elastic: ValuesService,
-  ) {}
+  constructor(private elastic: ValuesService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Get('term/:term/:index')
-  async GetValues(@Param('term') term: any, @Param('index_name') index_name: string) {
+  async GetValues(
+    @Param('term') term: any,
+    @Param('index_name') index_name: string,
+  ) {
     return await this.elastic.findByTerm(term, index_name);
   }
   @UseGuards(AuthGuard('jwt'))
@@ -58,25 +62,35 @@ export class ValuesController {
       return {
         success: true,
         message: 'Value mapping saved successfully',
-      }
+      };
     } else {
-      const errors = response?._shards?.failures.map(failure => failure.reason.reason);
+      const errors = response?._shards?.failures.map(
+        (failure) => failure.reason.reason,
+      );
       return {
         success: false,
-        message: errors.length ? errors.join(', ') : 'Oops! something went wrong',
-      }
+        message: errors.length
+          ? errors.join(', ')
+          : 'Oops! something went wrong',
+      };
     }
   }
   @UseGuards(AuthGuard('jwt'))
   @Get(':id/:index_name')
-  async GetOneValue(@Param('id') id: string, @Param('index_name') index_name: string) {
+  async GetOneValue(
+    @Param('id') id: string,
+    @Param('index_name') index_name: string,
+  ) {
     const value: any = await this.elastic.findOne(id, index_name);
     value['id'] = id;
     return value;
   }
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id/:index_name')
-  DeleteOneValue(@Param('id') id: string, @Param('index_name') index_name: string) {
+  DeleteOneValue(
+    @Param('id') id: string,
+    @Param('index_name') index_name: string,
+  ) {
     return this.elastic.delete(id, index_name);
   }
   @Put(':id')
@@ -87,18 +101,26 @@ export class ValuesController {
       delete body.index_name;
     }
 
-    const response: UpdateResponse = await this.elastic.update(id, body, index_name);
+    const response: UpdateResponse = await this.elastic.update(
+      id,
+      body,
+      index_name,
+    );
     if (response?._shards?.failed === 0) {
       return {
         success: true,
         message: 'Value mapping saved successfully',
-      }
+      };
     } else {
-      const errors = response?._shards?.failures.map(failure => failure.reason.reason);
+      const errors = response?._shards?.failures.map(
+        (failure) => failure.reason.reason,
+      );
       return {
         success: false,
-        message: errors.length ? errors.join(', ') : 'Oops! something went wrong',
-      }
+        message: errors.length
+          ? errors.join(', ')
+          : 'Oops! something went wrong',
+      };
     }
   }
 

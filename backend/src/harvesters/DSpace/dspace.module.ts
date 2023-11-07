@@ -20,14 +20,14 @@ export class DSpaceModule {
           name: 'DSpace',
           api_endpoint: {
             required: true,
-            placeholder: 'https://repo.org/rest'
+            placeholder: 'https://repo.org/rest',
           },
           sitemap_endpoint: {
             required: true,
             placeholder: 'https://repo.org/sitemap',
             sitemap_identifier: 'handle',
           },
-            start_page: {
+          start_page: {
             required: false,
             placeholder: '0',
           },

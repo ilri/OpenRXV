@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Response,
-  HttpCode,
-} from '@nestjs/common';
+import { Controller, Post, Body, Response, HttpCode } from '@nestjs/common';
 import { ExportService } from './services/export/export.service';
 import { ElasticService } from '../shared/services/elastic/elastic.service';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
@@ -31,9 +25,8 @@ export class ExportController {
         dashboard = 'DEFAULT_DASHBOARD',
       } = body;
 
-      const index_name = await this.jsonfielServoce.getIndexFromDashboard(
-        dashboard,
-      );
+      const index_name =
+        await this.jsonfielServoce.getIndexFromDashboard(dashboard);
       if (query) query['_source'] = [];
       const searchQuery: any = { ...query, size: 2000 };
       this.exportService.downloadFile(

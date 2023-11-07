@@ -18,7 +18,7 @@ export class SearchController {
   @HttpCode(200)
   @Post('/:size')
   Sizesearch(
-      @Body('dashboard') dashboard: any = 'DEFAULT_DASHBOARD',
+    @Body('dashboard') dashboard: any = 'DEFAULT_DASHBOARD',
     @Body() query: any,
     @Param('size') size = 10,
     @Query('scroll') scroll: string,

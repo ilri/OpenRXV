@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { UpdateRequest, IndicesExistsResponse, SearchResponse, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import {
+  UpdateRequest,
+  IndicesExistsResponse,
+  SearchResponse,
+  SearchRequest,
+} from '@elastic/elasticsearch/lib/api/types';
 import * as bcrypt from 'bcrypt';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
 @Injectable()
@@ -14,68 +19,89 @@ export class ElasticService {
   async startUpIndexes(indexes) {
     for (const index of indexes) {
       const items_final_exist: IndicesExistsResponse =
-        await this.elasticsearchService.indices.exists({
-          index: `${index.name}_final`,
-        }).catch();
+        await this.elasticsearchService.indices
+          .exists({
+            index: `${index.name}_final`,
+          })
+          .catch();
       const items_temp_exist: IndicesExistsResponse =
-        await this.elasticsearchService.indices.exists({
-          index: `${index.name}_temp`,
-        }).catch();
-
+        await this.elasticsearchService.indices
+          .exists({
+            index: `${index.name}_temp`,
+          })
+          .catch();
 
       if (!items_final_exist)
-        await this.elasticsearchService.indices.create({
-          index: `${index.name}_final`,
-        }).catch();
+        await this.elasticsearchService.indices
+          .create({
+            index: `${index.name}_final`,
+          })
+          .catch();
       if (!items_temp_exist)
-        await this.elasticsearchService.indices.create({
-          index: `${index.name}_temp`,
-        }).catch();
+        await this.elasticsearchService.indices
+          .create({
+            index: `${index.name}_temp`,
+          })
+          .catch();
     }
   }
 
   async startup() {
     const indexes = await this.jsonFilesService.read(
-        '../../../data/indexes.json',
+      '../../../data/indexes.json',
     );
 
     await this.startUpIndexes(indexes);
 
     for (const index of indexes) {
       const values_exist: IndicesExistsResponse =
-          await this.elasticsearchService.indices.exists({
+        await this.elasticsearchService.indices
+          .exists({
             index: `${index.name}-values`,
-          }).catch();
+          })
+          .catch();
       if (!values_exist)
-        await this.elasticsearchService.indices.create({
-          index: `${index.name}-values`,
-        }).catch();
+        await this.elasticsearchService.indices
+          .create({
+            index: `${index.name}-values`,
+          })
+          .catch();
 
       const shared_exist: IndicesExistsResponse =
-          await this.elasticsearchService.indices.exists({
+        await this.elasticsearchService.indices
+          .exists({
             index: `${index.name}-shared`,
-          }).catch();
+          })
+          .catch();
       if (!shared_exist)
-        await this.elasticsearchService.indices.create({
-          index: `${index.name}-shared`,
-        }).catch();
+        await this.elasticsearchService.indices
+          .create({
+            index: `${index.name}-shared`,
+          })
+          .catch();
     }
 
-    await this.elasticsearchService.cluster.putSettings({
-      transient: {
-        'cluster.routing.allocation.disk.threshold_enabled': false,
-      },
-    }).catch();
-    await this.elasticsearchService.indices.putSettings({
-      settings: {
-        'index.blocks.read_only_allow_delete': null,
-      },
-    }).catch();
+    await this.elasticsearchService.cluster
+      .putSettings({
+        transient: {
+          'cluster.routing.allocation.disk.threshold_enabled': false,
+        },
+      })
+      .catch();
+    await this.elasticsearchService.indices
+      .putSettings({
+        settings: {
+          'index.blocks.read_only_allow_delete': null,
+        },
+      })
+      .catch();
 
     const users_exist: IndicesExistsResponse =
-        await this.elasticsearchService.indices.exists({
+      await this.elasticsearchService.indices
+        .exists({
           index: 'openrxv-users',
-        }).catch();
+        })
+        .catch();
     if (!users_exist) {
       const body = {
         name: 'admin',
@@ -88,8 +114,14 @@ export class ElasticService {
       await this.add(body);
     }
   }
-  async search(query, size = 10, scroll: string = null, dashboard = 'DEFAULT_DASHBOARD') {
-    const index_name = await this.jsonFilesService.getIndexFromDashboard(dashboard);
+  async search(
+    query,
+    size = 10,
+    scroll: string = null,
+    dashboard = 'DEFAULT_DASHBOARD',
+  ) {
+    const index_name =
+      await this.jsonFilesService.getIndexFromDashboard(dashboard);
     try {
       const options: SearchRequest = {
         index: index_name,
@@ -97,7 +129,6 @@ export class ElasticService {
       };
       if (scroll) options.scroll = scroll;
       if (size) options.size = size;
-
 
       return await this.elasticsearchService.search(options);
     } catch (e) {

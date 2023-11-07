@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { FileType } from 'src/shared/models/types.helpers';
+import { ExporterResponse } from 'src/shared/models/ResponseBody.modal';
 import {
-  ExporterResponse,
-} from 'src/shared/models/ResponseBody.modal';
-import { SearchResponse, SearchHitsMetadata, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
+  SearchResponse,
+  SearchHitsMetadata,
+  SearchTotalHits,
+} from '@elastic/elasticsearch/lib/api/types';
 import { Response as ExpressRes } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as PizZip from 'pizzip';
-const Docxtemplater = require("docxtemplater");
+const Docxtemplater = require('docxtemplater');
 import * as libre from 'libreoffice-convert';
 const expressions = require('angular-expressions');
 const assign = require('lodash/assign');
