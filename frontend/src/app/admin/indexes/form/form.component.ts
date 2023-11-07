@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -23,28 +19,28 @@ export class FormIndexComponent implements OnInit {
   hours = [];
   minutes = [];
   weekDays = [
-    {key: 0, value: 'Sunday'},
-    {key: 1, value: 'Monday'},
-    {key: 2, value: 'Tuesday'},
-    {key: 3, value: 'Wednesday'},
-    {key: 4, value: 'Thursday'},
-    {key: 5, value: 'Friday'},
-    {key: 6, value: 'Saturday'},
+    { key: 0, value: 'Sunday' },
+    { key: 1, value: 'Monday' },
+    { key: 2, value: 'Tuesday' },
+    { key: 3, value: 'Wednesday' },
+    { key: 4, value: 'Thursday' },
+    { key: 5, value: 'Friday' },
+    { key: 6, value: 'Saturday' },
   ];
   monthDays = [];
   months = [
-    {key: 0, value: 'January'},
-    {key: 1, value: 'February'},
-    {key: 2, value: 'March'},
-    {key: 3, value: 'April'},
-    {key: 4, value: 'May'},
-    {key: 5, value: 'June'},
-    {key: 6, value: 'July'},
-    {key: 7, value: 'August'},
-    {key: 8, value: 'September'},
-    {key: 9, value: 'October'},
-    {key: 10, value: 'November'},
-    {key: 11, value: 'December'},
+    { key: 0, value: 'January' },
+    { key: 1, value: 'February' },
+    { key: 2, value: 'March' },
+    { key: 3, value: 'April' },
+    { key: 4, value: 'May' },
+    { key: 5, value: 'June' },
+    { key: 6, value: 'July' },
+    { key: 7, value: 'August' },
+    { key: 8, value: 'September' },
+    { key: 9, value: 'October' },
+    { key: 10, value: 'November' },
+    { key: 11, value: 'December' },
   ];
   async submit() {
     if (!this.form.valid) {
@@ -53,13 +49,20 @@ export class FormIndexComponent implements OnInit {
     }
     await this.spinner.show();
     if (this.data.event == 'New') {
-      const response = await this.settingsService.saveIndexesSettings(this.form.value, true, null);
+      const response = await this.settingsService.saveIndexesSettings(
+        this.form.value,
+        true,
+        null,
+      );
       await this.spinner.hide();
       if (response.success === true) {
         this.dialogRef.close(true);
         this.toastr.success('Index saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save index failed',
+        );
       }
     } else if (this.data.event == 'Edit') {
       const indexes = await this.settingsService.readIndexesSettings();
@@ -92,7 +95,10 @@ export class FormIndexComponent implements OnInit {
         this.dialogRef.close(true);
         this.toastr.success('Index saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save index failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save index failed',
+        );
       }
     }
   }
@@ -109,24 +115,26 @@ export class FormIndexComponent implements OnInit {
     private spinner: NgxSpinnerService,
   ) {}
 
-  populateForm(data = {
-    name: '',
-    description: '',
-    to_be_indexed: false,
-    auto_harvest: false,
-    interval: '',
-    interval_month: '',
-    interval_month_day: '',
-    interval_week_day: '',
-    interval_hour: '',
-    interval_minute: '',
-    isEdit: false
-  }) {
+  populateForm(
+    data = {
+      name: '',
+      description: '',
+      to_be_indexed: false,
+      auto_harvest: false,
+      interval: '',
+      interval_month: '',
+      interval_month_day: '',
+      interval_week_day: '',
+      interval_hour: '',
+      interval_minute: '',
+      isEdit: false,
+    },
+  ) {
     const controls = {
       name: [
         {
           value: '',
-          disabled: data.isEdit
+          disabled: data.isEdit,
         },
         [
           Validators.required,
@@ -146,7 +154,7 @@ export class FormIndexComponent implements OnInit {
     };
     this.form = this.fb.group(controls);
 
-    this.form.get('auto_harvest')?.valueChanges.subscribe(value => {
+    this.form.get('auto_harvest')?.valueChanges.subscribe((value) => {
       this.autoHarvest = value;
       if (this.autoHarvest) {
         this.form.get('interval')?.setValidators(Validators.required);
@@ -158,7 +166,7 @@ export class FormIndexComponent implements OnInit {
       }
     });
 
-    this.form.get('interval')?.valueChanges.subscribe(value => {
+    this.form.get('interval')?.valueChanges.subscribe((value) => {
       const relatedFields = {
         interval_hour: ['daily', 'weekly', 'monthly', 'yearly'],
         interval_minute: ['daily', 'weekly', 'monthly', 'yearly'],
@@ -198,12 +206,14 @@ export class FormIndexComponent implements OnInit {
     }
     for (let minute = 0; minute < 60; minute++) {
       let minuteString = minute.toString();
-      minuteString = minuteString.length === 1 ? '0' + minuteString : minuteString;
+      minuteString =
+        minuteString.length === 1 ? '0' + minuteString : minuteString;
       this.minutes.push(minuteString);
     }
     for (let monthDay = 1; monthDay <= 31; monthDay++) {
       let monthDayString = monthDay.toString();
-      monthDayString = monthDayString.length === 1 ? '0' + monthDayString : monthDayString;
+      monthDayString =
+        monthDayString.length === 1 ? '0' + monthDayString : monthDayString;
       this.monthDays.push(monthDayString);
     }
 
@@ -235,7 +245,7 @@ export class FormIndexComponent implements OnInit {
         interval_week_day: '',
         interval_hour: '',
         interval_minute: '',
-        isEdit: false
+        isEdit: false,
       };
       this.populateForm(data);
     }

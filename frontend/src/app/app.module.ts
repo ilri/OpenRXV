@@ -10,7 +10,11 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonService } from './common.service';
-import { DateAdapter, NativeDateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import {
+  DateAdapter,
+  NativeDateAdapter,
+  MAT_DATE_FORMATS,
+} from '@angular/material/core';
 import { formatDate } from '@angular/common';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
@@ -18,13 +22,13 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 
 export const ISO_8601_date_format = {
-  parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+  parse: { dateInput: { month: 'short', year: 'numeric', day: 'numeric' } },
   display: {
     dateInput: 'input',
-    monthYearLabel: {year: 'numeric', month: 'short'},
-    dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
-    monthYearA11yLabel: {year: 'numeric', month: 'long'}
-  }
+    monthYearLabel: { year: 'numeric', month: 'short' },
+    dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+    monthYearA11yLabel: { year: 'numeric', month: 'long' },
+  },
 };
 
 class PickDateAdapter extends NativeDateAdapter {
@@ -60,8 +64,8 @@ export function tokenGetter() {
   ],
   providers: [
     CommonService,
-    {provide: DateAdapter, useClass: PickDateAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format}
+    { provide: DateAdapter, useClass: PickDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format },
   ],
   bootstrap: [RootComponent],
 })

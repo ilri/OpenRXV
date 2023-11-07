@@ -34,7 +34,8 @@ export class FilterPaginatedListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.ascDesc = [
       {
         display: 'Descending',

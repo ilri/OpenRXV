@@ -35,7 +35,7 @@ export class FormDialogComponent implements OnInit {
     });
     if (this.form.valid) this.dialogRef.close(value);
   }
-  dashbard_name
+  dashbard_name;
   async ngOnInit() {
     this.dashbard_name = this.data.dashboard_name;
     const FormGroupControls: any = {};

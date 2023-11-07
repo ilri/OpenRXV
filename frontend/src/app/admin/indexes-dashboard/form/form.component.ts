@@ -32,7 +32,10 @@ export class FormDashboardsComponent implements OnInit {
         this.dialogRef.close(true);
         this.toastr.success('Dashboard saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save dashboard failed',
+        );
       }
     } else if (this.data.event == 'Edit') {
       const dashboards = await this.settingsService.readDashboardsSettings();
@@ -57,7 +60,10 @@ export class FormDashboardsComponent implements OnInit {
         this.dialogRef.close(true);
         this.toastr.success('Dashboard saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save dashboard failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save dashboard failed',
+        );
       }
     }
     await this.spinner.hide();
@@ -79,7 +85,7 @@ export class FormDashboardsComponent implements OnInit {
       name: [
         {
           value: data.name,
-          disabled: data.isEdit
+          disabled: data.isEdit,
         },
         [
           Validators.required,

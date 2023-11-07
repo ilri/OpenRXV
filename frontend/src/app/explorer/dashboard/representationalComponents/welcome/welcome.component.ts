@@ -13,7 +13,7 @@ export class WelcomeComponent implements OnInit {
   constructor(private readonly tourService: TourService) {}
 
   ngOnInit(): void {
-    this.tourService.start$.subscribe(() => (this.tourStarted = true),);
+    this.tourService.start$.subscribe(() => (this.tourStarted = true));
   }
 
   toggleElement(): void {

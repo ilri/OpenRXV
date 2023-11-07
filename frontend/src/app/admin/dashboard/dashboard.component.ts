@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private commonService: CommonService,
-    ) {}
+  ) {}
 
   availableSections = [];
   tablesData: any = {};
@@ -34,8 +34,12 @@ export class DashboardComponent implements OnInit {
   async ngOnInit() {
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
 
-    const availableSections = await this.settingsService.readPluginsSettings(this.index_name);
-    this.availableSections = availableSections.filter((plugin) => plugin?.values && plugin.values.length > 0);
+    const availableSections = await this.settingsService.readPluginsSettings(
+      this.index_name,
+    );
+    this.availableSections = availableSections.filter(
+      (plugin) => plugin?.values && plugin.values.length > 0,
+    );
     this.availableSections.unshift({
       name: 'fetch',
       display_name: 'Harvest',
@@ -54,7 +58,7 @@ export class DashboardComponent implements OnInit {
           pageSize: 5,
           totalPages: 0,
           totalRecords: 0,
-        }
+        },
       };
       this.pagination[availableSection.name] = {
         pageIndex: 0,
@@ -87,7 +91,9 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.settingsService.startHarvesting(this.index_name);
+        const response = await this.settingsService.startHarvesting(
+          this.index_name,
+        );
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
           for (const availableSection of this.availableSections) {
@@ -95,7 +101,9 @@ export class DashboardComponent implements OnInit {
           }
           await this.Init();
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -111,7 +119,9 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.settingsService.commitIndex(this.index_name);
+        const response = await this.settingsService.commitIndex(
+          this.index_name,
+        );
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
           for (const availableSection of this.availableSections) {
@@ -119,7 +129,9 @@ export class DashboardComponent implements OnInit {
           }
           await this.Init();
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -135,17 +147,25 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.settingsService.startPlugin(this.index_name, plugin.name);
+        const response = await this.settingsService.startPlugin(
+          this.index_name,
+          plugin.name,
+        );
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
           for (const availableSection of this.availableSections) {
             if (availableSection.name === plugin.name) {
               this.refreshCounter[availableSection.name].counter = 0;
-              await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+              await this.InitPluginsData(
+                availableSection,
+                this.activeTables?.[availableSection.name]?.status,
+              );
             }
           }
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -161,17 +181,25 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.settingsService.stopPlugin(this.index_name, plugin.name);
+        const response = await this.settingsService.stopPlugin(
+          this.index_name,
+          plugin.name,
+        );
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
           for (const availableSection of this.availableSections) {
             if (availableSection.name === plugin.name) {
               this.refreshCounter[availableSection.name].counter = 0;
-              await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+              await this.InitPluginsData(
+                availableSection,
+                this.activeTables?.[availableSection.name]?.status,
+              );
             }
           }
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -187,13 +215,17 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        const response = await this.settingsService.stopHarvesting(this.index_name);
+        const response = await this.settingsService.stopHarvesting(
+          this.index_name,
+        );
         if (response.success) {
           this.toastr.success(response?.message ? response.message : 'Success');
           this.refreshCounter.fetch.counter = 0;
           await this.InitFetchData(this.activeTables?.fetch?.status);
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -217,7 +249,9 @@ export class DashboardComponent implements OnInit {
           }
           this.Init();
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
       }
     });
@@ -227,7 +261,10 @@ export class DashboardComponent implements OnInit {
     await this.InitFetchData(this.activeTables?.fetch?.status);
     for (const availableSection of this.availableSections) {
       if (availableSection.name !== 'fetch') {
-        await this.InitPluginsData(availableSection, this.activeTables?.[availableSection.name]?.status);
+        await this.InitPluginsData(
+          availableSection,
+          this.activeTables?.[availableSection.name]?.status,
+        );
       }
     }
   }
@@ -241,7 +278,12 @@ export class DashboardComponent implements OnInit {
       stuck_count,
       startedAt,
       table,
-    } = await this.settingsService.getHarvesterInfo(this.index_name, 'fetch', status, this.pagination.fetch);
+    } = await this.settingsService.getHarvesterInfo(
+      this.index_name,
+      'fetch',
+      status,
+      this.pagination.fetch,
+    );
 
     this.tablesData.fetch.active_count = active_count;
     this.tablesData.fetch.waiting_count = waiting_count;
@@ -257,7 +299,11 @@ export class DashboardComponent implements OnInit {
       totalRecords: table.totalRecords,
     };
     this.CalculateProgress('fetch');
-    if (this.tablesData.fetch.active_count == 0 && this.tablesData.fetch.active_count == 0 && this.refreshCounter.fetch.counter >= 3) {
+    if (
+      this.tablesData.fetch.active_count == 0 &&
+      this.tablesData.fetch.active_count == 0 &&
+      this.refreshCounter.fetch.counter >= 3
+    ) {
       if (this.refreshCounter.fetch.interval != null) {
         clearInterval(this.refreshCounter.fetch.interval);
         this.refreshCounter.fetch.interval = null;
@@ -276,7 +322,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  async InitPluginsData(plugin: any, status: string = null, paginationRefresh = false) {
+  async InitPluginsData(
+    plugin: any,
+    status: string = null,
+    paginationRefresh = false,
+  ) {
     if (plugin?.name) {
       const {
         active_count,
@@ -286,7 +336,12 @@ export class DashboardComponent implements OnInit {
         stuck_count,
         startedAt,
         table,
-      } = await this.settingsService.getHarvesterInfo(this.index_name, plugin.name, status, this.pagination[plugin.name]);
+      } = await this.settingsService.getHarvesterInfo(
+        this.index_name,
+        plugin.name,
+        status,
+        this.pagination[plugin.name],
+      );
 
       this.tablesData[plugin.name].active_count = active_count;
       this.tablesData[plugin.name].waiting_count = waiting_count;
@@ -302,7 +357,11 @@ export class DashboardComponent implements OnInit {
         totalRecords: table.totalRecords,
       };
       this.CalculateProgress(plugin.name);
-      if (this.tablesData[plugin.name].active_count == 0 && this.tablesData[plugin.name].active_count == 0 && this.refreshCounter[plugin.name].counter >= 3) {
+      if (
+        this.tablesData[plugin.name].active_count == 0 &&
+        this.tablesData[plugin.name].active_count == 0 &&
+        this.refreshCounter[plugin.name].counter >= 3
+      ) {
         if (this.refreshCounter[plugin.name].interval != null) {
           clearInterval(this.refreshCounter[plugin.name].interval);
           this.refreshCounter[plugin.name].interval = null;
@@ -312,7 +371,10 @@ export class DashboardComponent implements OnInit {
       if (this.refreshCounter[plugin.name].counter == 0) {
         if (!this.refreshCounter[plugin.name].interval)
           this.refreshCounter[plugin.name].interval = setInterval(() => {
-            this.InitPluginsData(plugin, this.activeTables?.[plugin.name].status);
+            this.InitPluginsData(
+              plugin,
+              this.activeTables?.[plugin.name].status,
+            );
           }, 6000);
       }
 
@@ -361,20 +423,33 @@ export class DashboardComponent implements OnInit {
   }
 
   CalculateProgress(section) {
-    this.progress[section].totalJobs = this.tablesData[section].active_count + this.tablesData[section].waiting_count + this.tablesData[section].completed_count;
+    this.progress[section].totalJobs =
+      this.tablesData[section].active_count +
+      this.tablesData[section].waiting_count +
+      this.tablesData[section].completed_count;
     if (this.progress[section].totalJobs > 0) {
-      this.progress[section].percentage = this.tablesData[section].completed_count / (this.progress[section].totalJobs) * 100;
+      this.progress[section].percentage =
+        (this.tablesData[section].completed_count /
+          this.progress[section].totalJobs) *
+        100;
     } else {
       this.progress[section].percentage = 0;
     }
 
-    if (this.tablesData[section].startedAt && this.tablesData[section].completed_count > 0) {
+    if (
+      this.tablesData[section].startedAt &&
+      this.tablesData[section].completed_count > 0
+    ) {
       const startTime = new Date(this.tablesData[section].startedAt).getTime();
       const now = new Date().getTime();
       const completed = this.tablesData[section].completed_count;
-      const seconds = (now - startTime) / 1000 / completed * (this.tablesData[section].waiting_count + this.tablesData[section].active_count);
+      const seconds =
+        ((now - startTime) / 1000 / completed) *
+        (this.tablesData[section].waiting_count +
+          this.tablesData[section].active_count);
 
-      this.progress[section].estimation = this.commonService.HumanReadableTime(seconds);
+      this.progress[section].estimation =
+        this.commonService.HumanReadableTime(seconds);
     } else {
       this.progress[section].estimation = '';
     }

@@ -29,11 +29,7 @@ export class ReportingComponent implements OnInit {
   metadata: any;
   dashboard_name: string;
   exportLink: string;
-  displayedColumns: string[] = [
-    'title',
-    'fileType',
-    'actions',
-  ];
+  displayedColumns: string[] = ['title', 'fileType', 'actions'];
   allowedFileTypes = [
     {
       label: 'Excel',
@@ -46,7 +42,7 @@ export class ReportingComponent implements OnInit {
     {
       label: 'Word',
       extension: 'docx',
-    }
+    },
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   constructor(
@@ -60,7 +56,8 @@ export class ReportingComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.dataSource = await this.settingsService.retreiveMetadata;
     this.metadata = await this.metadataService.get(this.dashboard_name, null);
     await this.refreshData();
@@ -78,11 +75,14 @@ export class ReportingComponent implements OnInit {
   refreshExportLink() {
     const reports = JSON.parse(JSON.stringify(this.reports)).map((report) => {
       if (report?.fileType !== 'xlsx' && report?.file) {
-        report.file = location.origin + this.envireoment + '/settings' + report.file
+        report.file =
+          location.origin + this.envireoment + '/settings' + report.file;
       }
       return report;
     });
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(reports));
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(reports));
   }
 
   newReport() {
@@ -92,7 +92,7 @@ export class ReportingComponent implements OnInit {
         form_data: { title: '', fileType: '', file: '' },
         reports: this.reports,
         index: -1,
-        allowedFileTypes: this.allowedFileTypes
+        allowedFileTypes: this.allowedFileTypes,
       },
       width: '650px',
       height: '550px',
@@ -134,7 +134,7 @@ export class ReportingComponent implements OnInit {
         form_data: this.reports[index],
         reports: this.reports,
         index: index,
-        allowedFileTypes: this.allowedFileTypes
+        allowedFileTypes: this.allowedFileTypes,
       },
       width: '650px',
       height: '550px',
@@ -172,7 +172,7 @@ export class ReportingComponent implements OnInit {
     };
 
     for (let i = 0; i < data.length; i++) {
-      const importedItem = (data[i] as any);
+      const importedItem = data[i] as any;
       const item = {
         title: importedItem?.title.trim(),
         fileType: importedItem?.fileType.trim().toLowerCase(),
@@ -180,12 +180,14 @@ export class ReportingComponent implements OnInit {
         file: importedItem?.file,
       };
 
-      if (item.title === '' && importedItem.tags.length === 0){
+      if (item.title === '' && importedItem.tags.length === 0) {
         const message = 'Report #' + (i + 1) + ' title cannot be empty';
         importStatus.failed.push(message);
         continue;
       }
-      const allowedFileTypes = this.allowedFileTypes.map(type => type.extension);
+      const allowedFileTypes = this.allowedFileTypes.map(
+        (type) => type.extension,
+      );
       if (!allowedFileTypes.includes(item.fileType)) {
         const message = 'Report #' + (i + 1) + ', invalid file type';
         importStatus.failed.push(message);
@@ -210,15 +212,19 @@ export class ReportingComponent implements OnInit {
     );
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Report(s)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      data.length,
+      'Report(s)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
       this.refreshData();
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
       this.refreshData();
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

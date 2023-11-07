@@ -24,20 +24,33 @@ export class ValuesForm implements OnInit {
     }
     await this.spinner.show();
     if (this.data == null || !this.data?.find) {
-      const response = await this.valuesService.post(this.form.value, index_name);
+      const response = await this.valuesService.post(
+        this.form.value,
+        index_name,
+      );
       if (response.success === true) {
         this.dialogRef.close(true);
         this.toastr.success('Value mapping saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save Value mapping failed',
+        );
       }
     } else if (this.data) {
-      const response = await this.valuesService.put(this.data.id, this.form.value, index_name);
+      const response = await this.valuesService.put(
+        this.data.id,
+        this.form.value,
+        index_name,
+      );
       if (response.success === true) {
         this.dialogRef.close(true);
         this.toastr.success('Value mapping saved successfully');
       } else {
-        this.toastr.error(response?.message ? response.message : 'Oops! something went wrong', 'Save Value mapping failed');
+        this.toastr.error(
+          response?.message ? response.message : 'Oops! something went wrong',
+          'Save Value mapping failed',
+        );
       }
     }
     await this.spinner.hide();

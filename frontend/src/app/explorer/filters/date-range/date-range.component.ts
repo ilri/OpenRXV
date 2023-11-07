@@ -18,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-date-range',
   templateUrl: './date-range.component.html',
   styleUrls: ['./date-range.component.scss'],
-  providers: [RangeService]
+  providers: [RangeService],
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
   fromDate = null;
@@ -47,7 +47,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
   }
 
   getMinMaxValues(source) {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     const qb: BuildQueryObj = {
       size: 100000,
@@ -56,7 +57,7 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
       .getMaxAndMin(
         this.rangeService.buildminmaxquery(qb).build() as ElasticsearchQuery,
         true,
-        dashboard_name
+        dashboard_name,
       )
       .subscribe(
         (n: any) => {
@@ -98,7 +99,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         min: this.fromDate,
         max: this.toDate,
       });
-      const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+      const dashboard_name =
+        this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
       this.store.dispatch(
         new fromStore.SetQuery({
@@ -121,7 +123,8 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
         lte: max,
       });
     this.rangeService.resetNotification({ min, max });
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({

@@ -44,7 +44,8 @@ export class RangeComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.rangeService.sourceVal = source;
@@ -65,7 +66,8 @@ export class RangeComponent extends ParentComponent implements OnInit {
       });
     this.rangeService.resetNotification({ min, max });
 
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({
@@ -77,7 +79,8 @@ export class RangeComponent extends ParentComponent implements OnInit {
   timeout = null;
   private subtoToQuery(source): void {
     this.store.select(fromStore.getQuery).subscribe((query) => {
-      const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+      const dashboard_name =
+        this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
       if (this.timeout) clearTimeout(this.timeout);
       const filters = this.bodyBuilderService.getFiltersFromQuery();
@@ -90,7 +93,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
       });
 
       if (!filters.filter((element) => element[source]).length) {
-        this.getYears('select', true,dashboard_name);
+        this.getYears('select', true, dashboard_name);
       }
     });
   }
@@ -134,7 +137,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
             ),
           );
         } else {
-          this.getYears(ro.caller, true,dashboard_name);
+          this.getYears(ro.caller, true, dashboard_name);
         }
       }
     });
@@ -143,7 +146,7 @@ export class RangeComponent extends ParentComponent implements OnInit {
   private async getYears(
     caller?: ResetCaller,
     force = false,
-    dashboard_name ='DEFAULT_DASHBOARD',
+    dashboard_name = 'DEFAULT_DASHBOARD',
   ) {
     return await new Promise((resolve, reject) => {
       const qb: BuildQueryObj = {

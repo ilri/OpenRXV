@@ -16,7 +16,7 @@ export class SharedComponent implements OnInit {
   constructor(
     private sharedService: SharedService,
     public dialog: MatDialog,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {}
 
   displayedColumns: string[] = [
@@ -31,12 +31,17 @@ export class SharedComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   async ngOnInit() {
-    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const mappingshared = await this.sharedService.getSharedLinks(this.dashboard_name);
+    this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const mappingshared = await this.sharedService.getSharedLinks(
+      this.dashboard_name,
+    );
     this.dataSource = new MatTableDataSource<any>(mappingshared.hits);
     this.dataSource.paginator = this.paginator;
   }
   view(id) {
-    window.open(`${location.origin}/explorer/dashboard/${this.dashboard_name}/shared/${id}`);
+    window.open(
+      `${location.origin}/explorer/dashboard/${this.dashboard_name}/shared/${id}`,
+    );
   }
 }

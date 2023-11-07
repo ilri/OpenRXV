@@ -10,44 +10,49 @@ import { ElasticsearchResponse } from 'src/app/explorer/filters/services/interfa
 @Injectable()
 export class ItemsEffects {
   constructor(private actions$: Actions, private itemsService: ItemsService) {}
-  loadItems$ = createEffect(() => this.actions$.pipe(
-    ofType(itemsactions.ActionTypes.getData),
-    switchMap((action: itemsactions.GetData) => {
-      return this.itemsService
-        .getItems(action.payload.body, action.payload.dashboard)
-        .pipe(
+  loadItems$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(itemsactions.ActionTypes.getData),
+      switchMap((action: itemsactions.GetData) => {
+        return this.itemsService
+          .getItems(action.payload.body, action.payload.dashboard)
+          .pipe(
+            map(
+              (items: ElasticsearchResponse) =>
+                new itemsactions.GetDataSuccess(items),
+            ),
+            catchError((error: HttpErrorResponse) =>
+              of(
+                new itemsactions.GetDataError({
+                  type: itemsactions.ActionTypes.getData,
+                  error,
+                }),
+              ),
+            ),
+          );
+      }),
+    ),
+  );
+
+  loadCounters$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(itemsactions.ActionTypes.SetCounters),
+      switchMap((action: itemsactions.SetCounters) => {
+        return this.itemsService.getItems(action.payload).pipe(
           map(
             (items: ElasticsearchResponse) =>
-              new itemsactions.GetDataSuccess(items),
+              new itemsactions.GetCounters(items),
           ),
           catchError((error: HttpErrorResponse) =>
             of(
               new itemsactions.GetDataError({
-                type: itemsactions.ActionTypes.getData,
+                type: itemsactions.ActionTypes.SetCounters,
                 error,
               }),
             ),
           ),
         );
-    }),
-  ));
-
-  loadCounters$ = createEffect(() => this.actions$.pipe(
-    ofType(itemsactions.ActionTypes.SetCounters),
-    switchMap((action: itemsactions.SetCounters) => {
-      return this.itemsService.getItems(action.payload).pipe(
-        map(
-          (items: ElasticsearchResponse) => new itemsactions.GetCounters(items),
-        ),
-        catchError((error: HttpErrorResponse) =>
-          of(
-            new itemsactions.GetDataError({
-              type: itemsactions.ActionTypes.SetCounters,
-              error,
-            }),
-          ),
-        ),
-      );
-    }),
-  ));
+      }),
+    ),
+  );
 }

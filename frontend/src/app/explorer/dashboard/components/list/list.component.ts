@@ -61,7 +61,8 @@ export class ListComponent extends ParentComponent implements OnInit {
     this.filterd = false;
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery(source as string);
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({

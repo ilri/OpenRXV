@@ -11,10 +11,7 @@ export class RootComponent implements OnInit {
   index_name: string;
   dashboard_name: string;
 
-  constructor(
-    private router: Router,
-    private activeRoute: ActivatedRoute,
-  ) {
+  constructor(private router: Router, private activeRoute: ActivatedRoute) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.setCurrentRoutSettings();
@@ -27,8 +24,11 @@ export class RootComponent implements OnInit {
   }
 
   setCurrentRoutSettings() {
-    this.index_name = this.activeRoute.snapshot.firstChild.paramMap.get('index_name');
-    this.dashboard_name = this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
-    this.currentRouteParent = this.activeRoute.snapshot.firstChild?.data?.parentRoute;
+    this.index_name =
+      this.activeRoute.snapshot.firstChild.paramMap.get('index_name');
+    this.dashboard_name =
+      this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
+    this.currentRouteParent =
+      this.activeRoute.snapshot.firstChild?.data?.parentRoute;
   }
 }

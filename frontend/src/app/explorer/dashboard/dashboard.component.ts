@@ -55,12 +55,16 @@ export class DashboardComponent implements OnInit {
     );
   }
   async ngOnInit() {
-    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     await this.getCounters();
     const shareID = this.activeRoute.snapshot.paramMap.get('id');
     if (shareID) {
       try {
-        const shareitem: any = await this.itemsService.getShare(shareID, this.dashboard_name);
+        const shareitem: any = await this.itemsService.getShare(
+          shareID,
+          this.dashboard_name,
+        );
         if (shareitem) {
           this.mainBodyBuilderService.setOrOperator = shareitem?.operator;
 
@@ -77,7 +81,6 @@ export class DashboardComponent implements OnInit {
         this.route.navigate(['admin/indexes']);
       }
     }
-
 
     setTimeout(() => {
       this.store.dispatch(

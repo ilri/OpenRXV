@@ -8,11 +8,17 @@ import { map } from 'rxjs/operators';
 })
 export class ValuesService {
   constructor(private http: HttpClient) {}
-  codec = new HttpUrlEncodingCodec;
+  codec = new HttpUrlEncodingCodec();
 
   async findByTerm(term = '', index_name = '') {
     return await this.http
-      .get(environment.api + '/values/term?term=' + this.codec.encodeValue(term) + '&index_name=' + this.codec.encodeValue(index_name))
+      .get(
+        environment.api +
+          '/values/term?term=' +
+          this.codec.encodeValue(term) +
+          '&index_name=' +
+          this.codec.encodeValue(index_name),
+      )
       .pipe(
         map((data: any) => {
           data.hits = data.hits.map((element) => {
@@ -69,7 +75,9 @@ export class ValuesService {
 
   async delete(id, index_name = '') {
     return await this.http
-      .delete(environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`)
+      .delete(
+        environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`,
+      )
       .pipe(
         map((data: any) => {
           return data;
@@ -80,7 +88,9 @@ export class ValuesService {
 
   async findOne(id, index_name = '') {
     return await this.http
-      .get(environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`)
+      .get(
+        environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`,
+      )
       .pipe(
         map((data: any) => {
           return data;

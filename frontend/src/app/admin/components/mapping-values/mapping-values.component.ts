@@ -25,8 +25,7 @@ export class MappingValuesComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private commonService: CommonService,
-  ) {
-  }
+  ) {}
 
   term = '';
   metadataFields: any;
@@ -76,7 +75,7 @@ export class MappingValuesComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ValuesForm, {
       width: '30%',
-      data: values
+      data: values,
     });
 
     await this.spinner.hide();
@@ -85,7 +84,13 @@ export class MappingValuesComponent implements OnInit {
     });
   }
 
-  displayedColumns: string[] = ['find', 'replace', 'metadataField', 'created_at', 'actions'];
+  displayedColumns: string[] = [
+    'find',
+    'replace',
+    'metadataField',
+    'created_at',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<Array<any>>([]);
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -110,7 +115,10 @@ export class MappingValuesComponent implements OnInit {
 
   async refreshData() {
     await this.spinner.show();
-    const mappingValues = await this.valuesService.findByTerm(this.term.trim(), this.values_index_name);
+    const mappingValues = await this.valuesService.findByTerm(
+      this.term.trim(),
+      this.values_index_name,
+    );
     this.dataSource = new MatTableDataSource<Array<any>>(mappingValues.hits);
     this.dataSource.paginator = this.paginator;
 
@@ -119,8 +127,13 @@ export class MappingValuesComponent implements OnInit {
   }
 
   async refreshExportData(mappingValues) {
-    mappingValues = this.term.trim() === '' ? mappingValues : await this.valuesService.findByTerm('', this.values_index_name);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(mappingValues.hits));
+    mappingValues =
+      this.term.trim() === ''
+        ? mappingValues
+        : await this.valuesService.findByTerm('', this.values_index_name);
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(mappingValues.hits));
   }
 
   async importJSON(event) {
@@ -132,7 +145,7 @@ export class MappingValuesComponent implements OnInit {
     };
 
     for (let i = 0; i < data.length; i++) {
-      const importedItem = (data[i] as any);
+      const importedItem = data[i] as any;
       const item = {
         find: importedItem?.find.trim(),
         replace: importedItem?.replace.trim(),
@@ -146,30 +159,46 @@ export class MappingValuesComponent implements OnInit {
         missingRequiredFields.push('replace');
       }
       if (missingRequiredFields.length > 0) {
-        const message = 'Mapping #' + (i + 1) + ' is missing required fields: ' + missingRequiredFields.join(' and ');
+        const message =
+          'Mapping #' +
+          (i + 1) +
+          ' is missing required fields: ' +
+          missingRequiredFields.join(' and ');
         importStatus.failed.push(message);
       } else {
-        const response = await this.valuesService.post(item, this.values_index_name);
+        const response = await this.valuesService.post(
+          item,
+          this.values_index_name,
+        );
         if (response.success === true) {
           importStatus.success.push(item.find);
         } else {
-          const message = 'Mapping #' + (i + 1) + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+          const message =
+            'Mapping #' +
+            (i + 1) +
+            ', failed to import with error: ' +
+            (response?.message
+              ? response.message
+              : 'Oops! something went wrong');
           importStatus.failed.push(message);
         }
-
       }
     }
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Value mapping(s)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      data.length,
+      'Value mapping(s)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
       this.refreshData();
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
       this.refreshData();
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

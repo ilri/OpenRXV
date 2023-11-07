@@ -5,7 +5,13 @@ import {
   UntypedFormControl,
   UntypedFormArray,
 } from '@angular/forms';
-import { trigger, transition, style, animate, state } from '@angular/animations';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  state,
+} from '@angular/animations';
 
 import { SettingsService } from '../../services/settings.service';
 import { ToastrService } from 'ngx-toastr';
@@ -20,19 +26,23 @@ import { CommonService } from '../../../common.service';
   styleUrls: ['./setup.component.scss'],
   animations: [
     trigger('openClose', [
-      state('true', style({
-        'max-height': '*',
-        opacity: 1
-      })),
-      state('false', style({
-        'max-height': '60px',
-        'overflow-y': 'hidden'
-      })),
-      transition('true <=> false', [
-        animate('.5s')
-      ]),
+      state(
+        'true',
+        style({
+          'max-height': '*',
+          opacity: 1,
+        }),
+      ),
+      state(
+        'false',
+        style({
+          'max-height': '60px',
+          'overflow-y': 'hidden',
+        }),
+      ),
+      transition('true <=> false', [animate('.5s')]),
     ]),
-  ]
+  ],
 })
 export class SetupComponent implements OnInit {
   plugins: any = [];
@@ -71,8 +81,12 @@ export class SetupComponent implements OnInit {
       apiKey: new UntypedFormControl(),
       siteMap: new UntypedFormControl(),
       allCores: new UntypedFormControl(),
-      schema: new UntypedFormArray(addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : []),
-      metadata: new UntypedFormArray(addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : []),
+      schema: new UntypedFormArray(
+        addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : [],
+      ),
+      metadata: new UntypedFormArray(
+        addBaseSchema ? [new UntypedFormGroup(this.baseSchema())] : [],
+      ),
     });
   }
   constructor(
@@ -94,8 +108,7 @@ export class SetupComponent implements OnInit {
       this.repositories.clear();
     }
 
-    if (data.repositories.length === 0)
-      this.AddNewRepo();
+    if (data.repositories.length === 0) this.AddNewRepo();
 
     data.repositories.forEach((element, repoindex) => {
       this.populateRepository(element, repoindex);
@@ -104,32 +117,39 @@ export class SetupComponent implements OnInit {
     await this.spinner.hide();
   }
 
-  populateRepository(repository, repositoryIndex){
+  populateRepository(repository, repositoryIndex) {
     this.logo[repositoryIndex] = repository.icon;
     this.AddNewRepo(false);
     if (repository.metadata)
       repository.metadata.forEach((item, index) => {
         this.AddNewMetadata(
           this.repositories.at(repositoryIndex).get('metadata'),
-          null
+          null,
         );
       });
     if (repository.schema)
       repository.schema.forEach((item, index) => {
-        this.AddNewMetadata(this.repositories.at(repositoryIndex).get('schema'), null);
+        this.AddNewMetadata(
+          this.repositories.at(repositoryIndex).get('schema'),
+          null,
+        );
       });
-    if (repository.type)
-      this.PluginChange(repository.type, repositoryIndex);
+    if (repository.type) this.PluginChange(repository.type, repositoryIndex);
   }
 
   refreshExportLink(data) {
-    const repositories = JSON.parse(JSON.stringify(data)).repositories.map((repository) => {
-      if (repository?.icon !== '' && repository.icon != null) {
-        repository.icon = location.origin + environment.api + '/' + repository.icon;
-      }
-      return repository;
-    });
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({repositories: repositories}));
+    const repositories = JSON.parse(JSON.stringify(data)).repositories.map(
+      (repository) => {
+        if (repository?.icon !== '' && repository.icon != null) {
+          repository.icon =
+            location.origin + environment.api + '/' + repository.icon;
+        }
+        return repository;
+      },
+    );
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify({ repositories: repositories }));
   }
 
   logo = [];
@@ -219,8 +239,10 @@ export class SetupComponent implements OnInit {
     this.isShown[repoIndex] = 0;
     this.activePluginName[repoIndex] = new BehaviorSubject<any>({});
     this.activePlugin[repoIndex] = {};
-    this.activePluginName[repoIndex].subscribe(pluginName => {
-      const activePlugin = this.plugins.filter(plugin => plugin.name === pluginName);
+    this.activePluginName[repoIndex].subscribe((pluginName) => {
+      const activePlugin = this.plugins.filter(
+        (plugin) => plugin.name === pluginName,
+      );
       if (activePlugin.length > 0) {
         this.activePlugin[repoIndex] = activePlugin[0];
       }
@@ -265,9 +287,12 @@ export class SetupComponent implements OnInit {
       failed: [],
       success: [],
     };
-    const repositories = data.hasOwnProperty('repositories') && Array.isArray(data.repositories) ? data.repositories : [];
+    const repositories =
+      data.hasOwnProperty('repositories') && Array.isArray(data.repositories)
+        ? data.repositories
+        : [];
     for (let i = 0; i < repositories.length; i++) {
-      const importedItem = (repositories[i] as any);
+      const importedItem = repositories[i] as any;
       const repositoryName = importedItem?.name.trim();
       if (repositoryName !== '') {
         const repository = {
@@ -287,7 +312,9 @@ export class SetupComponent implements OnInit {
         const repositoryIndex = this.repositories.length;
         this.populateRepository(repository, repositoryIndex);
         importStatus.success.push(repositoryName);
-        this.repositories.controls[this.repositories.length - 1].setValue(repository);
+        this.repositories.controls[this.repositories.length - 1].setValue(
+          repository,
+        );
       } else {
         const message = 'Index #' + (i + 1) + ' cannot have empty name';
         importStatus.failed.push(message);
@@ -295,13 +322,17 @@ export class SetupComponent implements OnInit {
     }
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, repositories.length, 'Repository(ies)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      repositories.length,
+      'Repository(ies)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

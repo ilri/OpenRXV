@@ -45,8 +45,7 @@ export class AppearanceComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private commonService: CommonService,
-  ) {
-  }
+  ) {}
   src(value) {
     try {
       return new URL(value);
@@ -55,7 +54,8 @@ export class AppearanceComponent implements OnInit {
     }
   }
   async ngOnInit() {
-    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name = (this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name'));
     const appearance = await this.settingsService.readAppearanceSettings(
       dashboard_name,
     );
@@ -79,12 +79,16 @@ export class AppearanceComponent implements OnInit {
   refreshExportLink(data) {
     const appearance = JSON.parse(JSON.stringify(data));
     if (data?.logo !== '' && data.logo != null) {
-      appearance.logo = location.origin + environment.api + '/' + appearance.logo;
+      appearance.logo =
+        location.origin + environment.api + '/' + appearance.logo;
     }
     if (data?.favIcon !== '' && data.favIcon != null) {
-      appearance.favIcon = location.origin + environment.api + '/' + appearance.favIcon;
+      appearance.favIcon =
+        location.origin + environment.api + '/' + appearance.favIcon;
     }
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(appearance));
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(appearance));
   }
 
   colorPickerClose(event, element) {
@@ -98,18 +102,19 @@ export class AppearanceComponent implements OnInit {
   }
 
   async save() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     this.form.controls.logo.setValue(this.logo);
     this.form.controls.favIcon.setValue(this.favIcon);
     if (this.form.valid) {
       await this.spinner.show();
       await this.settingsService.saveAppearanceSettings(
-          dashboard_name,
-          this.form.value,
+        dashboard_name,
+        this.form.value,
       );
 
       const appearance = await this.settingsService.readAppearanceSettings(
-          dashboard_name,
+        dashboard_name,
       );
       this.refreshExportLink(appearance);
       this.toastr.success('Saved successfully');
@@ -156,18 +161,22 @@ export class AppearanceComponent implements OnInit {
       google_maps_api_key: importedItem?.google_maps_api_key,
       description: importedItem?.description,
       chartColors: importedItem?.chartColors,
-    }
+    };
     await this.populateForm(appearance);
     importStatus.success.push(importedItem);
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      1,
+      'Appearance',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

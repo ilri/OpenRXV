@@ -15,7 +15,8 @@ export class FiltersComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const { filters } = await this.settings.readExplorerSettings(
       dashboard_name ? dashboard_name : undefined,
     );

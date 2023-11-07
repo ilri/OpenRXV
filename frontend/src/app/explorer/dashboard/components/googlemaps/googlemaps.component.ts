@@ -78,7 +78,8 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.filterd = false;
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery('id');
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({
@@ -92,7 +93,8 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.filterd = true;
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery('id', code);
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({

@@ -133,10 +133,10 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
     GooglemapsComponent,
   ],
   imports: [
-        // for HttpClient use:
-        LoadingBarHttpClientModule,
-        // for Router use:
-        LoadingBarRouterModule,
+    // for HttpClient use:
+    LoadingBarHttpClientModule,
+    // for Router use:
+    LoadingBarRouterModule,
     BrowserAnimationsModule,
     HttpClientModule,
     BrowserModule,

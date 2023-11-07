@@ -51,7 +51,8 @@ export class ParentChart extends ParentComponent {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery(source, name);
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({
@@ -66,7 +67,8 @@ export class ParentChart extends ParentComponent {
 
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery(source);
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({

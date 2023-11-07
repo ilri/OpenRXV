@@ -90,7 +90,11 @@ export class SettingsService {
   }
   async saveDashboardsSettings(data, isNew: boolean, defaultDashboard: string) {
     return await this.http
-      .post(environment.api + '/settings/dashboards', { data, isNew, defaultDashboard })
+      .post(environment.api + '/settings/dashboards', {
+        data,
+        isNew,
+        defaultDashboard,
+      })
       .pipe(
         map((data: any) => {
           return data;
@@ -101,7 +105,9 @@ export class SettingsService {
 
   async setDashboardAsDefault(defaultDashboard) {
     return await this.http
-      .post(environment.api + '/settings/defaultdashboard', {defaultDashboard})
+      .post(environment.api + '/settings/defaultdashboard', {
+        defaultDashboard,
+      })
       .pipe(
         map((data: any) => {
           return data;
@@ -182,7 +188,10 @@ export class SettingsService {
 
   async retreiveMetadata(link, repository_type) {
     return await this.http
-      .get(environment.api + `/settings/repository/metadata-auto-retrieve?repository_type=${repository_type}&link=${link}`)
+      .get(
+        environment.api +
+          `/settings/repository/metadata-auto-retrieve?repository_type=${repository_type}&link=${link}`,
+      )
       .pipe(
         map((data: any) => {
           return data;
@@ -233,7 +242,12 @@ export class SettingsService {
         return data;
       });
   }
-  async getHarvesterInfo(index_name: string, section: string, status: string, pagination: any) {
+  async getHarvesterInfo(
+    index_name: string,
+    section: string,
+    status: string,
+    pagination: any,
+  ) {
     const params = new HttpParams()
       .set('section', section ? section : '')
       .set('status', status ? status : '')
@@ -241,7 +255,10 @@ export class SettingsService {
       .set('pageSize', pagination.pageSize ? pagination.pageSize : 5);
 
     return await this.http
-      .get(environment.api + `/harvester/info/` + encodeURIComponent(index_name), {params : params})
+      .get(
+        environment.api + `/harvester/info/` + encodeURIComponent(index_name),
+        { params: params },
+      )
       .pipe(
         map((data: any) => {
           return data;
@@ -252,7 +269,10 @@ export class SettingsService {
 
   async startPlugin(index_name: string, plugin_name: string) {
     return await this.http
-      .get(environment.api + `/harvester/start-plugins/${index_name}/${plugin_name}`)
+      .get(
+        environment.api +
+          `/harvester/start-plugins/${index_name}/${plugin_name}`,
+      )
       .pipe(
         map((data: any) => {
           return data;
@@ -263,7 +283,10 @@ export class SettingsService {
 
   async stopPlugin(index_name: string, plugin_name: string) {
     return await this.http
-      .get(environment.api + `/harvester/stop-plugins/${index_name}/${plugin_name}`)
+      .get(
+        environment.api +
+          `/harvester/stop-plugins/${index_name}/${plugin_name}`,
+      )
       .pipe(
         map((data: any) => {
           return data;

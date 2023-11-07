@@ -61,7 +61,6 @@ export class MainListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-
     if (this.baseForm.get('content'))
       this.content = this.baseForm.get('content').value;
     this.metadata = await this.metadataService.get(this.dashbard_name, null);

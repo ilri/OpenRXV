@@ -8,10 +8,12 @@ import { of } from 'rxjs';
 @Injectable()
 export class QueryEffects {
   constructor(private actions$: Actions) {}
-  loadQuery$ = createEffect(() => this.actions$.pipe(
-    ofType(queryActions.QueryActionTypes.setQuery),
-    switchMap((action: queryActions.SetQuery) => {
-      return of(new itemsActions.GetData(action.payload));
-    }),
-  ));
+  loadQuery$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(queryActions.QueryActionTypes.setQuery),
+      switchMap((action: queryActions.SetQuery) => {
+        return of(new itemsActions.GetData(action.payload));
+      }),
+    ),
+  );
 }

@@ -92,10 +92,10 @@ export class ExplorerComponent implements OnInit {
   appearance;
   index_last_update = null;
   async ngOnInit() {
-    this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const { counters, dashboard, appearance, welcome, index_last_update } = await JSON.parse(
-      localStorage.getItem('configs'),
-    );
+    this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const { counters, dashboard, appearance, welcome, index_last_update } =
+      await JSON.parse(localStorage.getItem('configs'));
     this.appearance = appearance;
     this.index_last_update = index_last_update;
     if (appearance.logo) this.logo = environment.api + '/' + appearance.logo;
@@ -206,7 +206,9 @@ export class ExplorerComponent implements OnInit {
     setTimeout(() => {
       this.store.dispatch(
         new SetQuery({
-          dashboard: this.dashboard_name ? this.dashboard_name : 'DEFAULT_DASHBOARD',
+          dashboard: this.dashboard_name
+            ? this.dashboard_name
+            : 'DEFAULT_DASHBOARD',
           body: this.mainBodyBuilderService.buildMainQuery(0).build(),
         }),
       );

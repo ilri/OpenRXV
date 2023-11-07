@@ -34,7 +34,10 @@ export class ItemsService {
       return (
         '/shared/' +
         (await this.http
-          .post(environment.api + `/share/${dashboard_name}`, {attr, operator})
+          .post(environment.api + `/share/${dashboard_name}`, {
+            attr,
+            operator,
+          })
           .pipe(map((data: any) => data._id))
           .toPromise())
       );

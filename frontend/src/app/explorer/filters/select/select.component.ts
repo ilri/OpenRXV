@@ -123,7 +123,8 @@ export class SelectComponent extends ParentComponent implements OnInit {
       this.selectService.addAttributeToMainQuery({
         [source]: selectedOptions.map((b: Bucket) => b.key),
       } as QueryFilterAttribute);
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
       new fromStore.SetQuery({
@@ -177,7 +178,8 @@ export class SelectComponent extends ParentComponent implements OnInit {
       size: this.size,
       term: this.typedTerm ? this.typedTerm : null,
     };
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     return {
       dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
       query: this.selectService.buildquery(bq).build(),

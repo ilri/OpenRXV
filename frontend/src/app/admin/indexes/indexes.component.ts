@@ -69,31 +69,48 @@ export class IndexesComponent implements OnInit {
           })
           .indexOf(id);
         const deleted = this.indexes.splice(index, 1)[0];
-        const response = await this.settingsService.saveIndexesSettings(this.indexes, false, deleted);
+        const response = await this.settingsService.saveIndexesSettings(
+          this.indexes,
+          false,
+          deleted,
+        );
         await this.spinner.hide();
 
         if (response.success === true) {
           this.dataSource = new MatTableDataSource<any>(this.indexes);
           this.toastr.success('Index deleted successfully');
-          this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.indexes));
+          this.exportLink =
+            'data:text/json;charset=UTF-8,' +
+            encodeURIComponent(JSON.stringify(this.indexes));
         } else {
           this.indexes.splice(index, 0, deleted);
-          const relatedDashboards = response.relatedDashboards.map((dashboard) => {
-            return `<li><b>ID: </b>${dashboard.id.substring(0, 2)}, <b>Name: </b>${dashboard.name}</li>`;
-          });
-          const relatedRepositories = response.relatedRepositories.map((repository) => {
-            return `<li><b>Name: </b>${repository.name}</li>`;
-          });
+          const relatedDashboards = response.relatedDashboards.map(
+            (dashboard) => {
+              return `<li><b>ID: </b>${dashboard.id.substring(
+                0,
+                2,
+              )}, <b>Name: </b>${dashboard.name}</li>`;
+            },
+          );
+          const relatedRepositories = response.relatedRepositories.map(
+            (repository) => {
+              return `<li><b>Name: </b>${repository.name}</li>`;
+            },
+          );
 
           let message = '';
           if (relatedDashboards.length > 0) {
-            message += `- Linked dashboards:<ul>${relatedDashboards.join('')}</ul>`;
+            message += `- Linked dashboards:<ul>${relatedDashboards.join(
+              '',
+            )}</ul>`;
           }
           if (relatedRepositories.length > 0) {
-            message += `- Linked repositories:<ul>${relatedRepositories.join('')}</ul>`;
+            message += `- Linked repositories:<ul>${relatedRepositories.join(
+              '',
+            )}</ul>`;
           }
           this.toastr.error(message, 'Index deletion failed', {
-            enableHtml: true
+            enableHtml: true,
           });
         }
       }
@@ -107,8 +124,7 @@ export class IndexesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result)
-        this.refreshData();
+      if (result) this.refreshData();
     });
   }
   async ngOnInit() {
@@ -122,7 +138,9 @@ export class IndexesComponent implements OnInit {
     this.dataSource = new MatTableDataSource<any>(indexes);
     this.dataSource.paginator = this.paginator;
     this.form.patchValue(indexes);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(indexes));
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(indexes));
     await this.spinner.hide();
   }
 
@@ -134,7 +152,7 @@ export class IndexesComponent implements OnInit {
       success: [],
     };
     for (let i = 0; i < data.length; i++) {
-      const importedItem = (data[i] as any);
+      const importedItem = data[i] as any;
       const indexName = this.commonService.cleanIdNames(importedItem?.name);
       if (indexName !== '') {
         const item = {
@@ -150,11 +168,20 @@ export class IndexesComponent implements OnInit {
           interval_minute: importedItem?.interval_minute,
           created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
-        const response = await this.settingsService.saveIndexesSettings(item, true, null);
+        const response = await this.settingsService.saveIndexesSettings(
+          item,
+          true,
+          null,
+        );
         if (response.success === true) {
           importStatus.success.push(indexName);
         } else {
-          const message = indexName + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+          const message =
+            indexName +
+            ', failed to import with error: ' +
+            (response?.message
+              ? response.message
+              : 'Oops! something went wrong');
           importStatus.failed.push(message);
         }
       } else {
@@ -164,15 +191,19 @@ export class IndexesComponent implements OnInit {
     }
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Index(es)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      data.length,
+      'Index(es)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
       this.refreshData();
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
       this.refreshData();
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

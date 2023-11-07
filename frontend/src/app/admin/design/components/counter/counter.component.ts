@@ -71,7 +71,8 @@ export class CounterComponent implements OnInit {
   }
 
   openDialog(): void {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const dialogRef = this.dialog.open(FormDialogComponent, {
       width: '456px',
       data: {

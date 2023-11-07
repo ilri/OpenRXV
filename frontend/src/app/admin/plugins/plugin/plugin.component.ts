@@ -1,4 +1,12 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+} from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
@@ -22,7 +30,7 @@ export class PluginComponent implements OnInit, OnChanges {
     private fb: UntypedFormBuilder,
     private settingService: SettingsService,
     private activeRoute: ActivatedRoute,
-    ) {}
+  ) {}
   activeChange() {
     if (!this.active) this.formdata = new UntypedFormArray([]);
     else if (
@@ -46,7 +54,9 @@ export class PluginComponent implements OnInit, OnChanges {
     this.plugin = this.plugins[this.pluginIndex];
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
     const repositories = await this.settingService.read(this.index_name);
-    this.repositoriesList = repositories?.repositories.map(repository => repository.name);
+    this.repositoriesList = repositories?.repositories.map(
+      (repository) => repository.name,
+    );
 
     if (this.plugin.values.length) {
       this.active = true;

@@ -76,7 +76,8 @@ export class DesignComponent implements OnInit {
   }
   async ngOnInit() {
     await this.spinner.show();
-    const dashboard_name = this.dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name = (this.dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name'));
     const { counters, filters, dashboard, footer, welcome } =
       await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
@@ -97,18 +98,22 @@ export class DesignComponent implements OnInit {
     this.dashboard = dashboard;
     this.footer = footer;
     this.welcome = welcome;
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({
-      welcome: this.welcome,
-      counters: this.counters,
-      filters: this.filters,
-      dashboard: this.dashboard,
-      footer: this.footer,
-    }));
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(
+        JSON.stringify({
+          welcome: this.welcome,
+          counters: this.counters,
+          filters: this.filters,
+          dashboard: this.dashboard,
+          footer: this.footer,
+        }),
+      );
     await this.spinner.hide();
   }
 
   populateForm(settings) {
-    const {counters, filters, dashboard, footer, welcome} = settings;
+    const { counters, filters, dashboard, footer, welcome } = settings;
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -127,13 +132,17 @@ export class DesignComponent implements OnInit {
     this.dashboard = dashboard;
     this.footer = footer;
     this.welcome = welcome;
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify({
-      welcome: this.welcome,
-      counters: this.counters,
-      filters: this.filters,
-      dashboard: this.dashboard,
-      footer: this.footer,
-    }));
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(
+        JSON.stringify({
+          welcome: this.welcome,
+          counters: this.counters,
+          filters: this.filters,
+          dashboard: this.dashboard,
+          footer: this.footer,
+        }),
+      );
   }
 
   onAddDashboardComponent(index2, index) {
@@ -230,7 +239,8 @@ export class DesignComponent implements OnInit {
   }
 
   async save() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
     if (
       this.dashboard.filter((d) => d.filter((e) => e.scroll == null).length > 0)
         .length == 0
@@ -245,7 +255,9 @@ export class DesignComponent implements OnInit {
         footer: this.footer,
       };
       await this.settingsService.saveExplorerSettings(dashboard_name, data);
-      this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(data));
+      this.exportLink =
+        'data:text/json;charset=UTF-8,' +
+        encodeURIComponent(JSON.stringify(data));
       this.toastr.success('Settings have been saved successfully');
       await this.spinner.hide();
     } else {
@@ -384,18 +396,22 @@ export class DesignComponent implements OnInit {
       dashboard: importedItem?.dashboard,
       footer: importedItem?.footer,
       welcome: importedItem?.welcome,
-    }
+    };
     this.populateForm(appearance);
     importStatus.success.push(importedItem);
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, 1, 'Appearance');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      1,
+      'Appearance',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

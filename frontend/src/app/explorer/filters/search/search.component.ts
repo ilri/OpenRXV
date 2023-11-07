@@ -27,7 +27,7 @@ export class SearchComponent extends ParentComponent implements OnInit {
   constructor(
     private readonly bodyBuilderService: BodyBuilderService,
     private readonly store: Store<fromStore.AppState>,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) {
     super();
   }
@@ -76,15 +76,15 @@ export class SearchComponent extends ParentComponent implements OnInit {
     const { type } = this.componentConfigs as ComponentSearchConfigs;
     if (type === searchOptions.allSearch) {
       if (this.componentConfigs.is_advanced) {
-          this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
-            query: {
-              query_string: {
-                fuzziness: 'auto',
-                default_operator: 'AND',
-                query: this.searchTerm,
-              },
+        this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
+          query: {
+            query_string: {
+              fuzziness: 'auto',
+              default_operator: 'AND',
+              query: this.searchTerm,
             },
-          };
+          },
+        };
       } else {
         this.bodyBuilderService.setAggAttributes = <QuerySearchAttribute>{
           query: {
@@ -130,17 +130,15 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   private dispatchActions() {
-    const dashboard_name = this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.bodyBuilderService.resetOtherComponent({ caller: 'search' });
     this.store.dispatch(
-
       new fromStore.SetQuery({
         dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
         body: this.bodyBuilderService.buildMainQuery().build(),
-      }
-
-        ),
+      }),
     );
   }
 

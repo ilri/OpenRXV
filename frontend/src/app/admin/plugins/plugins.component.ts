@@ -10,7 +10,6 @@ import { CommonService } from '../../common.service';
   templateUrl: './plugins.component.html',
   styleUrls: ['./plugins.component.scss'],
 })
-
 export class PluginsComponent implements OnInit {
   plugins = [];
   pluginsForms = {};
@@ -22,13 +21,17 @@ export class PluginsComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private commonService: CommonService,
-    ) {}
+  ) {}
 
   async ngOnInit() {
     await this.spinner.show();
     this.index_name = this.activeRoute.snapshot.paramMap.get('index_name');
-    this.plugins = await this.settingsService.readPluginsSettings(this.index_name);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(this.plugins));
+    this.plugins = await this.settingsService.readPluginsSettings(
+      this.index_name,
+    );
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(this.plugins));
     await this.spinner.hide();
   }
 
@@ -48,10 +51,14 @@ export class PluginsComponent implements OnInit {
         obj['value'] = data.form.value;
         return obj;
       }),
-      this.index_name
+      this.index_name,
     );
-    const plugins = await this.settingsService.readPluginsSettings(this.index_name);
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(plugins));
+    const plugins = await this.settingsService.readPluginsSettings(
+      this.index_name,
+    );
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(plugins));
     this.toastr.success('Saved successfully');
     await this.spinner.hide();
   }
@@ -65,7 +72,7 @@ export class PluginsComponent implements OnInit {
     };
 
     for (let i = 0; i < data.length; i++) {
-      const importedItem = (data[i] as any);
+      const importedItem = data[i] as any;
       let found = false;
       this.plugins = this.plugins.map((plugin) => {
         if (plugin.name === importedItem.name) {
@@ -76,20 +83,26 @@ export class PluginsComponent implements OnInit {
         return plugin;
       });
       if (!found) {
-        const pluginName = importedItem?.name !== '' ? importedItem.name : 'Plugin #' + (i + 1);
-        const message = pluginName + ', failed to import with error: Unknown plugin';
+        const pluginName =
+          importedItem?.name !== '' ? importedItem.name : 'Plugin #' + (i + 1);
+        const message =
+          pluginName + ', failed to import with error: Unknown plugin';
         importStatus.failed.push(message);
       }
     }
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Plugin(s)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      data.length,
+      'Plugin(s)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 }

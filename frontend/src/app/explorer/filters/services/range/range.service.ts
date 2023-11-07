@@ -80,11 +80,7 @@ export class RangeService {
       ),
     );
   }
-  getMaxAndMin(
-    query: ElasticsearchQuery,
-    force = false,
-    dashboard_name,
-  ): any {
+  getMaxAndMin(query: ElasticsearchQuery, force = false, dashboard_name): any {
     return this.httpGetMinAndMax(query, dashboard_name);
   }
 

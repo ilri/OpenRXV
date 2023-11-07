@@ -36,8 +36,11 @@ export class RootComponent implements OnInit {
   async ngOnInit() {
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
-        this.dashboard_name = this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
-        const settings = await this.settingsService.readExplorerSettings(this.dashboard_name);
+        this.dashboard_name =
+          this.activeRoute.snapshot.firstChild.paramMap.get('dashboard_name');
+        const settings = await this.settingsService.readExplorerSettings(
+          this.dashboard_name,
+        );
 
         this.favIcon.href = environment.api + '/' + settings.appearance.favIcon;
         await localStorage.setItem('configs', JSON.stringify(settings));
@@ -45,8 +48,8 @@ export class RootComponent implements OnInit {
           (!settings.counters && !settings.dashboard) ||
           settings.dashboard.length == 0
         ) {
-          if(!event.urlAfterRedirects.includes('admin'))
-          this.router.navigate(['/admin']);
+          if (!event.urlAfterRedirects.includes('admin'))
+            this.router.navigate(['/admin']);
         }
         this.loadSettigs = true;
         if (settings.appearance.primary_color) {

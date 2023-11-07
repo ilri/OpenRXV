@@ -45,12 +45,15 @@ export class IndexesDashboardComponent implements OnInit {
     const defaultDashboard = this.dashboards.find((x) => x?.is_default);
     const dialogRef = this.dialog.open(FormDashboardsComponent, {
       width: '30%',
-      data: { event: 'New', body: {}, defaultDashboard: defaultDashboard?.name },
+      data: {
+        event: 'New',
+        body: {},
+        defaultDashboard: defaultDashboard?.name,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result)
-        this.refreshData();
+      if (result) this.refreshData();
     });
   }
 
@@ -72,7 +75,11 @@ export class IndexesDashboardComponent implements OnInit {
           .indexOf(id);
         this.dashboards.splice(dashboard, 1);
         const defaultDashboard = this.dashboards.find((x) => x?.is_default);
-        await this.settingsService.saveDashboardsSettings(this.dashboards, false, defaultDashboard?.name);
+        await this.settingsService.saveDashboardsSettings(
+          this.dashboards,
+          false,
+          defaultDashboard?.name,
+        );
         await this.spinner.hide();
         this.toastr.success('Dashboard deleted successfully');
         this.refreshData();
@@ -92,8 +99,7 @@ export class IndexesDashboardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result)
-        this.refreshData();
+      if (result) this.refreshData();
     });
   }
 
@@ -113,18 +119,26 @@ export class IndexesDashboardComponent implements OnInit {
   }
 
   updateExportLink(dashboards) {
-    const dashboardsCopy = JSON.parse(JSON.stringify(dashboards))
-        .map((dashboard) => {
-          for (const key in dashboard) {
-            if (dashboard.hasOwnProperty(key)) {
-              if (dashboard[key] != null && (typeof dashboard[key] === 'object' || Array.isArray(dashboard[key])) || key === 'is_default') {
-                delete dashboard[key];
-              }
+    const dashboardsCopy = JSON.parse(JSON.stringify(dashboards)).map(
+      (dashboard) => {
+        for (const key in dashboard) {
+          if (dashboard.hasOwnProperty(key)) {
+            if (
+              (dashboard[key] != null &&
+                (typeof dashboard[key] === 'object' ||
+                  Array.isArray(dashboard[key]))) ||
+              key === 'is_default'
+            ) {
+              delete dashboard[key];
             }
           }
-          return dashboard;
-        });
-    this.exportLink = 'data:text/json;charset=UTF-8,' + encodeURIComponent(JSON.stringify(dashboardsCopy));
+        }
+        return dashboard;
+      },
+    );
+    this.exportLink =
+      'data:text/json;charset=UTF-8,' +
+      encodeURIComponent(JSON.stringify(dashboardsCopy));
   }
 
   async importJSON(event) {
@@ -136,10 +150,10 @@ export class IndexesDashboardComponent implements OnInit {
     };
 
     const availableIndexes = await this.settingsService.readIndexesSettings();
-    const indexesIds = availableIndexes.map(index => index.id);
+    const indexesIds = availableIndexes.map((index) => index.id);
 
     for (let i = 0; i < data.length; i++) {
-      const importedItem = (data[i] as any);
+      const importedItem = data[i] as any;
       const dashboardName = this.commonService.cleanIdNames(importedItem?.name);
 
       if (dashboardName === '') {
@@ -158,7 +172,9 @@ export class IndexesDashboardComponent implements OnInit {
         description: importedItem?.description,
       };
 
-      const defaultDashboard = importedItem?.is_default ? dashboardName : this.dashboards.find((x) => x?.is_default)?.name;
+      const defaultDashboard = importedItem?.is_default
+        ? dashboardName
+        : this.dashboards.find((x) => x?.is_default)?.name;
       const response = await this.settingsService.saveDashboardsSettings(
         item,
         true,
@@ -167,21 +183,28 @@ export class IndexesDashboardComponent implements OnInit {
       if (response.success === true) {
         importStatus.success.push(dashboardName);
       } else {
-        const message = dashboardName + ', failed to import with error: ' + (response?.message ? response.message : 'Oops! something went wrong');
+        const message =
+          dashboardName +
+          ', failed to import with error: ' +
+          (response?.message ? response.message : 'Oops! something went wrong');
         importStatus.failed.push(message);
       }
     }
 
     await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(importStatus, data.length, 'Dashboard(s)');
+    const message = this.commonService.importJSONResponseMessage(
+      importStatus,
+      data.length,
+      'Dashboard(s)',
+    );
     if (message.type === 'success') {
-      this.toastr.success(message.message, null, {enableHtml: true});
+      this.toastr.success(message.message, null, { enableHtml: true });
       this.refreshData();
     } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, {enableHtml: true});
+      this.toastr.warning(message.message, null, { enableHtml: true });
       this.refreshData();
     } else {
-      this.toastr.error(message.message, null, {enableHtml: true});
+      this.toastr.error(message.message, null, { enableHtml: true });
     }
   }
 
@@ -200,12 +223,16 @@ export class IndexesDashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.spinner.show();
-        const response = await this.settingsService.setDashboardAsDefault(defaultDashboard);
+        const response = await this.settingsService.setDashboardAsDefault(
+          defaultDashboard,
+        );
         await this.spinner.hide();
         if (response.success) {
           this.toastr.success(response.message);
         } else {
-          this.toastr.error(response?.message ? response.message : 'Oops! something went wrong');
+          this.toastr.error(
+            response?.message ? response.message : 'Oops! something went wrong',
+          );
         }
         await this.refreshData();
       }
