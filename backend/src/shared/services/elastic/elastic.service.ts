@@ -11,10 +11,7 @@ export class ElasticService {
     private readonly jsonFilesService: JsonFilesService = null,
   ) {}
 
-  async startUpIndexes() {
-    const indexes = await this.jsonFilesService.read(
-      '../../../data/indexes.json',
-    );
+  async startUpIndexes(indexes) {
     for (const index of indexes) {
       const items_final_exist: IndicesExistsResponse =
         await this.elasticsearchService.indices.exists({
@@ -36,30 +33,33 @@ export class ElasticService {
         }).catch();
     }
   }
+
   async startup() {
-    await this.startUpIndexes();
+    const indexes = await this.jsonFilesService.read(
+        '../../../data/indexes.json',
+    );
 
-    const values_exist: IndicesExistsResponse =
-      await this.elasticsearchService.indices.exists({
-        index: 'openrxv-values',
-      }).catch();
-    const users_exist: IndicesExistsResponse =
-      await this.elasticsearchService.indices.exists({
-        index: 'openrxv-users',
-      }).catch();
-    const shared_exist: IndicesExistsResponse =
-      await this.elasticsearchService.indices.exists({
-        index: 'openrxv-shared',
-      }).catch();
+    await this.startUpIndexes(indexes);
 
-    if (!shared_exist)
-      await this.elasticsearchService.indices.create({
-        index: 'openrxv-shared',
-      }).catch();
-    if (!values_exist)
-      await this.elasticsearchService.indices.create({
-        index: 'openrxv-values',
-      }).catch();
+    for (const index of indexes) {
+      const values_exist: IndicesExistsResponse =
+          await this.elasticsearchService.indices.exists({
+            index: `${index.name}-values`,
+          }).catch();
+      if (!values_exist)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}-values`,
+        }).catch();
+
+      const shared_exist: IndicesExistsResponse =
+          await this.elasticsearchService.indices.exists({
+            index: `${index.name}-shared`,
+          }).catch();
+      if (!shared_exist)
+        await this.elasticsearchService.indices.create({
+          index: `${index.name}-shared`,
+        }).catch();
+    }
 
     await this.elasticsearchService.cluster.putSettings({
       transient: {
@@ -72,6 +72,10 @@ export class ElasticService {
       },
     }).catch();
 
+    const users_exist: IndicesExistsResponse =
+        await this.elasticsearchService.indices.exists({
+          index: 'openrxv-users',
+        }).catch();
     if (!users_exist) {
       const body = {
         name: 'admin',
