@@ -112,18 +112,23 @@ export class FormatService {
       }
     }
 
-    if (mapto[value]) {
-      // If the mapping value is specific for a metadata field then apply it only to the specified metadata field,
-      // otherwise apply it to all
-      if (mapto[value]?.metadataField) {
-        if (mapto[value].metadataField === metadataField) {
-          value = mapto[value].replace;
+    const isArrayOfValues = Array.isArray(value);
+    const subjectValues = isArrayOfValues ? value : [value];
+    const finalValues = subjectValues.map(subjectValue => {
+      if (mapto[subjectValue]) {
+        // If the mapping value is specific for a metadata field then apply it only to the specified metadata field,
+        // otherwise apply it to all
+        if (mapto[subjectValue]?.metadataField) {
+          if (mapto[subjectValue].metadataField === metadataField) {
+            subjectValue = mapto[subjectValue].replace;
+          }
+        } else {
+          subjectValue = mapto[subjectValue].replace;
         }
-      } else {
-        value = mapto[value].replace;
       }
-    }
-    return value;
+      return subjectValue;
+    });
+    return isArrayOfValues ? finalValues : finalValues[0];
   }
   getArrayOrValue(values: Array<any>) {
     if (values.length > 1) return values;
