@@ -13,6 +13,7 @@ import {
   QueryFilterAttribute,
   BuildQueryObj,
   ResetOptions,
+  ElasticsearchQueryPayload,
 } from '../services/interfaces';
 import { SelectService } from '../services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -181,18 +182,19 @@ export class SelectComponent extends ParentComponent implements OnInit {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     return {
+      query: this.selectService.buildquery(bq).build() as ElasticsearchQuery | Partial<ElasticsearchQuery>,
       dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
-      query: this.selectService.buildquery(bq).build(),
     };
   }
 
-  private getData(queryBody: ElasticsearchQuery): void {
-    const { query, ...orQuery } = queryBody;
+  private getData(queryBody: ElasticsearchQueryPayload): void {
+    const { query, ...orQuery } = queryBody.query;
     this.orQuery = orQuery;
     this.loading = true;
-    this.selectService.paginateData(
-      this.isTheOrOperatorSelected ? this.orQuery : queryBody,
-    );
+    this.selectService.paginateData({
+      query: this.isTheOrOperatorSelected ? this.orQuery : queryBody.query,
+      dashboard: queryBody.dashboard
+    });
   }
 
   private shouldReset(): void {
