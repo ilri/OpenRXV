@@ -157,6 +157,11 @@ export interface ElasticsearchQuery {
   sort: [SortOptions];
 }
 
+export interface ElasticsearchQueryPayload {
+  dashboard: string,
+  query: ElasticsearchQuery | Partial<ElasticsearchQuery>
+}
+
 export interface SortOptions {
   [key: string]: {
     order: string;

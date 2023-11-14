@@ -3,12 +3,12 @@ import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {
-  ElasticsearchQuery,
   ElasticsearchResponse,
   QueryFilterAttribute,
   Bucket,
   BuildQueryObj,
   ResetOptions,
+  ElasticsearchQueryPayload,
 } from '../interfaces';
 import { BodyBuilderService } from '../bodyBuilder/body-builder.service';
 
@@ -42,7 +42,7 @@ export class SelectService {
   }
 
   paginateData(
-    query: ElasticsearchQuery | Partial<ElasticsearchQuery>,
+    query: ElasticsearchQueryPayload,
   ): Subscription {
     return this.http
       .post(this.api_end_point, query)
