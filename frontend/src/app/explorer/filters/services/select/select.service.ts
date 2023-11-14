@@ -41,9 +41,7 @@ export class SelectService {
     this.bodyBuilderService.resetOtherComponent({ caller: 'select' });
   }
 
-  paginateData(
-    query: ElasticsearchQueryPayload,
-  ): Subscription {
+  paginateData(query: ElasticsearchQueryPayload): Subscription {
     return this.http
       .post(this.api_end_point, query)
       .subscribe((d: ElasticsearchResponse) => {

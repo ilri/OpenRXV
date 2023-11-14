@@ -182,7 +182,9 @@ export class SelectComponent extends ParentComponent implements OnInit {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     return {
-      query: this.selectService.buildquery(bq).build() as ElasticsearchQuery | Partial<ElasticsearchQuery>,
+      query: this.selectService.buildquery(bq).build() as
+        | ElasticsearchQuery
+        | Partial<ElasticsearchQuery>,
       dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',
     };
   }
@@ -193,7 +195,7 @@ export class SelectComponent extends ParentComponent implements OnInit {
     this.loading = true;
     this.selectService.paginateData({
       query: this.isTheOrOperatorSelected ? this.orQuery : queryBody.query,
-      dashboard: queryBody.dashboard
+      dashboard: queryBody.dashboard,
     });
   }
 

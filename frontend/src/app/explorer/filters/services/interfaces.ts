@@ -158,8 +158,8 @@ export interface ElasticsearchQuery {
 }
 
 export interface ElasticsearchQueryPayload {
-  dashboard: string,
-  query: ElasticsearchQuery | Partial<ElasticsearchQuery>
+  dashboard: string;
+  query: ElasticsearchQuery | Partial<ElasticsearchQuery>;
 }
 
 export interface SortOptions {
