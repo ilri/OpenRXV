@@ -114,7 +114,7 @@ export class FormatService {
 
     const isArrayOfValues = Array.isArray(value);
     const subjectValues = isArrayOfValues ? value : [value];
-    const finalValues = subjectValues.map(subjectValue => {
+    const finalValues = subjectValues.map((subjectValue) => {
       if (mapto[subjectValue]) {
         // If the mapping value is specific for a metadata field then apply it only to the specified metadata field,
         // otherwise apply it to all
