@@ -24,8 +24,8 @@ export class IndexMetadataService extends ElasticService {
     return mappings[index]
       ? Object.keys(mappings[index].mappings.properties)
       : mappings[index + '_final']
-      ? Object.keys(mappings[index + '_final'].mappings.properties)
-      : [];
+        ? Object.keys(mappings[index + '_final'].mappings.properties)
+        : [];
   }
 
   async DSpaceMetadataAutoRetrieve(link) {
