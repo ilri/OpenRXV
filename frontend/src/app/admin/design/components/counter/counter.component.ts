@@ -64,7 +64,10 @@ export class CounterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
+  constructor(
+    public dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     if (!this.configs.componentConfigs.source) this.openDialog();

@@ -95,15 +95,15 @@ export class BarServiceComposer {
         ? this.selectedYears.length === 0
           ? 2147483647
           : this.doWeHaveQueryInTheMainQuery
-          ? 5
-          : this.selectedYears.length
+            ? 5
+            : this.selectedYears.length
         : 5,
       this.selectedCategories
         ? this.selectedCategories.length === 0
           ? 2147483647
           : this.doWeHaveQueryInTheMainQuery
-          ? 5
-          : this.selectedCategories.length
+            ? 5
+            : this.selectedCategories.length
         : 5,
     ];
   }
@@ -180,7 +180,7 @@ export class BarServiceComposer {
               y: xBucket.doc_count,
             })),
             animation: true,
-          } as Highcharts.SeriesColumnOptions),
+          }) as Highcharts.SeriesColumnOptions,
       );
     this.selectDefaultOptions(series, changeBy);
     return series;

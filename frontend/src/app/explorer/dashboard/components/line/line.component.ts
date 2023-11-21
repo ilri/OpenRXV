@@ -41,9 +41,8 @@ export class LineComponent extends ParentChart implements OnInit {
   async ngOnInit() {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const appearance = await this.settingsService.readAppearanceSettings(
-      dashboard_name,
-    );
+    const appearance =
+      await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('line');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {

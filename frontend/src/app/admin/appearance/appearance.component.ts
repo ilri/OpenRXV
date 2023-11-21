@@ -56,9 +56,8 @@ export class AppearanceComponent implements OnInit {
   async ngOnInit() {
     const dashboard_name = (this.dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name'));
-    const appearance = await this.settingsService.readAppearanceSettings(
-      dashboard_name,
-    );
+    const appearance =
+      await this.settingsService.readAppearanceSettings(dashboard_name);
     this.appearance = appearance;
     await this.populateForm(appearance);
     this.refreshExportLink(appearance);
@@ -113,9 +112,8 @@ export class AppearanceComponent implements OnInit {
         this.form.value,
       );
 
-      const appearance = await this.settingsService.readAppearanceSettings(
-        dashboard_name,
-      );
+      const appearance =
+        await this.settingsService.readAppearanceSettings(dashboard_name);
       this.refreshExportLink(appearance);
       this.toastr.success('Saved successfully');
       await this.spinner.hide();

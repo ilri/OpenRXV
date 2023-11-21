@@ -85,18 +85,21 @@ export class CounterComponent implements OnInit {
     clearInterval(this.genericInterval);
     const { incOrDec, step, range } = this.calculateHelpers();
     let current = this.oldCount;
-    this.genericInterval = setInterval(() => {
-      current += step;
-      if (current >= this.newCount && incOrDec) {
-        this.changeCountOldCountAndClearInterval();
-      } else if (current <= this.newCount && !incOrDec) {
-        this.changeCountOldCountAndClearInterval();
-      } else {
-        // preventing the count from going apove the current count
-        // or below the current count then increase/decrease
-        this.count = current;
-      }
-    }, 5 ** range.toString().length / range);
+    this.genericInterval = setInterval(
+      () => {
+        current += step;
+        if (current >= this.newCount && incOrDec) {
+          this.changeCountOldCountAndClearInterval();
+        } else if (current <= this.newCount && !incOrDec) {
+          this.changeCountOldCountAndClearInterval();
+        } else {
+          // preventing the count from going apove the current count
+          // or below the current count then increase/decrease
+          this.count = current;
+        }
+      },
+      5 ** range.toString().length / range,
+    );
   }
 
   private calculateHelpers(): {

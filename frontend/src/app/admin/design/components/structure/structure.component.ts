@@ -211,7 +211,10 @@ export class StructureComponent implements OnInit {
         break;
     }
   }
-  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
+  constructor(
+    public dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
+  ) {}
 
   oldcomponent = [];
 

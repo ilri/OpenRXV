@@ -9,7 +9,10 @@ import { ElasticsearchResponse } from 'src/app/explorer/filters/services/interfa
 
 @Injectable()
 export class ItemsEffects {
-  constructor(private actions$: Actions, private itemsService: ItemsService) {}
+  constructor(
+    private actions$: Actions,
+    private itemsService: ItemsService,
+  ) {}
   loadItems$ = createEffect(() =>
     this.actions$.pipe(
       ofType(itemsactions.ActionTypes.getData),

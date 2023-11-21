@@ -154,7 +154,10 @@ export class FilterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(public dialog: MatDialog, private activeRoute: ActivatedRoute) {}
+  constructor(
+    public dialog: MatDialog,
+    private activeRoute: ActivatedRoute,
+  ) {}
   setIcon() {
     const icons = {
       SelectComponent: 'list',

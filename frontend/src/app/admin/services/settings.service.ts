@@ -9,7 +9,10 @@ import * as dayjs from 'dayjs';
   providedIn: 'root',
 })
 export class SettingsService {
-  constructor(private http: HttpClient, private route: Router) {}
+  constructor(
+    private http: HttpClient,
+    private route: Router,
+  ) {}
   async save(data, index_name: string) {
     return await this.http
       .post(environment.api + `/settings/${index_name}`, data)

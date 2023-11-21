@@ -114,7 +114,7 @@ export function reducer(
             'year.keyword': {
               ...state.data.aggregations['year.keyword'],
               buckets: action.payload.map(
-                (n: number) => ({ doc_count: null, key: `${n}` } as Bucket),
+                (n: number) => ({ doc_count: null, key: `${n}` }) as Bucket,
               ),
             },
           },

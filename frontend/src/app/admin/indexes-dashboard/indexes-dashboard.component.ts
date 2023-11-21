@@ -223,9 +223,8 @@ export class IndexesDashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.spinner.show();
-        const response = await this.settingsService.setDashboardAsDefault(
-          defaultDashboard,
-        );
+        const response =
+          await this.settingsService.setDashboardAsDefault(defaultDashboard);
         await this.spinner.hide();
         if (response.success) {
           this.toastr.success(response.message);

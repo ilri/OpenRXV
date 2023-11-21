@@ -14,7 +14,10 @@ export class LoginComponent implements OnInit {
     password: new UntypedFormControl(''),
     submit: new UntypedFormControl(''),
   });
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {}
 

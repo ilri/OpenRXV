@@ -11,7 +11,10 @@ export class RootComponent implements OnInit {
   index_name: string;
   dashboard_name: string;
 
-  constructor(private router: Router, private activeRoute: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private activeRoute: ActivatedRoute,
+  ) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.setCurrentRoutSettings();
