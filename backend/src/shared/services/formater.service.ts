@@ -59,7 +59,14 @@ export class FormatService {
     langISO.validate(value) ? langISO.getName(value) : value;
 
   mapIsoToCountry(value: string) {
-    const country = CountryISO.get({ alpha_2: value }) as Country;
+    const country = CountryISO.get({
+      alpha_2: value,
+      alpha_3: value,
+      numeric: value,
+      name: value,
+      common_name: value,
+      official_name: value,
+    }) as Country;
     return country ? country.name : this.capitalizeFirstLetter(value);
   }
 
