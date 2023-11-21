@@ -74,7 +74,7 @@
     "@types/googlemaps": "3.39.12",
     "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^16.18.38",
+    "@types/node": "^18.11.9",
     "@types/ramda": "0.27.34",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
