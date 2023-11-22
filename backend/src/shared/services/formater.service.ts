@@ -67,7 +67,8 @@ export class FormatService {
       common_name: value,
       official_name: value,
     }) as Country;
-    return country ? country.name : this.capitalizeFirstLetter(value);
+    // return country ? country.name : this.capitalizeFirstLetter(value);
+    return country ? country.name : value;
   }
 
   mapCountryToIso(value: string) {
