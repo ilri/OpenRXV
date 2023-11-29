@@ -90,9 +90,7 @@ export class FormatService {
     if (addOn) {
       if (typeof value === 'string' || value instanceof String) {
         if (addOn == 'country')
-          value = value
-            .split(',')
-            .map((d) => this.mapIsoToCountry(d.trim()));
+          value = value.split(',').map((d) => this.mapIsoToCountry(d.trim()));
         if (addOn == 'language')
           value = value
             .split(',')
