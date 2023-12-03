@@ -51,7 +51,7 @@ export class AddMissingItems {
       if (result && result.type == 'item') {
         let formatted;
         if (job.data.repo.type === 'DSpace') {
-          const mappingValues = this.dspaceService.getMappingValues(
+          const mappingValues = await this.dspaceService.getMappingValues(
             job.data.index,
             false,
           );
@@ -61,7 +61,7 @@ export class AddMissingItems {
             mappingValues,
           );
         } else if (job.data.repo.type === 'DSpace7') {
-          const mappingValues = this.dspace7Service.getMappingValues(
+          const mappingValues = await this.dspace7Service.getMappingValues(
             job.data.index,
             false,
           );
