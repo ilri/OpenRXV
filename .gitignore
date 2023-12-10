@@ -1,3 +1,6 @@
 # Ignore macOS Finder settings
 .DS_Store
 backend/.env
+
+# Ignore rtx version files
+.tool-versions
