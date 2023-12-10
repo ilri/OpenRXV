@@ -29,10 +29,11 @@ After you have configured Docker you can clone this repository and build OpenRXV
 $ sudo docker-compose up -d
 ```
 
-This will bring up all of the container components of the project and start building them. Monitor the progress with `docker logs -f angular_nginx`, for example. After a few minutes you can visit the site at localhost:80 and log into the admin dashboard (default is admin/admin).
+This will bring up all of the container components of the project and start building them. Monitor the progress with `docker logs -f frontend`, for example. After a few minutes you can visit the site at localhost:80 and log into the admin dashboard (default is admin/admin).
 
 *Note: the Elasticsearch component requires more virtual memory. You will most likely need to increase the host system's memory map limits by setting `vm.max_map_count = 262144` in /etc/sysctl.conf. See the [Elasticsearch docs for more information](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).*
-*Note: Elasticsearch requires a username and password, to override this execute `docker exec elasticsearch bash -c 'echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elasticsearch.yml' && docker restart elasticsearch`
+
+*Note: Elasticsearch requires a username and password, to override this execute `docker exec elasticsearch bash -c 'echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elasticsearch.yml' && docker restart elasticsearch`.*
 
 ## Configuration
 
