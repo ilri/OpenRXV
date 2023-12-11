@@ -50,7 +50,6 @@
     "jsonfile": "^6.1.0",
     "libreoffice-convert": "^1.4.1",
     "mime-types": "^2.1.35",
-    "npm-check-updates": "^16.13.3",
     "object-hash": "^3.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
