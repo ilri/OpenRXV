@@ -12,6 +12,7 @@ services:
       - "ES_JAVA_OPTS=-Xms1536m -Xmx1536m -Dlog4j2.formatMsgNoLookups=true"
     volumes:
       - esData_7:/usr/share/elasticsearch/data:rw
+      - ./docker/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - openrxv
   redis:

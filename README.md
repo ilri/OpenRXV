@@ -33,8 +33,6 @@ This will bring up all of the container components of the project and start buil
 
 *Note: the Elasticsearch component requires more virtual memory. You will most likely need to increase the host system's memory map limits by setting `vm.max_map_count = 262144` in /etc/sysctl.conf. See the [Elasticsearch docs for more information](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).*
 
-*Note: Elasticsearch requires a username and password, to override this execute `docker exec elasticsearch bash -c 'echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elasticsearch.yml' && docker restart elasticsearch`.*
-
 ## Configuration
 
 Configuration of repositories and metadata to harvest is in `backend/config/index.json`. Mappings of equivalent metadata values — for example "Kenya" and "KENYA" — are in `backend/config/mapping.json`.
