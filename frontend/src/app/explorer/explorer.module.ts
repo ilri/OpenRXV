@@ -38,7 +38,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { RangeComponent } from './filters/range/range.component';
 import { ScrollToComponent } from './dashboard/components/scroll-to/scroll-to.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { InViewportModule } from '@thisissoon/angular-inviewport';
+import { InViewportModule } from '@kumanu/angular-inviewport';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { ChartComponent } from './dashboard/components/chart/chart.component';
 import { ListComponent } from './dashboard/components/list/list.component';
