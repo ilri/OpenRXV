@@ -23,7 +23,7 @@
     "copy:assets": "mkdir -p 'dist/export/services/template-files/' && mkdir -p  data/files/downloads/ &&  cp -r 'src/export/services/template-files/' 'dist/export/services/template-files/'"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "8.9.0",
+    "@elastic/elasticsearch": "8.10.0",
     "@mohammad231/iso_3166-1": "^1.0.2",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/bull": "^10.0.1",
@@ -36,7 +36,7 @@
     "@nestjs/platform-express": "^10.2.5",
     "@nestjs/schedule": "^3.0.3",
     "@nestjs/serve-static": "^4.0.0",
-    "@types/elasticsearch": "^5.0.40",
+    "@types/elasticsearch": "^5.0.43",
     "angular-expressions": "^1.1.9",
     "axios": "^1.5.0",
     "bcrypt": "^5.1.1",
