@@ -30,6 +30,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "@highcharts/map-collection": "^2.1.0",
     "@material-extended/mde": "^3.0.3",
+    "@mohammad231/iso_3166-1": "^1.0.2",
     "@ng-select/ng-select": "^10.0.4",
     "@ngrx/effects": "^15.4.0",
     "@ngrx/store": "^15.4.0",
