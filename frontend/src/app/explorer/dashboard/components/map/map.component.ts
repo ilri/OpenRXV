@@ -134,6 +134,6 @@ export class MapComponent extends ParentChart implements OnInit {
       common_name: value,
       official_name: value,
     }) as Country;
-    return country ? country.alpha_2 : undefined;
+    return country ? country.alpha_2.toLowerCase() : undefined;
   }
 }
