@@ -9,7 +9,6 @@ const mapWorld = require('@highcharts/map-collection/custom/world-robinson-highr
 import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { getCountryCode } from '../services/countryList.helper';
 import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
@@ -17,6 +16,8 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
+import CountryISO from '@mohammad231/iso_3166-1';
+import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 @ComponentLookup('MapComponent')
 @Component({
   selector: 'app-map',
@@ -96,7 +97,7 @@ export class MapComponent extends ParentChart implements OnInit {
       series: [
         {
           data: buckets.map((b: Bucket) => [
-            getCountryCode(b.key),
+            this.mapCountryToIsoAlpha2(b.key),
             b.doc_count,
           ]),
           mapData: mapWorld,
@@ -125,5 +126,14 @@ export class MapComponent extends ParentChart implements OnInit {
       ],
       ...this.cms.commonProperties(),
     } as Highcharts.Options;
+  }
+
+  mapCountryToIsoAlpha2(value: string) {
+    const country = CountryISO.get({
+      name: value,
+      common_name: value,
+      official_name: value,
+    }) as Country;
+    return country ? country.alpha_2 : undefined;
   }
 }
