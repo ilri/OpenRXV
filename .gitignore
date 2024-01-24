@@ -4,3 +4,5 @@ backend/.env
 
 # Ignore rtx version files
 .tool-versions
+.idea/
+backend/data/templates/migrated
