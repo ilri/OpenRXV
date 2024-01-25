@@ -36,8 +36,14 @@ class PickDateAdapter extends NativeDateAdapter {
     if (displayFormat === 'input') {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString();
-      const day = (date.getDate()).toString();
-      return year + '-' + (month.length === 1 ? `0${month}` : month) + '-' + (day.length === 1 ? `0${day}` : day);
+      const day = date.getDate().toString();
+      return (
+        year +
+        '-' +
+        (month.length === 1 ? `0${month}` : month) +
+        '-' +
+        (day.length === 1 ? `0${day}` : day)
+      );
     } else {
       return date.toDateString();
     }
