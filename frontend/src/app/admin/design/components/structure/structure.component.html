@@ -25,7 +25,10 @@
 
                             <mat-card-title>
 
-                                <span>{{ word(item.component)}}</span>
+                                <span>
+                                  {{ this.grid[i].componentConfigs.title}} -
+                                  <small><i>{{ word(item.component)}}</i></small>
+                                </span>
 
                                 <button class="card-actions" (click)="delete(i)" color="warn" mat-icon-button>
                                     <mat-icon>delete</mat-icon>

@@ -281,6 +281,9 @@ export class DesignComponent implements OnInit {
     if (obj.allowFilterOnClick)
       temp['allowFilterOnClick'] = obj.allowFilterOnClick;
 
+    if (obj.inner_size)
+      temp['inner_size'] = obj.inner_size;
+
     if (obj.source_x && obj.source_y) {
       temp['source'] = [obj.source_x, obj.source_y + '.keyword'];
       temp['source_y'] = obj.source_y;
@@ -353,6 +356,8 @@ export class DesignComponent implements OnInit {
     const temp = {};
 
     if (obj.title) temp['title'] = obj.title;
+
+    if (obj.icon) temp['icon'] = obj.icon;
 
     if (obj.description) temp['description'] = obj.description;
 

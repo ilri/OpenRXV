@@ -99,6 +99,7 @@ export class PieComponent extends ParentChart implements OnInit {
       },
       series: [
         {
+          innerSize: !this.componentConfigs?.inner_size || this.componentConfigs.inner_size <= 0 || this.componentConfigs.inner_size > 100 ? 0 : (this.componentConfigs.inner_size + '%'),
           animation: true,
           type: 'pie',
           data: buckets.map((b: Bucket) => ({

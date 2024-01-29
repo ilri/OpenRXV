@@ -3,7 +3,32 @@ mat-card {
   cursor: pointer !important;
   min-height: 100px;
   height: 100px;
-  width: 150px;
+  box-shadow: unset;
+  width: unset !important;
+  border-radius: 0 !important;
+  padding: 5px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+
+  mat-card-content {
+    > mat-icon {
+      position: absolute;
+      width: 100% !important;
+      height: 100% !important;
+      font-size: 90px !important;
+      left: -20px;
+      text-align: left;
+      top: 26px;
+      color: var(--theme-primary-200) !important;
+      opacity: 0.1;
+    }
+
+    mat-card-title {
+      text-align: right;
+      color: #666666 !important;
+    }
+  }
 }
 
 .small-text {

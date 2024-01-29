@@ -129,6 +129,15 @@ export class StructureComponent implements OnInit {
             },
           ],
         ];
+
+        if (value === 'PieComponent') {
+          this.form_data.push({
+            name: 'inner_size',
+            label: 'Inner size',
+            type: 'number',
+            required: true,
+          });
+        }
         break;
 
       case 'MainListComponent':

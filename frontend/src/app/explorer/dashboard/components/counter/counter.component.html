@@ -4,12 +4,15 @@
   [mdePopoverTriggerFor]="appPopover"
   mdePopoverTriggerOn="hover"
   matRippleCentered="centered"
-  class="border-bottom-light center-text w-xs-100 mb-1"
+  class="border-bottom-light center-text w-xs-100 primary-hover"
 >
-  <mat-card-content class="primary-hover">
-    <ng-container *ngIf="count; else zero">
+  <mat-card-content>
+    <ng-container>
+      <mat-icon *ngIf="componentConfigs?.icon">{{ componentConfigs.icon }}</mat-icon>
       <mat-card-title>
-        <span class="counter-number">{{ count }}</span>
+        <strong>{{ componentConfigs.title }}</strong>
+        <br>
+        <span class="counter-number">{{ count | number }}</span>
         <ng-container *ngIf="percentage">
           <small class="small-text">
             / {{ percentage | number: '1.1-2' }} %
@@ -17,12 +20,6 @@
         </ng-container>
       </mat-card-title>
     </ng-container>
-    <ng-template #zero>
-      <mat-card-title>
-        0
-      </mat-card-title>
-    </ng-template>
-    {{ componentConfigs.title }}
   </mat-card-content>
   <ngx-loading [show]="!(loadingHits$ | async) && loading"></ngx-loading>
 </mat-card>

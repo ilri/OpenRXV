@@ -14,3 +14,10 @@
 :host ::ng-deep .mat-expansion-panel-header {
   height: 64px;
 }
+
+.counters-container {
+  > div {
+    flex: 1;
+    min-width: 150px;
+  }
+}

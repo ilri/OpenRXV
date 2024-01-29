@@ -35,6 +35,7 @@ export interface ComponentDashboardConfigs {
 export interface ComponentCounterConfigs {
   id: string;
   title: string;
+  icon?: string;
   source: string;
   percentageFromTotal?: boolean;
   filter?: string;
