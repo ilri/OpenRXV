@@ -27,12 +27,13 @@
   color: map-get($customTheme, 700) !important;
 }
 
-.primary-hover {
+.primary-hover:hover:after {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: var(--theme-primary-500);
+  opacity: .2;
   transition: background-color .25s ease-in;
-}
-
-.primary-hover:hover {
-  background-color: map-get($customTheme, 50);
 }
 
 .border-top-light {
