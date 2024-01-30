@@ -39,9 +39,11 @@
 
       .lists-percentage {
         text-align: right;
-        width: 60px;
         font-size: 14px;
-        margin-left: 5px;
+        font-weight: bolder;
+        color: var(--theme-primary-500);
+        margin-top: 3px;
+        flex: 0 0 60px;
         > span {
           font-size: 70%;
         }
@@ -78,7 +80,7 @@
       .doc-count {
         color: #6a6a6a;
         position: absolute;
-        right: 64px;
+        right: 65px;
         top: 0;
       }
     }
