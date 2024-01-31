@@ -281,8 +281,7 @@ export class DesignComponent implements OnInit {
     if (obj.allowFilterOnClick)
       temp['allowFilterOnClick'] = obj.allowFilterOnClick;
 
-    if (obj.inner_size)
-      temp['inner_size'] = obj.inner_size;
+    if (obj.inner_size) temp['inner_size'] = obj.inner_size;
 
     if (obj.source_x && obj.source_y) {
       temp['source'] = [obj.source_x, obj.source_y + '.keyword'];
