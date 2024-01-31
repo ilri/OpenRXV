@@ -12,13 +12,6 @@
     <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)">
       <mat-list-item class="pt-1 pb-1 pr-1 pl-0" >
         <span matListItemLine class="item-list-row">
-        <ng-container *ngIf="!isSmall">
-          <span class="lists_counts">
-            {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}%
-          </span>
-          <i class="arrow right arrow-warning"></i>
-        </ng-container>
-
         <div class="w-100">
           <span class="item-list-title" [matTooltip]="item.key">
             {{ item.key }}
@@ -28,7 +21,7 @@
           </small>
           <span class="spacer"></span>
           <small class="doc-count" style="float: right;color: #6a6a6a;">
-            {{ item.doc_count }}
+            {{ item.doc_count | number }}
           </small>
           <div class="progress">
             <div
@@ -38,6 +31,11 @@
             ></div>
           </div>
         </div>
+        <ng-container *ngIf="!isSmall">
+          <span class="lists-percentage">
+           {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}<span>%</span>
+          </span>
+        </ng-container>
         </span>
       </mat-list-item>
     </div>

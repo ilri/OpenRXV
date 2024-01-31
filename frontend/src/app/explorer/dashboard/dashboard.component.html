@@ -17,7 +17,7 @@
           {{ conf.componentConfig | json }}
         </div>
       </ng-container>
-      <section class="row mb-2 d-flex justify-content-between flex-wrap">
+      <section class="row mb-2 d-flex justify-content-between flex-wrap counters-container">
         <!-- Counter loop START -->
         <ng-container *ngFor="let conf of countersConfig">
           <div *ngIf="conf.show" class="w-xs-100">

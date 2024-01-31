@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
 import { ActivatedRoute } from '@angular/router';
+import { icons_list } from '../structure/icons';
 
 @Component({
   selector: 'app-counter',
@@ -19,6 +20,17 @@ export class CounterComponent implements OnInit {
       label: 'Title',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'icon',
+      label: 'Icon',
+      type: 'select',
+      items: icons_list.map((d) => {
+        return { name: d.name, value: d.name };
+      }),
+      required: false,
+      icons: true,
+      onChange: () => {},
     },
     {
       name: 'source',

@@ -37,12 +37,16 @@
       position: relative;
       height: inherit;
 
-      .lists_counts {
-        text-align: center;
-        padding: 5px 0;
-        border-radius: 0.25em 0.14em 0.14em 0.25em;
-        color: white;
-        width: 90px;
+      .lists-percentage {
+        text-align: right;
+        font-size: 14px;
+        font-weight: bolder;
+        color: var(--theme-primary-500);
+        margin-top: 3px;
+        flex: 0 0 60px;
+        > span {
+          font-size: 70%;
+        }
       }
 
       .arrow {
@@ -76,7 +80,7 @@
       .doc-count {
         color: #6a6a6a;
         position: absolute;
-        right: 5px;
+        right: 65px;
         top: 0;
       }
     }
