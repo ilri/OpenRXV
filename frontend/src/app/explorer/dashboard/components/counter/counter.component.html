@@ -11,12 +11,14 @@
       <mat-icon *ngIf="componentConfigs?.icon">{{ componentConfigs.icon }}</mat-icon>
       <mat-card-title>
         <strong>{{ componentConfigs.title }}</strong>
-        <span class="counter-number">{{ count | number }}</span>
-        <ng-container *ngIf="percentage">
+        <span class="counter-number">
+          {{ count | number }}
+          <ng-container *ngIf="percentage">
           <small class="small-text">
             / {{ percentage | number: '1.1-2' }} %
           </small>
         </ng-container>
+        </span>
       </mat-card-title>
     </ng-container>
   </mat-card-content>
