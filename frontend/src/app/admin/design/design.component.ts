@@ -36,6 +36,8 @@ export class DesignComponent implements OnInit {
   dashboard: Array<any> = [];
   dashboard_name: string;
   exportLink: string;
+  predefinedFilters: any = null;
+  predefinedFiltersExample = JSON.stringify([{"terms": {"FIELD_NAME": ["VALUE"]}}]);
   footer: any = null;
   welcome: any;
   welcome_text = '';
@@ -78,8 +80,14 @@ export class DesignComponent implements OnInit {
     await this.spinner.show();
     const dashboard_name = (this.dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name'));
-    const { counters, filters, dashboard, footer, welcome } =
-      await this.settingsService.readExplorerSettings(dashboard_name);
+    const {
+      counters,
+      filters,
+      dashboard,
+      footer,
+      predefinedFilters,
+      welcome
+    } = await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -97,6 +105,7 @@ export class DesignComponent implements OnInit {
     this.filters = filters;
     this.dashboard = dashboard;
     this.footer = footer;
+    this.predefinedFilters = JSON.stringify(predefinedFilters);
     this.welcome = welcome;
     this.exportLink =
       'data:text/json;charset=UTF-8,' +
@@ -107,13 +116,14 @@ export class DesignComponent implements OnInit {
           filters: this.filters,
           dashboard: this.dashboard,
           footer: this.footer,
+          predefinedFilters: predefinedFilters,
         }),
       );
     await this.spinner.hide();
   }
 
   populateForm(settings) {
-    const { counters, filters, dashboard, footer, welcome } = settings;
+    const { counters, filters, dashboard, footer, predefinedFilters, welcome } = settings;
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -131,6 +141,7 @@ export class DesignComponent implements OnInit {
     this.filters = filters;
     this.dashboard = dashboard;
     this.footer = footer;
+    this.predefinedFilters = JSON.stringify(predefinedFilters);
     this.welcome = welcome;
     this.exportLink =
       'data:text/json;charset=UTF-8,' +
@@ -141,6 +152,7 @@ export class DesignComponent implements OnInit {
           filters: this.filters,
           dashboard: this.dashboard,
           footer: this.footer,
+          predefinedFilters: predefinedFilters,
         }),
       );
   }
@@ -245,6 +257,19 @@ export class DesignComponent implements OnInit {
       this.dashboard.filter((d) => d.filter((e) => e.scroll == null).length > 0)
         .length == 0
     ) {
+      let predefinedFilters = null;
+      if (this.predefinedFilters && this.predefinedFilters.trim(this.predefinedFilters) !== '') {
+        try {
+          predefinedFilters = JSON.parse(this.predefinedFilters);
+        } catch (e) {
+          predefinedFilters = null;
+        }
+        if (predefinedFilters == null || !Array.isArray(predefinedFilters)) {
+          await this.spinner.hide();
+          this.toastr.error('Please add a valid JSON array in the Predefined filters field');
+          return;
+        }
+      }
       await this.spinner.show();
       this.welcome.componentConfigs['text'] = this.welcome_text;
       const data = {
@@ -253,6 +278,7 @@ export class DesignComponent implements OnInit {
         filters: this.filters,
         dashboard: this.dashboard,
         footer: this.footer,
+        predefinedFilters: predefinedFilters,
       };
       await this.settingsService.saveExplorerSettings(dashboard_name, data);
       this.exportLink =
@@ -399,6 +425,7 @@ export class DesignComponent implements OnInit {
       filters: importedItem?.filters,
       dashboard: importedItem?.dashboard,
       footer: importedItem?.footer,
+      predefinedFilters: importedItem?.predefinedFilters,
       welcome: importedItem?.welcome,
     };
     this.populateForm(appearance);

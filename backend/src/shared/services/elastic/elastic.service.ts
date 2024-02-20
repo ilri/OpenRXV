@@ -5,6 +5,7 @@ import {
   IndicesExistsResponse,
   SearchResponse,
   SearchRequest,
+  QueryDslQueryContainer,
 } from '@elastic/elasticsearch/lib/api/types';
 import * as bcrypt from 'bcrypt';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
@@ -115,7 +116,7 @@ export class ElasticService {
     }
   }
   async search(
-    query,
+    query: SearchRequest,
     size = 10,
     scroll: string = null,
     dashboard = 'DEFAULT_DASHBOARD',
@@ -123,6 +124,7 @@ export class ElasticService {
     const index_name =
       await this.jsonFilesService.getIndexFromDashboard(dashboard);
     try {
+      query = await this.addPreDefinedFiltersQuery(query, dashboard);
       const options: SearchRequest = {
         index: index_name,
         ...query,
@@ -231,7 +233,7 @@ export class ElasticService {
     }
   }
 
-  async get(index_name, q: object, scrollId?: string) {
+  async get(index_name: string, dashboardName = 'DEFAULT_DASHBOARD', query: SearchRequest, scrollId?: string) {
     try {
       let scrollSearch: SearchResponse;
       if (scrollId) {
@@ -240,15 +242,38 @@ export class ElasticService {
           scroll: '10m',
         });
       } else {
+        query = await this.addPreDefinedFiltersQuery(query, dashboardName);
         scrollSearch = await this.elasticsearchService.search({
           index: index_name,
           scroll: '10m',
-          ...q,
+          ...query,
         });
       }
       return scrollSearch;
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  async addPreDefinedFiltersQuery(query: SearchRequest, dashboardName: string) {
+    const predefinedFilters = await this.jsonFilesService.getPredefinedFiltersFromDashboard(dashboardName);
+    if (!predefinedFilters || !Array.isArray(predefinedFilters) || predefinedFilters.length === 0) {
+      return query;
+    }
+    const predefinedQuery: QueryDslQueryContainer = {
+      bool: {
+        filter: {
+          bool: {
+            must: predefinedFilters,
+          }
+        }
+      }
+    };
+    if (query?.query) {
+      ((predefinedQuery.bool.filter as QueryDslQueryContainer).bool.must as QueryDslQueryContainer[]).push(query?.query);
+    }
+    query.query = predefinedQuery;
+
+    return query;
   }
 }
