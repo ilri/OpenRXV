@@ -37,11 +37,21 @@ export class FormatService {
   }
 
   setValue(oldvalue, value) {
-    if (_.isArray(oldvalue) && _.isArray(value)) return [...oldvalue, ...value];
-    else if (_.isArray(oldvalue) && !_.isArray(value)) {
-      oldvalue.push(value);
+    if (!oldvalue) {
+      return value;
+    }
+    if (!value) {
       return oldvalue;
-    } else return value;
+    }
+
+    if (!Array.isArray(oldvalue)) {
+      oldvalue = [oldvalue];
+    }
+    if (!Array.isArray(value)) {
+      value = [value];
+    }
+
+    return [...oldvalue, ...value];
   }
 
   capitalizeFirstLetter(string: any) {

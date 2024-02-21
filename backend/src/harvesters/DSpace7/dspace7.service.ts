@@ -230,7 +230,10 @@ export class DSpace7Service {
             mappingValues,
           );
           if (mappedValue !== '' && mappedValue != null) {
-            finalValues[schemaName] = mappedValue;
+            finalValues[schemaName] = this.formatService.setValue(
+                finalValues[schemaName],
+                mappedValue,
+            );
           }
         } else {
           // These are expands (collections, communities, bitstreams, ...)
