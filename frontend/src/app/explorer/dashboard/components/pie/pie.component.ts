@@ -68,7 +68,8 @@ export class PieComponent extends ParentChart implements OnInit {
     commonProperties.legend.labelFormatter = function () {
       const label = `${this.name} (${(this as any).y})`;
       return label.replace(
-        new RegExp(`(?![^\\n]{1,${30}}$)([^\\n]{1,${30}})\\s`, 'g'), '$1<br>'
+        new RegExp(`(?![^\\n]{1,${30}}$)([^\\n]{1,${30}})\\s`, 'g'),
+        '$1<br>',
       );
     };
     commonProperties.legend.useHTML = true;

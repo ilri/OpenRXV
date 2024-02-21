@@ -30,9 +30,17 @@ export class SearchController {
 
   @HttpCode(200)
   @Post('/scroll/:scroll')
-  async searchScroll(@Body() query: SearchRequest, @Param('scroll') scroll: string) {
+  async searchScroll(
+    @Body() query: SearchRequest,
+    @Param('scroll') scroll: string,
+  ) {
     query['track_total_hits'] = true;
-    const body = await this.elasticSearvice.get(null, 'DEFAULT_DASHBOARD', query, scroll);
+    const body = await this.elasticSearvice.get(
+      null,
+      'DEFAULT_DASHBOARD',
+      query,
+      scroll,
+    );
     return body;
   }
 }

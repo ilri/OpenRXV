@@ -233,7 +233,12 @@ export class ElasticService {
     }
   }
 
-  async get(index_name: string, dashboardName = 'DEFAULT_DASHBOARD', query: SearchRequest, scrollId?: string) {
+  async get(
+    index_name: string,
+    dashboardName = 'DEFAULT_DASHBOARD',
+    query: SearchRequest,
+    scrollId?: string,
+  ) {
     try {
       let scrollSearch: SearchResponse;
       if (scrollId) {
@@ -256,8 +261,15 @@ export class ElasticService {
   }
 
   async addPreDefinedFiltersQuery(query: SearchRequest, dashboardName: string) {
-    const predefinedFilters = await this.jsonFilesService.getPredefinedFiltersFromDashboard(dashboardName);
-    if (!predefinedFilters || !Array.isArray(predefinedFilters) || predefinedFilters.length === 0) {
+    const predefinedFilters =
+      await this.jsonFilesService.getPredefinedFiltersFromDashboard(
+        dashboardName,
+      );
+    if (
+      !predefinedFilters ||
+      !Array.isArray(predefinedFilters) ||
+      predefinedFilters.length === 0
+    ) {
       return query;
     }
     const predefinedQuery: QueryDslQueryContainer = {
@@ -265,12 +277,15 @@ export class ElasticService {
         filter: {
           bool: {
             must: predefinedFilters,
-          }
-        }
-      }
+          },
+        },
+      },
     };
     if (query?.query) {
-      ((predefinedQuery.bool.filter as QueryDslQueryContainer).bool.must as QueryDslQueryContainer[]).push(query?.query);
+      (
+        (predefinedQuery.bool.filter as QueryDslQueryContainer).bool
+          .must as QueryDslQueryContainer[]
+      ).push(query?.query);
     }
     query.query = predefinedQuery;
 

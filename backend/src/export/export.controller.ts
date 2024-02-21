@@ -31,7 +31,12 @@ export class ExportController {
       const searchQuery: any = { ...query, size: 2000 };
       this.exportService.downloadFile(
         res,
-        await this.elasticService.get(index_name, dashboard, searchQuery, scrollId),
+        await this.elasticService.get(
+          index_name,
+          dashboard,
+          searchQuery,
+          scrollId,
+        ),
         type,
         part,
         fileName,

@@ -37,7 +37,9 @@ export class DesignComponent implements OnInit {
   dashboard_name: string;
   exportLink: string;
   predefinedFilters: any = null;
-  predefinedFiltersExample = JSON.stringify([{"terms": {"FIELD_NAME": ["VALUE"]}}]);
+  predefinedFiltersExample = JSON.stringify([
+    { terms: { FIELD_NAME: ['VALUE'] } },
+  ]);
   footer: any = null;
   welcome: any;
   welcome_text = '';
@@ -80,14 +82,8 @@ export class DesignComponent implements OnInit {
     await this.spinner.show();
     const dashboard_name = (this.dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name'));
-    const {
-      counters,
-      filters,
-      dashboard,
-      footer,
-      predefinedFilters,
-      welcome
-    } = await this.settingsService.readExplorerSettings(dashboard_name);
+    const { counters, filters, dashboard, footer, predefinedFilters, welcome } =
+      await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -123,7 +119,8 @@ export class DesignComponent implements OnInit {
   }
 
   populateForm(settings) {
-    const { counters, filters, dashboard, footer, predefinedFilters, welcome } = settings;
+    const { counters, filters, dashboard, footer, predefinedFilters, welcome } =
+      settings;
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -258,7 +255,10 @@ export class DesignComponent implements OnInit {
         .length == 0
     ) {
       let predefinedFilters = null;
-      if (this.predefinedFilters && this.predefinedFilters.trim(this.predefinedFilters) !== '') {
+      if (
+        this.predefinedFilters &&
+        this.predefinedFilters.trim(this.predefinedFilters) !== ''
+      ) {
         try {
           predefinedFilters = JSON.parse(this.predefinedFilters);
         } catch (e) {
@@ -266,7 +266,9 @@ export class DesignComponent implements OnInit {
         }
         if (predefinedFilters == null || !Array.isArray(predefinedFilters)) {
           await this.spinner.hide();
-          this.toastr.error('Please add a valid JSON array in the Predefined filters field');
+          this.toastr.error(
+            'Please add a valid JSON array in the Predefined filters field',
+          );
           return;
         }
       }

@@ -231,8 +231,8 @@ export class DSpace7Service {
           );
           if (mappedValue !== '' && mappedValue != null) {
             finalValues[schemaName] = this.formatService.setValue(
-                finalValues[schemaName],
-                mappedValue,
+              finalValues[schemaName],
+              mappedValue,
             );
           }
         } else {
