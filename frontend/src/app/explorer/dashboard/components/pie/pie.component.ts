@@ -65,7 +65,13 @@ export class PieComponent extends ParentChart implements OnInit {
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
     const commonProperties = this.cms.commonProperties();
-    commonProperties.legend.labelFormat = '{name} ({y})';
+    commonProperties.legend.labelFormatter = function () {
+      const label = `${this.name} (${(this as any).y})`;
+      return label.replace(
+        new RegExp(`(?![^\\n]{1,${30}}$)([^\\n]{1,${30}})\\s`, 'g'), '$1<br>'
+      );
+    };
+    commonProperties.legend.useHTML = true;
     return {
       chart: {
         type: 'pie',

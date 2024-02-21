@@ -37,6 +37,10 @@ export class JsonFilesService {
 
     return indexes.filter((d) => d.id == index_id)[0].name;
   }
+  async getPredefinedFiltersFromDashboard(dashboard_name) {
+    const dashboard = await this.GetDashboard(dashboard_name);
+    return dashboard?.explorer?.predefinedFilters;
+  }
   async createifnotexist() {
     const directory = join(__dirname, '../../../data/harvestors');
     if (!(await existsSync(directory)))
