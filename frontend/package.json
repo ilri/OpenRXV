@@ -63,7 +63,7 @@
     "snazzy-info-window": "^1.1.1",
     "tinycolor2": "^1.6.0",
     "tslib": "^2.6.2",
-    "zone.js": "~0.11.8"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.10",
