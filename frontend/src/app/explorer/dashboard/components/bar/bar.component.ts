@@ -77,6 +77,9 @@ export class BarComponent extends ParentChart implements OnInit {
         };
       })
       .flat(1);
+
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'bar');
+
     this.chartOptions = {
       chart: { type: 'column' },
       xAxis: { categories, crosshair: true },
@@ -91,13 +94,18 @@ export class BarComponent extends ParentChart implements OnInit {
           pointPadding: 0.2,
           borderWidth: 0,
           borderRadius: 2.5,
+          dataLabels: dataLabelsSettings,
         },
       },
       tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat:
-          '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
+        formatter: function () {
+          let total = 0;
+          const points = this.points.map(point => {
+            total += Number(point.y);
+            return `<tr><td style="color: ${point.color}; padding: 0">${point.series.name}: </td><td style="padding:0"><b>${point.y}</b></td></tr>`;
+          });
+          return `<span>${this.x}: <b>${total}</b></span><table>${points.join('')}</table>`;
+        },
         shared: true,
         useHTML: true,
       },

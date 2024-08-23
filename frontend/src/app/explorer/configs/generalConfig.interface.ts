@@ -57,6 +57,11 @@ export interface ComponentFilterConfigs {
   source: string;
   placeholder: string;
   expandPosition?: 'top' | 'bottom';
+  data_labels?: boolean,
+  data_labels_count?: boolean,
+  data_labels_percentage?: boolean,
+  hide_total?: boolean,
+  hide_percentage?: boolean,
 }
 
 export interface SortOption {

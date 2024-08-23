@@ -9,21 +9,22 @@
     [itemSize]="10"
     class="viewport w-100"
   >
-    <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)">
+    <div *cdkVirtualFor="let item of listData" class="item listHover" (click)="itemClicked(item.key)"
+    [class.no-percentage]="componentConfigs?.hide_percentage">
       <mat-list-item class="pt-1 pb-1 pr-1 pl-0" >
         <span matListItemLine class="item-list-row">
         <div class="w-100">
-          <span class="item-list-title" [matTooltip]="item.key">
-            {{ item.key }}
+          <span class="item-list-title" [matTooltip]="item.key === '' ? 'NA' : item.key">
+            {{ item.key === '' ? 'NA' : item.key }}
           </span>
-          <small *ngIf="isSmall">
+          <small *ngIf="isSmall && !componentConfigs?.hide_percentage">
             ( {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}% )
           </small>
           <span class="spacer"></span>
-          <small class="doc-count" style="float: right;color: #6a6a6a;">
+          <small *ngIf="!componentConfigs?.hide_total" class="doc-count">
             {{ item.doc_count | number }}
           </small>
-          <div class="progress">
+          <div *ngIf="!componentConfigs?.hide_percentage" class="progress">
             <div
               class="progress-bar bg-primary progress-bar-striped"
               role="progressbar"
@@ -31,7 +32,7 @@
             ></div>
           </div>
         </div>
-        <ng-container *ngIf="!isSmall">
+        <ng-container *ngIf="!isSmall && !componentConfigs?.hide_percentage">
           <span class="lists-percentage">
            {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}<span>%</span>
           </span>

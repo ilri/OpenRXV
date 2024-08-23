@@ -68,6 +68,8 @@ export class MapComponent extends ParentChart implements OnInit {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'map');
+
     return {
       chart: {
         map: mapWorld,
@@ -119,6 +121,7 @@ export class MapComponent extends ParentChart implements OnInit {
               '{point.name}: <b>{point.value} ' + (this?.items_label ? this.items_label : 'Information Products') + '</b><br/>',
             headerFormat: undefined,
           },
+          dataLabels: dataLabelsSettings,
           animation: {
             duration: 0,
           },

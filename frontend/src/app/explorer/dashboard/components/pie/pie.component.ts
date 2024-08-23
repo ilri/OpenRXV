@@ -73,6 +73,9 @@ export class PieComponent extends ParentChart implements OnInit {
       );
     };
     commonProperties.legend.useHTML = true;
+
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'pie');
+
     return {
       chart: {
         type: 'pie',
@@ -91,9 +94,8 @@ export class PieComponent extends ParentChart implements OnInit {
             pointFormat: '<b>{point.y}</b>',
             headerFormat: '{point.key}:',
           },
-          dataLabels: {
-            enabled: false,
-          },
+          dataLabels: dataLabelsSettings,
+          size: dataLabelsSettings.enabled ? '75%' : '100%',
         },
         series: {
           point: {
