@@ -179,7 +179,9 @@
               mat-raised-button
               (click)="addRemoveOrOperator()"
               color="primary"
-              class="w-100"
+              class="w-100 andOrOperatorButton"
+              [mdePopoverTriggerFor]="appPopover"
+              mdePopoverTriggerOn="hover"
             >
               Operator
               <ng-container *ngIf="orOperator; else and">
@@ -188,16 +190,13 @@
               <ng-template #and>
                 <strong>AND</strong>
               </ng-template>
-              <mat-icon
-                aria-label="Button that displays a tooltip when focused or hovered over"
-                [mdePopoverTriggerFor]="appPopover"
-                mdePopoverTriggerOn="hover"
-              >
+              <mat-icon>
                 error
               </mat-icon>
               <mde-popover
                 #appPopover="mdePopover"
                 [mdePopoverOverlapTrigger]="false"
+                mdePopoverTriggerOn="hover"
               >
                 <app-icons-with-text
                   [text]="orAndToolTip"

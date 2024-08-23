@@ -37,12 +37,14 @@ export class BarComponent extends ParentChart implements OnInit {
     super(cms, selectService, store, activatedRoute);
   }
   colors: string[];
+  items_label = 'Information Products';
   async ngOnInit() {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
+    this.items_label = appearance.items_label;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
@@ -82,7 +84,7 @@ export class BarComponent extends ParentChart implements OnInit {
         enabled: true,
         useGPUTranslations: true,
       },
-      yAxis: { min: 0, title: { text: 'Information Products' } },
+      yAxis: { min: 0, title: { text: this?.items_label ? this.items_label : 'Information Products' } },
       colors: this.colors,
       plotOptions: {
         column: {

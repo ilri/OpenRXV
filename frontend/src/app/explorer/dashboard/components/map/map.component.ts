@@ -18,6 +18,7 @@ import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.i
 import { ActivatedRoute } from '@angular/router';
 import CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
+import { SettingsService } from 'src/app/admin/services/settings.service';
 @ComponentLookup('MapComponent')
 @Component({
   selector: 'app-map',
@@ -34,11 +35,19 @@ export class MapComponent extends ParentChart implements OnInit {
     public readonly store: Store<fromStore.AppState>,
     private readonly bodyBuilderService: BodyBuilderService,
     activatedRoute: ActivatedRoute,
+    private settingsService: SettingsService,
   ) {
     super(cms, selectService, store, activatedRoute);
   }
   filterd = false;
-  ngOnInit(): void {
+  items_label = 'Information Products';
+  async ngOnInit() {
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const appearance =
+      await this.settingsService.readAppearanceSettings(dashboard_name);
+    this.items_label = appearance.items_label;
+
     this.init('map');
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
@@ -107,7 +116,7 @@ export class MapComponent extends ParentChart implements OnInit {
           allowPointSelect: true,
           tooltip: {
             pointFormat:
-              '{point.name}: <b>{point.value} Information Products</b><br/>',
+              '{point.name}: <b>{point.value} ' + (this?.items_label ? this.items_label : 'Information Products') + '</b><br/>',
             headerFormat: undefined,
           },
           animation: {

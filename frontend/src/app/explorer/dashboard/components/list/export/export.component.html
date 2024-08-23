@@ -11,7 +11,7 @@
 </h2>
 <mat-dialog-content>
   <ng-container *ngIf="!installing; else installingNow">
-    Please, note that very lengthy lists of information products will be exported in
+    Please, note that very lengthy lists of {{ items_label }} will be exported in
     more than one part to allow a quicker download. Would you like to continue?
   </ng-container>
   <ng-template #installingNow>

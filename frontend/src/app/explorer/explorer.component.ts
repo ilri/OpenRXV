@@ -40,7 +40,7 @@ export class ExplorerComponent implements OnInit {
   countersConfig = [];
   dashboardConfig = [];
   tourConfig = [];
-  readonly orAndToolTip: string;
+  orAndToolTip: string;
   private prevenetMouseOnNav: boolean;
   options: any = {
     bottom: 0,
@@ -134,6 +134,10 @@ export class ExplorerComponent implements OnInit {
     this.countersConfig = counters;
     this.dashboardConfig = dashboard.flat(1);
     this.tourConfig = [welcome];
+
+    const itemsLabel = appearance.items_label;
+    this.orAndToolTip = this.orAndToolTip.replaceAll('##ITEMS_LABEL_PLACEHOLDER##', itemsLabel ? itemsLabel : 'Information Products');
+
     this.loading$ = this.store.select(fromStore.getLoadingStatus);
   }
   hexToHSL(H, term) {
