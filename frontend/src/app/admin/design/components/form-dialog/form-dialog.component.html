@@ -1,83 +1,159 @@
 <h1 mat-dialog-title>Settings</h1>
 <div mat-dialog-content>
-    <form #f='ngForm' class="formd" [formGroup]="form">
-        <ng-container *ngFor="let control of formControls">
-            <ng-container [ngSwitch]="control.type">
-                <p *ngSwitchCase="'text'">
-                    <mat-form-field>
-                        <mat-label>{{control.label}}</mat-label>
-                        <input [type]="control.type" matInput [required]="control.required"
-                            [placeholder]="control.label" [formControlName]="control.name">
-                    </mat-form-field>
-                </p>
-                <p *ngSwitchCase="'sort'">
-                    <ng-select [addTag]="false" [items]="control.items"
-                        [required]="control.required" bindLabel="name" [clearable]="false"
-                        [searchable]="true" [formControlName]="control.name" [placeholder]="control.label">
-                    </ng-select>
-                </p>
-                <p *ngSwitchCase="'textarea'">
-                    <mat-form-field>
-                        <mat-label>{{control.label}}</mat-label>
-                        <textarea [formControlName]="control.name" [placeholder]="control.label" matInput
-                            [required]="control.required" cols="30" rows="10">
-                        </textarea>
-                    </mat-form-field>
-                </p>
-                <p *ngSwitchCase="'select'">
-                    <ng-select [addTag]="false" (change)="control.onChange($event)" [items]="control.items"
-                        [required]="control.required" bindValue="value" bindLabel="name" [clearable]="false"
-                        [searchable]="true" [formControlName]="control.name" [placeholder]="control.label">
-                        <ng-template *ngIf="control.icons" ng-label-tmp let-item="item">
-                            <mat-icon style="float: left;" color="primary">{{item.name}}</mat-icon> <b
-                                style="float: left;">{{item.name}} </b>
-                        </ng-template>
-                        <ng-template *ngIf="control.icons" ng-option-tmp let-item="item" let-index="index"
-                            let-search="searchTerm">
-                            <mat-icon style="float: left;" color="primary">{{item.name}}</mat-icon> <b
-                                style="float: left;">{{item.name}}</b>
-                        </ng-template>
-                    </ng-select>
-                </p>
-                <p *ngSwitchCase="'metadata'">
+  <form #f="ngForm" class="formd" [formGroup]="form">
+    <ng-container *ngFor="let control of formControls">
+      <ng-container [ngSwitch]="control.type">
+        <p *ngSwitchCase="'text'">
+          <mat-form-field>
+            <mat-label>{{ control.label }}</mat-label>
+            <input
+              [type]="control.type"
+              matInput
+              [required]="control.required"
+              [placeholder]="control.label"
+              [formControlName]="control.name"
+            />
+          </mat-form-field>
+        </p>
+        <p *ngSwitchCase="'sort'">
+          <ng-select
+            [addTag]="false"
+            [items]="control.items"
+            [required]="control.required"
+            bindLabel="name"
+            [clearable]="false"
+            [searchable]="true"
+            [formControlName]="control.name"
+            [placeholder]="control.label"
+          >
+          </ng-select>
+        </p>
+        <p *ngSwitchCase="'textarea'">
+          <mat-form-field>
+            <mat-label>{{ control.label }}</mat-label>
+            <textarea
+              [formControlName]="control.name"
+              [placeholder]="control.label"
+              matInput
+              [required]="control.required"
+              cols="30"
+              rows="10"
+            >
+            </textarea>
+          </mat-form-field>
+        </p>
+        <p *ngSwitchCase="'select'">
+          <ng-select
+            [addTag]="false"
+            (change)="control.onChange($event)"
+            [items]="control.items"
+            [required]="control.required"
+            bindValue="value"
+            bindLabel="name"
+            [clearable]="false"
+            [searchable]="true"
+            [formControlName]="control.name"
+            [placeholder]="control.label"
+          >
+            <ng-template *ngIf="control.icons" ng-label-tmp let-item="item">
+              <mat-icon style="float: left" color="primary">{{
+                item.name
+              }}</mat-icon>
+              <b style="float: left">{{ item.name }} </b>
+            </ng-template>
+            <ng-template
+              *ngIf="control.icons"
+              ng-option-tmp
+              let-item="item"
+              let-index="index"
+              let-search="searchTerm"
+            >
+              <mat-icon style="float: left" color="primary">{{
+                item.name
+              }}</mat-icon>
+              <b style="float: left">{{ item.name }}</b>
+            </ng-template>
+          </ng-select>
+        </p>
+        <p *ngSwitchCase="'metadata'">
+          <ng-select
+            [addTag]="true"
+            [items]="metadata"
+            [required]="control.required"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            [formControlName]="control.name"
+            [placeholder]="control.label"
+          >
+          </ng-select>
+        </p>
+        <p *ngSwitchCase="'number'">
+          <mat-form-field>
+            <mat-label>{{ control.label }}</mat-label>
+            <input
+              [type]="control.type"
+              matInput
+              [required]="control.required"
+              [placeholder]="control.label"
+              [formControlName]="control.name"
+            />
+          </mat-form-field>
+        </p>
+        <p *ngSwitchCase="'check'">
+          <mat-checkbox
+            matInput
+            [formControlName]="control.name"
+            matTooltip="when checking this box, it allows you to update the filter with your selected data"
+            >{{ control.label }}</mat-checkbox
+          >
+        </p>
 
-                    <ng-select [addTag]="true" [items]="metadata" [required]="control.required" bindValue="disply_name"
-                        bindLabel="disply_name" [clearable]="false" [searchable]="true" [formControlName]="control.name"
-                        [placeholder]="control.label">
-                    </ng-select>
-                </p>
-                <p *ngSwitchCase="'number'">
-                    <mat-form-field>
-                        <mat-label>{{control.label}}</mat-label>
-                        <input [type]="control.type" matInput [required]="control.required"
-                            [placeholder]="control.label" [formControlName]="control.name">
-                    </mat-form-field>
-                </p>
-                <p *ngSwitchCase="'check'">
-                    <mat-checkbox matInput [formControlName]="control.name" matTooltip="when checking this box, it allows you to update the filter with your selected data">{{control.label}}</mat-checkbox>
-                </p>
+        <div class="row" *ngSwitchCase="'content'">
+          <div class="col-12">
+            <app-main-list
+              [dashbard_name]="dashbard_name"
+              [baseForm]="form"
+            ></app-main-list>
+          </div>
+        </div>
 
-                <div class="row" *ngSwitchCase="'content'">
-                    <div class="col-12">
-                        <app-main-list [dashbard_name]="dashbard_name" [baseForm]="form"></app-main-list>
-                    </div>
-                </div>
-
-              <p *ngSwitchCase="'checkbox'">
-                  <mat-checkbox [formControlName]="control.name"
-                                [required]="control.required">{{control.label}}</mat-checkbox>
-                <span *ngIf="control.name === 'is_advanced'" class="alert alert-info w-100">
-                  Advanced search allows inserting special query parameters to be used in the search input.
-                </span>
-              </p>
-
-            </ng-container>
-        </ng-container>
-    </form>
+        <p *ngSwitchCase="'checkbox'">
+          <mat-checkbox
+            [formControlName]="control.name"
+            [required]="control.required"
+            >{{ control.label }}</mat-checkbox
+          >
+          <span
+            *ngIf="control.name === 'is_advanced'"
+            class="alert alert-info w-100"
+          >
+            Advanced search allows inserting special query parameters to be used
+            in the search input.
+          </span>
+        </p>
+      </ng-container>
+    </ng-container>
+  </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button type="button" mat-raised-button color="default" (click)="onNoClick(f.value)">Close<mat-icon>close</mat-icon>
-    </button>
-    <button type="button" color="primary" (keyup.enter)="submit(f.value)" (click)="submit(f.value)" mat-raised-button [disabled]='!f.valid'>Save
-        <mat-icon>done</mat-icon></button>
+  <button
+    type="button"
+    mat-raised-button
+    color="default"
+    (click)="onNoClick(f.value)"
+  >
+    Close<mat-icon>close</mat-icon>
+  </button>
+  <button
+    type="button"
+    color="primary"
+    (keyup.enter)="submit(f.value)"
+    (click)="submit(f.value)"
+    mat-raised-button
+    [disabled]="!f.valid"
+  >
+    Save <mat-icon>done</mat-icon>
+  </button>
 </div>

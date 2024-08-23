@@ -74,7 +74,10 @@ export class PieComponent extends ParentChart implements OnInit {
     };
     commonProperties.legend.useHTML = true;
 
-    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'pie');
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(
+      this.componentConfigs,
+      'pie',
+    );
 
     return {
       chart: {

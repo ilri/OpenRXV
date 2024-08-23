@@ -1,58 +1,68 @@
 <div class="table-warp">
-    <table class="w-100" mat-table [dataSource]="dataSource">
-        <!-- id Column -->
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef> ID. </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.id}}
-              <mat-icon class="error-tooltip stuck-job-tooltip" *ngIf="element?.isStuck"
-                        matTooltip="Stuck job" matTooltipHideDelay="200" matTooltipPosition="above">error
-              </mat-icon>
-            </td>
-        </ng-container>
+  <table class="w-100" mat-table [dataSource]="dataSource">
+    <!-- id Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID.</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.id }}
+        <mat-icon
+          class="error-tooltip stuck-job-tooltip"
+          *ngIf="element?.isStuck"
+          matTooltip="Stuck job"
+          matTooltipHideDelay="200"
+          matTooltipPosition="above"
+          >error
+        </mat-icon>
+      </td>
+    </ng-container>
 
-        <ng-container *ngIf="!plugin" matColumnDef="repository_name">
-            <th mat-header-cell *matHeaderCellDef> Repository </th>
-            <td mat-cell *matCellDef="let element"> {{element.repository_name }} </td>
-        </ng-container>
+    <ng-container *ngIf="!plugin" matColumnDef="repository_name">
+      <th mat-header-cell *matHeaderCellDef>Repository</th>
+      <td mat-cell *matCellDef="let element">{{ element.repository_name }}</td>
+    </ng-container>
 
-        <ng-container *ngIf="plugin" matColumnDef="plugin_name">
-            <th mat-header-cell *matHeaderCellDef> Plugin Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.plugin_name }} </td>
-        </ng-container>
+    <ng-container *ngIf="plugin" matColumnDef="plugin_name">
+      <th mat-header-cell *matHeaderCellDef>Plugin Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.plugin_name }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="page">
-            <th mat-header-cell *matHeaderCellDef> Page </th>
-            <td mat-cell *matCellDef="let element"> {{element.page }} </td>
-        </ng-container>
+    <ng-container matColumnDef="page">
+      <th mat-header-cell *matHeaderCellDef>Page</th>
+      <td mat-cell *matCellDef="let element">{{ element.page }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="timestamp">
-            <th mat-header-cell *matHeaderCellDef> Created </th>
-            <td mat-cell *matCellDef="let element"> {{element.timestamp}} </td>
-        </ng-container>
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef>Created</th>
+      <td mat-cell *matCellDef="let element">{{ element.timestamp }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="processedOn">
-            <th mat-header-cell *matHeaderCellDef> Processed </th>
-            <td mat-cell *matCellDef="let element"> {{element.processedOn}} </td>
-        </ng-container>
+    <ng-container matColumnDef="processedOn">
+      <th mat-header-cell *matHeaderCellDef>Processed</th>
+      <td mat-cell *matCellDef="let element">{{ element.processedOn }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="finishedOn">
-            <th mat-header-cell *matHeaderCellDef> Finished </th>
-            <td mat-cell *matCellDef="let element"> {{element.finishedOn}} </td>
-        </ng-container>
+    <ng-container matColumnDef="finishedOn">
+      <th mat-header-cell *matHeaderCellDef>Finished</th>
+      <td mat-cell *matCellDef="let element">{{ element.finishedOn }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="attemptsMade">
-            <th mat-header-cell *matHeaderCellDef> Attempts Made </th>
-            <td mat-cell *matCellDef="let element">
-              {{element.attemptsMade}}
-              <mat-icon class="error-tooltip" *ngIf="element?.failedReason && element.failedReason !== ''"
-                        [matTooltip]="element.failedReason" matTooltipHideDelay="200" matTooltipPosition="left">error
-              </mat-icon>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+    <ng-container matColumnDef="attemptsMade">
+      <th mat-header-cell *matHeaderCellDef>Attempts Made</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.attemptsMade }}
+        <mat-icon
+          class="error-tooltip"
+          *ngIf="element?.failedReason && element.failedReason !== ''"
+          [matTooltip]="element.failedReason"
+          matTooltipHideDelay="200"
+          matTooltipPosition="left"
+          >error
+        </mat-icon>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
 </div>
 <mat-paginator
   [length]="totalRecords"
@@ -60,4 +70,5 @@
   [pageIndex]="pageIndex"
   [pageSizeOptions]="[5, 10, 20]"
   (page)="paginationChanged($event)"
-  showFirstLastButtons></mat-paginator>
+  showFirstLastButtons
+></mat-paginator>

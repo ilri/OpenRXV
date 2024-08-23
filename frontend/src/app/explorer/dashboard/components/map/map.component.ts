@@ -68,7 +68,10 @@ export class MapComponent extends ParentChart implements OnInit {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>): Highcharts.Options {
-    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'map');
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(
+      this.componentConfigs,
+      'map',
+    );
 
     return {
       chart: {
@@ -118,7 +121,9 @@ export class MapComponent extends ParentChart implements OnInit {
           allowPointSelect: true,
           tooltip: {
             pointFormat:
-              '{point.name}: <b>{point.value} ' + (this?.items_label ? this.items_label : 'Information Products') + '</b><br/>',
+              '{point.name}: <b>{point.value} ' +
+              (this?.items_label ? this.items_label : 'Information Products') +
+              '</b><br/>',
             headerFormat: undefined,
           },
           dataLabels: dataLabelsSettings,

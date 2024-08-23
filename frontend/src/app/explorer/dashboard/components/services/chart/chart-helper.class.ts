@@ -62,7 +62,10 @@ export class ChartHelper {
     ];
   }
 
-  public getDataLabelAttributes(componentConfigs: ComponentFilterConfigs, chartType: string): Highcharts.DataLabelsOptions {
+  public getDataLabelAttributes(
+    componentConfigs: ComponentFilterConfigs,
+    chartType: string,
+  ): Highcharts.DataLabelsOptions {
     if (chartType === 'pie') {
       const dataLabelsSettings = {
         enabled: false,
@@ -79,8 +82,13 @@ export class ChartHelper {
 
       const dataLabelsEnabled = componentConfigs?.data_labels;
       const dataLabelsCountEnabled = componentConfigs?.data_labels_count;
-      const dataLabelsPercentageEnabled = componentConfigs?.data_labels_percentage;
-      if (dataLabelsEnabled || dataLabelsCountEnabled || dataLabelsPercentageEnabled) {
+      const dataLabelsPercentageEnabled =
+        componentConfigs?.data_labels_percentage;
+      if (
+        dataLabelsEnabled ||
+        dataLabelsCountEnabled ||
+        dataLabelsPercentageEnabled
+      ) {
         dataLabelsSettings.enabled = true;
         dataLabelsSettings.formatter = function () {
           const label = [];
@@ -90,7 +98,12 @@ export class ChartHelper {
 
           let numbers = '';
           if (dataLabelsCountEnabled) {
-            numbers += '<span style="color: ' + this.color + '">' + (this as any).y + '</span>';
+            numbers +=
+              '<span style="color: ' +
+              this.color +
+              '">' +
+              (this as any).y +
+              '</span>';
           }
           if (dataLabelsPercentageEnabled) {
             numbers += '<span style="color: ' + this.color + '">';
@@ -110,11 +123,9 @@ export class ChartHelper {
       const dataLabelsSettings = {
         enabled: false,
         formatter: function () {
-          if (Number(this.point.value) > 0)
-            return this.point.name;
-          else
-            return '';
-        }
+          if (Number(this.point.value) > 0) return this.point.name;
+          else return '';
+        },
       };
 
       const dataLabelsEnabled = componentConfigs?.data_labels;
@@ -140,7 +151,7 @@ export class ChartHelper {
         enabled: componentConfigs?.data_labels_count,
         formatter: function () {
           return (this as any).y;
-        }
+        },
       };
     }
 

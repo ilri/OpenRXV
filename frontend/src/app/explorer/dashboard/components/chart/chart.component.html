@@ -1,12 +1,19 @@
-<mat-expansion-panel [expanded]="expandedStatus" (afterCollapse)="notifyExpanded(true)"
-  (afterExpand)="notifyExpanded(false)">
+<mat-expansion-panel
+  [expanded]="expandedStatus"
+  (afterCollapse)="notifyExpanded(true)"
+  (afterExpand)="notifyExpanded(false)"
+>
   <mat-expansion-panel-header class="border-bottom-muted">
     <mat-panel-title class="icon-with-text" *ngIf="userSeesMe">
       <span class="mr-1">
         {{ title }}
       </span>
-      <mat-icon aria-label="Button that displays
-        a tooltip when focused or hovered over" [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="hover">
+      <mat-icon
+        aria-label="Button that displays
+        a tooltip when focused or hovered over"
+        [mdePopoverTriggerFor]="appPopover"
+        mdePopoverTriggerOn="hover"
+      >
         error
       </mat-icon>
       <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
@@ -17,18 +24,39 @@
 
   <div class="chart-wrapper">
     <ng-container *ngIf="isMap">
-      <highcharts-chart *ngIf="chartOptions?.series" [Highcharts]="Highcharts" [options]="chartOptions"
-        constructorType="mapChart" (chartInstance)="logChartInstance($event)"></highcharts-chart>
+      <highcharts-chart
+        *ngIf="chartOptions?.series"
+        [Highcharts]="Highcharts"
+        [options]="chartOptions"
+        constructorType="mapChart"
+        (chartInstance)="logChartInstance($event)"
+      ></highcharts-chart>
     </ng-container>
     <ng-container *ngIf="!isMap">
-      <highcharts-chart *ngIf="chartOptions?.series" [Highcharts]="Highcharts" [options]="chartOptions"
-        constructorType="chart" (chartInstance)="logChartInstance($event)"></highcharts-chart>
+      <highcharts-chart
+        *ngIf="chartOptions?.series"
+        [Highcharts]="Highcharts"
+        [options]="chartOptions"
+        constructorType="chart"
+        (chartInstance)="logChartInstance($event)"
+      ></highcharts-chart>
     </ng-container>
-    <div class="prevent-scroll" *ngIf="isMap" (click)="hideClickToEnable()" #clickToEnable>
+    <div
+      class="prevent-scroll"
+      *ngIf="isMap"
+      (click)="hideClickToEnable()"
+      #clickToEnable
+    >
       <span>Click to enable</span>
     </div>
     <div class="panel-header-icons">
-      <mat-icon class="mr-2" matTooltip="Reset Filter" matTooltipPosition="after" (click)="notifyFilter()" *ngIf="filterd" >
+      <mat-icon
+        class="mr-2"
+        matTooltip="Reset Filter"
+        matTooltipPosition="after"
+        (click)="notifyFilter()"
+        *ngIf="filterd"
+      >
         autorenew
       </mat-icon>
     </div>

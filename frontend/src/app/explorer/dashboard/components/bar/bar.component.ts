@@ -78,7 +78,10 @@ export class BarComponent extends ParentChart implements OnInit {
       })
       .flat(1);
 
-    const dataLabelsSettings = this.cms.getDataLabelAttributes(this.componentConfigs, 'bar');
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(
+      this.componentConfigs,
+      'bar',
+    );
 
     this.chartOptions = {
       chart: { type: 'column' },
@@ -87,7 +90,12 @@ export class BarComponent extends ParentChart implements OnInit {
         enabled: true,
         useGPUTranslations: true,
       },
-      yAxis: { min: 0, title: { text: this?.items_label ? this.items_label : 'Information Products' } },
+      yAxis: {
+        min: 0,
+        title: {
+          text: this?.items_label ? this.items_label : 'Information Products',
+        },
+      },
       colors: this.colors,
       plotOptions: {
         column: {
@@ -100,11 +108,13 @@ export class BarComponent extends ParentChart implements OnInit {
       tooltip: {
         formatter: function () {
           let total = 0;
-          const points = this.points.map(point => {
+          const points = this.points.map((point) => {
             total += Number(point.y);
             return `<tr><td style="color: ${point.color}; padding: 0">${point.series.name}: </td><td style="padding:0"><b>${point.y}</b></td></tr>`;
           });
-          return `<span>${this.x}: <b>${total}</b></span><table>${points.join('')}</table>`;
+          return `<span>${this.x}: <b>${total}</b></span><table>${points.join(
+            '',
+          )}</table>`;
         },
         shared: true,
         useHTML: true,

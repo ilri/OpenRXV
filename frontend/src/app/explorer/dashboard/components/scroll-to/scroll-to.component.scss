@@ -1,5 +1,7 @@
 button {
-  transition: box-shadow 0.35s ease-in, color 0.45s ease-in,
+  transition:
+    box-shadow 0.35s ease-in,
+    color 0.45s ease-in,
     background-color 0.35s ease-in;
   cursor: pointer;
   outline: none;
@@ -27,7 +29,9 @@ button.active {
 
 ::ng-deep .in-tool-bar {
   button {
-    transition: box-shadow 0.35s ease-in, color 0.45s ease-in,
+    transition:
+      box-shadow 0.35s ease-in,
+      color 0.45s ease-in,
       background-color 0.35s ease-in;
     cursor: pointer;
     outline: none;

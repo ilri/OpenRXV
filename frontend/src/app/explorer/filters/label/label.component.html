@@ -1,13 +1,30 @@
-<div class="row m-1" [ngClass]="{ 'justify-content-center': componentConfigs.border }">
-  <p [ngClass]="{ 'border-bottom-light': componentConfigs.border ,'icon-with-text': componentConfigs.description}">
-    <app-icons-with-text [onlyText]="true" [text]="componentConfigs.text"></app-icons-with-text>
+<div
+  class="row m-1"
+  [ngClass]="{ 'justify-content-center': componentConfigs.border }"
+>
+  <p
+    [ngClass]="{
+      'border-bottom-light': componentConfigs.border,
+      'icon-with-text': componentConfigs.description
+    }"
+  >
+    <app-icons-with-text
+      [onlyText]="true"
+      [text]="componentConfigs.text"
+    ></app-icons-with-text>
     <ng-container *ngIf="componentConfigs.description">
-      <mat-icon aria-label="Button that displays 
-      a tooltip when focused or hovered over" [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="hover">
+      <mat-icon
+        aria-label="Button that displays 
+      a tooltip when focused or hovered over"
+        [mdePopoverTriggerFor]="appPopover"
+        mdePopoverTriggerOn="hover"
+      >
         error
       </mat-icon>
       <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
-        <app-icons-with-text [text]="componentConfigs.description"></app-icons-with-text>
+        <app-icons-with-text
+          [text]="componentConfigs.description"
+        ></app-icons-with-text>
       </mde-popover>
     </ng-container>
   </p>

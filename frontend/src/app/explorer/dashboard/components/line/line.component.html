@@ -1,13 +1,13 @@
 <div *ngIf="enabled">
-<app-chart
-  [title]="componentConfigs.title"
-  [description]="componentConfigs.description"
-  [expandedStatus]="cms.getExpanded"
-  [userSeesMe]="cms.getViewState?.userSeesMe"
-  [loading]="cms.getLoading"
-  [loadingHits$]="cms.getLoadingHits$"
-  [chartOptions]="chartOptions"
-  (expanded)="cms.disPatchSetInView($event)"
->
-</app-chart>
+  <app-chart
+    [title]="componentConfigs.title"
+    [description]="componentConfigs.description"
+    [expandedStatus]="cms.getExpanded"
+    [userSeesMe]="cms.getViewState?.userSeesMe"
+    [loading]="cms.getLoading"
+    [loadingHits$]="cms.getLoadingHits$"
+    [chartOptions]="chartOptions"
+    (expanded)="cms.disPatchSetInView($event)"
+  >
+  </app-chart>
 </div>

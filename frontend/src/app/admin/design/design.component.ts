@@ -313,9 +313,11 @@ export class DesignComponent implements OnInit {
 
     if (obj.data_labels) temp['data_labels'] = obj.data_labels;
 
-    if (obj.data_labels_count) temp['data_labels_count'] = obj.data_labels_count;
+    if (obj.data_labels_count)
+      temp['data_labels_count'] = obj.data_labels_count;
 
-    if (obj.data_labels_percentage) temp['data_labels_percentage'] = obj.data_labels_percentage;
+    if (obj.data_labels_percentage)
+      temp['data_labels_percentage'] = obj.data_labels_percentage;
 
     if (obj.hide_total) temp['hide_total'] = obj.hide_total;
 

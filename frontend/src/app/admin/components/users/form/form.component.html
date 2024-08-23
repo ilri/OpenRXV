@@ -1,53 +1,72 @@
-<h1 mat-dialog-title>{{ data? 'Edit' :'New' }} User</h1>
+<h1 mat-dialog-title>{{ data ? 'Edit' : 'New' }} User</h1>
 <form [formGroup]="form" (ngSubmit)="submit()">
-    <div mat-dialog-content>
-        <p>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Name" required formControlName="name">
-            </mat-form-field>
-        </p>
-        <p>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Email" required formControlName="email">
+  <div mat-dialog-content>
+    <p>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Name"
+          required
+          formControlName="name"
+        />
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Email"
+          required
+          formControlName="email"
+        />
+      </mat-form-field>
+    </p>
 
-            </mat-form-field>
+    <p>
+      <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select required formControlName="role">
+          <mat-option value="Admin"> Admin </mat-option>
+          <mat-option value="Editor"> Editor </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
 
-        </p>
+    <p>
+      <mat-form-field>
+        <input
+          type="password"
+          matInput
+          placeholder="Password"
+          required
+          formControlName="password"
+        />
+      </mat-form-field>
+    </p>
 
-        <p>
-
-            <mat-form-field>
-                <mat-label>Role</mat-label>
-                <mat-select required formControlName="role">
-                    <mat-option value="Admin">
-                        Admin
-                    </mat-option>
-                    <mat-option value="Editor">
-                        Editor
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-        </p>
-
-        <p>
-            <mat-form-field>
-                <input type="password" matInput placeholder="Password" required formControlName="password">
-            </mat-form-field>
-        </p>
-
-        <div *ngIf="email.invalid" class="alert alert-danger">
-            <p *ngIf="email.errors.valueExist">
-                Email alrady exist.
-            </p>
-        </div>
-
-
+    <div *ngIf="email.invalid" class="alert alert-danger">
+      <p *ngIf="email.errors.valueExist">Email alrady exist.</p>
     </div>
-    <div mat-dialog-actions align="end">
-        <button type="button" mat-raised-button color="default" (click)="onNoClick($event)">Close <mat-icon>close
-            </mat-icon></button>
-        <button type="button" color="primary" (keyup.enter)="submit()" (click)="submit()" mat-raised-button>Submit
-            <mat-icon>done</mat-icon></button>
-    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button
+      type="button"
+      mat-raised-button
+      color="default"
+      (click)="onNoClick($event)"
+    >
+      Close <mat-icon>close </mat-icon>
+    </button>
+    <button
+      type="button"
+      color="primary"
+      (keyup.enter)="submit()"
+      (click)="submit()"
+      mat-raised-button
+    >
+      Submit <mat-icon>done</mat-icon>
+    </button>
+  </div>
 </form>

@@ -136,7 +136,10 @@ export class ExplorerComponent implements OnInit {
     this.tourConfig = [welcome];
 
     const itemsLabel = appearance.items_label;
-    this.orAndToolTip = this.orAndToolTip.replaceAll('##ITEMS_LABEL_PLACEHOLDER##', itemsLabel ? itemsLabel : 'Information Products');
+    this.orAndToolTip = this.orAndToolTip.replaceAll(
+      '##ITEMS_LABEL_PLACEHOLDER##',
+      itemsLabel ? itemsLabel : 'Information Products',
+    );
 
     this.loading$ = this.store.select(fromStore.getLoadingStatus);
   }

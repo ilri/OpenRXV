@@ -2,18 +2,45 @@
   <div class="col-md-12 pb-5">
     <mat-card appearance="raised">
       <mat-card-title>
-        Appearance - {{dashboard_name}}
-        <a style="float: right" [href]="exportLink" [download]="'OpenRXV-dashboard-appearance-' + dashboard_name + '.json'"
-           color="primary" mat-raised-button>
+        Appearance - {{ dashboard_name }}
+        <a
+          style="float: right"
+          [href]="exportLink"
+          [download]="
+            'OpenRXV-dashboard-appearance-' + dashboard_name + '.json'
+          "
+          color="primary"
+          mat-raised-button
+        >
           Export
-          <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="add"
+            >cloud_download</mat-icon
+          >
         </a>
-        <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
-        <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+        <input
+          #jsonImportUploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="importJSON($event)"
+          accept=".json"
+        />
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="jsonImportUploadInput.click()"
+          color="primary"
+          mat-raised-button
+        >
           Import
           <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
         </button>
-        <button class="mr-2 save" (click)="save()" color="primary" mat-raised-button>
+        <button
+          class="mr-2 save"
+          (click)="save()"
+          color="primary"
+          mat-raised-button
+        >
           Save
           <mat-icon>save</mat-icon>
         </button>
@@ -53,9 +80,7 @@
             <mat-form-field class="small-icon-prefix">
               <mat-label>Primary color</mat-label>
               <input
-                (colorPickerClose)="
-                      colorPickerClose($event, 'primary_color')
-                    "
+                (colorPickerClose)="colorPickerClose($event, 'primary_color')"
                 [(colorPicker)]="primary_color"
                 [value]="primary_color"
                 matInput
@@ -76,9 +101,7 @@
             <mat-form-field class="small-icon-prefix">
               <mat-label>Secondary color</mat-label>
               <input
-                (colorPickerClose)="
-                      colorPickerClose($event, 'secondary_color')
-                    "
+                (colorPickerClose)="colorPickerClose($event, 'secondary_color')"
                 [(colorPicker)]="secondary_color"
                 [value]="secondary_color"
                 matInput
@@ -95,9 +118,21 @@
             </mat-form-field>
           </div>
           <section class="w-100">
-            <p><mat-checkbox formControlName="show_tool_bar">Show toolbar</mat-checkbox></p>
-            <p><mat-checkbox formControlName="show_side_nav">Show side Nav</mat-checkbox></p>
-            <p><mat-checkbox formControlName="show_top_nav">Show top Nav</mat-checkbox></p>
+            <p>
+              <mat-checkbox formControlName="show_tool_bar"
+                >Show toolbar</mat-checkbox
+              >
+            </p>
+            <p>
+              <mat-checkbox formControlName="show_side_nav"
+                >Show side Nav</mat-checkbox
+              >
+            </p>
+            <p>
+              <mat-checkbox formControlName="show_top_nav"
+                >Show top Nav</mat-checkbox
+              >
+            </p>
           </section>
           <div class="w-100">
             <mat-form-field>
@@ -166,10 +201,7 @@
       <br />
       <h4>Chart colors:</h4>
       <div formArrayName="chartColors">
-        <div
-          *ngFor="let color of colors.controls; index as i"
-          class="colors"
-        >
+        <div *ngFor="let color of colors.controls; index as i" class="colors">
           <mat-form-field>
             <mat-label>{{ color.value }}</mat-label>
             <input matInput type="color" [formControlName]="i" />

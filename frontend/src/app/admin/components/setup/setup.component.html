@@ -3,21 +3,53 @@
     <mat-card appearance="raised">
       <mat-card-title>
         Repository Setup
-        <a style="float: right" [href]="exportLink" [download]="'OpenRXV-index-repositories-' + index_name + '.json'"
-           color="primary" mat-raised-button>
-        Export
-          <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+        <a
+          style="float: right"
+          [href]="exportLink"
+          [download]="'OpenRXV-index-repositories-' + index_name + '.json'"
+          color="primary"
+          mat-raised-button
+        >
+          Export
+          <mat-icon aria-hidden="false" aria-label="add"
+            >cloud_download</mat-icon
+          >
         </a>
-        <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
-        <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+        <input
+          #jsonImportUploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="importJSON($event)"
+          accept=".json"
+        />
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="jsonImportUploadInput.click()"
+          color="primary"
+          mat-raised-button
+        >
           Import
           <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
         </button>
-        <button class="mr-2" style="float: right" (click)="AddNewRepo()" color="primary" mat-raised-button>
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="AddNewRepo()"
+          color="primary"
+          mat-raised-button
+        >
           Add new repository
           <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
         </button>
-        <button class="mr-2" style="float: right" color="primary" (click)="submit()" mat-raised-button>
+        <button
+          class="mr-2"
+          style="float: right"
+          color="primary"
+          (click)="submit()"
+          mat-raised-button
+        >
           Save
         </button>
       </mat-card-title>
@@ -34,16 +66,21 @@
         [formGroup]="repoform"
       >
         <mat-card appearance="raised" class="col-12">
-          <mat-card-title (click)="ToggleDisplay(repoindex)"
-          >
-            <mat-icon class="show-hide-repository-icon"
-                      aria-hidden="false" aria-label="Expand"
-                      *ngIf="isShown.hasOwnProperty(repoindex) && isShown[repoindex]">
+          <mat-card-title (click)="ToggleDisplay(repoindex)">
+            <mat-icon
+              class="show-hide-repository-icon"
+              aria-hidden="false"
+              aria-label="Expand"
+              *ngIf="isShown.hasOwnProperty(repoindex) && isShown[repoindex]"
+            >
               expand_less
             </mat-icon>
-            <mat-icon class="show-hide-repository-icon"
-                      aria-hidden="false" aria-label="Collapse"
-                      *ngIf="!(isShown.hasOwnProperty(repoindex) && isShown[repoindex])">
+            <mat-icon
+              class="show-hide-repository-icon"
+              aria-hidden="false"
+              aria-label="Collapse"
+              *ngIf="!(isShown.hasOwnProperty(repoindex) && isShown[repoindex])"
+            >
               expand_more
             </mat-icon>
             Repository ({{ repoindex + 1 }})
@@ -53,10 +90,17 @@
               color="warn"
               mat-icon-button
             >
-              <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
+              <mat-icon aria-hidden="false" aria-label="delete"
+                >delete</mat-icon
+              >
             </button>
           </mat-card-title>
-          <div class="row" [@openClose]="isShown.hasOwnProperty(repoindex) && isShown[repoindex]">
+          <div
+            class="row"
+            [@openClose]="
+              isShown.hasOwnProperty(repoindex) && isShown[repoindex]
+            "
+          >
             <div class="col-12">
               <mat-form-field class="w-100">
                 <mat-label>Repository name</mat-label>
@@ -71,8 +115,14 @@
             <div class="col-12">
               <mat-form-field appearance="fill">
                 <mat-label>Repository type</mat-label>
-                <mat-select formControlName="type" (selectionChange)="PluginChange($event.value, repoindex)">
-                  <mat-option *ngFor="let plugin of plugins" [value]="plugin.name">
+                <mat-select
+                  formControlName="type"
+                  (selectionChange)="PluginChange($event.value, repoindex)"
+                >
+                  <mat-option
+                    *ngFor="let plugin of plugins"
+                    [value]="plugin.name"
+                  >
                     {{ plugin.name }}
                   </mat-option>
                 </mat-select>
@@ -81,14 +131,17 @@
             <div class="col-12" *ngIf="activePlugin[repoindex]?.start_page">
               <mat-form-field class="w-100">
                 <mat-label>
-                  Start from page number ({{activePlugin[repoindex]?.start_page?.placeholder}}, unless you know what you
-                  are doing)
+                  Start from page number ({{
+                    activePlugin[repoindex]?.start_page?.placeholder
+                  }}, unless you know what you are doing)
                 </mat-label>
                 <input
                   matInput
                   type="number"
                   formControlName="startPage"
-                  [placeholder]="activePlugin[repoindex]?.start_page?.placeholder"
+                  [placeholder]="
+                    activePlugin[repoindex]?.start_page?.placeholder
+                  "
                   [required]="activePlugin[repoindex]?.start_page?.required"
                   required
                 />
@@ -102,7 +155,9 @@
                 <input
                   matInput
                   formControlName="itemsEndPoint"
-                  [placeholder]="activePlugin[repoindex]?.api_endpoint?.placeholder"
+                  [placeholder]="
+                    activePlugin[repoindex]?.api_endpoint?.placeholder
+                  "
                   [required]="activePlugin[repoindex]?.api_endpoint?.required"
                 />
               </mat-form-field>
@@ -117,7 +172,10 @@
                 />
               </mat-form-field>
             </div>
-            <div class="col-12" *ngIf="activePlugin[repoindex]?.sitemap_endpoint">
+            <div
+              class="col-12"
+              *ngIf="activePlugin[repoindex]?.sitemap_endpoint"
+            >
               <mat-form-field class="w-100">
                 <mat-label>
                   {{ activePlugin[repoindex]?.name }} DSpace XML sitemap
@@ -125,8 +183,12 @@
                 <input
                   matInput
                   formControlName="siteMap"
-                  [placeholder]="activePlugin[repoindex]?.sitemap_endpoint?.placeholder"
-                  [required]="activePlugin[repoindex]?.sitemap_endpoint?.required"
+                  [placeholder]="
+                    activePlugin[repoindex]?.sitemap_endpoint?.placeholder
+                  "
+                  [required]="
+                    activePlugin[repoindex]?.sitemap_endpoint?.required
+                  "
                 />
               </mat-form-field>
             </div>
@@ -163,14 +225,14 @@
                     color="info"
                     mat-button
                     [disabled]="
-                        repoform.get('type').value == null ||
-                        repoform.get('itemsEndPoint').value == null ||
-                        repoform.get('itemsEndPoint').value == ''
-                      "
+                      repoform.get('type').value == null ||
+                      repoform.get('itemsEndPoint').value == null ||
+                      repoform.get('itemsEndPoint').value == ''
+                    "
                   >
                     Auto import metadata structure
                     <mat-icon aria-hidden="false" aria-label="delete"
-                    >cloud_download
+                      >cloud_download
                     </mat-icon>
                   </button>
                 </mat-card-title>
@@ -225,7 +287,7 @@
                           mat-icon-button
                         >
                           <mat-icon aria-hidden="false" aria-label="delete"
-                          >delete
+                            >delete
                           </mat-icon>
                         </button>
                       </div>
@@ -235,12 +297,14 @@
                 <div class="text-center">
                   <button
                     class="float-left"
-                    (click)="AddNewMetadata(repoform.controls.schema, schema_elements)"
+                    (click)="
+                      AddNewMetadata(repoform.controls.schema, schema_elements)
+                    "
                     mat-raised-button
                   >
                     New schema
                     <mat-icon aria-hidden="false" aria-label="add"
-                    >add
+                      >add
                     </mat-icon>
                   </button>
                 </div>
@@ -293,13 +357,15 @@
                               >
                                 <mat-option [value]="null">None</mat-option>
                                 <mat-option value="language"
-                                >Language</mat-option
+                                  >Language</mat-option
                                 >
                                 <mat-option value="country">Country</mat-option>
                                 <mat-option value="date">Date</mat-option>
-                                <mat-option value="datetime">Datetime</mat-option>
+                                <mat-option value="datetime"
+                                  >Datetime</mat-option
+                                >
                                 <mat-option value="lowercase"
-                                >Lowercase</mat-option
+                                  >Lowercase</mat-option
                                 >
                               </mat-select>
                             </mat-form-field>
@@ -317,7 +383,7 @@
                                   "
                                 >
                                   Extract years as years_{{
-                                  form.controls.disply_name.value
+                                    form.controls.disply_name.value
                                   }}
                                 </mat-radio-button>
                               </mat-radio-group>
@@ -333,7 +399,7 @@
                           mat-icon-button
                         >
                           <mat-icon aria-hidden="false" aria-label="delete"
-                          >delete
+                            >delete
                           </mat-icon>
                         </button>
                       </div>
@@ -343,12 +409,14 @@
                 <div class="text-center">
                   <button
                     class="float-left"
-                    (click)="AddNewMetadata(repoform.controls.metadata, field_elements)"
+                    (click)="
+                      AddNewMetadata(repoform.controls.metadata, field_elements)
+                    "
                     mat-raised-button
                   >
                     New metadata field
                     <mat-icon aria-hidden="false" aria-label="add"
-                    >add
+                      >add
                     </mat-icon>
                   </button>
                 </div>
