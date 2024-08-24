@@ -1,29 +1,40 @@
 <mat-card appearance="raised">
-    <mat-card-title>Login</mat-card-title>
-<mat-card-content>
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <p>
-    <mat-form-field>
-      <mat-label>Email</mat-label>
-      <input type="text" matInput placeholder="Email" required formControlName="email">
-    </mat-form-field>
-  </p>
+  <mat-card-title>Login</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <p>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="Email"
+            required
+            formControlName="email"
+          />
+        </mat-form-field>
+      </p>
 
-  <p>
-    <mat-form-field>
-      <mat-label>Password</mat-label>
-      <input type="password" matInput placeholder="Password" required formControlName="password">
-    </mat-form-field>
-  </p>
+      <p>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input
+            type="password"
+            matInput
+            placeholder="Password"
+            required
+            formControlName="password"
+          />
+        </mat-form-field>
+      </p>
 
-  <p *ngIf="error" class="error">
-    {{ error }}
-  </p>
+      <p *ngIf="error" class="error">
+        {{ error }}
+      </p>
 
-  <div class="button">
-    <button type="submit"  mat-button>Login</button>
-  </div>
-
-</form>
-</mat-card-content>
+      <div class="button">
+        <button type="submit" mat-button>Login</button>
+      </div>
+    </form>
+  </mat-card-content>
 </mat-card>

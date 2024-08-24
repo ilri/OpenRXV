@@ -5,7 +5,7 @@ import {
   ExportFilesModal,
 } from '../paginated-list/filter-paginated-list/types.interface';
 import { ExportService } from '../services/export/export.service';
-import { switchMap, first, last } from 'rxjs/operators';
+import { switchMap, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ElasticsearchQuery } from 'src/app/explorer/filters/services/interfaces';
 import { environment } from 'src/environments/environment';
@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SettingsService } from 'src/app/admin/services/settings.service';
-import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -33,6 +32,7 @@ export class ExportComponent implements OnInit {
   exportPoint: string;
   part: number;
   webSiteName;
+  items_label = 'Information Products';
   get finishedExporting(): boolean {
     if (!this.delegationArr) {
       return false;
@@ -61,6 +61,7 @@ export class ExportComponent implements OnInit {
       this.dashboard,
     );
     this.webSiteName = this.webSiteName.website_name;
+    this.items_label = this.webSiteName.items_label;
   }
 
   prevent(e, efm: ExportFilesModal): void {

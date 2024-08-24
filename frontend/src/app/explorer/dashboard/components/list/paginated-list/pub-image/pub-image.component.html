@@ -16,6 +16,15 @@
   [hidden]="loading"
   (load)="onLoad()"
 />
-<figcaption *ngIf="content.tagOnImage" [ngStyle]="{ 'background-color': chooseColor(content.image_tag_options, source[content.tagOnImage]) }" class="tech-type">
+<figcaption
+  *ngIf="content.tagOnImage"
+  [ngStyle]="{
+    'background-color': chooseColor(
+      content.image_tag_options,
+      source[content.tagOnImage]
+    )
+  }"
+  class="tech-type"
+>
   <span>{{ source[content.tagOnImage] }}</span>
 </figcaption>

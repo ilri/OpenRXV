@@ -1,31 +1,58 @@
 <div class="row admin-dashboard-header">
-    <div class="col-md-12 pb-5">
-        <mat-card appearance="raised">
-            <mat-card-title>
-                Plugins
-                <a style="float: right" [href]="exportLink" [download]="'OpenRXV-index-plugins-' + index_name + '.json'"
-                   color="primary" mat-raised-button>
-                    Export
-                    <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
-                </a>
-                <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
-                <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
-                    Import
-                    <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
-                </button>
-                <button class="mr-2 save" (click)="save()" color="primary" mat-raised-button>
-                    Save
-                    <mat-icon>save</mat-icon>
-                </button>
-            </mat-card-title>
-            <mat-card-content>
-
-            </mat-card-content>
-        </mat-card>
-    </div>
+  <div class="col-md-12 pb-5">
+    <mat-card appearance="raised">
+      <mat-card-title>
+        Plugins
+        <a
+          style="float: right"
+          [href]="exportLink"
+          [download]="'OpenRXV-index-plugins-' + index_name + '.json'"
+          color="primary"
+          mat-raised-button
+        >
+          Export
+          <mat-icon aria-hidden="false" aria-label="add"
+            >cloud_download</mat-icon
+          >
+        </a>
+        <input
+          #jsonImportUploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="importJSON($event)"
+          accept=".json"
+        />
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="jsonImportUploadInput.click()"
+          color="primary"
+          mat-raised-button
+        >
+          Import
+          <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+        </button>
+        <button
+          class="mr-2 save"
+          (click)="save()"
+          color="primary"
+          mat-raised-button
+        >
+          Save
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-card-title>
+      <mat-card-content> </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 <div class="row admin-dashboard-content">
-    <div *ngFor="let plugin of plugins;let i = index;" class="col-md-12 pb-5">
-        <app-plugin (onEdit)="onEdited($event,plugin.name)" [plugins]="plugins" [pluginIndex]="i"></app-plugin>
-    </div>
+  <div *ngFor="let plugin of plugins; let i = index" class="col-md-12 pb-5">
+    <app-plugin
+      (onEdit)="onEdited($event, plugin.name)"
+      [plugins]="plugins"
+      [pluginIndex]="i"
+    ></app-plugin>
+  </div>
 </div>

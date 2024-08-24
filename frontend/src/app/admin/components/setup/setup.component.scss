@@ -1,29 +1,29 @@
-.float-right{
-    float: right;
+.float-right {
+  float: right;
 }
 
 .file {
-    padding-top: 20px;
-    * {
-      float: left;
+  padding-top: 20px;
+  * {
+    float: left;
+  }
+  .logo {
+    position: relative;
+    max-width: 167px;
+    display: inline-block;
+    img {
+      width: 100%;
+      background-color: #ededed;
     }
-    .logo {
-      position: relative;
-      max-width: 167px;
-      display: inline-block;
-      img {
-        width: 100%;
-        background-color: #ededed;
-      }
-      button {
-        position: absolute;
-        right: 0;
-        width: 24px;
-        height: 24px;
-        top: 0;
-      }
+    button {
+      position: absolute;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      top: 0;
     }
   }
+}
 
 .list-fields {
   max-height: 390px;

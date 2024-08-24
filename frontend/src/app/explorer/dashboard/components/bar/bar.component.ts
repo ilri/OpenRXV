@@ -37,12 +37,14 @@ export class BarComponent extends ParentChart implements OnInit {
     super(cms, selectService, store, activatedRoute);
   }
   colors: string[];
+  items_label = 'Information Products';
   async ngOnInit() {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
+    this.items_label = appearance.items_label;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
@@ -75,6 +77,12 @@ export class BarComponent extends ParentChart implements OnInit {
         };
       })
       .flat(1);
+
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(
+      this.componentConfigs,
+      'bar',
+    );
+
     this.chartOptions = {
       chart: { type: 'column' },
       xAxis: { categories, crosshair: true },
@@ -82,20 +90,32 @@ export class BarComponent extends ParentChart implements OnInit {
         enabled: true,
         useGPUTranslations: true,
       },
-      yAxis: { min: 0, title: { text: 'Information Products' } },
+      yAxis: {
+        min: 0,
+        title: {
+          text: this?.items_label ? this.items_label : 'Information Products',
+        },
+      },
       colors: this.colors,
       plotOptions: {
         column: {
           pointPadding: 0.2,
           borderWidth: 0,
           borderRadius: 2.5,
+          dataLabels: dataLabelsSettings,
         },
       },
       tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat:
-          '<tr><td style="color:{series.color};padding:0">{series.name}: </td><td style="padding:0"><b>{point.y}</b></td></tr>',
-        footerFormat: '</table>',
+        formatter: function () {
+          let total = 0;
+          const points = this.points.map((point) => {
+            total += Number(point.y);
+            return `<tr><td style="color: ${point.color}; padding: 0">${point.series.name}: </td><td style="padding:0"><b>${point.y}</b></td></tr>`;
+          });
+          return `<span>${this.x}: <b>${total}</b></span><table>${points.join(
+            '',
+          )}</table>`;
+        },
         shared: true,
         useHTML: true,
       },

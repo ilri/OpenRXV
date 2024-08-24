@@ -2,31 +2,75 @@
   <div class="col-md-12 pb-5">
     <mat-card appearance="raised">
       <mat-card-title>
-        Reports - {{dashboard_name}}
-        <a style="float: right" [href]="exportLink" [download]="'OpenRXV-dashboard-reports-' + dashboard_name + '.json'"
-           color="primary" mat-raised-button>
+        Reports - {{ dashboard_name }}
+        <a
+          style="float: right"
+          [href]="exportLink"
+          [download]="'OpenRXV-dashboard-reports-' + dashboard_name + '.json'"
+          color="primary"
+          mat-raised-button
+        >
           Export
-          <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="add"
+            >cloud_download</mat-icon
+          >
         </a>
-        <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
-        <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
+        <input
+          #jsonImportUploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="importJSON($event)"
+          accept=".json"
+        />
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="jsonImportUploadInput.click()"
+          color="primary"
+          mat-raised-button
+        >
           Import
           <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
         </button>
-        <button class="mr-2" mat-raised-button (click)="newReport()" color="primary" style="float: right">
+        <button
+          class="mr-2"
+          mat-raised-button
+          (click)="newReport()"
+          color="primary"
+          style="float: right"
+        >
           Add new report
           <mat-icon>add</mat-icon>
         </button>
-        <button class="mr-2" mat-raised-button [matMenuTriggerFor]="menu" color="primary" style="float: right">
+        <button
+          class="mr-2"
+          mat-raised-button
+          [matMenuTriggerFor]="menu"
+          color="primary"
+          style="float: right"
+        >
           Show metadata
         </button>
         <mat-menu #menu="matMenu">
-          <ng-container *ngFor='let items of metadata; let i = index'>
-            <button mat-menu-item matTooltip="copy" (click)="copyMessage(metadata[i])"
-                    class="copy">{{metadata[i]}}</button>
+          <ng-container *ngFor="let items of metadata; let i = index">
+            <button
+              mat-menu-item
+              matTooltip="copy"
+              (click)="copyMessage(metadata[i])"
+              class="copy"
+            >
+              {{ metadata[i] }}
+            </button>
           </ng-container>
         </mat-menu>
-        <button class="mr-2" mat-raised-button (click)="showDoc()" color="primary" style="float: right">
+        <button
+          class="mr-2"
+          mat-raised-button
+          (click)="showDoc()"
+          color="primary"
+          style="float: right"
+        >
           How to construct my .docx file?
         </button>
       </mat-card-title>
@@ -54,14 +98,28 @@
       <!-- actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element; let i = index;">
-          <button matTooltip="Delete" (click)="delete(i)" color="primary" mat-icon-button>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <button
+            matTooltip="Delete"
+            (click)="delete(i)"
+            color="primary"
+            mat-icon-button
+          >
             <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
           </button>
-          <button matTooltip="Edit" (click)="edit(i)" color="primary" mat-icon-button>
+          <button
+            matTooltip="Edit"
+            (click)="edit(i)"
+            color="primary"
+            mat-icon-button
+          >
             <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
           </button>
-          <a [href]="envireoment + '/settings'+ element.file" download *ngIf="element.fileType != 'xlsx'">
+          <a
+            [href]="envireoment + '/settings' + element.file"
+            download
+            *ngIf="element.fileType != 'xlsx'"
+          >
             <button color="primary" mat-icon-button>
               <mat-icon>save_alt</mat-icon>
             </button>
@@ -73,7 +131,10 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons
-                   formFieldAppearance="fill"></mat-paginator>
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 30]"
+      showFirstLastButtons
+      formFieldAppearance="fill"
+    ></mat-paginator>
   </div>
 </div>

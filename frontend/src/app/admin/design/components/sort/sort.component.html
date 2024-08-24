@@ -1,17 +1,33 @@
-<h1 mat-dialog-title>Sort <mat-icon>sort</mat-icon>
-</h1>
+<h1 mat-dialog-title>Sort <mat-icon>sort</mat-icon></h1>
 <div mat-dialog-content>
-    <div class="row">
-        <div cdkDropList (cdkDropListDropped)="drop($event)" class="col-12 drag-list">
-            <mat-card appearance="raised" cdkDrag class="drag-item" *ngFor="let item of sortedItems">
-                <mat-card-title>{{item.componentConfigs.title}}</mat-card-title>
-            </mat-card>
-        </div>
+  <div class="row">
+    <div
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      class="col-12 drag-list"
+    >
+      <mat-card
+        appearance="raised"
+        cdkDrag
+        class="drag-item"
+        *ngFor="let item of sortedItems"
+      >
+        <mat-card-title>{{ item.componentConfigs.title }}</mat-card-title>
+      </mat-card>
     </div>
+  </div>
 </div>
 <div mat-dialog-actions align="end">
-    <button type="button" mat-raised-button color="default" (click)="onNoClick()">Close <mat-icon>close</mat-icon>
-    </button>
-    <button type="button" color="primary" (keyup.enter)="submit()" (click)="submit()" mat-raised-button>Save
-        <mat-icon>done</mat-icon></button>
+  <button type="button" mat-raised-button color="default" (click)="onNoClick()">
+    Close <mat-icon>close</mat-icon>
+  </button>
+  <button
+    type="button"
+    color="primary"
+    (keyup.enter)="submit()"
+    (click)="submit()"
+    mat-raised-button
+  >
+    Save <mat-icon>done</mat-icon>
+  </button>
 </div>

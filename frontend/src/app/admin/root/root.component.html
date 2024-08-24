@@ -2,56 +2,101 @@
 <mat-drawer-container class="container-admin">
   <mat-drawer width="300px" mode="side" opened>
     <h3 class="p-1 pt-2 text-center">OpenRXV</h3>
-    <hr class="mb-3"/>
+    <hr class="mb-3" />
     <mat-nav-list>
-      <a mat-list-item routerLink="/admin/indexes" routerLinkActive="active"
-         [routerLinkActiveOptions]="{ exact: true }">
+      <a
+        mat-list-item
+        routerLink="/admin/indexes"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         Indexes
       </a>
       <mat-nav-list *ngIf="currentRouteParent == 'indexes'">
-        <a mat-list-item [routerLink]="'/admin/harvester/' + index_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/harvester/' + index_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Harvest dashboard
         </a>
-        <a mat-list-item [routerLink]="'/admin/setup/' + index_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/setup/' + index_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Repositories
         </a>
-        <a mat-list-item [routerLink]="'/admin/plugins/' + index_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/plugins/' + index_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Plugins
         </a>
-        <a mat-list-item [routerLink]="'/admin/mapping-values/' + index_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/mapping-values/' + index_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Value Mappings
         </a>
       </mat-nav-list>
-      <a mat-list-item routerLink="/admin/indexes-dashboards" routerLinkActive="active"
-         [routerLinkActiveOptions]="{ exact: true }">
+      <a
+        mat-list-item
+        routerLink="/admin/indexes-dashboards"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         Dashboards
       </a>
       <mat-nav-list *ngIf="currentRouteParent == 'indexes-dashboards'">
-        <a mat-list-item [routerLink]="'/admin/appearance/' + dashboard_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/appearance/' + dashboard_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Appearance
         </a>
-        <a mat-list-item [routerLink]="'/admin/design/' + dashboard_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/design/' + dashboard_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Design dashboard layout
         </a>
-        <a mat-list-item [routerLink]="'/admin/reporting/' + dashboard_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/reporting/' + dashboard_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Reporting
         </a>
-        <a mat-list-item [routerLink]="'/admin/sharedlinks/' + dashboard_name" routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }">
+        <a
+          mat-list-item
+          [routerLink]="'/admin/sharedlinks/' + dashboard_name"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
           Shared links
         </a>
         <a mat-list-item [href]="dashboard_name" target="_blank">
           View Dashboard
         </a>
       </mat-nav-list>
-      <a mat-list-item routerLink="/admin/users" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <a
+        mat-list-item
+        routerLink="/admin/users"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         Users
       </a>
     </mat-nav-list>

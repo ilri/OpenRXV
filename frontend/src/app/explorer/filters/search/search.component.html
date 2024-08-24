@@ -1,7 +1,13 @@
 <mat-form-field class="w-100">
-  <mat-label>{{componentConfigs.placeholder}}</mat-label>
-  <input (keyup.enter)="onClick()" matInput type="search" [(ngModel)]="searchTerm" #search
-  [placeholder]="componentConfigs.placeholder"/>
+  <mat-label>{{ componentConfigs.placeholder }}</mat-label>
+  <input
+    (keyup.enter)="onClick()"
+    matInput
+    type="search"
+    [(ngModel)]="searchTerm"
+    #search
+    [placeholder]="componentConfigs.placeholder"
+  />
   <button
     mat-button
     matSuffix
@@ -9,7 +15,11 @@
     aria-label="Search"
     (click)="onClick()"
     color="primary"
-    [matTooltip]="componentConfigs?.is_advanced ? 'The reserved characters are: + - = && || > < ! ( ) { } [ ] ^ &quot; ~ * ? : \\ /' : ''"
+    [matTooltip]="
+      componentConfigs?.is_advanced
+        ? 'The reserved characters are: + - = && || > < ! ( ) { } [ ] ^ &quot; ~ * ? : \\ /'
+        : ''
+    "
   >
     Search
     <mat-icon *ngIf="componentConfigs?.is_advanced">error</mat-icon>

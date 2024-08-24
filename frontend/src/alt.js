@@ -1,4 +1,4 @@
-!(function(e, t, n) {
+!(function (e, t, n) {
   var d = 'createElement',
     m = 'getElementsByTagName',
     c = 'setAttribute',
@@ -15,5 +15,5 @@
   );
 })(
   'altmetric-embed-js',
-  'https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'
+  'https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js',
 );

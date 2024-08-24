@@ -14,7 +14,7 @@ $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dis
 
 @import 'material-design-icons-iconfont/src/material-design-icons';
 
-@import "snazzy-info-window/dist/snazzy-info-window.css";
+@import 'snazzy-info-window/dist/snazzy-info-window.css';
 html,
 body {
   font-family: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -150,7 +150,7 @@ mat-spinner {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
-.mat-drawer-container{
+.mat-drawer-container {
   display: block !important;
 }
 
@@ -184,8 +184,7 @@ app-paginated-list app-tags {
     padding-left: 0 !important;
   }
 }
-.ares-footer{
-
+.ares-footer {
   img {
     max-width: 100%;
     max-height: 60px;
@@ -194,23 +193,27 @@ app-paginated-list app-tags {
     vertical-align: middle;
     height: 32px !important;
   }
-
 }
 
-.noUi-horizontal .noUi-tooltip{
+.noUi-horizontal .noUi-tooltip {
   top: 120% !important;
   bottom: unset !important;
 }
 
-.cdk-overlay-container .mat-mdc-menu-panel .mat-mdc-menu-content .mat-mdc-card-title {
-  white-space: unset !important
+.cdk-overlay-container
+  .mat-mdc-menu-panel
+  .mat-mdc-menu-content
+  .mat-mdc-card-title {
+  white-space: unset !important;
 }
 
-.mdc-text-field--filled:not(.mdc-text-field--disabled), .mat-mdc-form-field-focus-overlay {
+.mdc-text-field--filled:not(.mdc-text-field--disabled),
+.mat-mdc-form-field-focus-overlay {
   background-color: white;
 }
 
-.mdc-text-field--filled, .mdc-text-field {
+.mdc-text-field--filled,
+.mdc-text-field {
   padding: 0 !important;
 }
 
@@ -218,7 +221,9 @@ app-paginated-list app-tags {
   padding: 16px;
 }
 
-.mat-mdc-card-content, .mat-mdc-card-header, .mat-mdc-card-actions {
+.mat-mdc-card-content,
+.mat-mdc-card-header,
+.mat-mdc-card-actions {
   padding: 0 !important;
 }
 
@@ -226,18 +231,34 @@ app-paginated-list app-tags {
   padding: 8px 24px !important;
 }
 
-.mat-mdc-form-field-has-icon-prefix .mat-mdc-form-field-icon-prefix .mat-mdc-icon-button,
-.mat-mdc-form-field-has-icon-suffix .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button {
+.mat-mdc-form-field-has-icon-prefix
+  .mat-mdc-form-field-icon-prefix
+  .mat-mdc-icon-button,
+.mat-mdc-form-field-has-icon-suffix
+  .mat-mdc-form-field-icon-suffix
+  .mat-mdc-icon-button {
   font: inherit;
   vertical-align: baseline;
   height: 1.5em;
   width: 1.5em;
 }
 
-.mat-mdc-form-field-has-icon-prefix .mat-mdc-form-field-icon-prefix .mat-mdc-icon-button .mat-icon,
-.mat-mdc-form-field-has-icon-suffix .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button .mat-icon,
-.mat-mdc-form-field-has-icon-prefix .mat-mdc-form-field-icon-prefix .mat-mdc-icon-button svg,
-.mat-mdc-form-field-has-icon-suffix .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button svg {
+.mat-mdc-form-field-has-icon-prefix
+  .mat-mdc-form-field-icon-prefix
+  .mat-mdc-icon-button
+  .mat-icon,
+.mat-mdc-form-field-has-icon-suffix
+  .mat-mdc-form-field-icon-suffix
+  .mat-mdc-icon-button
+  .mat-icon,
+.mat-mdc-form-field-has-icon-prefix
+  .mat-mdc-form-field-icon-prefix
+  .mat-mdc-icon-button
+  svg,
+.mat-mdc-form-field-has-icon-suffix
+  .mat-mdc-form-field-icon-suffix
+  .mat-mdc-icon-button
+  svg {
   font-size: inherit;
   width: 1em;
   height: 1.125em;
@@ -257,7 +278,7 @@ mat-paginator .mat-mdc-select-trigger {
 }
 
 .mat-expansion-panel-header {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 15px;
   font-weight: 400;
 }
@@ -266,10 +287,11 @@ mat-paginator .mat-mdc-select-trigger {
   width: 100%;
 }
 
-.mat-mdc-form-field, .mat-mdc-floating-label {
+.mat-mdc-form-field,
+.mat-mdc-floating-label {
   font-weight: 400;
   line-height: 1.125;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   letter-spacing: normal;
 }
 

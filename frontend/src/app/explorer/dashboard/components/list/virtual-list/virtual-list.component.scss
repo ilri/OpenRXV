@@ -6,7 +6,7 @@
     }
   }
 }
-.listHover:hover{
+.listHover:hover {
   cursor: pointer;
   background-color: #e2eaf3;
 }
@@ -16,8 +16,10 @@
 .viewport {
   height: 404px;
   overflow-x: hidden !important; // firefox
+
   .item {
     height: 50px;
+
     .progress {
       height: 7px;
       display: flex;
@@ -91,6 +93,19 @@
 
     .mat-mdc-list-item-title {
       text-wrap: initial;
+    }
+  }
+
+  .item.no-percentage {
+    border-bottom: solid 1px #e6e6e6;
+
+    .item-list-row {
+      .doc-count {
+        color: var(--theme-primary-500);
+        right: 10px;
+        font-size: 100%;
+        font-weight: bold;
+      }
     }
   }
 }

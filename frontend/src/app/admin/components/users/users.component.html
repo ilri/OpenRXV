@@ -3,7 +3,12 @@
     <mat-card appearance="raised">
       <mat-card-title>
         Users
-        <button style="float: right" (click)="openDialog()" color="primary" mat-raised-button>
+        <button
+          style="float: right"
+          (click)="openDialog()"
+          color="primary"
+          mat-raised-button
+        >
           ADD
           <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
         </button>
@@ -17,39 +22,43 @@
     <table mat-table [dataSource]="dataSource">
       <!-- id Column -->
       <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> ID. </th>
-        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        <th mat-header-cell *matHeaderCellDef>ID.</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
       <!-- email Column -->
       <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef> Email </th>
-        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
       </ng-container>
 
       <!-- role Column -->
       <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef> Role </th>
-        <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+        <th mat-header-cell *matHeaderCellDef>Role</th>
+        <td mat-cell *matCellDef="let element">{{ element.role }}</td>
       </ng-container>
 
       <!-- role Column -->
       <ng-container matColumnDef="created_at">
-        <th mat-header-cell *matHeaderCellDef> Created At </th>
-        <td mat-cell *matCellDef="let element"> {{element.created_at}} </td>
+        <th mat-header-cell *matHeaderCellDef>Created At</th>
+        <td mat-cell *matCellDef="let element">{{ element.created_at }}</td>
       </ng-container>
 
       <!-- actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let element">
-          <button (click)="toDelete(element.id)" color="primary" mat-icon-button>
+          <button
+            (click)="toDelete(element.id)"
+            color="primary"
+            mat-icon-button
+          >
             <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
           </button>
           <button (click)="toEdit(element.id)" color="primary" mat-icon-button>
@@ -59,9 +68,12 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    <mat-paginator [pageSizeOptions]="[10,20,30]" showFirstLastButtons></mat-paginator>
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 30]"
+      showFirstLastButtons
+    ></mat-paginator>
   </div>
 </div>

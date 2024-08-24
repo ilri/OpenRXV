@@ -1,57 +1,85 @@
 <div class="row mb-3">
-    <div class="col-12">
-        <div class="border">
-            <div class="row">
-                <div class="col-12">
-
-                    <button (click)="rowDelete()" class="card-actions" color="warn" mat-icon-button>
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                    <button (click)="setIcon()" class="card-actions" color="primary" mat-icon-button>
-                        <mat-icon *ngIf="!grid[0].component || !grid[0].scroll">add_photo_alternate</mat-icon>
-                        <mat-icon *ngIf="grid[0] && grid[0].component && grid[0].scroll && grid[0].scroll.icon">{{grid[0].scroll.icon}}</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div *ngFor="let item of grid ; let i = index;" [ngClass]="item.class">
-                    <div class="p-3">
-                        <mat-card appearance="raised" *ngIf="!item.component">
-                            <button (click)="addComponent(i)" class="w-100" color="primary" mat-button>
-                                <mat-icon>add</mat-icon>
-                            </button>
-                        </mat-card>
-                        <mat-card appearance="raised" *ngIf="item.component">
-
-                            <mat-card-title>
-
-                                <span>
-                                  {{ this.grid[i].componentConfigs.title}} -
-                                  <small><i>{{ word(item.component)}}</i></small>
-                                </span>
-
-                                <button class="card-actions" (click)="delete(i)" color="warn" mat-icon-button>
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                                <button (click)="openDialog(i)" class="card-actions" mat-icon-button>
-                                    <mat-icon>settings</mat-icon>
-                                </button>
-                            </mat-card-title>
-
-
-                            <mat-card-content>
-                                <div class="w-100">
-                                    <mat-icon>{{ icon(item.component) }}</mat-icon>
-                                </div>
-                            </mat-card-content>
-
-                        </mat-card>
-
-
-                    </div>
-                </div>
-
-            </div>
+  <div class="col-12">
+    <div class="border">
+      <div class="row">
+        <div class="col-12">
+          <button
+            (click)="rowDelete()"
+            class="card-actions"
+            color="warn"
+            mat-icon-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            (click)="setIcon()"
+            class="card-actions"
+            color="primary"
+            mat-icon-button
+          >
+            <mat-icon *ngIf="!grid[0].component || !grid[0].scroll"
+              >add_photo_alternate</mat-icon
+            >
+            <mat-icon
+              *ngIf="
+                grid[0] &&
+                grid[0].component &&
+                grid[0].scroll &&
+                grid[0].scroll.icon
+              "
+              >{{ grid[0].scroll.icon }}</mat-icon
+            >
+          </button>
         </div>
+      </div>
+      <div class="row">
+        <div *ngFor="let item of grid; let i = index" [ngClass]="item.class">
+          <div class="p-3">
+            <mat-card appearance="raised" *ngIf="!item.component">
+              <button
+                (click)="addComponent(i)"
+                class="w-100"
+                color="primary"
+                mat-button
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </mat-card>
+            <mat-card appearance="raised" *ngIf="item.component">
+              <mat-card-title>
+                <span>
+                  {{ this.grid[i].componentConfigs.title }} -
+                  <small
+                    ><i>{{ word(item.component) }}</i></small
+                  >
+                </span>
+
+                <button
+                  class="card-actions"
+                  (click)="delete(i)"
+                  color="warn"
+                  mat-icon-button
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button
+                  (click)="openDialog(i)"
+                  class="card-actions"
+                  mat-icon-button
+                >
+                  <mat-icon>settings</mat-icon>
+                </button>
+              </mat-card-title>
+
+              <mat-card-content>
+                <div class="w-100">
+                  <mat-icon>{{ icon(item.component) }}</mat-icon>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

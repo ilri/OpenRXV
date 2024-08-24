@@ -3,15 +3,31 @@
     <mat-card appearance="raised">
       <mat-card-title>
         Harvest Dashboard
-        <button style="float: right;" (click)="commitIndex()" color="primary" mat-raised-button>
+        <button
+          style="float: right"
+          (click)="commitIndex()"
+          color="primary"
+          mat-raised-button
+        >
           Commit Indexing
           <mat-icon>check</mat-icon>
         </button>
-        <button class="mr-2" style="float: right;" (click)="stopAll()" color="warn" mat-raised-button>
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="stopAll()"
+          color="warn"
+          mat-raised-button
+        >
           Stop harvesting and plugins
           <mat-icon>block</mat-icon>
         </button>
-        <button class="mr-2" style="float: right;" (click)="Init()" mat-raised-button>
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="Init()"
+          mat-raised-button
+        >
           Refresh
           <mat-icon>refresh</mat-icon>
         </button>
@@ -23,11 +39,16 @@
 <div class="admin-dashboard-content">
   <div *ngFor="let availableSection of availableSections" class="row pt-3">
     <div class="col-6">
-      <h3>{{availableSection.display_name}}</h3>
+      <h3>{{ availableSection.display_name }}</h3>
     </div>
     <div class="col-md-6 harvest-table-tools mb-2">
       <ng-container *ngIf="availableSection.name === 'fetch'">
-        <button class="mr-2" (click)="stopHarvesting()" color="warn" mat-raised-button>
+        <button
+          class="mr-2"
+          (click)="stopHarvesting()"
+          color="warn"
+          mat-raised-button
+        >
           Stop
           <mat-icon>block</mat-icon>
         </button>
@@ -37,11 +58,20 @@
         </button>
       </ng-container>
       <ng-container *ngIf="availableSection.name !== 'fetch'">
-        <button class="mr-2" (click)="stopPlugin(availableSection)" color="warn" mat-raised-button>
+        <button
+          class="mr-2"
+          (click)="stopPlugin(availableSection)"
+          color="warn"
+          mat-raised-button
+        >
           Stop
           <mat-icon>block</mat-icon>
         </button>
-        <button (click)="startPlugin(availableSection)" color="primary" mat-raised-button>
+        <button
+          (click)="startPlugin(availableSection)"
+          color="primary"
+          mat-raised-button
+        >
           Start
           <mat-icon>archive</mat-icon>
         </button>
@@ -49,17 +79,27 @@
     </div>
     <div class="col-12 pb-3">
       <div class="d-flex w-100 justify-content-between">
-        <mat-card appearance="raised" class="counter border-bottom-light"
-                  (click)="ChangeTable('Active', 'active', availableSection.name)">
+        <mat-card
+          appearance="raised"
+          class="counter border-bottom-light"
+          (click)="ChangeTable('Active', 'active', availableSection.name)"
+        >
           <mat-card-content class="primary-hover">
             <mat-card-title>
               {{ tablesData?.[availableSection.name].active_count }}
             </mat-card-title>
-            <mat-card-subtitle>Active ({{ tablesData?.[availableSection.name].stuck_count }})</mat-card-subtitle>
+            <mat-card-subtitle
+              >Active ({{
+                tablesData?.[availableSection.name].stuck_count
+              }})</mat-card-subtitle
+            >
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="raised" class="counter border-bottom-light"
-                  (click)="ChangeTable('Waiting', 'waiting', availableSection.name)">
+        <mat-card
+          appearance="raised"
+          class="counter border-bottom-light"
+          (click)="ChangeTable('Waiting', 'waiting', availableSection.name)"
+        >
           <mat-card-content class="primary-hover">
             <mat-card-title>
               {{ tablesData?.[availableSection.name].waiting_count }}
@@ -67,8 +107,11 @@
             <mat-card-subtitle>Waiting</mat-card-subtitle>
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="raised" class="counter border-bottom-light"
-                  (click)="ChangeTable('Completed', 'completed', availableSection.name)">
+        <mat-card
+          appearance="raised"
+          class="counter border-bottom-light"
+          (click)="ChangeTable('Completed', 'completed', availableSection.name)"
+        >
           <mat-card-content class="primary-hover">
             <mat-card-title>
               {{ tablesData?.[availableSection.name].completed_count }}
@@ -76,8 +119,11 @@
             <mat-card-subtitle>Completed</mat-card-subtitle>
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="raised" class="counter border-bottom-light"
-                  (click)="ChangeTable('Failed', 'failed', availableSection.name)">
+        <mat-card
+          appearance="raised"
+          class="counter border-bottom-light"
+          (click)="ChangeTable('Failed', 'failed', availableSection.name)"
+        >
           <mat-card-content class="primary-hover">
             <mat-card-title>
               {{ tablesData?.[availableSection.name].failed_count }}
@@ -88,17 +134,31 @@
       </div>
     </div>
     <h3
-      *ngIf="progress?.[availableSection.name].estimation && progress?.[availableSection.name].estimation !== '00:00:00'"
-      class="col-12 estimated-time" color="primary">
+      *ngIf="
+        progress?.[availableSection.name].estimation &&
+        progress?.[availableSection.name].estimation !== '00:00:00'
+      "
+      class="col-12 estimated-time"
+      color="primary"
+    >
       <div>
-        <small>Estimated time</small> {{progress?.[availableSection.name].estimation}}
+        <small>Estimated time</small>
+        {{ progress?.[availableSection.name].estimation }}
       </div>
-      <mat-progress-bar class="estimated-time-progress-bar" mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar
+        class="estimated-time-progress-bar"
+        mode="indeterminate"
+      ></mat-progress-bar>
     </h3>
     <div *ngIf="progress?.[availableSection.name].totalJobs > 0" class="col-12">
-      <mat-progress-bar class="mb-3 jobs-progress-bar" mode="determinate"
-                        [value]="progress?.[availableSection.name].percentage"></mat-progress-bar>
-      <h4 class="jobs-progress-bar-percentage">{{progress?.[availableSection.name].percentage.toFixed(2)}}%</h4>
+      <mat-progress-bar
+        class="mb-3 jobs-progress-bar"
+        mode="determinate"
+        [value]="progress?.[availableSection.name].percentage"
+      ></mat-progress-bar>
+      <h4 class="jobs-progress-bar-percentage">
+        {{ progress?.[availableSection.name].percentage.toFixed(2) }}%
+      </h4>
     </div>
     <div class="col-12">
       <mat-card appearance="raised">
@@ -111,14 +171,20 @@
             [pageIndex]="tablesData?.[availableSection.name].table.pageIndex"
             [pageSize]="tablesData?.[availableSection.name].table.pageSize"
             [totalPages]="tablesData?.[availableSection.name].table.totalPages"
-            [totalRecords]="tablesData?.[availableSection.name].table.totalRecords"
+            [totalRecords]="
+              tablesData?.[availableSection.name].table.totalRecords
+            "
             [availableSection]="true"
-            (paginationEvent)="PaginationChanged($event, activeTables?.[availableSection.name]?.status, availableSection.name)"
+            (paginationEvent)="
+              PaginationChanged(
+                $event,
+                activeTables?.[availableSection.name]?.status,
+                availableSection.name
+              )
+            "
           ></app-info-table>
-
         </mat-card-content>
       </mat-card>
     </div>
-
   </div>
 </div>

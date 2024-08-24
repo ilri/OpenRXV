@@ -1,18 +1,30 @@
 <div class="row">
   <div class="col-md-6">
     <mat-form-field class="w-100">
-      <mat-label>From {{componentConfigs.placeholder }}</mat-label>
-      <input [min]="fromMinDate" [max]="fromMaxDate" (dateChange)="dateChange('from')" [(ngModel)]="fromDate" matInput
-        [matDatepicker]="from">
+      <mat-label>From {{ componentConfigs.placeholder }}</mat-label>
+      <input
+        [min]="fromMinDate"
+        [max]="fromMaxDate"
+        (dateChange)="dateChange('from')"
+        [(ngModel)]="fromDate"
+        matInput
+        [matDatepicker]="from"
+      />
       <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
       <mat-datepicker #from></mat-datepicker>
     </mat-form-field>
   </div>
   <div class="col-md-6">
     <mat-form-field class="w-100">
-      <mat-label>To {{componentConfigs.placeholder }}</mat-label>
-      <input [min]="toMinDate" [max]="toMaxDate" (dateChange)="dateChange('to')" [(ngModel)]="toDate" matInput
-        [matDatepicker]="to">
+      <mat-label>To {{ componentConfigs.placeholder }}</mat-label>
+      <input
+        [min]="toMinDate"
+        [max]="toMaxDate"
+        (dateChange)="dateChange('to')"
+        [(ngModel)]="toDate"
+        matInput
+        [matDatepicker]="to"
+      />
       <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
       <mat-datepicker #to></mat-datepicker>
     </mat-form-field>

@@ -129,15 +129,6 @@ export class StructureComponent implements OnInit {
             },
           ],
         ];
-
-        if (value === 'PieComponent') {
-          this.form_data.push({
-            name: 'inner_size',
-            label: 'Inner size',
-            type: 'number',
-            required: true,
-          });
-        }
         break;
 
       case 'MainListComponent':
@@ -218,6 +209,66 @@ export class StructureComponent implements OnInit {
           ],
         ];
         break;
+    }
+
+    if (value === 'PieComponent') {
+      this.form_data.push({
+        name: 'inner_size',
+        label: 'Inner size',
+        type: 'number',
+        required: true,
+      });
+      this.form_data.push({
+        name: 'data_labels',
+        label: 'Show data labels',
+        type: 'checkbox',
+        required: false,
+      });
+      this.form_data.push({
+        name: 'data_labels_count',
+        label: 'Show data labels count',
+        type: 'checkbox',
+        required: false,
+      });
+      this.form_data.push({
+        name: 'data_labels_percentage',
+        label: 'Show data labels percentage',
+        type: 'checkbox',
+        required: false,
+      });
+    } else if (value === 'MapComponent') {
+      this.form_data.push({
+        name: 'data_labels',
+        label: 'Show data labels',
+        type: 'checkbox',
+        required: false,
+      });
+      this.form_data.push({
+        name: 'data_labels_count',
+        label: 'Show data labels count',
+        type: 'checkbox',
+        required: false,
+      });
+    } else if (value === 'BarComponent') {
+      this.form_data.push({
+        name: 'data_labels_count',
+        label: 'Show data labels count',
+        type: 'checkbox',
+        required: false,
+      });
+    } else if (value === 'ListComponent') {
+      this.form_data.push({
+        name: 'hide_total',
+        label: 'Hide total',
+        type: 'checkbox',
+        required: false,
+      });
+      this.form_data.push({
+        name: 'hide_percentage',
+        label: 'Hide percentage',
+        type: 'checkbox',
+        required: false,
+      });
     }
   }
   constructor(

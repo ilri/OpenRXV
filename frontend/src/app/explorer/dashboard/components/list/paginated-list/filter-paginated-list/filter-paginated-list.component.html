@@ -1,23 +1,43 @@
 <section class="row justify-content-end">
   <div class="col-md-2 col-xs-12">
-    <ng-select [items]="filterOptions" bindLabel="display" placeholder="Sort Options" [(ngModel)]="selectedFilter"
-      (change)="onFilterChanged($event)" [clearable]="false" [dropdownPosition]="'bottom'">
+    <ng-select
+      [items]="filterOptions"
+      bindLabel="display"
+      placeholder="Sort Options"
+      [(ngModel)]="selectedFilter"
+      (change)="onFilterChanged($event)"
+      [clearable]="false"
+      [dropdownPosition]="'bottom'"
+    >
     </ng-select>
   </div>
   <div class="col-md-1 col-xs-12">
-    <ng-select [items]="ascDesc" placeholder="Order" bindLabel="display" bindValue="value" (change)="reverse($event)"
-      [(ngModel)]="reverseOption" [clearable]="false" [dropdownPosition]="'bottom'">
+    <ng-select
+      [items]="ascDesc"
+      placeholder="Order"
+      bindLabel="display"
+      bindValue="value"
+      (change)="reverse($event)"
+      [(ngModel)]="reverseOption"
+      [clearable]="false"
+      [dropdownPosition]="'bottom'"
+    >
     </ng-select>
   </div>
   <div class="text-right">
-    <button class="v-center" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Options for exporting files">
+    <button
+      class="v-center"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      aria-label="Options for exporting files"
+    >
       <mat-icon>get_app</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <div *ngFor="let file of files;  let i = index">
-        <button mat-menu-item (click)="startExportingNow(file.fileType,file)">
-          <img src="assets/export/{{file.fileType}}.png" />
-          <span>{{file.title}}</span>
+      <div *ngFor="let file of files; let i = index">
+        <button mat-menu-item (click)="startExportingNow(file.fileType, file)">
+          <img src="assets/export/{{ file.fileType }}.png" />
+          <span>{{ file.title }}</span>
         </button>
       </div>
     </mat-menu>
