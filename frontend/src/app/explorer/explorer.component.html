@@ -57,7 +57,17 @@
       <mat-icon>info</mat-icon>
     </button>
 
-    <button *ngIf="index_last_update"
+    <button
+      matTooltip="Export as PNG"
+      mat-icon-button
+      (click)="exportDashboard()"
+      aria-label="Export as PNG"
+    >
+      <mat-icon>image</mat-icon>
+    </button>
+
+    <button
+      *ngIf="index_last_update"
       matTooltip="Last updated on {{ index_last_update }}"
       matTooltipClass="multiline-tooltip"
       mat-icon-button
@@ -110,7 +120,17 @@
     <mat-icon>info</mat-icon>
   </button>
 
-  <button *ngIf="index_last_update"
+  <button
+    matTooltip="Export as PNG"
+    mat-icon-button
+    (click)="exportDashboard()"
+    aria-label="Export as PNG"
+  >
+    <mat-icon>image</mat-icon>
+  </button>
+
+  <button
+    *ngIf="index_last_update"
     matTooltip="Last updated on {{ index_last_update }}"
     matTooltipClass="multiline-tooltip"
     mat-icon-button
@@ -222,7 +242,7 @@
         </div>
       </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="mb-0 pb-0">
+    <mat-sidenav-content class="mb-0 pb-0" #sidenavContent>
       <div class="xxxloading">
         {{ primaryColor
         }}<ngx-loading-bar
@@ -235,4 +255,12 @@
       <app-dashboard></app-dashboard>
     </mat-sidenav-content>
   </mat-sidenav-container>
+  <ngx-spinner
+    data-html2canvas-ignore="true"
+    bdColor="rgba(0, 0, 0, 0.1)"
+    size="medium"
+    color="var(--theme-primary-500)"
+    type="ball-clip-rotate"
+    [fullScreen]="true"
+  ></ngx-spinner>
 </div>

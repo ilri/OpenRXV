@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import * as fromStore from './store';
 import { Store } from '@ngrx/store';
@@ -21,6 +21,9 @@ import { InViewState } from './store/reducers/items.reducer';
 import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
+import html2canvas from 'html2canvas';
+import { NgxSpinnerService } from 'ngx-spinner';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'explorer-root',
@@ -29,6 +32,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ExplorerComponent implements OnInit {
   @ViewChild('drawer') sidenav: MatDrawer;
+  @ViewChild('sidenavContent', { read: ElementRef }) sidenavContent: ElementRef;
   loading$: Observable<boolean>;
   render: boolean;
   shareID: string;
@@ -73,6 +77,7 @@ export class ExplorerComponent implements OnInit {
     private readonly itemsService: ItemsService,
     public dialog: MatDialog,
     private activeRoute: ActivatedRoute,
+    private spinner: NgxSpinnerService,
   ) {
     this.orOperator = false;
     this.orAndToolTip = orAndToolTip;
@@ -272,5 +277,80 @@ export class ExplorerComponent implements OnInit {
     if (this.render === undefined) {
       this.render = true;
     }
+  }
+
+  async exportDashboard() {
+    this.spinner.show();
+    const container = this.sidenavContent.nativeElement as HTMLElement;
+    const charts = document.querySelectorAll(
+      'mat-sidenav-content > app-dashboard > mat-drawer-container > mat-drawer-content > section > section:last-child > div',
+    );
+
+    container.style.setProperty('scroll-behavior', 'smooth');
+    if (charts.length > 0) {
+      await this.scrollAll(charts, 0, 'down');
+      await this.promiseScroll(container, 'bottom');
+      await this.scrollAll(charts, charts.length - 1, 'up');
+      await this.promiseScroll(container, 'top');
+    }
+    container.style.setProperty('height', container.scrollHeight + 'px');
+
+    html2canvas(container)
+      .then((canvas) => {
+        const imageData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+
+        const fileName =
+          this.website_name.replaceAll(/[^a-z0-9]/gi, '_') +
+          '_' +
+          dayjs().format('YYYY-MM-DD_HH:mm:ss') +
+          '.png';
+        link.setAttribute('download', fileName);
+        link.setAttribute('href', imageData);
+        link.click();
+        container.style.removeProperty('height');
+        container.style.removeProperty('scroll-behavior');
+        link.remove();
+        this.spinner.hide();
+      })
+      .catch((e) => {
+        container.style.removeProperty('height');
+        container.style.removeProperty('scroll-behavior');
+        this.spinner.hide();
+      });
+  }
+
+  async scrollAll(
+    elements: NodeListOf<Element>,
+    index: number,
+    direction: string,
+  ) {
+    await this.promiseScroll(elements[index] as HTMLElement, 'view');
+    if (direction === 'up') {
+      index = index - 1;
+      if (index > 0) {
+        await this.scrollAll(elements, index, direction);
+      }
+    } else {
+      index = index + 1;
+      if (elements.length > index) {
+        await this.scrollAll(elements, index, direction);
+      }
+    }
+  }
+
+  promiseScroll(element: HTMLElement, scrollType: string) {
+    return new Promise((resolve) => {
+      if (scrollType === 'view') {
+        element.scrollIntoView();
+      } else if (scrollType === 'top') {
+        element.scrollTop = 0;
+      } else if (scrollType === 'bottom') {
+        element.scrollTop = element.scrollHeight;
+      }
+      setTimeout(() => {
+        resolve(true);
+      }, 500);
+    });
   }
 }
