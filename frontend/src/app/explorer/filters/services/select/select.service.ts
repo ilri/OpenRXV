@@ -49,13 +49,16 @@ export class SelectService {
       });
   }
 
-  buildquery(bqa: BuildQueryObj): bodybuilder.Bodybuilder {
+  buildquery(
+    bqa: BuildQueryObj,
+    excludeSource?: string,
+  ): bodybuilder.Bodybuilder {
     const bq: BuildQueryObj = {
       size: bqa.size ? bqa.size : 10,
       source: this.source,
       term: bqa.term,
     };
-    return this.bodyBuilderService.buildquery(bq);
+    return this.bodyBuilderService.buildquery(bq, excludeSource);
   }
 
   addAttributeToMainQuery(
@@ -79,7 +82,7 @@ export class SelectService {
     filterdValues = [
       ...filterdValues,
       ...filteredArray.map((element) => Object.values(element)[0]),
-    ];
+    ].flat(Infinity);
     filterdValues.filter((v, i, a) => a.indexOf(v) === i);
 
     return this.addAttributeToMainQuery({

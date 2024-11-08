@@ -59,12 +59,21 @@ export class SelectComponent extends ParentComponent implements OnInit {
       const filters = this.bodyBuilderService.getFiltersFromQuery();
 
       filters.forEach((element) => {
-        for (var key in element)
+        for (const key in element)
           if (key == source) {
-            this.selectedOptions = [
-              ...this.selectedOptions.filter((d) => d.key != element[key]),
-              ...[{ key: element[key], doc_count: 1 }],
-            ];
+            if (Array.isArray(element[key])) {
+              element[key].map((option) => {
+                this.selectedOptions = [
+                  ...this.selectedOptions.filter((d) => d.key != option),
+                  ...[{ key: option, doc_count: 1 }],
+                ];
+              });
+            } else {
+              this.selectedOptions = [
+                ...this.selectedOptions.filter((d) => d.key != element[key]),
+                ...[{ key: element[key], doc_count: 1 }],
+              ];
+            }
           }
       });
 
@@ -181,8 +190,13 @@ export class SelectComponent extends ParentComponent implements OnInit {
     };
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
+
+    const excludeSource =
+      this.componentConfigs.defaultWithinFiltersOperator === 'or'
+        ? this.componentConfigs.source
+        : null;
     return {
-      query: this.selectService.buildquery(bq).build() as
+      query: this.selectService.buildquery(bq, excludeSource).build() as
         | ElasticsearchQuery
         | Partial<ElasticsearchQuery>,
       dashboard: dashboard_name ? dashboard_name : 'DEFAULT_DASHBOARD',

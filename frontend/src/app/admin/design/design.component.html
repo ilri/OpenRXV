@@ -66,6 +66,19 @@
       </div>
       <div class="col-3 side-left">
         <div class="border">
+          <div>
+            <h5>Default operator within filters</h5>
+            <mat-form-field class="w-100">
+              <mat-label>Default operator within filters</mat-label>
+              <mat-select
+                placeholder="Operator"
+                [(ngModel)]="defaultWithinFiltersOperator"
+              >
+                <mat-option value="">Follow the selected operator</mat-option>
+                <mat-option value="or">Always use OR</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
           <div
             cdkDropList
             (cdkDropListDropped)="dropFilter($event)"

@@ -36,6 +36,7 @@ export class DesignComponent implements OnInit {
   dashboard: Array<any> = [];
   dashboard_name: string;
   exportLink: string;
+  defaultWithinFiltersOperator: any = null;
   predefinedFilters: any = null;
   predefinedFiltersExample = JSON.stringify([
     { terms: { FIELD_NAME: ['VALUE'] } },
@@ -82,8 +83,15 @@ export class DesignComponent implements OnInit {
     await this.spinner.show();
     const dashboard_name = (this.dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name'));
-    const { counters, filters, dashboard, footer, predefinedFilters, welcome } =
-      await this.settingsService.readExplorerSettings(dashboard_name);
+    const {
+      counters,
+      filters,
+      dashboard,
+      footer,
+      predefinedFilters,
+      defaultWithinFiltersOperator,
+      welcome,
+    } = await this.settingsService.readExplorerSettings(dashboard_name);
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -101,7 +109,10 @@ export class DesignComponent implements OnInit {
     this.filters = filters;
     this.dashboard = dashboard;
     this.footer = footer;
-    this.predefinedFilters = JSON.stringify(predefinedFilters);
+    this.defaultWithinFiltersOperator = defaultWithinFiltersOperator;
+    this.predefinedFilters = predefinedFilters
+      ? JSON.stringify(predefinedFilters)
+      : '';
     this.welcome = welcome;
     this.exportLink =
       'data:text/json;charset=UTF-8,' +
@@ -112,6 +123,7 @@ export class DesignComponent implements OnInit {
           filters: this.filters,
           dashboard: this.dashboard,
           footer: this.footer,
+          defaultWithinFiltersOperator: defaultWithinFiltersOperator,
           predefinedFilters: predefinedFilters,
         }),
       );
@@ -119,8 +131,15 @@ export class DesignComponent implements OnInit {
   }
 
   populateForm(settings) {
-    const { counters, filters, dashboard, footer, predefinedFilters, welcome } =
-      settings;
+    const {
+      counters,
+      filters,
+      dashboard,
+      footer,
+      predefinedFilters,
+      defaultWithinFiltersOperator,
+      welcome,
+    } = settings;
     if (welcome.componentConfigs && welcome.componentConfigs.text)
       this.welcome_text = welcome.componentConfigs.text;
     if (!this.welcome)
@@ -138,7 +157,10 @@ export class DesignComponent implements OnInit {
     this.filters = filters;
     this.dashboard = dashboard;
     this.footer = footer;
-    this.predefinedFilters = JSON.stringify(predefinedFilters);
+    this.defaultWithinFiltersOperator = defaultWithinFiltersOperator;
+    this.predefinedFilters = predefinedFilters
+      ? JSON.stringify(predefinedFilters)
+      : '';
     this.welcome = welcome;
     this.exportLink =
       'data:text/json;charset=UTF-8,' +
@@ -149,6 +171,7 @@ export class DesignComponent implements OnInit {
           filters: this.filters,
           dashboard: this.dashboard,
           footer: this.footer,
+          defaultWithinFiltersOperator: defaultWithinFiltersOperator,
           predefinedFilters: predefinedFilters,
         }),
       );
@@ -280,6 +303,7 @@ export class DesignComponent implements OnInit {
         filters: this.filters,
         dashboard: this.dashboard,
         footer: this.footer,
+        defaultWithinFiltersOperator: this.defaultWithinFiltersOperator,
         predefinedFilters: predefinedFilters,
       };
       await this.settingsService.saveExplorerSettings(dashboard_name, data);
@@ -439,6 +463,7 @@ export class DesignComponent implements OnInit {
       filters: importedItem?.filters,
       dashboard: importedItem?.dashboard,
       footer: importedItem?.footer,
+      defaultWithinFiltersOperator: importedItem?.defaultWithinFiltersOperator,
       predefinedFilters: importedItem?.predefinedFilters,
       welcome: importedItem?.welcome,
     };

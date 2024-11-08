@@ -30,6 +30,7 @@ export class BuilderUtilities {
   protected orOperator: Subject<boolean>;
   protected or: boolean;
   protected titleSource: string;
+  protected defaultWithinFiltersOperator: string;
 
   constructor() {}
 
@@ -84,9 +85,15 @@ export class BuilderUtilities {
       if (this.aggAttributes[key].query_string.query != '')
         b.query('query_string', this.aggAttributes[key].query_string);
     } else {
-      this.aggAttributes[key].forEach((s: string) =>
-        this.or ? b.orFilter('term', key, s) : b.filter('term', key, s),
-      );
+      if (this.defaultWithinFiltersOperator === 'or') {
+        this.or
+          ? b.orFilter('terms', key, this.aggAttributes[key])
+          : b.filter('terms', key, this.aggAttributes[key]);
+      } else {
+        this.aggAttributes[key].forEach((s: string) =>
+          this.or ? b.orFilter('term', key, s) : b.filter('term', key, s),
+        );
+      }
     }
   }
 
