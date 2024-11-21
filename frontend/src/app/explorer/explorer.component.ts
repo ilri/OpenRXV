@@ -22,6 +22,7 @@ import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as dayjs from 'dayjs';
 
@@ -298,19 +299,18 @@ export class ExplorerComponent implements OnInit {
     html2canvas(container)
       .then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-
         const fileName =
           this.website_name.replaceAll(/[^a-z0-9]/gi, '_') +
           '_' +
           dayjs().format('YYYY-MM-DD_HH:mm:ss') +
-          '.png';
-        link.setAttribute('download', fileName);
-        link.setAttribute('href', imageData);
-        link.click();
+          '.pdf';
+        const imgWidth = 208;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const doc = new jsPDF('p', 'mm', [imgWidth, imgHeight], true);
+        doc.addImage(imageData, 'PNG', 0, 0, imgWidth, imgHeight, '', 'FAST');
+        doc.save(fileName + '.pdf');
         container.style.removeProperty('height');
         container.style.removeProperty('scroll-behavior');
-        link.remove();
         this.spinner.hide();
       })
       .catch((e) => {
