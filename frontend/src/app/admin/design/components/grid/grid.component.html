@@ -1,90 +1,117 @@
 <h1 mat-dialog-title>Please chose Grid Type</h1>
 <div mat-dialog-content>
-    <div (click)="select([{ 'class': 'col-md-12' }])" class="row mb-2">
-        <div class="col-12">
-            <div class="border"></div>
-        </div>
+  <div (click)="select([{ class: 'col-md-12' }])" class="row mb-2">
+    <div class="col-12">
+      <div class="border"></div>
     </div>
-    <div (click)="select([{ 'class': 'col-md-6' },{ 'class': 'col-md-6' }])" class="row mb-2">
-        <div class="col-6">
-            <div class="border"></div>
-        </div>
-        <div class="col-6">
-            <div class="border"></div>
-        </div>
+  </div>
+  <div
+    (click)="select([{ class: 'col-md-6' }, { class: 'col-md-6' }])"
+    class="row mb-2"
+  >
+    <div class="col-6">
+      <div class="border"></div>
     </div>
-    <div (click)="select([{ 'class': 'col-md-3' },
-    { 'class': 'col-md-9' }])" class="row mb-2">
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
-        <div class="col-9">
-            <div class="border"></div>
-        </div>
+    <div class="col-6">
+      <div class="border"></div>
     </div>
-    <div (click)="select([{ 'class': 'col-md-9' },
-    { 'class': 'col-md-3' }])" class="row mb-2">
-        <div class="col-9">
-            <div class="border"></div>
-        </div>
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
+  </div>
+  <div
+    (click)="select([{ class: 'col-md-3' }, { class: 'col-md-9' }])"
+    class="row mb-2"
+  >
+    <div class="col-3">
+      <div class="border"></div>
     </div>
-    <div (click)="select([
-    { 'class': 'col-md-4' },
-    { 'class': 'col-md-4' },
-    { 'class': 'col-md-4' }])" class="row mb-2">
-        <div class="col-4">
-            <div class="border"></div>
-        </div>
-        <div class="col-4">
-            <div class="border"></div>
-        </div>
-        <div class="col-4">
-            <div class="border"></div>
-        </div>
+    <div class="col-9">
+      <div class="border"></div>
     </div>
-    <div (click)="select(
-        [{ 'class': 'col-md-8' },
-        { 'class': 'col-md-4' }])" class="row mb-2">
-        <div class="col-8">
-            <div class="border"></div>
-        </div>
-        <div class="col-4">
-            <div class="border"></div>
-        </div>
+  </div>
+  <div
+    (click)="select([{ class: 'col-md-9' }, { class: 'col-md-3' }])"
+    class="row mb-2"
+  >
+    <div class="col-9">
+      <div class="border"></div>
     </div>
-    <div (click)="select(
-        [{ 'class': 'col-md-4' },
-        { 'class': 'col-md-8' }])" class="row mb-2">
-        <div class="col-4">
-            <div class="border"></div>
-        </div>
-        <div class="col-8">
-            <div class="border"></div>
-        </div>
+    <div class="col-3">
+      <div class="border"></div>
     </div>
-    <div (click)="select(
-        [{ 'class': 'col-md-3' },
-        { 'class': 'col-md-3' },
-        { 'class': 'col-md-3' },
-        { 'class': 'col-md-3' }])" class="row mb-2">
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
-        <div class="col-3">
-            <div class="border"></div>
-        </div>
+  </div>
+  <div
+    (click)="
+      select([
+        { class: 'col-md-4' },
+        { class: 'col-md-4' },
+        { class: 'col-md-4' }
+      ])
+    "
+    class="row mb-2"
+  >
+    <div class="col-4">
+      <div class="border"></div>
     </div>
+    <div class="col-4">
+      <div class="border"></div>
+    </div>
+    <div class="col-4">
+      <div class="border"></div>
+    </div>
+  </div>
+  <div
+    (click)="select([{ class: 'col-md-8' }, { class: 'col-md-4' }])"
+    class="row mb-2"
+  >
+    <div class="col-8">
+      <div class="border"></div>
+    </div>
+    <div class="col-4">
+      <div class="border"></div>
+    </div>
+  </div>
+  <div
+    (click)="select([{ class: 'col-md-4' }, { class: 'col-md-8' }])"
+    class="row mb-2"
+  >
+    <div class="col-4">
+      <div class="border"></div>
+    </div>
+    <div class="col-8">
+      <div class="border"></div>
+    </div>
+  </div>
+  <div
+    (click)="
+      select([
+        { class: 'col-md-3' },
+        { class: 'col-md-3' },
+        { class: 'col-md-3' },
+        { class: 'col-md-3' }
+      ])
+    "
+    class="row mb-2"
+  >
+    <div class="col-3">
+      <div class="border"></div>
+    </div>
+    <div class="col-3">
+      <div class="border"></div>
+    </div>
+    <div class="col-3">
+      <div class="border"></div>
+    </div>
+    <div class="col-3">
+      <div class="border"></div>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions align="end">
-    <button type="button" mat-raised-button color="default" [mat-dialog-close]="null">Close <mat-icon>close</mat-icon>
-    </button>
+  <button
+    type="button"
+    mat-raised-button
+    color="default"
+    [mat-dialog-close]="null"
+  >
+    Close <mat-icon>close</mat-icon>
+  </button>
 </div>

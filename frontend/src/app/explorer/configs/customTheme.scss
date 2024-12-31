@@ -32,8 +32,8 @@
   height: 100%;
   position: absolute;
   background-color: var(--theme-primary-500);
-  opacity: .2;
-  transition: background-color .25s ease-in;
+  opacity: 0.2;
+  transition: background-color 0.25s ease-in;
 }
 
 .border-top-light {
@@ -96,7 +96,11 @@
 $plant-primary: mat.define-palette($customTheme, 500);
 $plant-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 $plant-warn: mat.define-palette(mat.$red-palette);
-$plant-theme: mat.define-light-theme($plant-primary, $plant-accent, $plant-warn);
+$plant-theme: mat.define-light-theme(
+  $plant-primary,
+  $plant-accent,
+  $plant-warn
+);
 
 @include mat.all-component-themes($plant-theme);
 

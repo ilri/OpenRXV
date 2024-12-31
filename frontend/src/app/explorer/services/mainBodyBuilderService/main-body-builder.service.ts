@@ -25,12 +25,14 @@ export class MainBodyBuilderService extends BuilderUtilities {
   }
   async start() {
     await this.init();
-    const { dashboard, counters, filters } = await this.configs();
+    const { dashboard, counters, filters, defaultWithinFiltersOperator } =
+      await this.configs();
     this.dashboardConfig = dashboard.flat(1);
     this.countersConfig = counters;
     this.filtersConfig = filters;
     this.rawOptions = this.buildRawOptions();
     this.orOperator.next(false);
+    this.defaultWithinFiltersOperator = defaultWithinFiltersOperator;
   }
 
   aggAttributesDeirect(q) {
@@ -124,7 +126,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
 
   addQueryAttributes(
     b: bodybuilder.Bodybuilder,
-    excludeSource?,
+    excludeSource?: string,
   ): bodybuilder.Bodybuilder {
     for (const key in this.aggAttributes) {
       if (excludeSource != key) this.addSpecificfield(key, b);

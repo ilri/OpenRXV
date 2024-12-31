@@ -66,23 +66,31 @@ export class BodyBuilderService {
       bq,
     );
   }
-  buildquery(bq: BuildQueryObj): bodybuilder.Bodybuilder {
+  buildquery(
+    bq: BuildQueryObj,
+    excludeSource?: string,
+  ): bodybuilder.Bodybuilder {
     bq.size = bq.size ? bq.size : 10;
     return this.addQueryAttributes(
       this.addAggreigation(
         bodybuilder().size(0), // no need for the hits
         bq,
       ),
+      excludeSource,
     );
   }
 
-  buildMinMaxQuery(bq: BuildQueryObj): bodybuilder.Bodybuilder {
+  buildMinMaxQuery(
+    bq: BuildQueryObj,
+    excludeSource?: string,
+  ): bodybuilder.Bodybuilder {
     bq.size = bq.size ? bq.size : 10;
     return this.addQueryAttributes(
       this.addMinMaxAggreigation(
         bodybuilder().size(0), // no need for the hits
         bq,
       ),
+      excludeSource,
     );
   }
 
@@ -161,8 +169,9 @@ export class BodyBuilderService {
 
   public addQueryAttributes(
     q: bodybuilder.Bodybuilder,
+    excludeSource?: string,
   ): bodybuilder.Bodybuilder {
-    return this.mainBodyBuilderService.addQueryAttributes(q);
+    return this.mainBodyBuilderService.addQueryAttributes(q, excludeSource);
   }
 
   getFiltersFromQuery() {
@@ -170,6 +179,8 @@ export class BodyBuilderService {
     const finalObj = [];
     this.traverse(query, (obj: any, key: any, val: any) => {
       if (key == 'term' && val instanceof Object) finalObj.push(val);
+      if (key == 'terms' && val instanceof Object && !val?.size)
+        finalObj.push(val);
       if (key == 'range' && val instanceof Object) finalObj.push(val);
       if (key == 'match' && val instanceof Object) {
         finalObj.push(val);

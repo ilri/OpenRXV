@@ -89,6 +89,7 @@ import { agmConfigFactory } from './services/agm';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { NgxSpinnerModule } from 'ngx-spinner';
 @NgModule({
   declarations: [
     ExplorerComponent,
@@ -184,6 +185,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
       apiKey: '',
     }),
     AgmSnazzyInfoWindowModule,
+    NgxSpinnerModule,
   ],
   providers: [
     {

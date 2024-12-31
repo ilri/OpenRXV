@@ -58,14 +58,22 @@
     </button>
 
     <button
-            matTooltip="Last updated on {{index_last_update}}"
-            matTooltipClass="multiline-tooltip"
-            mat-icon-button
-            aria-label="Data last updated on {{index_last_update}}"
+      matTooltip="Export as PDF"
+      mat-icon-button
+      (click)="exportDashboard()"
+      aria-label="Export as PDF"
+    >
+      <mat-icon>picture_as_pdf</mat-icon>
+    </button>
+
+    <button
+      *ngIf="index_last_update"
+      matTooltip="Last updated on {{ index_last_update }}"
+      matTooltipClass="multiline-tooltip"
+      mat-icon-button
     >
       <mat-icon>av_timer</mat-icon>
     </button>
-
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-toolbar
@@ -73,7 +81,10 @@
   color="primary"
   class="toolbar-style top_nav"
 >
-  <app-scroll-to  *ngIf="appearance?.show_side_nav" class="in-tool-bar"></app-scroll-to>
+  <app-scroll-to
+    *ngIf="appearance?.show_side_nav"
+    class="in-tool-bar"
+  ></app-scroll-to>
   <button
     matTooltip="Open Filters drawer"
     mat-icon-button
@@ -110,14 +121,22 @@
   </button>
 
   <button
-    matTooltip="Last updated on {{index_last_update}}"
+    matTooltip="Export as PDF"
+    mat-icon-button
+    (click)="exportDashboard()"
+    aria-label="Export as PDF"
+  >
+    <mat-icon>picture_as_pdf</mat-icon>
+  </button>
+
+  <button
+    *ngIf="index_last_update"
+    matTooltip="Last updated on {{ index_last_update }}"
     matTooltipClass="multiline-tooltip"
     mat-icon-button
-    aria-label="Data last updated on {{index_last_update}}"
   >
     <mat-icon>av_timer</mat-icon>
   </button>
-
 </mat-toolbar>
 <!--  -->
 
@@ -128,7 +147,9 @@
   }"
   class="flex-explorer"
 >
-  <app-scroll-to *ngIf="appearance?.show_side_nav && !appearance?.show_top_nav"></app-scroll-to>
+  <app-scroll-to
+    *ngIf="appearance?.show_side_nav && !appearance?.show_top_nav"
+  ></app-scroll-to>
   <tour-step-template></tour-step-template>
   <mat-sidenav-container
     (document:mousemove)="onMouseMove($event)"
@@ -179,7 +200,9 @@
               mat-raised-button
               (click)="addRemoveOrOperator()"
               color="primary"
-              class="w-100"
+              class="w-100 andOrOperatorButton"
+              [mdePopoverTriggerFor]="appPopover"
+              mdePopoverTriggerOn="hover"
             >
               Operator
               <ng-container *ngIf="orOperator; else and">
@@ -188,16 +211,11 @@
               <ng-template #and>
                 <strong>AND</strong>
               </ng-template>
-              <mat-icon
-                aria-label="Button that displays a tooltip when focused or hovered over"
-                [mdePopoverTriggerFor]="appPopover"
-                mdePopoverTriggerOn="hover"
-              >
-                error
-              </mat-icon>
+              <mat-icon> error </mat-icon>
               <mde-popover
                 #appPopover="mdePopover"
                 [mdePopoverOverlapTrigger]="false"
+                mdePopoverTriggerOn="hover"
               >
                 <app-icons-with-text
                   [text]="orAndToolTip"
@@ -224,7 +242,7 @@
         </div>
       </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="mb-0 pb-0">
+    <mat-sidenav-content class="mb-0 pb-0" #sidenavContent>
       <div class="xxxloading">
         {{ primaryColor
         }}<ngx-loading-bar
@@ -237,4 +255,12 @@
       <app-dashboard></app-dashboard>
     </mat-sidenav-content>
   </mat-sidenav-container>
+  <ngx-spinner
+    data-html2canvas-ignore="true"
+    bdColor="rgba(0, 0, 0, 0.1)"
+    size="medium"
+    color="var(--theme-primary-500)"
+    type="ball-clip-rotate"
+    [fullScreen]="true"
+  ></ngx-spinner>
 </div>

@@ -1,64 +1,115 @@
 <h1 mat-dialog-title>Report</h1>
 
 <div mat-dialog-content class="content">
-    <form [formGroup]="profileForm">
-        <mat-form-field class="w-100">
-            <mat-label>Title</mat-label>
-            <input matInput value={{formValues.title}} name='title' formControlName="title">
-        </mat-form-field>
+  <form [formGroup]="profileForm">
+    <mat-form-field class="w-100">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        value="{{ formValues.title }}"
+        name="title"
+        formControlName="title"
+      />
+    </mat-form-field>
 
-        <br>
-        <mat-form-field class="w-100">
-            <mat-label>File Type</mat-label>
-            <mat-select name='fileType' formControlName="fileType">
-                <mat-option *ngFor='let type of allowedFileTypes;' value="{{type.extension}}">{{type.label}}</mat-option>
-            </mat-select>
-        </mat-form-field>
+    <br />
+    <mat-form-field class="w-100">
+      <mat-label>File Type</mat-label>
+      <mat-select name="fileType" formControlName="fileType">
+        <mat-option
+          *ngFor="let type of allowedFileTypes"
+          value="{{ type.extension }}"
+          >{{ type.label }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
 
-        <div class="file w-100" *ngIf='profileForm.value.fileType !="xlsx" && profileForm.value.fileType !=""'>
-
-            <mat-label>File </mat-label>
-            <input *ngIf="!formValues.file" type="file" name='file' id='file' (change)="fileChange($event)"
-                placeholder="file" required name='file' formControlName="file">
-            <label>{{formValues.file}}</label>
-            <div *ngIf="formValues.file">
-                <button (click)="removeFile()" color="warn" mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                </button>
-                <label>{{file}}</label>
-            </div>
-        </div>
-    </form>
-    <div *ngIf='profileForm.value.fileType =="xlsx"' cdkDropList (cdkDropListDropped)="drop($event)">
-        <div *ngFor='let source of labels;  let i = index' class="row" style="align-items: center;" cdkDrag >
-            <div class="col-md-4">
-                <ng-select [addTag]="true" [items]="metadata" [multiple]="false" [(ngModel)]='labels[i].metadata' placeholder="Source">
-                </ng-select>
-            </div>
-            <mat-form-field class="col-md-4">
-                <mat-label>Data Source Label</mat-label>
-                <input matInput [(ngModel)]='labels[i].label' placeholder="{{labels[i].metadata}} label">
-            </mat-form-field>
-            <svg width="24px" viewBox="0 0 24 24">
-                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-                <path d="M0 0h24v24H0z" fill="none"></path>
-              </svg>
-            <div>
-                <button mat-button (click)="deleteSource(i)">
-                    <mat-icon style="color: red;">delete</mat-icon>
-                </button>
-            </div>
-        </div>
-        <button type="button" mat-icon-button color="primary" (click)='add()'>
-            <mat-icon>add_box</mat-icon>
-        </button> Add Data source
-
+    <div
+      class="file w-100"
+      *ngIf="
+        profileForm.value.fileType != 'xlsx' && profileForm.value.fileType != ''
+      "
+    >
+      <mat-label>File </mat-label>
+      <input
+        *ngIf="!formValues.file"
+        type="file"
+        name="file"
+        id="file"
+        (change)="fileChange($event)"
+        placeholder="file"
+        required
+        name="file"
+        formControlName="file"
+      />
+      <label>{{ formValues.file }}</label>
+      <div *ngIf="formValues.file">
+        <button (click)="removeFile()" color="warn" mat-icon-button>
+          <mat-icon>delete</mat-icon>
+        </button>
+        <label>{{ file }}</label>
+      </div>
     </div>
+  </form>
+  <div
+    *ngIf="profileForm.value.fileType == 'xlsx'"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      *ngFor="let source of labels; let i = index"
+      class="row"
+      style="align-items: center"
+      cdkDrag
+    >
+      <div class="col-md-4">
+        <ng-select
+          [addTag]="true"
+          [items]="metadata"
+          [multiple]="false"
+          [(ngModel)]="labels[i].metadata"
+          placeholder="Source"
+        >
+        </ng-select>
+      </div>
+      <mat-form-field class="col-md-4">
+        <mat-label>Data Source Label</mat-label>
+        <input
+          matInput
+          [(ngModel)]="labels[i].label"
+          placeholder="{{ labels[i].metadata }} label"
+        />
+      </mat-form-field>
+      <svg width="24px" viewBox="0 0 24 24">
+        <path
+          d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+        ></path>
+        <path d="M0 0h24v24H0z" fill="none"></path>
+      </svg>
+      <div>
+        <button mat-button (click)="deleteSource(i)">
+          <mat-icon style="color: red">delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <button type="button" mat-icon-button color="primary" (click)="add()">
+      <mat-icon>add_box</mat-icon>
+    </button>
+    Add Data source
+  </div>
 </div>
 <div mat-dialog-actions align="end">
-    <button type="button" mat-raised-button color="warn" (click)="closeForm()">Close<mat-icon>close</mat-icon>
-    </button>
-    <button type="button" color="primary" (keyup.enter)="saveForm()" (click)="saveForm()" mat-raised-button
-    [disabled]="!profileForm.value.title || !profileForm.value.fileType">Save<mat-icon>done</mat-icon></button>
-
+  <button type="button" mat-raised-button color="warn" (click)="closeForm()">
+    Close<mat-icon>close</mat-icon>
+  </button>
+  <button
+    type="button"
+    color="primary"
+    (keyup.enter)="saveForm()"
+    (click)="saveForm()"
+    mat-raised-button
+    [disabled]="!profileForm.value.title || !profileForm.value.fileType"
+  >
+    Save<mat-icon>done</mat-icon>
+  </button>
 </div>

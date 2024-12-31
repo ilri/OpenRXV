@@ -84,6 +84,10 @@ export class SettingsController {
     if (!(await this.jsonFilesService.GetDashboard(dashboard_name)))
       return new NotFoundException();
 
+    data.filters.map((filter) => {
+      filter.componentConfigs.defaultWithinFiltersOperator =
+        data.defaultWithinFiltersOperator;
+    });
     for (const dashboard of dashboards) {
       if (dashboard.name == dashboard_name) dashboard['explorer'] = data;
     }

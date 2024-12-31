@@ -1,54 +1,71 @@
 <h1 mat-dialog-title>here are some samples of how to use metadata</h1>
 <div mat-dialog-content>
-    <ul>
-        <li>
-            <div>
-                <p> {{'{'}}items{{'}'}} </p>
-                <p> {{'{'}}citation{{'}'}}</p>
-                <p> https://hdl.handle.net/ {{'{'}}handle{{'}'}}</p>
-                <p> {{'{'}}DOI{{'}'}}</p>
-                <p> {{ '{' }}/items{{'}'}} </p>
+  <ul>
+    <li>
+      <div>
+        <p>{{ '{' }}items{{ '}' }}</p>
+        <p>{{ '{' }}citation{{ '}' }}</p>
+        <p>https://hdl.handle.net/ {{ '{' }}handle{{ '}' }}</p>
+        <p>{{ '{' }}DOI{{ '}' }}</p>
+        <p>{{ '{' }}/items{{ '}' }}</p>
+      </div>
+    </li>
+    <li>
+      <p>
+        Vipham, J.L., Amenu, K., Alonso, S., Ndahetuye, J.-B., Zereyesus, Y.,
+        Nishimwe, K., Bowers, E., Maier, D., Sah, K., Havelaar, A. and Grace, D.
+        2020. No food security without food safety: Lessons from livestock
+        related research. Global Food Security 26: 100382.
+      </p>
+      <p>https://hdl.handle.net/10568/108690</p>
+      <p>https://doi.org/10.1016/j.gfs.2020.100382</p>
+      <hr />
+      <p>
+        Colverson, K.E., Coble-Harris, L., Galiè, A., Moore, E.V., Munoz, O.,
+        McKune, S.L., Singh, N. and Mo, R. 2020. Evolution of a gender tool:
+        WEAI, WELI and livestock research. Global Food Security 26: 100375
+      </p>
+      <p>https://hdl.handle.net/10568/108249</p>
+      <p>https://doi.org/10.1016/j.gfs.2020.100375</p>
+    </li>
+  </ul>
+  <h3>
+    here you can see that if you included this inside your Docx file you'll get
+    that result:
+  </h3>
+  <p>- {{ '{' }}#items{{ '}' }}{{ '{' }}/items{{ '}' }} looped inside items</p>
+  <p>
+    - the ID is: {{ '{' }}id{{ '}' }} showed the value of id for each
+    publication..same for the title
+  </p>
+  <p>- with the same formatting style you used in the original Docx file</p>
+  <hr />
 
-            </div>
-        </li>
-        <li>
-            <p>Vipham, J.L., Amenu, K., Alonso, S., Ndahetuye, J.-B., Zereyesus, Y., Nishimwe, K., Bowers, E., Maier,
-                D., Sah, K., Havelaar, A. and Grace, D. 2020. No food security without food safety: Lessons from
-                livestock related research. Global Food Security 26: 100382.</p>
-            <p>https://hdl.handle.net/10568/108690</p>
-            <p>https://doi.org/10.1016/j.gfs.2020.100382</p>
-            <hr>
-            <p>Colverson, K.E., Coble-Harris, L., Galiè, A., Moore, E.V., Munoz, O., McKune, S.L., Singh, N. and Mo, R.
-                2020. Evolution of a gender tool: WEAI, WELI and livestock research. Global Food Security 26: 100375</p>
-            <p>https://hdl.handle.net/10568/108249</p>
-            <p>https://doi.org/10.1016/j.gfs.2020.100375</p>
-        </li>
-    </ul>
-    <h3> here you can see that if you included this inside your Docx file you'll get that result:</h3>
-    <p> - {{'{'}}#items{{'}'}}{{ '{' }}/items{{'}'}} looped inside items </p>
-    <p> - the ID is: {{ '{' }}id{{'}'}} showed the value of id for each publication..same for the title</p>
-    <p> - with the same formatting style you used in the original Docx file</p>
-    <hr>
+  <ul>
+    <li>
+      <div>
+        <p>{{ '{' }}items{{ '}' }}</p>
+        <p>
+          {{ '{' }}status{{ '}' }} || {{ '{' }}type{{ '}' }} || {{ '{' }}date{{
+            '}'
+          }}
+          || {{ '{' }}handle{{ '}' }}
+        </p>
+        <p>{{ '{' }}/items{{ '}' }}</p>
+      </div>
+    </li>
 
-    <ul>
-        <li>
-            <div>
-                <p> {{'{'}}items{{'}'}} </p>
-                <p> {{'{'}}status{{'}'}} || {{'{'}}type{{'}'}} || {{'{'}}date{{'}'}} || {{ '{' }}handle{{'}'}} </p>
-                <p> {{ '{'}}/items{{'}'}} </p>
-            </div>
-        <li>
-            <p>Open access || item || 1998-04-28 || 20.500.11766/8792 </p>
+    <li>
+      <p>Open access || item || 1998-04-28 || 20.500.11766/8792</p>
 
-            <p>Open access || item || 2010-11-28 || 20.500.11766/8782 </p>
+      <p>Open access || item || 2010-11-28 || 20.500.11766/8782</p>
 
-            <p>Limited access || item || 2016-12-31 || 20.500.11766/6229 </p>
+      <p>Limited access || item || 2016-12-31 || 20.500.11766/6229</p>
 
-            <p> Limited access || item || 2006-04-24 || 20.500.11766/7793 </p>
+      <p>Limited access || item || 2006-04-24 || 20.500.11766/7793</p>
 
-            <p> Open access || item || 2018-06-08 || 20.500.11766/8617 </p>
-        </li>
-
-    </ul>
-    <hr>
+      <p>Open access || item || 2018-06-08 || 20.500.11766/8617</p>
+    </li>
+  </ul>
+  <hr />
 </div>

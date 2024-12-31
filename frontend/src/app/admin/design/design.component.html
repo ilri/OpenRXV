@@ -1,110 +1,186 @@
 <div class="row admin-dashboard-header">
-    <div class="col-md-12">
-        <mat-card appearance="raised">
-            <mat-card-title>
-                Explorer Layout - {{dashboard_name}}
-                <a style="float: right" [href]="exportLink" [download]="'OpenRXV-dashboard-layout-' + dashboard_name + '.json'"
-                   color="primary" mat-raised-button>
-                    Export
-                    <mat-icon aria-hidden="false" aria-label="add">cloud_download</mat-icon>
-                </a>
-                <input #jsonImportUploadInput hidden="true" type="file" onclick="this.value=null" (change)="importJSON($event)" accept=".json"/>
-                <button class="mr-2" style="float: right" (click)="jsonImportUploadInput.click()" color="primary" mat-raised-button>
-                  Import
-                  <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
-                </button>
-                <button class="mr-2 save" (click)="save()" color="primary" mat-raised-button>
-                    Save
-                    <mat-icon>save</mat-icon>
-                </button>
-            </mat-card-title>
-        </mat-card>
-    </div>
+  <div class="col-md-12">
+    <mat-card appearance="raised">
+      <mat-card-title>
+        Explorer Layout - {{ dashboard_name }}
+        <a
+          style="float: right"
+          [href]="exportLink"
+          [download]="'OpenRXV-dashboard-layout-' + dashboard_name + '.json'"
+          color="primary"
+          mat-raised-button
+        >
+          Export
+          <mat-icon aria-hidden="false" aria-label="add"
+            >cloud_download</mat-icon
+          >
+        </a>
+        <input
+          #jsonImportUploadInput
+          hidden="true"
+          type="file"
+          onclick="this.value=null"
+          (change)="importJSON($event)"
+          accept=".json"
+        />
+        <button
+          class="mr-2"
+          style="float: right"
+          (click)="jsonImportUploadInput.click()"
+          color="primary"
+          mat-raised-button
+        >
+          Import
+          <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+        </button>
+        <button
+          class="mr-2 save"
+          (click)="save()"
+          color="primary"
+          mat-raised-button
+        >
+          Save
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-card-title>
+    </mat-card>
+  </div>
 </div>
 <div class="row admin-dashboard-content">
-    <div class="col-md-12">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-12 footer">
+        <div class="border">
+          <h5>
+            Welcome statement
+            <button
+              style="float: right"
+              (click)="welcomeSettings()"
+              mat-icon-button
+            >
+              <mat-icon>settings</mat-icon>
+            </button>
+          </h5>
+          <editor [(ngModel)]="welcome_text" [init]="footerEditor"></editor>
+        </div>
+      </div>
+      <div class="col-3 side-left">
+        <div class="border">
+          <div>
+            <h5>Default operator within filters</h5>
+            <mat-form-field class="w-100">
+              <mat-label>Default operator within filters</mat-label>
+              <mat-select
+                placeholder="Operator"
+                [(ngModel)]="defaultWithinFiltersOperator"
+              >
+                <mat-option value="">Follow the selected operator</mat-option>
+                <mat-option value="or">Always use OR</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div
+            cdkDropList
+            (cdkDropListDropped)="dropFilter($event)"
+            class="content drag-list d-flex align-content-center flex-wrap"
+          >
+            <app-filter
+              cdkDrag
+              *ngFor="let item of filters; let i = index"
+              (onDelete)="onFilterDelete($event, i)"
+              (edited)="filtersEdited($event, i)"
+              [configs]="item"
+              class="w-100 drag-item"
+            ></app-filter>
+          </div>
+          <button (click)="newFilter()" class="w-100" mat-button>
+            Add Filter
+            <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="col-9 side-right">
         <div class="row">
-            <div class="col-12 footer">
-                <div class="border">
-                    <h5>Welcome statement <button style="float: right;" (click)="welcomeSettings()"
-                            mat-icon-button>
-                            <mat-icon>settings</mat-icon>
-                        </button></h5>
-                    <editor [(ngModel)]="welcome_text" [init]="footerEditor"></editor>
-                </div>
-            </div>
-            <div class="col-3 side-left">
-                <div class="border">
-                    <div cdkDropList (cdkDropListDropped)="dropFilter($event)"
-                        class="content drag-list d-flex align-content-center flex-wrap">
-                        <app-filter cdkDrag *ngFor="let item of filters; let i = index;"
-                            (onDelete)="onFilterDelete($event,i)" (edited)="filtersEdited($event,i)" [configs]="item"
-                            class="w-100 drag-item"></app-filter>
-                    </div>
-                    <button (click)="newFilter()" class="w-100" mat-button>
-                        Add Filter
-                        <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
-                    </button>
-                </div>
-            </div>
-            <div class="col-9 side-right">
-                <div class="row">
-                    <div class="col-12 pb-2 header">
-                        <div class="border">
-                            <div class="content d-flex align-content-stretch flex-wrap">
-                                <div class="col-12">
-                                    <button (click)="sortCounter()" class="card-actions" color="warn" mat-icon-button>
-                                        <mat-icon>sort</mat-icon>
-                                    </button>
-                                </div>
-
-                                <app-counter class="m-auto" *ngFor="let item of counters; let i = index;"
-                                    (onDelete)="onCounterDelete($event,i)" [configs]="item"
-                                    (edited)="counterEdited($event,i)"></app-counter>
-                            </div>
-                            <button (click)="newCounter()" class="w-100" mat-button>
-                                Add Counter
-                                <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-12 pb-2 content">
-                        <div class="border">
-                            <div class="row">
-                                <div cdkDropList (cdkDropListDropped)="dropDashboard($event)" class="col-12 drag-list">
-                                    <app-structure cdkDrag class="drag-item"
-                                        (rowDeleted)="dashboardRawDeleted($event,i)"
-                                        (onDelete)="onDashboardItemDelete($event,i)"
-                                        (onAdd)="onAddDashboardComponent($event,i)" (edited)="dashboardEdited($event,i)"
-                                        [grid]="item" *ngFor="let item of dashboard, let i = index"></app-structure>
-                                </div>
-                                <button (click)="newRow()" class="col-12" mat-button>
-                                    Add New Row
-                                    <mat-icon aria-hidden="false" aria-label="add">view_module</mat-icon>
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 footer">
-                <div class="border">
-                    <h5>Footer</h5>
-                    <editor [(ngModel)]="footer" [init]="footerEditor"></editor>
-                </div>
-            </div>
-          <div class="col-12 predefined-query">
+          <div class="col-12 pb-2 header">
             <div class="border">
-              <h5>Predefined filters</h5>
-              <mat-form-field class="w-100">
-                <mat-label>Predefined filters</mat-label>
-                <textarea matInput type="text" rows="5" class="w-100" [placeholder]="predefinedFiltersExample"
-                          [(ngModel)]="predefinedFilters"></textarea>
-              </mat-form-field>
+              <div class="content d-flex align-content-stretch flex-wrap">
+                <div class="col-12">
+                  <button
+                    (click)="sortCounter()"
+                    class="card-actions"
+                    color="warn"
+                    mat-icon-button
+                  >
+                    <mat-icon>sort</mat-icon>
+                  </button>
+                </div>
+
+                <app-counter
+                  class="m-auto"
+                  *ngFor="let item of counters; let i = index"
+                  (onDelete)="onCounterDelete($event, i)"
+                  [configs]="item"
+                  (edited)="counterEdited($event, i)"
+                ></app-counter>
+              </div>
+              <button (click)="newCounter()" class="w-100" mat-button>
+                Add Counter
+                <mat-icon aria-hidden="false" aria-label="add">add</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="col-12 pb-2 content">
+            <div class="border">
+              <div class="row">
+                <div
+                  cdkDropList
+                  (cdkDropListDropped)="dropDashboard($event)"
+                  class="col-12 drag-list"
+                >
+                  <app-structure
+                    cdkDrag
+                    class="drag-item"
+                    (rowDeleted)="dashboardRawDeleted($event, i)"
+                    (onDelete)="onDashboardItemDelete($event, i)"
+                    (onAdd)="onAddDashboardComponent($event, i)"
+                    (edited)="dashboardEdited($event, i)"
+                    [grid]="item"
+                    *ngFor="let item of dashboard; let i = index"
+                  ></app-structure>
+                </div>
+                <button (click)="newRow()" class="col-12" mat-button>
+                  Add New Row
+                  <mat-icon aria-hidden="false" aria-label="add"
+                    >view_module</mat-icon
+                  >
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div class="col-12 footer">
+        <div class="border">
+          <h5>Footer</h5>
+          <editor [(ngModel)]="footer" [init]="footerEditor"></editor>
+        </div>
+      </div>
+      <div class="col-12 predefined-query">
+        <div class="border">
+          <h5>Predefined filters</h5>
+          <mat-form-field class="w-100">
+            <mat-label>Predefined filters</mat-label>
+            <textarea
+              matInput
+              type="text"
+              rows="5"
+              class="w-100"
+              [placeholder]="predefinedFiltersExample"
+              [(ngModel)]="predefinedFilters"
+            ></textarea>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

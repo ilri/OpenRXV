@@ -1,28 +1,63 @@
-<h1 mat-dialog-title>{{ data? 'Edit' :'New' }} Value Mappings</h1>
-<form [formGroup]="form" (keyup.enter)="submit(data.values_index_name)" (ngSubmit)="submit(data.values_index_name)">
-    <div mat-dialog-content>
-        <p>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Find" required formControlName="find">
-            </mat-form-field>
-        </p>
-        <p>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Replace" required formControlName="replace">
-            </mat-form-field>
-        </p>
-        <p>
-          <ng-select addTag="false" [items]="data.metadataFields" bindLabel="metadataField" clearable="true"
-                     searchable="true" formControlName="metadataField" placeholder="Metadata field">
-          </ng-select>
-        </p>
-
-    </div>
-    <div mat-dialog-actions align="end">
-        <button type="button" mat-raised-button color="default"  (click)="onNoClick($event)">Close <mat-icon>close</mat-icon></button>
-      <button type="button" color="primary" (keyup.enter)="submit(data.values_index_name)" (click)="submit(data.values_index_name)"
-              mat-raised-button>Submit
-        <mat-icon>done</mat-icon>
-      </button>
-    </div>
+<h1 mat-dialog-title>{{ data ? 'Edit' : 'New' }} Value Mappings</h1>
+<form
+  [formGroup]="form"
+  (keyup.enter)="submit(data.values_index_name)"
+  (ngSubmit)="submit(data.values_index_name)"
+>
+  <div mat-dialog-content>
+    <p>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Find"
+          required
+          formControlName="find"
+        />
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Replace"
+          required
+          formControlName="replace"
+        />
+      </mat-form-field>
+    </p>
+    <p>
+      <ng-select
+        addTag="false"
+        [items]="data.metadataFields"
+        bindLabel="metadataField"
+        clearable="true"
+        searchable="true"
+        formControlName="metadataField"
+        placeholder="Metadata field"
+      >
+      </ng-select>
+    </p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button
+      type="button"
+      mat-raised-button
+      color="default"
+      (click)="onNoClick($event)"
+    >
+      Close <mat-icon>close</mat-icon>
+    </button>
+    <button
+      type="button"
+      color="primary"
+      (keyup.enter)="submit(data.values_index_name)"
+      (click)="submit(data.values_index_name)"
+      mat-raised-button
+    >
+      Submit
+      <mat-icon>done</mat-icon>
+    </button>
+  </div>
 </form>

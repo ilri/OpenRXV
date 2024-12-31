@@ -1,20 +1,20 @@
 // when you type `<mat-component color = "primary">` it will apply 500
 // for material theme
 $customTheme: (
-  50 : var(--theme-primary-50),
-  100 : var(--theme-primary-100),
-  200 : var(--theme-primary-200),
-  300 : var(--theme-primary-300),
-  400 : var(--theme-primary-400),
-  500 : var(--theme-primary-500),
-  600 : var(--theme-primary-600),
-  700 : var(--theme-primary-700),
-  800 : var(--theme-primary-800),
-  900 : var(--theme-primary-900),
-  A100 : var(--theme-primary-A100),
-  A200 : var(--theme-primary-A200),
-  A400 : var(--theme-primary-A400),
-  A700 : var(--theme-primary-A700),
+  50: var(--theme-primary-50),
+  100: var(--theme-primary-100),
+  200: var(--theme-primary-200),
+  300: var(--theme-primary-300),
+  400: var(--theme-primary-400),
+  500: var(--theme-primary-500),
+  600: var(--theme-primary-600),
+  700: var(--theme-primary-700),
+  800: var(--theme-primary-800),
+  900: var(--theme-primary-900),
+  A100: var(--theme-primary-A100),
+  A200: var(--theme-primary-A200),
+  A400: var(--theme-primary-A400),
+  A700: var(--theme-primary-A700),
   contrast: (
     50: var(--theme-primary-contrast-50),
     100: var(--theme-primary-contrast-100),
@@ -30,7 +30,7 @@ $customTheme: (
     A200: var(--theme-primary-contrast-A200),
     A400: var(--theme-primary-contrast-A400),
     A700: var(--theme-primary-contrast-A700),
-  )
+  ),
 );
 
 // $customTheme: (

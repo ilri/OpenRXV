@@ -1,4 +1,4 @@
-@import "../../explorer/configs/customTheme.scss";
+@import '../../explorer/configs/customTheme.scss';
 .container-admin {
   width: 100%;
 }
@@ -28,11 +28,11 @@ mat-drawer {
   text-shadow: 0 0 5px #fff;
 }
 
-img{
+img {
   max-height: 49px !important;
 }
 
-mat-toolbar{
+mat-toolbar {
   margin-top: 2px !important;
 }
 
