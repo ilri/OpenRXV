@@ -41,7 +41,7 @@
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "@thisissoon/angular-inviewport": "^4.2.2",
     "@tinymce/tinymce-angular": "^7.0.0",
-    "@types/scriptjs": "0.0.2",
+    "@types/scriptjs": "0.0.5",
     "bodybuilder": "^2.5.1",
     "bootstrap": "^4.6.2",
     "dayjs": "^1.11.10",
