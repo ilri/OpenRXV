@@ -1,20 +1,22 @@
 {
-   "$schema" : "https://docs.renovatebot.com/renovate-schema.json",
-   "baseBranches" : [
+   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+   "baseBranches": [
       "master"
    ],
-   "enabledManagers": ["dockerfile", "npm"],
-   "extends" : [
-      "config:base"
+   "enabledManagers": [
+      "dockerfile",
+      "npm"
    ],
-   "packageRules" : [
+   "extends": [
+      "config:recommended"
+   ],
+   "packageRules": [
       {
-         "matchCurrentVersion" : "!/^0/",
-         "matchUpdateTypes" : [
+         "matchCurrentVersion": "!/^0/",
+         "matchUpdateTypes": [
             "minor",
             "patch"
          ]
       }
    ]
 }
-
