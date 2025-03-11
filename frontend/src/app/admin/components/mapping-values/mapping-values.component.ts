@@ -67,6 +67,26 @@ export class MappingValuesComponent implements OnInit {
       }
     });
   }
+
+  async deleteAll() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: 'Confirmation',
+        subtitle: 'Are you sure you want to delete all mappings?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.spinner.show();
+        await this.valuesService.deleteAll(this.values_index_name);
+        await this.spinner.hide();
+        this.toastr.success('Value mappings deleted successfully');
+        this.refreshData();
+      }
+    });
+  }
+
   async toEdit(id) {
     await this.spinner.show();
     const values = await this.valuesService.findOne(id, this.values_index_name);
@@ -144,8 +164,13 @@ export class MappingValuesComponent implements OnInit {
       success: [],
     };
 
-    for (let i = 0; i < data.length; i++) {
-      const importedItem = data[i] as any;
+    const validItems = [];
+    const invalidItems = [];
+    data.map(
+      (
+        importedItem: { find: string; replace: string; metadataField: string },
+        index,
+      ) => {
       const item = {
         find: importedItem?.find.trim(),
         replace: importedItem?.replace.trim(),
@@ -161,31 +186,45 @@ export class MappingValuesComponent implements OnInit {
       if (missingRequiredFields.length > 0) {
         const message =
           'Mapping #' +
-          (i + 1) +
+            (index + 1) +
           ' is missing required fields: ' +
           missingRequiredFields.join(' and ');
-        importStatus.failed.push(message);
-      } else {
-        const response = await this.valuesService.post(
+          invalidItems.push({
           item,
-          this.values_index_name,
-        );
-        if (response.success === true) {
-          importStatus.success.push(item.find);
+            message,
+          });
         } else {
-          const message =
-            'Mapping #' +
-            (i + 1) +
-            ', failed to import with error: ' +
-            (response?.message
-              ? response.message
-              : 'Oops! something went wrong');
-          importStatus.failed.push(message);
-        }
+          validItems.push(item);
       }
-    }
+      },
+    );
 
-    await this.spinner.hide();
+    const chunkSize = 200;
+    const chunks = Array.from(
+      { length: Math.ceil(validItems.length / chunkSize) },
+      (v, i) => validItems.slice(i * chunkSize, i * chunkSize + chunkSize),
+    );
+
+    const promises = chunks.map((chunk) => {
+      return this.valuesService.postBulk(chunk, this.values_index_name);
+    });
+
+    invalidItems.map((invalidItem) =>
+      importStatus.failed.push(invalidItem.message),
+    );
+    Promise.all(promises).then((responses) => {
+      responses.map((response) => {
+        importStatus.failed = [
+          ...importStatus.failed,
+          ...response.failed.map((v) => v.message),
+        ];
+        importStatus.success = [
+          ...importStatus.success,
+          ...response.success.map((v) => v.message),
+        ];
+      });
+
+      this.spinner.hide();
     const message = this.commonService.importJSONResponseMessage(
       importStatus,
       data.length,
@@ -200,5 +239,6 @@ export class MappingValuesComponent implements OnInit {
     } else {
       this.toastr.error(message.message, null, { enableHtml: true });
     }
+    });
   }
 }
