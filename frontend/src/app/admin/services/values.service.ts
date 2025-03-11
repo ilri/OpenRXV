@@ -61,6 +61,18 @@ export class ValuesService {
       .toPromise();
   }
 
+  async postBulk(data, index_name = '') {
+    data.index_name = index_name;
+    return await this.http
+      .post(environment.api + '/values/bulk', { data, index_name })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
   async put(id, data, index_name = '') {
     data.index_name = index_name;
     return await this.http
@@ -77,6 +89,20 @@ export class ValuesService {
     return await this.http
       .delete(
         environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`,
+      )
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async deleteAll(index_name = '') {
+    return await this.http
+      .delete(
+        environment.api +
+          `/values/deleteAll/${this.codec.encodeValue(index_name)}`,
       )
       .pipe(
         map((data: any) => {
