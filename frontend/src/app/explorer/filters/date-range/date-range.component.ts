@@ -11,14 +11,29 @@ import { RangeService } from '../services/range/range.service';
 import * as dayjs from 'dayjs';
 
 import { ActivatedRoute } from '@angular/router';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 // eslint-disable-next-line no-duplicate-imports
 
 @ComponentLookup('DateRangeComponent')
 @Component({
-  selector: 'app-date-range',
-  templateUrl: './date-range.component.html',
-  styleUrls: ['./date-range.component.scss'],
-  providers: [RangeService],
+    selector: 'app-date-range',
+    templateUrl: './date-range.component.html',
+    styleUrls: ['./date-range.component.scss'],
+    providers: [RangeService],
+    standalone: true,
+    imports: [
+        MatFormField,
+        MatLabel,
+        MatInput,
+        FormsModule,
+        MatDatepickerInput,
+        MatDatepickerToggle,
+        MatSuffix,
+        MatDatepicker,
+    ],
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
   fromDate = null;

@@ -1,16 +1,36 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-main-list',
-  templateUrl: './main-list.component.html',
-  styleUrls: ['./main-list.component.scss'],
+    selector: 'app-main-list',
+    templateUrl: './main-list.component.html',
+    styleUrls: ['./main-list.component.scss'],
+    standalone: true,
+    imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    MatFormField,
+    MatInput,
+    MatCheckbox,
+    MatLabel,
+    MatIconButton,
+    MatIcon,
+    MatButton,
+    MatSelect,
+    MatOption
+],
 })
 export class MainListComponent implements OnInit {
   @Input() baseForm: UntypedFormGroup = null;

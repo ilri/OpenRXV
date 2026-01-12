@@ -5,12 +5,15 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-snack',
-  templateUrl: './snack.component.html',
-  styleUrls: ['./snack.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-snack',
+    templateUrl: './snack.component.html',
+    styleUrls: ['./snack.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatIcon],
 })
 export class SnackComponent {
   @Input() set error(e: HttpErrorResponse) {

@@ -12,13 +12,29 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
+import { NgStyle, DecimalPipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
 
 @Component({
-  selector: 'app-virtual-list',
-  templateUrl: './virtual-list.component.html',
-  styleUrls: ['./virtual-list.component.scss'],
-  providers: [SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-virtual-list',
+    templateUrl: './virtual-list.component.html',
+    styleUrls: ['./virtual-list.component.scss'],
+    providers: [SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+    MatList,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatListItem,
+    MatListItemLine,
+    MatTooltip,
+    NgStyle,
+    DecimalPipe
+],
 })
 export class VirtualListComponent extends ParentComponent implements OnInit {
   @Input() listData: Bucket[];

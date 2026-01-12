@@ -15,14 +15,18 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
+
 
 @ComponentLookup('BarComponent')
 @Component({
-  selector: 'app-bar',
-  templateUrl: './bar.component.html',
-  styleUrls: ['./bar.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService, SelectService],
-  changeDetection: ChangeDetectionStrategy.Default,
+    selector: 'app-bar',
+    templateUrl: './bar.component.html',
+    styleUrls: ['./bar.component.scss'],
+    providers: [ChartMathodsService, RangeService, BarService, SelectService],
+    changeDetection: ChangeDetectionStrategy.Default,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class BarComponent extends ParentChart implements OnInit {
   enabled: boolean;

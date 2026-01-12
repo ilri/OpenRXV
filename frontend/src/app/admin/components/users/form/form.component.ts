@@ -1,17 +1,17 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  Validators,
-  AsyncValidatorFn,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { UntypedFormGroup, UntypedFormControl, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 export function existValidator(usersService: UsersService): AsyncValidatorFn {
   if (usersService)
@@ -25,9 +25,24 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
 }
 
 @Component({
-  selector: 'app-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+    selector: 'app-form',
+    templateUrl: './form.component.html',
+    styleUrls: ['./form.component.scss'],
+    standalone: true,
+    imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDialogActions,
+    MatButton,
+    MatIcon
+],
 })
 export class FormComponent implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({

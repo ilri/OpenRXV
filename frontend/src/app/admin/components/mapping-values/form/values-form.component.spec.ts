@@ -8,8 +8,8 @@ describe('ValuesForm', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ValuesForm],
-    }).compileComponents();
+    imports: [ValuesForm],
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,7 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { UsersComponent } from './components/users/users.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { DemoMaterialModule } from 'src/app/material/material.module';
+
 import { FormIndexComponent } from './indexes/form/form.component';
 import { FormDashboardsComponent } from './indexes-dashboard/form/form.component';
 
@@ -44,7 +44,18 @@ import { IndexesComponent } from './indexes/indexes.component';
 import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
 import { FormComponent } from './components/users/form/form.component';
 @NgModule({
-  declarations: [
+    imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatPaginatorModule,
+    CommonModule,
+    AdminRoutingModule,
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
+    NgSelectModule,
+    ColorPickerModule,
+    EditorModule,
     DashboardComponent,
     RootComponent,
     LoginComponent,
@@ -75,28 +86,14 @@ import { FormComponent } from './components/users/form/form.component';
     DocComponent,
     IndexesComponent,
     IndexesDashboardComponent,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatPaginatorModule,
-    CommonModule,
-    DemoMaterialModule,
-    AdminRoutingModule,
-    LoadingBarHttpClientModule,
-    LoadingBarRouterModule,
-    NgSelectModule,
-    ColorPickerModule,
-    EditorModule,
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true,
-    },
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-  ],
+],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true,
+        },
+        { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    ],
 })
 export class AdminModule {}

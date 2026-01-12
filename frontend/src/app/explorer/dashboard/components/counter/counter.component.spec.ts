@@ -8,8 +8,8 @@ describe('CounterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CounterComponent],
-    }).compileComponents();
+    imports: [CounterComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

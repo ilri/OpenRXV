@@ -11,7 +11,7 @@
             placeholder="Email"
             required
             formControlName="email"
-          />
+            />
         </mat-form-field>
       </p>
 
@@ -24,13 +24,15 @@
             placeholder="Password"
             required
             formControlName="password"
-          />
+            />
         </mat-form-field>
       </p>
 
-      <p *ngIf="error" class="error">
-        {{ error }}
-      </p>
+      @if (error) {
+        <p class="error">
+          {{ error }}
+        </p>
+      }
 
       <div class="button">
         <button type="submit" mat-button>Login</button>

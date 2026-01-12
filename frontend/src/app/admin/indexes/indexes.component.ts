@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { FormIndexComponent } from './form/form.component';
 import { ToastrService } from 'ngx-toastr';
@@ -10,11 +10,40 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
 import * as dayjs from 'dayjs';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton, MatIconAnchor } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-indexes',
-  templateUrl: './indexes.component.html',
-  styleUrls: ['./indexes.component.scss'],
+    selector: 'app-indexes',
+    templateUrl: './indexes.component.html',
+    styleUrls: ['./indexes.component.scss'],
+    standalone: true,
+    imports: [
+        MatCard,
+        MatCardTitle,
+        MatAnchor,
+        MatIcon,
+        MatButton,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatIconButton,
+        MatIconAnchor,
+        MatTooltip,
+        RouterLinkActive,
+        RouterLink,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+        MatPaginator,
+    ],
 })
 export class IndexesComponent implements OnInit {
   constructor(

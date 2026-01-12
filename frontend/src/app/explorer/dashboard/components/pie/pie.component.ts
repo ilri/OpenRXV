@@ -16,13 +16,16 @@ import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
 @ComponentLookup('PieComponent')
 @Component({
-  selector: 'app-pie',
-  templateUrl: './pie.component.html',
-  styleUrls: ['./pie.component.scss'],
-  providers: [ChartMathodsService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-pie',
+    templateUrl: './pie.component.html',
+    styleUrls: ['./pie.component.scss'],
+    providers: [ChartMathodsService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class PieComponent extends ParentChart implements OnInit {
   constructor(

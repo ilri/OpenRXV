@@ -15,13 +15,16 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
 @ComponentLookup('WheelComponent')
 @Component({
-  selector: 'app-wheel',
-  templateUrl: './wheel.component.html',
-  styleUrls: ['./wheel.component.scss'],
-  providers: [ChartMathodsService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-wheel',
+    templateUrl: './wheel.component.html',
+    styleUrls: ['./wheel.component.scss'],
+    providers: [ChartMathodsService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class WheelComponent extends ParentChart implements OnInit {
   colors: string[];

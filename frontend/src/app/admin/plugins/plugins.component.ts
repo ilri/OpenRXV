@@ -4,11 +4,26 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../common.service';
+import { PluginComponent } from './plugin/plugin.component';
+
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 
 @Component({
-  selector: 'app-plugins',
-  templateUrl: './plugins.component.html',
-  styleUrls: ['./plugins.component.scss'],
+    selector: 'app-plugins',
+    templateUrl: './plugins.component.html',
+    styleUrls: ['./plugins.component.scss'],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatCardContent,
+    PluginComponent
+],
 })
 export class PluginsComponent implements OnInit {
   plugins = [];

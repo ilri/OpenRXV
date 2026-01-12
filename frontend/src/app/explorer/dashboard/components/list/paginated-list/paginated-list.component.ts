@@ -20,12 +20,25 @@ import {
 import { skip } from 'rxjs/operators';
 import { ExportComponent } from '../export/export.component';
 import { ActivatedRoute } from '@angular/router';
+import { NgxLoadingModule } from 'ngx-loading';
+import { LinkTextComponent } from './link-text/link-text.component';
+import { PubImageComponent } from './pub-image/pub-image.component';
+
+import { FilterPaginatedListComponent } from './filter-paginated-list/filter-paginated-list.component';
 
 @Component({
-  selector: 'app-paginated-list',
-  templateUrl: './paginated-list.component.html',
-  styleUrls: ['./paginated-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-paginated-list',
+    templateUrl: './paginated-list.component.html',
+    styleUrls: ['./paginated-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+    FilterPaginatedListComponent,
+    PubImageComponent,
+    LinkTextComponent,
+    MatPaginator,
+    NgxLoadingModule
+],
 })
 export class PaginatedListComponent implements OnInit {
   @Input() hits: hits[];

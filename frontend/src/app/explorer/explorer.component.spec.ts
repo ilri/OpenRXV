@@ -4,8 +4,8 @@ import { ExplorerComponent } from './explorer.component';
 describe('ExplorerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ExplorerComponent],
-    }).compileComponents();
+    imports: [ExplorerComponent],
+}).compileComponents();
   }));
 
   it('should create the app', () => {

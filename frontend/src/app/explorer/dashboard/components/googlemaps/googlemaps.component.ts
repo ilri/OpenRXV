@@ -26,14 +26,32 @@ import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
-import { GoogleMap } from '@angular/google-maps';
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
+import { NgxLoadingModule } from 'ngx-loading';
+import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { NgClass } from '@angular/common';
+import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 
 @ComponentLookup('GoogleMapsComponent')
 @Component({
-  selector: 'app-google-maps',
-  templateUrl: './googlemaps.component.html',
-  providers: [ChartMathodsService, ScrollHelperService, SelectService],
-  styleUrls: ['./googlemaps.component.scss'],
+    selector: 'app-google-maps',
+    templateUrl: './googlemaps.component.html',
+    providers: [ChartMathodsService, ScrollHelperService, SelectService],
+    styleUrls: ['./googlemaps.component.scss'],
+    standalone: true,
+    imports: [
+    MatExpansionPanel,
+    NgClass,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    IconsWithTextComponent,
+    GoogleMapsModule,
+    NgxLoadingModule
+],
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
   @Input() expandedStatus: boolean;

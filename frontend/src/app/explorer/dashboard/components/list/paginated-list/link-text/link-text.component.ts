@@ -2,11 +2,18 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ESSource } from 'src/app/explorer/filters/services/interfaces';
 import { PaginatedListConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { environment } from 'src/environments/environment';
+import { TagsComponent } from './tags/tags.component';
+import { NgClass } from '@angular/common';
 @Component({
-  selector: 'app-link-text',
-  templateUrl: './link-text.component.html',
-  styleUrls: ['./link-text.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-link-text',
+    templateUrl: './link-text.component.html',
+    styleUrls: ['./link-text.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+    TagsComponent,
+    NgClass
+],
 })
 export class LinkTextComponent {
   objectKeys = Object.keys;

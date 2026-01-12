@@ -8,7 +8,7 @@ import {
 import { SettingsService } from '../services/settings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GridComponent } from './components/grid/grid.component';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { SortComponent } from './components/sort/sort.component';
 import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
@@ -16,11 +16,45 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
+import { MatInput } from '@angular/material/input';
+import { StructureComponent } from './components/structure/structure.component';
+import { CounterComponent } from './components/counter/counter.component';
+import { FilterComponent } from './components/filter/filter.component';
+
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { EditorComponent } from '@tinymce/tinymce-angular';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-design',
-  templateUrl: './design.component.html',
-  styleUrls: ['./design.component.scss'],
+    selector: 'app-design',
+    templateUrl: './design.component.html',
+    styleUrls: ['./design.component.scss'],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    EditorComponent,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    CdkDropList,
+    FilterComponent,
+    CdkDrag,
+    CounterComponent,
+    StructureComponent,
+    MatInput
+],
 })
 export class DesignComponent implements OnInit {
   constructor(

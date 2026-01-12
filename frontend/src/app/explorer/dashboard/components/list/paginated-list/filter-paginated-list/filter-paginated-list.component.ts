@@ -11,11 +11,27 @@ import { FileType } from './types.interface';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { ActivatedRoute } from '@angular/router';
 
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIconButton } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 @Component({
-  selector: 'app-filter-paginated-list',
-  templateUrl: './filter-paginated-list.component.html',
-  styleUrls: ['./filter-paginated-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-filter-paginated-list',
+    templateUrl: './filter-paginated-list.component.html',
+    styleUrls: ['./filter-paginated-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+    NgSelectModule,
+    FormsModule,
+    MatIconButton,
+    MatMenuTrigger,
+    MatIcon,
+    MatMenu,
+    MatMenuItem
+],
 })
 export class FilterPaginatedListComponent implements OnInit {
   @Output() filterChanged: EventEmitter<SortOption>;

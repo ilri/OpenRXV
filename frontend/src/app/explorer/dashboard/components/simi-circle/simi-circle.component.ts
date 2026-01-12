@@ -7,13 +7,16 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
 
 @ComponentLookup('SimiCircleComponent')
 @Component({
-  selector: 'app-simi-circle',
-  templateUrl: './simi-circle.component.html',
-  styleUrls: ['./simi-circle.component.scss'],
-  providers: [ChartMathodsService, SelectService],
+    selector: 'app-simi-circle',
+    templateUrl: './simi-circle.component.html',
+    styleUrls: ['./simi-circle.component.scss'],
+    providers: [ChartMathodsService, SelectService],
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class SimiCircleComponent extends ParentChart implements OnInit {
   colors: string[];

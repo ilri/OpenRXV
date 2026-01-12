@@ -7,14 +7,41 @@ import {
   EventEmitter,
   SimpleChanges,
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
+import { MainListComponent } from '../../design/components/main-list/main-list.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatCard, MatCardTitle, MatCardSubtitle, MatCardContent } from '@angular/material/card';
+
 
 @Component({
-  selector: 'app-plugin',
-  templateUrl: './plugin.component.html',
-  styleUrls: ['./plugin.component.scss'],
+    selector: 'app-plugin',
+    templateUrl: './plugin.component.html',
+    styleUrls: ['./plugin.component.scss'],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatCheckbox,
+    FormsModule,
+    MatCardSubtitle,
+    MatCardContent,
+    MatButton,
+    MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgSelectModule,
+    MainListComponent,
+    MatIconButton
+],
 })
 export class PluginComponent implements OnInit, OnChanges {
   @Input() plugins: any = null;

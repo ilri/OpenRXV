@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  UntypedFormArray,
-} from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   trigger,
   transition,
@@ -19,30 +15,51 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../common.service';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-setup',
-  templateUrl: './setup.component.html',
-  styleUrls: ['./setup.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state(
-        'true',
-        style({
-          'max-height': '*',
-          opacity: 1,
-        }),
-      ),
-      state(
-        'false',
-        style({
-          'max-height': '60px',
-          'overflow-y': 'hidden',
-        }),
-      ),
-      transition('true <=> false', [animate('.5s')]),
-    ]),
-  ],
+    selector: 'app-setup',
+    templateUrl: './setup.component.html',
+    styleUrls: ['./setup.component.scss'],
+    animations: [
+        trigger('openClose', [
+            state('true', style({
+                'max-height': '*',
+                opacity: 1,
+            })),
+            state('false', style({
+                'max-height': '60px',
+                'overflow-y': 'hidden',
+            })),
+            transition('true <=> false', [animate('.5s')]),
+        ]),
+    ],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatRadioGroup,
+    MatRadioButton
+],
 })
 export class SetupComponent implements OnInit {
   plugins: any = [];

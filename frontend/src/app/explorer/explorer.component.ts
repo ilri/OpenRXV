@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavContainer, MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
 import * as fromStore from './store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
-import { TourService, IStepOption } from 'ngx-ui-tour-md-menu';
+import { TourService, IStepOption, TourStepTemplateComponent } from 'ngx-ui-tour-md-menu';
 import {
   GeneralConfigs,
   ComponentCounterConfigs,
@@ -23,13 +23,51 @@ import { FooterComponent } from './dashboard/components/footer/footer.component'
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { NgxSpinnerService, NgxSpinnerModule } from 'ngx-spinner';
 import * as dayjs from 'dayjs';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { NgxLoadingModule } from 'ngx-loading';
+import { FiltersComponent } from './filters/filters.component';
+import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';
+import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { MatNavList } from '@angular/material/list';
+import { ScrollToComponent } from './dashboard/components/scroll-to/scroll-to.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'explorer-root',
-  templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.scss'],
+    selector: 'explorer-root',
+    templateUrl: './explorer.component.html',
+    styleUrls: ['./explorer.component.scss'],
+    standalone: true,
+    imports: [
+    MatToolbar,
+    MatToolbarRow,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    ScrollToComponent,
+    NgClass,
+    TourStepTemplateComponent,
+    MatSidenavContainer,
+    MatSidenav,
+    MatNavList,
+    MatButton,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    FiltersComponent,
+    NgxLoadingModule,
+    MatSidenavContent,
+    LoadingBarModule,
+    DashboardComponent,
+    NgxSpinnerModule,
+    AsyncPipe
+],
 })
 export class ExplorerComponent implements OnInit {
   @ViewChild('drawer') sidenav: MatDrawer;

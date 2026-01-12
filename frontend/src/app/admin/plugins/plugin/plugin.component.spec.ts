@@ -8,8 +8,8 @@ describe('PluginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PluginComponent],
-    }).compileComponents();
+    imports: [PluginComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

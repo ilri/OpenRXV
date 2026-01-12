@@ -7,21 +7,23 @@
   (mouseleave)="popoverIsOpen = false"
   matRippleCentered="centered"
   class="border-bottom-light center-text w-xs-100 primary-hover"
->
+  >
   <mat-card-content>
     <ng-container>
-      <mat-icon *ngIf="componentConfigs?.icon">{{
-        componentConfigs.icon
-      }}</mat-icon>
+      @if (componentConfigs?.icon) {
+        <mat-icon>{{
+          componentConfigs.icon
+        }}</mat-icon>
+      }
       <mat-card-title>
         <strong>{{ componentConfigs.title }}</strong>
         <span class="counter-number">
           {{ count | number }}
-          <ng-container *ngIf="percentage">
+          @if (percentage) {
             <small class="small-text">
               / {{ percentage | number: '1.1-2' }} %
             </small>
-          </ng-container>
+          }
         </span>
       </mat-card-title>
     </ng-container>
@@ -33,7 +35,7 @@
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="popoverIsOpen"
->
+  >
   <app-icons-with-text
     [text]="componentConfigs.description"
   ></app-icons-with-text>

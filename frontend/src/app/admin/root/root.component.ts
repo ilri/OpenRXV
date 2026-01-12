@@ -1,10 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+
+import { MatNavList, MatListItem } from '@angular/material/list';
+import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './root.component.html',
-  styleUrls: ['./root.component.scss'],
+    selector: 'app-root',
+    templateUrl: './root.component.html',
+    styleUrls: ['./root.component.scss'],
+    standalone: true,
+    imports: [
+    LoadingBarModule,
+    MatDrawerContainer,
+    MatDrawer,
+    MatNavList,
+    MatListItem,
+    RouterLink,
+    RouterLinkActive,
+    MatDrawerContent,
+    RouterOutlet
+],
 })
 export class RootComponent implements OnInit {
   currentRouteParent: string;

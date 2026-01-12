@@ -1,11 +1,28 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-share',
-  templateUrl: './share.component.html',
-  styleUrls: ['./share.component.scss'],
+    selector: 'app-share',
+    templateUrl: './share.component.html',
+    styleUrls: ['./share.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatButton,
+        MatSuffix,
+        MatIcon,
+        MatDialogActions,
+        MatDialogClose,
+    ],
 })
 export class ShareComponent implements OnInit {
   constructor(

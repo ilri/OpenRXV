@@ -1,10 +1,9 @@
-<ng-container *ngIf="onlyText; else card">
+@if (onlyText) {
   <app-icon-text-loop [strWithIcons]="strWithIcons"></app-icon-text-loop>
-</ng-container>
-<ng-template #card>
+} @else {
   <mat-card appearance="raised" class="tooltip-body">
     <mat-card-content>
       <app-icon-text-loop [strWithIcons]="strWithIcons"></app-icon-text-loop>
     </mat-card-content>
   </mat-card>
-</ng-template>
+}

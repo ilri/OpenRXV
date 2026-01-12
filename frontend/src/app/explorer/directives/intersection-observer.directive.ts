@@ -1,7 +1,8 @@
 import { Directive, ElementRef, EventEmitter, Output, OnDestroy, OnInit, Input } from '@angular/core';
 
 @Directive({
-  selector: '[appIntersectionObserver]'
+    selector: '[appIntersectionObserver]',
+    standalone: true
 })
 export class IntersectionObserverDirective implements OnInit, OnDestroy {
   @Output() visibilityChange = new EventEmitter<boolean>();

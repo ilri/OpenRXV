@@ -1,24 +1,24 @@
 <h2 mat-dialog-title>
-  <ng-container *ngIf="finishedExporting; else stillExporting">
+  @if (finishedExporting) {
     Finished
-  </ng-container>
-  <ng-template #stillExporting>
+  } @else {
     {{ installing ? 'Please wait....' : 'Export' }}
-    <small *ngIf="delegationArr">
-      getting {{ delegationArr.length }} parts
-    </small>
-  </ng-template>
+    @if (delegationArr) {
+      <small>
+        getting {{ delegationArr.length }} parts
+      </small>
+    }
+  }
 </h2>
 <mat-dialog-content>
-  <ng-container *ngIf="!installing; else installingNow">
+  @if (!installing) {
     Please, note that very lengthy lists of {{ items_label }} will be exported
     in more than one part to allow a quicker download. Would you like to
     continue?
-  </ng-container>
-  <ng-template #installingNow>
-    <ng-container *ngIf="delegationArr; else loadingFirstTime">
+  } @else {
+    @if (delegationArr) {
       <mat-list>
-        <ng-container *ngFor="let delegation of delegationArr">
+        @for (delegation of delegationArr; track delegation) {
           <a
             [attr.download]="delegation.loaded ? delegation.fileName : null"
             [attr.target]="delegation.loaded ? '_blank' : null"
@@ -30,24 +30,42 @@
                 : ''
             "
             (click)="prevent($event, delegation)"
-          >
+            >
             <ng-container *ngTemplateOutlet="info"></ng-container>
           </a>
-
           <ng-template #info>
             <mat-list-item
               [ngClass]="{
                 disable: !delegation.loaded
               }"
-            >
-              <ng-container *ngIf="!delegation.loaded; else loaded">
+              >
+              @if (!delegation.loaded) {
                 Preparing {{ delegation.name }}
-                <mat-progress-bar
-                  *ngIf="!delegation.loaded"
-                  mode="buffer"
+                @if (!delegation.loaded) {
+                  <mat-progress-bar
+                    mode="buffer"
+                    color="primary"
+                  ></mat-progress-bar>
+                }
+              } @else {
+                <button
+                  mat-flat-button
                   color="primary"
-                ></mat-progress-bar>
-              </ng-container>
+                  class="w-100"
+                  (click)="markAsDownloaded(delegation)"
+                  >
+                  <span mat-line>
+                    @if (delegation.downloaded) {
+                      <mat-icon
+                        class="downloaded"
+                        >
+                        done_all
+                      </mat-icon>
+                    }
+                    Download {{ delegation.name }}
+                  </span>
+                </button>
+              }
               <div>
                 <ng-template #loaded>
                   <button
@@ -55,14 +73,15 @@
                     color="primary"
                     class="w-100"
                     (click)="markAsDownloaded(delegation)"
-                  >
+                    >
                     <span mat-line>
-                      <mat-icon
-                        class="downloaded"
-                        *ngIf="delegation.downloaded"
-                      >
-                        done_all
-                      </mat-icon>
+                      @if (delegation.downloaded) {
+                        <mat-icon
+                          class="downloaded"
+                          >
+                          done_all
+                        </mat-icon>
+                      }
                       Download {{ delegation.name }}
                     </span>
                   </button>
@@ -71,15 +90,16 @@
             </mat-list-item>
           </ng-template>
           <mat-divider></mat-divider>
-        </ng-container>
+        }
       </mat-list>
-    </ng-container>
-    <ng-template #loadingFirstTime>
+    } @else {
       <mat-progress-bar mode="query"></mat-progress-bar>
-    </ng-template>
-  </ng-template>
+    }
+  }
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onKeyUp()">Cancel</button>
-  <button mat-button (click)="exportFile()" *ngIf="!installing">Export</button>
+  @if (!installing) {
+    <button mat-button (click)="exportFile()">Export</button>
+  }
 </mat-dialog-actions>

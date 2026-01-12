@@ -9,12 +9,21 @@ import {
   componentIdWitSate,
 } from '../services/scrollTo/scroll-helper.service';
 import { ViewChild } from '../list/paginated-list/filter-paginated-list/types.interface';
+import { MatIcon } from '@angular/material/icon';
+import { MatRipple } from '@angular/material/core';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-scroll-to',
-  templateUrl: './scroll-to.component.html',
-  styleUrls: ['./scroll-to.component.scss'],
-  providers: [ScrollHelperService],
+    selector: 'app-scroll-to',
+    templateUrl: './scroll-to.component.html',
+    styleUrls: ['./scroll-to.component.scss'],
+    providers: [ScrollHelperService],
+    standalone: true,
+    imports: [
+    MatRipple,
+    NgClass,
+    MatIcon
+],
 })
 export class ScrollToComponent implements OnInit {
   dashboardConfig: GeneralConfigs[];

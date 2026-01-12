@@ -15,14 +15,17 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../../store';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../../chart/chart.component';
 
 @ComponentLookup('SingleBarComponent')
 @Component({
-  selector: 'app-rotated-lables',
-  templateUrl: './rotated-lables.component.html',
-  styleUrls: ['./rotated-lables.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-rotated-lables',
+    templateUrl: './rotated-lables.component.html',
+    styleUrls: ['./rotated-lables.component.scss'],
+    providers: [ChartMathodsService, RangeService, BarService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class RotatedLablesComponent extends ParentChart implements OnInit {
   colors: string[];

@@ -3,11 +3,25 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { icons_list } from './icons';
 import { ActivatedRoute } from '@angular/router';
+import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { NgClass } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-structure',
-  templateUrl: './structure.component.html',
-  styleUrls: ['./structure.component.scss'],
+    selector: 'app-structure',
+    templateUrl: './structure.component.html',
+    styleUrls: ['./structure.component.scss'],
+    standalone: true,
+    imports: [
+    MatIconButton,
+    MatIcon,
+    NgClass,
+    MatCard,
+    MatButton,
+    MatCardTitle,
+    MatCardContent
+],
 })
 export class StructureComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

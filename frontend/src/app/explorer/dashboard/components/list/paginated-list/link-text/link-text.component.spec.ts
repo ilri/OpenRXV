@@ -8,8 +8,8 @@ describe('LinkTextComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LinkTextComponent],
-    }).compileComponents();
+    imports: [LinkTextComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

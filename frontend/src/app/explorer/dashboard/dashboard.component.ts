@@ -13,11 +13,29 @@ import {
 import { ItemsService } from '../services/itemsService/items.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { IntersectionObserverDirective } from '../directives/intersection-observer.directive';
+import { DynamicComponent } from './components/dynamic/dynamic.component';
+import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { ScrollToComponent } from './components/scroll-to/scroll-to.component';
+import { NgClass, JsonPipe } from '@angular/common';
+import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    standalone: true,
+    imports: [
+    MatDrawerContainer,
+    MatDrawer,
+    ScrollToComponent,
+    MatDrawerContent,
+    TourAnchorMatMenuDirective,
+    DynamicComponent,
+    IntersectionObserverDirective,
+    NgClass,
+    JsonPipe
+],
 })
 export class DashboardComponent implements OnInit {
   dashboardConfig: Array<GeneralConfigs> = [];

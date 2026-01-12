@@ -1,9 +1,12 @@
-<div class="col-md-12 mt-1" *ngFor="let filter of filters">
-  <div [class]="filter.class">
-    <app-dynamic
-      *ngIf="filter.show"
-      [componentConfigs]="filter.componentConfigs"
-      [comp]="filter.component"
-    ></app-dynamic>
+@for (filter of filters; track filter) {
+  <div class="col-md-12 mt-1">
+    <div [class]="filter.class">
+      @if (filter.show) {
+        <app-dynamic
+          [componentConfigs]="filter.componentConfigs"
+          [comp]="filter.component"
+        ></app-dynamic>
+      }
+    </div>
   </div>
-</div>
+}

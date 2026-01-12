@@ -5,7 +5,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
  * See link for more detail: https://stackoverflow.com/questions/39628007/angular2-innerhtml-binding-remove-style-attribute
  */
 @Pipe({
-  name: 'safeHtml',
+    name: 'safeHtml',
+    standalone: true,
 })
 export class SafeHtmlPipe implements PipeTransform {
   icons(value) {

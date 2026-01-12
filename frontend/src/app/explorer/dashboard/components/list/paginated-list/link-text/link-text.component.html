@@ -4,28 +4,31 @@
     href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
     class="primary-text"
     rel="noopener"
-  >
-    <img
-      *ngIf="source[content.icon] && appearance.icons[content.icon] != null"
-      style="max-width: 30px"
-      [src]="getIcon(source[content.icon])"
-    />
+    >
+    @if (source[content.icon] && appearance.icons[content.icon] != null) {
+      <img
+        style="max-width: 30px"
+        [src]="getIcon(source[content.icon])"
+        />
+    }
     <strong>
       {{ source[content.title] }}
     </strong>
   </a>
-  <p *ngIf="source[content.description]">
-    {{ source[content.description] }}
-  </p>
+  @if (source[content.description]) {
+    <p>
+      {{ source[content.description] }}
+    </p>
+  }
   <section class="publication-text">
-    <ng-container *ngFor="let tag of content.tags; let i = index">
-      <ng-container *ngIf="tags(tag.metadata)">
+    @for (tag of content.tags; track tag; let i = $index) {
+      @if (tags(tag.metadata)) {
         <app-tags
           [ngClass]="{ 'simulate-p-tag': i === 0 || i === 1 }"
           [label]="tag.disply_name"
           [labelData]="tags(tag.metadata)"
         ></app-tags>
-      </ng-container>
-    </ng-container>
+      }
+    }
   </section>
 </article>

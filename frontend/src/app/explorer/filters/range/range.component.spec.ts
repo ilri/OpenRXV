@@ -8,8 +8,8 @@ describe('RangeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RangeComponent],
-    }).compileComponents();
+    imports: [RangeComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,8 +1,8 @@
 <section class="btn-group-vertical">
-  <ng-container *ngFor="let conf of dashboardConfig">
-    <button
-      *ngIf="btnStatus.get(conf.componentConfigs.id)"
-      matRipple
+  @for (conf of dashboardConfig; track conf) {
+    @if (btnStatus.get(conf.componentConfigs.id)) {
+      <button
+        matRipple
       [ngClass]="
         id === conf.componentConfigs.id ||
         id === conf.scroll.linkedWith ||
@@ -10,11 +10,12 @@
           ? 'active bg-primary white-text'
           : 'bg-light muted-text'
       "
-      (click)="scrollTo(conf.componentConfigs.id)"
-      aria-label="Scroll Button"
-      class="border-muted"
-    >
-      <mat-icon>{{ conf.scroll.icon }}</mat-icon>
-    </button>
-  </ng-container>
+        (click)="scrollTo(conf.componentConfigs.id)"
+        aria-label="Scroll Button"
+        class="border-muted"
+        >
+        <mat-icon>{{ conf.scroll.icon }}</mat-icon>
+      </button>
+    }
+  }
 </section>

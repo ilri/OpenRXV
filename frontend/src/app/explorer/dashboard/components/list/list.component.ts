@@ -23,6 +23,15 @@ import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
+import { NgxLoadingModule } from 'ngx-loading';
+import { PaginatedListComponent } from './paginated-list/paginated-list.component';
+import { VirtualListComponent } from './virtual-list/virtual-list.component';
+import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
+import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 
 /**
  * declare is used to tell TypeScript compiler that the variable has been created elsewhere.
@@ -33,11 +42,25 @@ import { ActivatedRoute } from '@angular/router';
 declare function _altmetric_embed_init(): any;
 @ComponentLookup('ListComponent')
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
-  providers: [ScrollHelperService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.scss'],
+    providers: [ScrollHelperService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+    MatExpansionPanel,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    VirtualListComponent,
+    PaginatedListComponent,
+    NgxLoadingModule
+],
 })
 export class ListComponent extends ParentComponent implements OnInit {
   @ViewChild('clickToEnable') clickToEnable: ElementRef;

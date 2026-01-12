@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormControl,
-  UntypedFormArray,
-} from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SettingsService } from '../services/settings.service';
@@ -11,10 +7,35 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
 
+import { MatCheckbox } from '@angular/material/checkbox';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+
 @Component({
-  selector: 'app-appearance',
-  templateUrl: './appearance.component.html',
-  styleUrls: ['./appearance.component.scss'],
+    selector: 'app-appearance',
+    templateUrl: './appearance.component.html',
+    styleUrls: ['./appearance.component.scss'],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    ColorPickerModule,
+    MatIconButton,
+    MatSuffix,
+    MatCheckbox
+],
 })
 export class AppearanceComponent implements OnInit {
   dashboard_name: string;

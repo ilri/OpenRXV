@@ -19,13 +19,16 @@ import { ActivatedRoute } from '@angular/router';
 import CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { ChartComponent } from '../chart/chart.component';
 @ComponentLookup('MapComponent')
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
-  providers: [ChartMathodsService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    providers: [ChartMathodsService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class MapComponent extends ParentChart implements OnInit {
   constructor(

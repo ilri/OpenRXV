@@ -8,8 +8,8 @@ describe('SharedComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SharedComponent],
-    }).compileComponents();
+    imports: [SharedComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

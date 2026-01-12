@@ -55,36 +55,4 @@ class PickDateAdapter extends NativeDateAdapter {
 export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
-@NgModule({
-  declarations: [RootComponent, NotfoundComponent],
-  imports: [
-    BrowserModule,
-    ExplorerModule,
-    AdminModule,
-    CommonModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ToastrModule.forRoot(),
-    NgxSpinnerModule.forRoot({ type: 'ball-8bits' }),
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:3000'],
-        disallowedRoutes: ['example.com/examplebadroute/'],
-      },
-    }),
-  ],
-  providers: [
-    CommonService,
-    { provide: DateAdapter, useClass: PickDateAdapter },
-    { provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: agmConfigFactory,
-      deps: [HttpClient],
-      multi: true,
-    },
-  ],
-  bootstrap: [RootComponent],
-})
-export class AppModule {}
+

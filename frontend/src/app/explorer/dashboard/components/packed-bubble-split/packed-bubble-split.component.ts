@@ -13,14 +13,17 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
 
 @ComponentLookup('PackedBubbleSplitComponent')
 @Component({
-  selector: 'app-packed-bubble-split',
-  templateUrl: './packed-bubble-split.component.html',
-  styleUrls: ['./packed-bubble-split.component.scss'],
-  providers: [ChartMathodsService, SelectService],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-packed-bubble-split',
+    templateUrl: './packed-bubble-split.component.html',
+    styleUrls: ['./packed-bubble-split.component.scss'],
+    providers: [ChartMathodsService, SelectService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ChartComponent],
 })
 export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   constructor(

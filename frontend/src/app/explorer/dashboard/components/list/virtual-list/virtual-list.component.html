@@ -1,9 +1,9 @@
 <!--
-          * [itemSize] will help this component to render the list in a good way,
-          * however when giving it large nmber (920 in our case) it will render
-          * only one element in the viewport and add huge space between the elements
-          * I just choose ~randomly ~20 to divide on
-         -->
+* [itemSize] will help this component to render the list in a good way,
+* however when giving it large nmber (920 in our case) it will render
+* only one element in the viewport and add huge space between the elements
+* I just choose ~randomly ~20 to divide on
+-->
 <mat-list>
   <cdk-virtual-scroll-viewport [itemSize]="10" class="viewport w-100">
     <div
@@ -11,37 +11,43 @@
       class="item listHover"
       (click)="itemClicked(item.key)"
       [class.no-percentage]="componentConfigs?.hide_percentage"
-    >
+      >
       <mat-list-item class="pt-1 pb-1 pr-1 pl-0">
         <span matListItemLine class="item-list-row">
           <div class="w-100">
             <span
               class="item-list-title"
               [matTooltip]="item.key === '' ? 'NA' : item.key"
-            >
+              >
               {{ item.key === '' ? 'NA' : item.key }}
             </span>
-            <small *ngIf="isSmall && !componentConfigs?.hide_percentage">
-              ( {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}% )
-            </small>
+            @if (isSmall && !componentConfigs?.hide_percentage) {
+              <small>
+                ( {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}% )
+              </small>
+            }
             <span class="spacer"></span>
-            <small *ngIf="!componentConfigs?.hide_total" class="doc-count">
-              {{ item.doc_count | number }}
-            </small>
-            <div *ngIf="!componentConfigs?.hide_percentage" class="progress">
-              <div
-                class="progress-bar bg-primary progress-bar-striped"
-                role="progressbar"
-                [ngStyle]="{ width: (item.doc_count / totalItems) * 100 + '%' }"
-              ></div>
-            </div>
+            @if (!componentConfigs?.hide_total) {
+              <small class="doc-count">
+                {{ item.doc_count | number }}
+              </small>
+            }
+            @if (!componentConfigs?.hide_percentage) {
+              <div class="progress">
+                <div
+                  class="progress-bar bg-primary progress-bar-striped"
+                  role="progressbar"
+                  [ngStyle]="{ width: (item.doc_count / totalItems) * 100 + '%' }"
+                ></div>
+              </div>
+            }
           </div>
-          <ng-container *ngIf="!isSmall && !componentConfigs?.hide_percentage">
+          @if (!isSmall && !componentConfigs?.hide_percentage) {
             <span class="lists-percentage">
               {{ ((item.doc_count / totalItems) * 100).toFixed(2)
               }}<span>%</span>
             </span>
-          </ng-container>
+          }
         </span>
       </mat-list-item>
     </div>

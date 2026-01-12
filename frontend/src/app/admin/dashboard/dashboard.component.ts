@@ -7,11 +7,28 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
+import { InfoTableComponent } from './info-table/info-table.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
+
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardTitle, MatCardContent, MatCardSubtitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    standalone: true,
+    imports: [
+    MatCard,
+    MatCardTitle,
+    MatButton,
+    MatIcon,
+    MatCardContent,
+    MatCardSubtitle,
+    MatProgressBar,
+    InfoTableComponent
+],
 })
 export class DashboardComponent implements OnInit {
   constructor(

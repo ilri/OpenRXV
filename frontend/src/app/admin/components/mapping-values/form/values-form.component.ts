@@ -1,14 +1,32 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ValuesService } from 'src/app/admin/services/values.service';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-values-form',
-  templateUrl: './values-form.component.html',
-  styleUrls: ['./values-form.component.scss'],
+    selector: 'app-values-form',
+    templateUrl: './values-form.component.html',
+    styleUrls: ['./values-form.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogContent,
+        MatFormField,
+        MatInput,
+        NgSelectModule,
+        MatDialogActions,
+        MatButton,
+        MatIcon,
+    ],
 })
 export class ValuesForm implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({

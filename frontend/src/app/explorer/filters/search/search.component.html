@@ -7,7 +7,7 @@
     [(ngModel)]="searchTerm"
     #search
     [placeholder]="componentConfigs.placeholder"
-  />
+    />
   <button
     mat-button
     matSuffix
@@ -20,8 +20,10 @@
         ? 'The reserved characters are: + - = && || > < ! ( ) { } [ ] ^ &quot; ~ * ? : \\ /'
         : ''
     "
-  >
+    >
     Search
-    <mat-icon *ngIf="componentConfigs?.is_advanced">error</mat-icon>
+    @if (componentConfigs?.is_advanced) {
+      <mat-icon>error</mat-icon>
+    }
   </button>
 </mat-form-field>

@@ -8,8 +8,8 @@ describe('PieComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PieComponent],
-    }).compileComponents();
+    imports: [PieComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

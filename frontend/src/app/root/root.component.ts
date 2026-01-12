@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
 import tinycolor from 'tinycolor2';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
 import { get } from 'scriptjs';
 import { environment } from 'src/environments/environment';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 export interface Color {
   name: string;
   hex: string;
@@ -16,9 +18,14 @@ declare let window: any;
 declare let dataLayer: any;
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './root.component.html',
-  styleUrls: ['./root.component.scss'],
+    selector: 'app-root',
+    templateUrl: './root.component.html',
+    styleUrls: ['./root.component.scss'],
+    standalone: true,
+    imports: [
+    RouterOutlet,
+    NgxSpinnerModule
+],
 })
 export class RootComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');

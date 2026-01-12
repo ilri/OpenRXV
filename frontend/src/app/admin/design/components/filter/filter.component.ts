@@ -2,11 +2,22 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+    selector: 'app-filter',
+    templateUrl: './filter.component.html',
+    styleUrls: ['./filter.component.scss'],
+    standalone: true,
+    imports: [
+        MatCard,
+        MatCardTitle,
+        MatIcon,
+        MatIconButton,
+        MatCardSubtitle,
+    ],
 })
 export class FilterComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

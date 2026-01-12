@@ -9,132 +9,133 @@
           [download]="'OpenRXV-dashboard-reports-' + dashboard_name + '.json'"
           color="primary"
           mat-raised-button
-        >
+          >
           Export
           <mat-icon aria-hidden="false" aria-label="add"
             >cloud_download</mat-icon
-          >
-        </a>
-        <input
-          #jsonImportUploadInput
-          hidden="true"
-          type="file"
-          onclick="this.value=null"
-          (change)="importJSON($event)"
-          accept=".json"
-        />
-        <button
-          class="mr-2"
-          style="float: right"
-          (click)="jsonImportUploadInput.click()"
-          color="primary"
-          mat-raised-button
-        >
-          Import
-          <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
-        </button>
-        <button
-          class="mr-2"
-          mat-raised-button
-          (click)="newReport()"
-          color="primary"
-          style="float: right"
-        >
-          Add new report
-          <mat-icon>add</mat-icon>
-        </button>
-        <button
-          class="mr-2"
-          mat-raised-button
-          [matMenuTriggerFor]="menu"
-          color="primary"
-          style="float: right"
-        >
-          Show metadata
-        </button>
-        <mat-menu #menu="matMenu">
-          <ng-container *ngFor="let items of metadata; let i = index">
-            <button
-              mat-menu-item
-              matTooltip="copy"
-              (click)="copyMessage(metadata[i])"
-              class="copy"
             >
-              {{ metadata[i] }}
-            </button>
-          </ng-container>
-        </mat-menu>
-        <button
-          class="mr-2"
-          mat-raised-button
-          (click)="showDoc()"
-          color="primary"
-          style="float: right"
-        >
-          How to construct my .docx file?
-        </button>
-      </mat-card-title>
-    </mat-card>
-  </div>
-</div>
-
-<div class="row admin-dashboard-content">
-  <div class="col-12 pb-3">
-    <table mat-table [dataSource]="tableData" class="w-100">
-      <!-- Title Column -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.title }}
-        </td>
-      </ng-container>
-
-      <!-- Type Column -->
-      <ng-container matColumnDef="fileType">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let element">{{ element.fileType }}</td>
-      </ng-container>
-
-      <!-- actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <button
-            matTooltip="Delete"
-            (click)="delete(i)"
-            color="primary"
-            mat-icon-button
-          >
-            <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
-          </button>
-          <button
-            matTooltip="Edit"
-            (click)="edit(i)"
-            color="primary"
-            mat-icon-button
-          >
-            <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
-          </button>
-          <a
-            [href]="envireoment + '/settings' + element.file"
-            download
-            *ngIf="element.fileType != 'xlsx'"
-          >
-            <button color="primary" mat-icon-button>
-              <mat-icon>save_alt</mat-icon>
-            </button>
           </a>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator
-      [pageSizeOptions]="[10, 20, 30]"
-      showFirstLastButtons
-      formFieldAppearance="fill"
-    ></mat-paginator>
+          <input
+            #jsonImportUploadInput
+            hidden="true"
+            type="file"
+            onclick="this.value=null"
+            (change)="importJSON($event)"
+            accept=".json"
+            />
+          <button
+            class="mr-2"
+            style="float: right"
+            (click)="jsonImportUploadInput.click()"
+            color="primary"
+            mat-raised-button
+            >
+            Import
+            <mat-icon aria-hidden="false" aria-label="add">cloud_upload</mat-icon>
+          </button>
+          <button
+            class="mr-2"
+            mat-raised-button
+            (click)="newReport()"
+            color="primary"
+            style="float: right"
+            >
+            Add new report
+            <mat-icon>add</mat-icon>
+          </button>
+          <button
+            class="mr-2"
+            mat-raised-button
+            [matMenuTriggerFor]="menu"
+            color="primary"
+            style="float: right"
+            >
+            Show metadata
+          </button>
+          <mat-menu #menu="matMenu">
+            @for (items of metadata; track items; let i = $index) {
+              <button
+                mat-menu-item
+                matTooltip="copy"
+                (click)="copyMessage(metadata[i])"
+                class="copy"
+                >
+                {{ metadata[i] }}
+              </button>
+            }
+          </mat-menu>
+          <button
+            class="mr-2"
+            mat-raised-button
+            (click)="showDoc()"
+            color="primary"
+            style="float: right"
+            >
+            How to construct my .docx file?
+          </button>
+        </mat-card-title>
+      </mat-card>
+    </div>
   </div>
-</div>
+
+  <div class="row admin-dashboard-content">
+    <div class="col-12 pb-3">
+      <table mat-table [dataSource]="tableData" class="w-100">
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.title }}
+          </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="fileType">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let element">{{ element.fileType }}</td>
+        </ng-container>
+
+        <!-- actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <button
+              matTooltip="Delete"
+              (click)="delete(i)"
+              color="primary"
+              mat-icon-button
+              >
+              <mat-icon aria-hidden="false" aria-label="delete">delete</mat-icon>
+            </button>
+            <button
+              matTooltip="Edit"
+              (click)="edit(i)"
+              color="primary"
+              mat-icon-button
+              >
+              <mat-icon aria-hidden="false" aria-label="edit">edit</mat-icon>
+            </button>
+            @if (element.fileType != 'xlsx') {
+              <a
+                [href]="envireoment + '/settings' + element.file"
+                download
+                >
+                <button color="primary" mat-icon-button>
+                  <mat-icon>save_alt</mat-icon>
+                </button>
+              </a>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[10, 20, 30]"
+        showFirstLastButtons
+        formFieldAppearance="fill"
+      ></mat-paginator>
+    </div>
+  </div>

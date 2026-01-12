@@ -9,8 +9,9 @@ import {
 import { ComponentLookupRegistry } from './lookup.registry';
 
 @Component({
-  selector: 'app-dynamic',
-  template: '',
+    selector: 'app-dynamic',
+    template: '',
+    standalone: true,
 })
 export class DynamicComponent implements OnInit {
   @Input() comp: string;

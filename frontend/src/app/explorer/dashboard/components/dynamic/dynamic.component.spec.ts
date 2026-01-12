@@ -8,8 +8,8 @@ describe('DynamicComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DynamicComponent],
-    }).compileComponents();
+    imports: [DynamicComponent],
+}).compileComponents();
   }));
 
   beforeEach(() => {

@@ -4,11 +4,23 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
 import { ActivatedRoute } from '@angular/router';
 import { icons_list } from '../structure/icons';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-counter',
-  templateUrl: './counter.component.html',
-  styleUrls: ['./counter.component.scss'],
+    selector: 'app-counter',
+    templateUrl: './counter.component.html',
+    styleUrls: ['./counter.component.scss'],
+    standalone: true,
+    imports: [
+        CdkDragPlaceholder,
+        MatCard,
+        MatCardTitle,
+        MatIconButton,
+        MatIcon,
+    ],
 })
 export class CounterComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

@@ -1,18 +1,18 @@
 <div
   class="row m-1"
   [ngClass]="{ 'justify-content-center': componentConfigs.border }"
->
+  >
   <p
     [ngClass]="{
       'border-bottom-light': componentConfigs.border,
       'icon-with-text': componentConfigs.description
     }"
-  >
+    >
     <app-icons-with-text
       [onlyText]="true"
       [text]="componentConfigs.text"
     ></app-icons-with-text>
-    <ng-container *ngIf="componentConfigs.description">
+    @if (componentConfigs.description) {
       <mat-icon
         aria-label="Button that displays
       a tooltip when focused or hovered over"
@@ -20,18 +20,18 @@
         #trigger="cdkOverlayOrigin"
         (mouseenter)="popoverIsOpen = true"
         (mouseleave)="popoverIsOpen = false"
-      >
+        >
         error
       </mat-icon>
       <ng-template
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="popoverIsOpen"
-      >
+        >
         <app-icons-with-text
           [text]="componentConfigs.description"
         ></app-icons-with-text>
       </ng-template>
-    </ng-container>
+    }
   </p>
 </div>
