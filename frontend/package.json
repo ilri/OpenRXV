@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "license": "GPL-3.0-only",
   "scripts": {
-    "postinstall": "ngcc",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
