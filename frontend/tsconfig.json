@@ -18,10 +18,6 @@
       "node",
       "google.maps"
     ],
-    "lib": [
-      "es2021",
-      "dom"
-    ],
     "resolveJsonModule": true,
     "useDefineForClassFields": false
   }

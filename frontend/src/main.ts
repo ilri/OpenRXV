@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, inject, provideAppInitializer } from '@angular/core';
+import { enableProdMode, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { environment } from './environments/environment';
@@ -47,7 +47,7 @@ if (environment.production) {
 
 bootstrapApplication(RootComponent, {
     providers: [
-        importProvidersFrom(BrowserModule, ExplorerModule, AdminModule, CommonModule, AppRoutingModule, ToastrModule.forRoot(), NgxSpinnerModule.forRoot({ type: 'ball-8bits' }), JwtModule.forRoot({
+        provideZoneChangeDetection(),importProvidersFrom(BrowserModule, ExplorerModule, AdminModule, CommonModule, AppRoutingModule, ToastrModule.forRoot(), NgxSpinnerModule.forRoot({ type: 'ball-8bits' }), JwtModule.forRoot({
             config: {
                 tokenGetter: tokenGetter,
                 allowedDomains: ['localhost:3000'],
