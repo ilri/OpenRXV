@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExplorerModule } from './explorer/explorer.module';
 import { AdminModule } from './admin/admin.module';
@@ -10,6 +10,8 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonService } from './common.service';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { agmConfigFactory } from './explorer/services/agm';
 import {
   DateAdapter,
   NativeDateAdapter,
@@ -61,6 +63,7 @@ export function tokenGetter() {
     AdminModule,
     CommonModule,
     AppRoutingModule,
+    HttpClientModule,
     ToastrModule.forRoot(),
     NgxSpinnerModule.forRoot({ type: 'ball-8bits' }),
     JwtModule.forRoot({
@@ -75,6 +78,12 @@ export function tokenGetter() {
     CommonService,
     { provide: DateAdapter, useClass: PickDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: agmConfigFactory,
+      deps: [HttpClient],
+      multi: true,
+    },
   ],
   bootstrap: [RootComponent],
 })

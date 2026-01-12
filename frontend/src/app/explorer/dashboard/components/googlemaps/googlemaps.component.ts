@@ -1,4 +1,3 @@
-// import { AgmMap } from "@agm/core";
 import {
   ChangeDetectorRef,
   Component,
@@ -27,14 +26,8 @@ import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
+import { GoogleMap } from '@angular/google-maps';
 
-declare function _altmetric_embed_init(): any;
-interface marker {
-  lat: number;
-  lng: number;
-  label?: string;
-  draggable: boolean;
-}
 @ComponentLookup('GoogleMapsComponent')
 @Component({
   selector: 'app-google-maps',
@@ -54,11 +47,19 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   filterd = false;
   myStyles = {
     height: '430px',
+    width: '100%',
   };
-  @ViewChild('agmmap') mapElement: any;
+  @ViewChild(GoogleMap) mapElement: GoogleMap;
   timeout: any = [];
   // google maps zoom level
   zoom = 2;
+  center: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
+  options: google.maps.MapOptions = {
+    mapTypeId: 'hybrid',
+    zoomControl: false,
+    disableDefaultUI: false,
+  };
+
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   @ViewChild('panel') elementView: ElementRef;
@@ -128,16 +129,35 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     return temparray;
   }
   loopThroughMarkersText(chunks) {
+    if (typeof google === 'undefined') {
+        return;
+    }
     const markers = this.makeChunks(chunks);
+    const bounds = new google.maps.LatLngBounds();
+    let hasMarkers = false;
+
     for (let i = 0; i < markers.length; i++) {
       ((i) => {
         this.timeout.push(
           setTimeout(() => {
             for (let z = 0; z < markers[i].length; z++) {
               this.listData.push(markers[i][z]);
+              const keyParts = markers[i][z].key.split(',');
+              if (keyParts.length >= 2) {
+                 const lng = parseFloat(keyParts[0]);
+                 const lat = parseFloat(keyParts[1]);
+                 if (!isNaN(lat) && !isNaN(lng)) {
+                    bounds.extend({ lat, lng });
+                    hasMarkers = true;
+                 }
+              }
             }
-            if (i == markers.length - 1)
+            if (i == markers.length - 1) {
               this.scrollHelperService.loading = false;
+            }
+            if (hasMarkers && this.mapElement) {
+              this.mapElement.fitBounds(bounds);
+            }
           }, 1000 * i),
         );
       })(i);

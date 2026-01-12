@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { ExplorerComponent } from './explorer.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, efficts } from 'src/app/explorer/store';
@@ -82,9 +82,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RotatedLablesComponent } from './dashboard/components/bar/rotated-lables/rotated-lables.component';
 import { GooglemapsComponent } from './dashboard/components/googlemaps/googlemaps.component';
-import { AgmCoreModule, LAZY_MAPS_API_CONFIG } from '@agm/core';
-import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
-import { agmConfigFactory } from './services/agm';
+import { GoogleMapsModule } from '@angular/google-maps';
 // for HttpClient import:
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
@@ -181,19 +179,9 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MatDialogModule,
     MatDividerModule,
     ClipboardModule,
-    AgmCoreModule.forRoot({
-      apiKey: '',
-    }),
-    AgmSnazzyInfoWindowModule,
+    GoogleMapsModule,
     NgxSpinnerModule,
   ],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: agmConfigFactory,
-      deps: [HttpClient, LAZY_MAPS_API_CONFIG],
-      multi: true,
-    },
-  ],
+  providers: [],
 })
 export class ExplorerModule {}

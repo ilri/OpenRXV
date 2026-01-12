@@ -63,35 +63,30 @@
   </mat-expansion-panel-header>
   <ng-container>
     <div class="w-100 h-100" #panel>
-      <agm-map
+      <google-map
         #agmmap
         *ngIf="refreshMap"
-        [ngStyle]="myStyles"
+        [width]="myStyles.width"
+        [height]="myStyles.height"
         [zoom]="zoom"
-        [zoomControl]="true"
-        [fitBounds]="fitBounds"
-        mapTypeId="hybrid"
-        [disableDefaultUI]="false"
-        [zoomControl]="false"
+        [options]="options"
       >
         <ng-container *ngFor="let m of listData">
-          <agm-marker
-            (markerClick)="filterMarker(aVariable[2])"
-            [iconUrl]="
-              'http://maps.google.com/mapfiles/ms/icons/' +
+          <map-marker
+            (mapClick)="filterMarker(aVariable[2])"
+            [options]="{
+              icon: 'http://maps.google.com/mapfiles/ms/icons/' +
               (aVariable[2].split('_')[0] == 'technologies'
                 ? 'green'
                 : 'orange') +
               '-dot.png'
-            "
+            }"
             *ngIf="m.key.split(','); let aVariable"
-            [agmFitBounds]="fitBounds"
-            [latitude]="aVariable[1]"
-            [longitude]="aVariable[0]"
+            [position]="{lat: +aVariable[1], lng: +aVariable[0]}"
           >
-          </agm-marker>
+          </map-marker>
         </ng-container>
-      </agm-map>
+      </google-map>
     </div>
   </ng-container>
   <ngx-loading
