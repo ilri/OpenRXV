@@ -37,8 +37,6 @@ import { SearchComponent } from './filters/search/search.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { RangeComponent } from './filters/range/range.component';
 import { ScrollToComponent } from './dashboard/components/scroll-to/scroll-to.component';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { InViewportModule } from '@thisissoon/angular-inviewport';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { ChartComponent } from './dashboard/components/chart/chart.component';
 import { ListComponent } from './dashboard/components/list/list.component';
@@ -88,6 +86,8 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 // for Router import:
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { IntersectionObserverDirective } from './directives/intersection-observer.directive';
+
 @NgModule({
   declarations: [
     ExplorerComponent,
@@ -130,6 +130,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MainListComponent,
     RotatedLablesComponent,
     GooglemapsComponent,
+    IntersectionObserverDirective,
   ],
   imports: [
     // for HttpClient use:
@@ -150,8 +151,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     MatCardModule,
     MatToolbarModule,
     MatIconModule,
-    InViewportModule,
-    ScrollToModule.forRoot(),
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot(efficts),
     StoreDevtoolsModule.instrument({

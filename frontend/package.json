@@ -37,8 +37,6 @@
     "@ngx-loading-bar/core": "^6.0.2",
     "@ngx-loading-bar/http-client": "^6.0.2",
     "@ngx-loading-bar/router": "^6.0.2",
-    "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "@thisissoon/angular-inviewport": "^4.2.2",
     "@tinymce/tinymce-angular": "^7.0.0",
     "@types/scriptjs": "0.0.2",
     "bodybuilder": "^2.5.1",
@@ -61,7 +59,6 @@
     "ramda": "^0.27.2",
     "rxjs": "^6.6.7",
     "scriptjs": "^2.5.9",
-    "snazzy-info-window": "^1.1.1",
     "tinycolor2": "^1.6.0",
     "tslib": "^2.6.2",
     "zone.js": "~0.11.8"

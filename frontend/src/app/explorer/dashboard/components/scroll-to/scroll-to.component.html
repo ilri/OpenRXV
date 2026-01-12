@@ -10,8 +10,7 @@
           ? 'active bg-primary white-text'
           : 'bg-light muted-text'
       "
-      [ngxScrollTo]="conf.componentConfigs.id"
-      [ngxScrollToDuration]="500"
+      (click)="scrollTo(conf.componentConfigs.id)"
       aria-label="Scroll Button"
       class="border-muted"
     >

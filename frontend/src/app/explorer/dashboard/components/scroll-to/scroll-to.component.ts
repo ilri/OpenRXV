@@ -43,6 +43,13 @@ export class ScrollToComponent implements OnInit {
     this.buildLinkedComponentMap();
   }
 
+  scrollTo(id: string) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   checkLinking(id: string, s: string[]): void {
     let show: boolean;
     const idsToHide = Array.from(this.idsToHide);

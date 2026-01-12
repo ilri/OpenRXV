@@ -29,11 +29,11 @@
             <div
               [tourAnchor]="conf.componentConfigs.id"
               [id]="conf.componentConfigs.id"
-              snInViewport
-              [inViewportOptions]="{
+              appIntersectionObserver
+              [options]="{
                 rootMargin: '0px 0px 0px 0px'
               }"
-              (inViewportChange)="
+              (visibilityChange)="
                 onInViewportChange($event, conf.componentConfigs.id)
               "
             >
@@ -52,11 +52,11 @@
         <ng-container *ngFor="let conf of dashboardConfig">
           <div
             *ngIf="conf.show"
-            snInViewport
-            [inViewportOptions]="{
+            appIntersectionObserver
+            [options]="{
               rootMargin: '0px 0px 0px 0px'
             }"
-            (inViewportChange)="
+            (visibilityChange)="
               onInViewportChange(
                 $event,
                 conf.componentConfigs.id + '.' + conf.scroll.linkedWith
