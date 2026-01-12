@@ -3,19 +3,19 @@
 <!-- so i will render it when we have these values -->
 <ng-container *ngIf="range; else loading">
   <mat-label>{{ componentConfigs.placeholder }}</mat-label>
-  <nouislider
-    class="pb-4"
-    (change)="onYearSliderChange()"
-    [tooltips]="[true, true]"
-    [min]="min"
-    [connect]="true"
-    [max]="max"
-    [(ngModel)]="range"
-    [step]="1"
-    [config]="config"
-    [disabled]="disabled"
-  >
-  </nouislider>
+  <div class="d-flex">
+    <mat-slider
+      class="pb-4 w-100"
+      [min]="min"
+      [max]="max"
+      [step]="1"
+      [disabled]="disabled"
+      discrete
+    >
+    <input matSliderStartThumb [(ngModel)]="range[0]" (dragEnd)="onYearSliderChange()">
+    <input matSliderEndThumb [(ngModel)]="range[1]" (dragEnd)="onYearSliderChange()">
+  </mat-slider>
+  </div>
 </ng-container>
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>

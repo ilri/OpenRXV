@@ -34,7 +34,7 @@ import { DynamicComponent } from './dashboard/components/dynamic/dynamic.compone
 import { LabelComponent } from './filters/label/label.component';
 import { CounterComponent } from './dashboard/components/counter/counter.component';
 import { SearchComponent } from './filters/search/search.component';
-import { NouisliderModule } from 'ng2-nouislider';
+import { MatSliderModule } from '@angular/material/slider';
 import { RangeComponent } from './filters/range/range.component';
 import { ScrollToComponent } from './dashboard/components/scroll-to/scroll-to.component';
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -167,7 +167,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     NgxLoadingModule.forRoot({}),
     MatRippleModule,
     MatProgressBarModule,
-    NouisliderModule,
+    MatSliderModule,
     TourMatMenuModule,
     ExplorerRoutingModule, // for TourMatMenuModule,
     MatSnackBarModule,

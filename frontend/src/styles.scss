@@ -3,7 +3,6 @@
 @import '@ng-select/ng-select/themes/material.theme.css';
 @import 'bootstrap/scss/bootstrap-reboot';
 @import 'bootstrap/scss/bootstrap-grid';
-@import 'nouislider/dist/nouislider.min.css';
 // @import '~highcharts/css/themes/dark-unica.scss';
 
 @import 'ngx-toastr/toastr';
@@ -192,11 +191,6 @@ app-paginated-list app-tags {
     vertical-align: middle;
     height: 32px !important;
   }
-}
-
-.noUi-horizontal .noUi-tooltip {
-  top: 120% !important;
-  bottom: unset !important;
 }
 
 .cdk-overlay-container
