@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ExplorerComponent } from './explorer.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, efficts } from 'src/app/explorer/store';
@@ -88,14 +88,12 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { IntersectionObserverDirective } from './directives/intersection-observer.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
 
-@NgModule({
-    imports: [
+@NgModule({ imports: [
         // for HttpClient use:
         LoadingBarHttpClientModule,
         // for Router use:
         LoadingBarRouterModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         BrowserModule,
         FormsModule,
         NgSelectModule,
@@ -177,8 +175,5 @@ import { OverlayModule } from '@angular/cdk/overlay';
         MainListComponent,
         RotatedLablesComponent,
         GooglemapsComponent,
-        IntersectionObserverDirective,
-    ],
-    providers: [],
-})
+        IntersectionObserverDirective], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class ExplorerModule {}

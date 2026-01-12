@@ -10,7 +10,7 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { CommonService } from './common.service';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { agmConfigFactory } from './explorer/services/agm';
 import {
   DateAdapter,
