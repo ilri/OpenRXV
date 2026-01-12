@@ -14,7 +14,7 @@ import { IconsWithTextComponent } from '../../../representationalComponents/icon
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
+
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 @ComponentLookup('MainListComponent')
 @Component({
@@ -24,7 +24,6 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
     providers: [ScrollHelperService, SelectService],
     imports: [
         MatExpansionPanel,
-        NgIf,
         MatIcon,
         MatTooltip,
         MatExpansionPanelHeader,
