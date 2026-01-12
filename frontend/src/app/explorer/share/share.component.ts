@@ -10,7 +10,6 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     selector: 'app-share',
     templateUrl: './share.component.html',
     styleUrls: ['./share.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
@@ -22,7 +21,7 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
         MatIcon,
         MatDialogActions,
         MatDialogClose,
-    ],
+    ]
 })
 export class ShareComponent implements OnInit {
   constructor(

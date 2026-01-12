@@ -21,11 +21,10 @@ declare let dataLayer: any;
     selector: 'app-root',
     templateUrl: './root.component.html',
     styleUrls: ['./root.component.scss'],
-    standalone: true,
     imports: [
-    RouterOutlet,
-    NgxSpinnerModule
-],
+        RouterOutlet,
+        NgxSpinnerModule
+    ]
 })
 export class RootComponent implements OnInit {
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');

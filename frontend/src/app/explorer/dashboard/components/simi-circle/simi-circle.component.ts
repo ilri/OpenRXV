@@ -15,8 +15,7 @@ import { ChartComponent } from '../chart/chart.component';
     templateUrl: './simi-circle.component.html',
     styleUrls: ['./simi-circle.component.scss'],
     providers: [ChartMathodsService, SelectService],
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class SimiCircleComponent extends ParentChart implements OnInit {
   colors: string[];

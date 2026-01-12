@@ -9,13 +9,12 @@ import { NgClass, NgStyle } from '@angular/common';
     templateUrl: './pub-image.component.html',
     styleUrls: ['./pub-image.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    MatProgressSpinner,
-    NgClass,
-    NgStyle,
-    GetFirstImage
-],
+        MatProgressSpinner,
+        NgClass,
+        NgStyle,
+        GetFirstImage
+    ]
 })
 export class PubImageComponent {
   @Input() source: ESSource;

@@ -1,4 +1,4 @@
-import { enableProdMode, APP_INITIALIZER, importProvidersFrom } from '@angular/core';
+import { enableProdMode, importProvidersFrom, inject, provideAppInitializer } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { environment } from './environments/environment';
@@ -57,12 +57,10 @@ bootstrapApplication(RootComponent, {
         CommonService,
         { provide: DateAdapter, useClass: PickDateAdapter },
         { provide: MAT_DATE_FORMATS, useValue: ISO_8601_date_format },
-        {
-            provide: APP_INITIALIZER,
-            useFactory: agmConfigFactory,
-            deps: [HttpClient],
-            multi: true,
-        },
+        provideAppInitializer(() => {
+        const initializerFn = (agmConfigFactory)(inject(HttpClient));
+        return initializerFn();
+      }),
         provideHttpClient(withInterceptorsFromDi()),
     ]
 })

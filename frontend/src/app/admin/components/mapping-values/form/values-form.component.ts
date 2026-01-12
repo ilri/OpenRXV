@@ -14,7 +14,6 @@ import { MatFormField } from '@angular/material/form-field';
     selector: 'app-values-form',
     templateUrl: './values-form.component.html',
     styleUrls: ['./values-form.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         FormsModule,
@@ -26,7 +25,7 @@ import { MatFormField } from '@angular/material/form-field';
         MatDialogActions,
         MatButton,
         MatIcon,
-    ],
+    ]
 })
 export class ValuesForm implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({

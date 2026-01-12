@@ -12,8 +12,7 @@ import { MatIcon } from '@angular/material/icon';
     templateUrl: './snack.component.html',
     styleUrls: ['./snack.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatIcon],
+    imports: [MatIcon]
 })
 export class SnackComponent {
   @Input() set error(e: HttpErrorResponse) {

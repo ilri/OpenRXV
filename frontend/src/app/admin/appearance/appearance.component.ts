@@ -19,23 +19,22 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-appearance',
     templateUrl: './appearance.component.html',
     styleUrls: ['./appearance.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatAnchor,
-    MatIcon,
-    MatButton,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    ColorPickerModule,
-    MatIconButton,
-    MatSuffix,
-    MatCheckbox
-],
+        MatCard,
+        MatCardTitle,
+        MatAnchor,
+        MatIcon,
+        MatButton,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        ColorPickerModule,
+        MatIconButton,
+        MatSuffix,
+        MatCheckbox
+    ]
 })
 export class AppearanceComponent implements OnInit {
   dashboard_name: string;

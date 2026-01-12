@@ -31,14 +31,13 @@ import { FilterPaginatedListComponent } from './filter-paginated-list/filter-pag
     templateUrl: './paginated-list.component.html',
     styleUrls: ['./paginated-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    FilterPaginatedListComponent,
-    PubImageComponent,
-    LinkTextComponent,
-    MatPaginator,
-    NgxLoadingModule
-],
+        FilterPaginatedListComponent,
+        PubImageComponent,
+        LinkTextComponent,
+        MatPaginator,
+        NgxLoadingModule
+    ]
 })
 export class PaginatedListComponent implements OnInit {
   @Input() hits: hits[];

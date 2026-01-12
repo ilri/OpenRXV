@@ -24,24 +24,23 @@ import { MatCard, MatCardTitle, MatCardSubtitle, MatCardContent } from '@angular
     selector: 'app-plugin',
     templateUrl: './plugin.component.html',
     styleUrls: ['./plugin.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatCheckbox,
-    FormsModule,
-    MatCardSubtitle,
-    MatCardContent,
-    MatButton,
-    MatIcon,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    NgSelectModule,
-    MainListComponent,
-    MatIconButton
-],
+        MatCard,
+        MatCardTitle,
+        MatCheckbox,
+        FormsModule,
+        MatCardSubtitle,
+        MatCardContent,
+        MatButton,
+        MatIcon,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        NgSelectModule,
+        MainListComponent,
+        MatIconButton
+    ]
 })
 export class PluginComponent implements OnInit, OnChanges {
   @Input() plugins: any = null;

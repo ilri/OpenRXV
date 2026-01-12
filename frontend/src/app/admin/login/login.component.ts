@@ -12,18 +12,17 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatCardContent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatButton
-],
+        MatCard,
+        MatCardTitle,
+        MatCardContent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatButton
+    ]
 })
 export class LoginComponent implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({

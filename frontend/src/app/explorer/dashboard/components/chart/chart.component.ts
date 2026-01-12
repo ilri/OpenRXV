@@ -42,20 +42,19 @@ DependencyWheelModule(Highcharts);
     templateUrl: './chart.component.html',
     styleUrls: ['./chart.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    MatIcon,
-    CdkOverlayOrigin,
-    CdkConnectedOverlay,
-    IconsWithTextComponent,
-    HighchartsChartModule,
-    MatTooltip,
-    NgxLoadingModule,
-    AsyncPipe
-],
+        MatExpansionPanel,
+        MatExpansionPanelHeader,
+        MatExpansionPanelTitle,
+        MatIcon,
+        CdkOverlayOrigin,
+        CdkConnectedOverlay,
+        IconsWithTextComponent,
+        HighchartsChartModule,
+        MatTooltip,
+        NgxLoadingModule,
+        AsyncPipe
+    ]
 })
 export class ChartComponent {
   @Input() isMap = false;

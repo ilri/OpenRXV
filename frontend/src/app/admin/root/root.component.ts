@@ -9,18 +9,17 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
     selector: 'app-root',
     templateUrl: './root.component.html',
     styleUrls: ['./root.component.scss'],
-    standalone: true,
     imports: [
-    LoadingBarModule,
-    MatDrawerContainer,
-    MatDrawer,
-    MatNavList,
-    MatListItem,
-    RouterLink,
-    RouterLinkActive,
-    MatDrawerContent,
-    RouterOutlet
-],
+        LoadingBarModule,
+        MatDrawerContainer,
+        MatDrawer,
+        MatNavList,
+        MatListItem,
+        RouterLink,
+        RouterLinkActive,
+        MatDrawerContent,
+        RouterOutlet
+    ]
 })
 export class RootComponent implements OnInit {
   currentRouteParent: string;

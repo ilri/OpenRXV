@@ -6,13 +6,12 @@ import { MatButton } from '@angular/material/button';
     selector: 'app-dialog',
     templateUrl: './dialog.component.html',
     styleUrls: ['./dialog.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
         MatDialogActions,
         MatButton,
-    ],
+    ]
 })
 export class DialogComponent implements OnInit {
   constructor(

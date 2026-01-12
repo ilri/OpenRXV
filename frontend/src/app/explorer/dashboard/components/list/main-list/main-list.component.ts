@@ -22,7 +22,6 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
     templateUrl: '../list.component.html',
     styleUrls: ['../list.component.scss'],
     providers: [ScrollHelperService, SelectService],
-    standalone: true,
     imports: [
         MatExpansionPanel,
         NgIf,
@@ -36,7 +35,7 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
         VirtualListComponent,
         PaginatedListComponent,
         NgxLoadingModule,
-    ],
+    ]
 })
 export class MainListComponent extends ListComponent {
   constructor(

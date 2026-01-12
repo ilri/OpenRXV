@@ -11,15 +11,14 @@ import { MatCard, MatCardHeader, MatCardContent } from '@angular/material/card';
     selector: 'app-welcome',
     templateUrl: './welcome.component.html',
     styleUrls: ['./welcome.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardHeader,
-    MatIconButton,
-    MatIcon,
-    MatCardContent,
-    SafeHtmlPipe
-],
+        MatCard,
+        MatCardHeader,
+        MatIconButton,
+        MatIcon,
+        MatCardContent,
+        SafeHtmlPipe
+    ]
 })
 export class WelcomeComponent implements OnInit {
   tourStarted: boolean;

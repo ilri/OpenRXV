@@ -25,14 +25,13 @@ import { MatLabel } from '@angular/material/form-field';
     templateUrl: './range.component.html',
     styleUrls: ['./range.component.scss'],
     providers: [RangeService],
-    standalone: true,
     imports: [
-    MatLabel,
-    MatSlider,
-    MatSliderRangeThumb,
-    FormsModule,
-    MatProgressBar
-],
+        MatLabel,
+        MatSlider,
+        MatSliderRangeThumb,
+        FormsModule,
+        MatProgressBar
+    ]
 })
 export class RangeComponent extends ParentComponent implements OnInit {
   range: number[];

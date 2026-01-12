@@ -5,8 +5,7 @@ import { MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
     selector: 'app-doc',
     templateUrl: './doc.component.html',
     styleUrls: ['./doc.component.scss'],
-    standalone: true,
-    imports: [MatDialogTitle, MatDialogContent],
+    imports: [MatDialogTitle, MatDialogContent]
 })
 export class DocComponent implements OnInit {
   constructor() {}

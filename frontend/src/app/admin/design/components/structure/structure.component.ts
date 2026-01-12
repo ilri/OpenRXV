@@ -12,16 +12,15 @@ import { MatIconButton, MatButton } from '@angular/material/button';
     selector: 'app-structure',
     templateUrl: './structure.component.html',
     styleUrls: ['./structure.component.scss'],
-    standalone: true,
     imports: [
-    MatIconButton,
-    MatIcon,
-    NgClass,
-    MatCard,
-    MatButton,
-    MatCardTitle,
-    MatCardContent
-],
+        MatIconButton,
+        MatIcon,
+        NgClass,
+        MatCard,
+        MatButton,
+        MatCardTitle,
+        MatCardContent
+    ]
 })
 export class StructureComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

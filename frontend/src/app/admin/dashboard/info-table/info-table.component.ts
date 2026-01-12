@@ -16,22 +16,21 @@ import { MatIcon } from '@angular/material/icon';
     selector: 'app-info-table',
     templateUrl: './info-table.component.html',
     styleUrls: ['./info-table.component.scss'],
-    standalone: true,
     imports: [
-    MatTable,
-    MatColumnDef,
-    MatHeaderCellDef,
-    MatHeaderCell,
-    MatCellDef,
-    MatCell,
-    MatIcon,
-    MatTooltip,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRowDef,
-    MatRow,
-    MatPaginator
-],
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatIcon,
+        MatTooltip,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+        MatPaginator
+    ]
 })
 export class InfoTableComponent implements OnInit {
   @Input() plugin = false;

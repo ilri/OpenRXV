@@ -23,7 +23,6 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     templateUrl: './date-range.component.html',
     styleUrls: ['./date-range.component.scss'],
     providers: [RangeService],
-    standalone: true,
     imports: [
         MatFormField,
         MatLabel,
@@ -33,7 +32,7 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
         MatDatepickerToggle,
         MatSuffix,
         MatDatepicker,
-    ],
+    ]
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
   fromDate = null;

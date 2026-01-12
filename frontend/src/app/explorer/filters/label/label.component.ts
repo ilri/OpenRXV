@@ -11,14 +11,13 @@ import { NgClass } from '@angular/common';
     templateUrl: './label.component.html',
     styleUrls: ['./label.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    NgClass,
-    IconsWithTextComponent,
-    MatIcon,
-    CdkOverlayOrigin,
-    CdkConnectedOverlay
-],
+        NgClass,
+        IconsWithTextComponent,
+        MatIcon,
+        CdkOverlayOrigin,
+        CdkConnectedOverlay
+    ]
 })
 export class LabelComponent {
   @Input() componentConfigs: ComponentLabelConfigs;

@@ -28,21 +28,20 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
     selector: 'app-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.scss'],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogContent,
-    MatFormField,
-    MatInput,
-    MatLabel,
-    MatSelect,
-    MatOption,
-    MatDialogActions,
-    MatButton,
-    MatIcon
-],
+        MatDialogTitle,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogContent,
+        MatFormField,
+        MatInput,
+        MatLabel,
+        MatSelect,
+        MatOption,
+        MatDialogActions,
+        MatButton,
+        MatIcon
+    ]
 })
 export class FormComponent implements OnInit {
   form: UntypedFormGroup = new UntypedFormGroup({

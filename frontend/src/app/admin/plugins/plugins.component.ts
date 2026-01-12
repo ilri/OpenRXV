@@ -14,16 +14,15 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
     selector: 'app-plugins',
     templateUrl: './plugins.component.html',
     styleUrls: ['./plugins.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatAnchor,
-    MatIcon,
-    MatButton,
-    MatCardContent,
-    PluginComponent
-],
+        MatCard,
+        MatCardTitle,
+        MatAnchor,
+        MatIcon,
+        MatButton,
+        MatCardContent,
+        PluginComponent
+    ]
 })
 export class PluginsComponent implements OnInit {
   plugins = [];

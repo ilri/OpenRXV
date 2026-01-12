@@ -24,8 +24,7 @@ import { ChartComponent } from '../chart/chart.component';
     styleUrls: ['./pie.component.scss'],
     providers: [ChartMathodsService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class PieComponent extends ParentChart implements OnInit {
   constructor(

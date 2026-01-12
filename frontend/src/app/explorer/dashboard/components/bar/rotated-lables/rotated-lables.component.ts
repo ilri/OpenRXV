@@ -24,8 +24,7 @@ import { ChartComponent } from '../../chart/chart.component';
     styleUrls: ['./rotated-lables.component.scss'],
     providers: [ChartMathodsService, RangeService, BarService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class RotatedLablesComponent extends ParentChart implements OnInit {
   colors: string[];

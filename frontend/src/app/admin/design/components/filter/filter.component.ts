@@ -10,14 +10,13 @@ import { MatCard, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
     selector: 'app-filter',
     templateUrl: './filter.component.html',
     styleUrls: ['./filter.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
         MatIcon,
         MatIconButton,
         MatCardSubtitle,
-    ],
+    ]
 })
 export class FilterComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

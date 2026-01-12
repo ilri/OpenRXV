@@ -19,25 +19,24 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     selector: 'app-reproting-form',
     templateUrl: './reproting-form.component.html',
     styleUrls: ['./reproting-form.component.scss'],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatSelect,
-    MatOption,
-    MatIconButton,
-    MatIcon,
-    CdkDropList,
-    CdkDrag,
-    NgSelectModule,
-    MatButton,
-    MatDialogActions
-],
+        MatDialogTitle,
+        MatDialogContent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatSelect,
+        MatOption,
+        MatIconButton,
+        MatIcon,
+        CdkDropList,
+        CdkDrag,
+        NgSelectModule,
+        MatButton,
+        MatDialogActions
+    ]
 })
 export class ReprotingFormComponent implements OnInit {
   openDialogs: MatDialogRef<any>;

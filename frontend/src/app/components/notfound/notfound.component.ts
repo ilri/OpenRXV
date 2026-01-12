@@ -5,8 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     selector: 'app-notfound',
     templateUrl: './notfound.component.html',
     styleUrls: ['./notfound.component.scss'],
-    standalone: true,
-    imports: [RouterLink, RouterLinkActive],
+    imports: [RouterLink, RouterLinkActive]
 })
 export class NotfoundComponent implements OnInit {
   constructor() {}

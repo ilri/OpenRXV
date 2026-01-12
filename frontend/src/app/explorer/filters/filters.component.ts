@@ -8,10 +8,9 @@ import { DynamicComponent } from '../dashboard/components/dynamic/dynamic.compon
     selector: 'app-filters',
     templateUrl: './filters.component.html',
     styleUrls: ['./filters.component.scss'],
-    standalone: true,
     imports: [
-    DynamicComponent
-],
+        DynamicComponent
+    ]
 })
 export class FiltersComponent implements OnInit {
   filters: GeneralConfigs[];

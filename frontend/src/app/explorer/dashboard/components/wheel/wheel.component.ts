@@ -23,8 +23,7 @@ import { ChartComponent } from '../chart/chart.component';
     styleUrls: ['./wheel.component.scss'],
     providers: [ChartMathodsService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class WheelComponent extends ParentChart implements OnInit {
   colors: string[];

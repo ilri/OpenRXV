@@ -15,7 +15,6 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-users',
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
@@ -33,7 +32,7 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
         MatRowDef,
         MatRow,
         MatPaginator,
-    ],
+    ]
 })
 export class UsersComponent implements OnInit {
   constructor(

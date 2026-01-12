@@ -40,18 +40,17 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
     templateUrl: './googlemaps.component.html',
     providers: [ChartMathodsService, ScrollHelperService, SelectService],
     styleUrls: ['./googlemaps.component.scss'],
-    standalone: true,
     imports: [
-    MatExpansionPanel,
-    NgClass,
-    MatIcon,
-    MatTooltip,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    IconsWithTextComponent,
-    GoogleMapsModule,
-    NgxLoadingModule
-],
+        MatExpansionPanel,
+        NgClass,
+        MatIcon,
+        MatTooltip,
+        MatExpansionPanelHeader,
+        MatExpansionPanelTitle,
+        IconsWithTextComponent,
+        GoogleMapsModule,
+        NgxLoadingModule
+    ]
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
   @Input() expandedStatus: boolean;

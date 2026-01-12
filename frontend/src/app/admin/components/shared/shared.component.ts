@@ -14,7 +14,6 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-shared',
     templateUrl: './shared.component.html',
     styleUrls: ['./shared.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
@@ -33,7 +32,7 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
         MatRow,
         MatPaginator,
         JsonPipe,
-    ],
+    ]
 })
 export class SharedComponent implements OnInit {
   currenRoute: any;

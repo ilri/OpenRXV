@@ -18,17 +18,16 @@ import { MatCard, MatCardTitle, MatCardContent, MatCardSubtitle } from '@angular
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatButton,
-    MatIcon,
-    MatCardContent,
-    MatCardSubtitle,
-    MatProgressBar,
-    InfoTableComponent
-],
+        MatCard,
+        MatCardTitle,
+        MatButton,
+        MatIcon,
+        MatCardContent,
+        MatCardSubtitle,
+        MatProgressBar,
+        InfoTableComponent
+    ]
 })
 export class DashboardComponent implements OnInit {
   constructor(

@@ -18,12 +18,11 @@ import { NgClass } from '@angular/common';
     templateUrl: './scroll-to.component.html',
     styleUrls: ['./scroll-to.component.scss'],
     providers: [ScrollHelperService],
-    standalone: true,
     imports: [
-    MatRipple,
-    NgClass,
-    MatIcon
-],
+        MatRipple,
+        NgClass,
+        MatIcon
+    ]
 })
 export class ScrollToComponent implements OnInit {
   dashboardConfig: GeneralConfigs[];

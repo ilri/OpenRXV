@@ -10,18 +10,17 @@ import { MatIcon } from '@angular/material/icon';
     selector: 'app-sort',
     templateUrl: './sort.component.html',
     styleUrls: ['./sort.component.scss'],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    MatIcon,
-    MatDialogContent,
-    CdkDropList,
-    MatCard,
-    CdkDrag,
-    MatCardTitle,
-    MatDialogActions,
-    MatButton
-],
+        MatDialogTitle,
+        MatIcon,
+        MatDialogContent,
+        CdkDropList,
+        MatCard,
+        CdkDrag,
+        MatCardTitle,
+        MatDialogActions,
+        MatButton
+    ]
 })
 export class SortComponent implements OnInit {
   sortedItems = [];

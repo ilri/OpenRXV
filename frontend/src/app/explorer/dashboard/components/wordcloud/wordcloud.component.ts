@@ -24,8 +24,7 @@ import { ChartComponent } from '../chart/chart.component';
     styleUrls: ['./wordcloud.component.scss'],
     providers: [ChartMathodsService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class WordcloudComponent extends ParentChart implements OnInit {
   constructor(

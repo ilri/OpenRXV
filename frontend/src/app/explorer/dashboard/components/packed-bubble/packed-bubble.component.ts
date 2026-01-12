@@ -21,8 +21,7 @@ import { ChartComponent } from '../chart/chart.component';
     styleUrls: ['./packed-bubble.component.scss'],
     providers: [ChartMathodsService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class PackedBubbleComponent extends ParentChart implements OnInit {
   constructor(

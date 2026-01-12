@@ -19,7 +19,6 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-indexes-dashboard',
     templateUrl: './indexes-dashboard.component.html',
     styleUrls: ['./indexes-dashboard.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
@@ -42,7 +41,7 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
         MatRowDef,
         MatRow,
         MatPaginator,
-    ],
+    ]
 })
 export class IndexesDashboardComponent implements OnInit {
   constructor(

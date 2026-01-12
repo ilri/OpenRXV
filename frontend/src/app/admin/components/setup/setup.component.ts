@@ -42,24 +42,23 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
             transition('true <=> false', [animate('.5s')]),
         ]),
     ],
-    standalone: true,
     imports: [
-    MatCard,
-    MatCardTitle,
-    MatAnchor,
-    MatIcon,
-    MatButton,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconButton,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatSelect,
-    MatOption,
-    MatRadioGroup,
-    MatRadioButton
-],
+        MatCard,
+        MatCardTitle,
+        MatAnchor,
+        MatIcon,
+        MatButton,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconButton,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatSelect,
+        MatOption,
+        MatRadioGroup,
+        MatRadioButton
+    ]
 })
 export class SetupComponent implements OnInit {
   plugins: any = [];

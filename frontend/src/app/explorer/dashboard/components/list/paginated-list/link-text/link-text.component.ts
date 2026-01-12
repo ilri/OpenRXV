@@ -9,11 +9,10 @@ import { NgClass } from '@angular/common';
     templateUrl: './link-text.component.html',
     styleUrls: ['./link-text.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    TagsComponent,
-    NgClass
-],
+        TagsComponent,
+        NgClass
+    ]
 })
 export class LinkTextComponent {
   objectKeys = Object.keys;

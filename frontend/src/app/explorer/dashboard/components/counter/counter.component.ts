@@ -18,20 +18,19 @@ import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
     selector: 'app-counter',
     templateUrl: './counter.component.html',
     styleUrls: ['./counter.component.scss'],
-    standalone: true,
     imports: [
-    MatCard,
-    MatRipple,
-    CdkOverlayOrigin,
-    MatCardContent,
-    MatIcon,
-    MatCardTitle,
-    NgxLoadingModule,
-    CdkConnectedOverlay,
-    IconsWithTextComponent,
-    AsyncPipe,
-    DecimalPipe
-],
+        MatCard,
+        MatRipple,
+        CdkOverlayOrigin,
+        MatCardContent,
+        MatIcon,
+        MatCardTitle,
+        NgxLoadingModule,
+        CdkConnectedOverlay,
+        IconsWithTextComponent,
+        AsyncPipe,
+        DecimalPipe
+    ]
 })
 export class CounterComponent implements OnInit {
   @Input() componentConfigs: ComponentCounterConfigs;

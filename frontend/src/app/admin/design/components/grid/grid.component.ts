@@ -7,7 +7,6 @@ import { MatButton } from '@angular/material/button';
     selector: 'app-grid',
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
@@ -15,7 +14,7 @@ import { MatButton } from '@angular/material/button';
         MatButton,
         MatDialogClose,
         MatIcon,
-    ],
+    ]
 })
 export class GridComponent implements OnInit {
   constructor(

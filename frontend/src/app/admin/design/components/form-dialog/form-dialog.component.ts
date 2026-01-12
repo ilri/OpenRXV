@@ -17,23 +17,22 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     selector: 'app-form-dialog',
     templateUrl: './form-dialog.component.html',
     styleUrls: ['./form-dialog.component.scss'],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    NgSelectModule,
-    MatIcon,
-    MatCheckbox,
-    MatTooltip,
-    MainListComponent,
-    MatDialogActions,
-    MatButton
-],
+        MatDialogTitle,
+        MatDialogContent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        NgSelectModule,
+        MatIcon,
+        MatCheckbox,
+        MatTooltip,
+        MainListComponent,
+        MatDialogActions,
+        MatButton
+    ]
 })
 export class FormDialogComponent implements OnInit {
   controls = [];

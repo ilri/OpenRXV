@@ -47,20 +47,19 @@ declare function _altmetric_embed_init(): any;
     styleUrls: ['./list.component.scss'],
     providers: [ScrollHelperService, SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    MatExpansionPanel,
-    MatIcon,
-    MatTooltip,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    CdkOverlayOrigin,
-    CdkConnectedOverlay,
-    IconsWithTextComponent,
-    VirtualListComponent,
-    PaginatedListComponent,
-    NgxLoadingModule
-],
+        MatExpansionPanel,
+        MatIcon,
+        MatTooltip,
+        MatExpansionPanelHeader,
+        MatExpansionPanelTitle,
+        CdkOverlayOrigin,
+        CdkConnectedOverlay,
+        IconsWithTextComponent,
+        VirtualListComponent,
+        PaginatedListComponent,
+        NgxLoadingModule
+    ]
 })
 export class ListComponent extends ParentComponent implements OnInit {
   @ViewChild('clickToEnable') clickToEnable: ElementRef;

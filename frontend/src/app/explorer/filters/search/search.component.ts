@@ -26,17 +26,16 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     selector: 'app-search',
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
-    standalone: true,
     imports: [
-    MatFormField,
-    MatLabel,
-    MatInput,
-    FormsModule,
-    MatButton,
-    MatSuffix,
-    MatTooltip,
-    MatIcon
-],
+        MatFormField,
+        MatLabel,
+        MatInput,
+        FormsModule,
+        MatButton,
+        MatSuffix,
+        MatTooltip,
+        MatIcon
+    ]
 })
 export class SearchComponent extends ParentComponent implements OnInit {
   @ViewChild('search') searchInput: ElementRef;

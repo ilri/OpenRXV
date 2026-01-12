@@ -21,7 +21,6 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-mapping-values',
     templateUrl: './mapping-values.component.html',
     styleUrls: ['./mapping-values.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
@@ -44,7 +43,7 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
         MatRowDef,
         MatRow,
         MatPaginator,
-    ],
+    ]
 })
 export class MappingValuesComponent implements OnInit {
   constructor(

@@ -22,16 +22,15 @@ import { NgSelectModule } from '@ng-select/ng-select';
     templateUrl: './filter-paginated-list.component.html',
     styleUrls: ['./filter-paginated-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    NgSelectModule,
-    FormsModule,
-    MatIconButton,
-    MatMenuTrigger,
-    MatIcon,
-    MatMenu,
-    MatMenuItem
-],
+        NgSelectModule,
+        FormsModule,
+        MatIconButton,
+        MatMenuTrigger,
+        MatIcon,
+        MatMenu,
+        MatMenuItem
+    ]
 })
 export class FilterPaginatedListComponent implements OnInit {
   @Output() filterChanged: EventEmitter<SortOption>;

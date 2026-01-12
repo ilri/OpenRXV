@@ -23,18 +23,17 @@ import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
     styleUrls: ['./virtual-list.component.scss'],
     providers: [SelectService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    MatList,
-    CdkVirtualScrollViewport,
-    CdkFixedSizeVirtualScroll,
-    CdkVirtualForOf,
-    MatListItem,
-    MatListItemLine,
-    MatTooltip,
-    NgStyle,
-    DecimalPipe
-],
+        MatList,
+        CdkVirtualScrollViewport,
+        CdkFixedSizeVirtualScroll,
+        CdkVirtualForOf,
+        MatListItem,
+        MatListItemLine,
+        MatTooltip,
+        NgStyle,
+        DecimalPipe
+    ]
 })
 export class VirtualListComponent extends ParentComponent implements OnInit {
   @Input() listData: Bucket[];

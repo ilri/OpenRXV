@@ -24,18 +24,17 @@ import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/materi
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    standalone: true,
     imports: [
-    MatDrawerContainer,
-    MatDrawer,
-    ScrollToComponent,
-    MatDrawerContent,
-    TourAnchorMatMenuDirective,
-    DynamicComponent,
-    IntersectionObserverDirective,
-    NgClass,
-    JsonPipe
-],
+        MatDrawerContainer,
+        MatDrawer,
+        ScrollToComponent,
+        MatDrawerContent,
+        TourAnchorMatMenuDirective,
+        DynamicComponent,
+        IntersectionObserverDirective,
+        NgClass,
+        JsonPipe
+    ]
 })
 export class DashboardComponent implements OnInit {
   dashboardConfig: Array<GeneralConfigs> = [];

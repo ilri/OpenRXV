@@ -16,21 +16,20 @@ import { NgSelectModule } from '@ng-select/ng-select';
     selector: 'app-main-list',
     templateUrl: './main-list.component.html',
     styleUrls: ['./main-list.component.scss'],
-    standalone: true,
     imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    NgSelectModule,
-    MatFormField,
-    MatInput,
-    MatCheckbox,
-    MatLabel,
-    MatIconButton,
-    MatIcon,
-    MatButton,
-    MatSelect,
-    MatOption
-],
+        FormsModule,
+        ReactiveFormsModule,
+        NgSelectModule,
+        MatFormField,
+        MatInput,
+        MatCheckbox,
+        MatLabel,
+        MatIconButton,
+        MatIcon,
+        MatButton,
+        MatSelect,
+        MatOption
+    ]
 })
 export class MainListComponent implements OnInit {
   @Input() baseForm: UntypedFormGroup = null;

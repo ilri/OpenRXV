@@ -25,8 +25,7 @@ import { ChartComponent } from '../chart/chart.component';
     styleUrls: ['./bar.component.scss'],
     providers: [ChartMathodsService, RangeService, BarService, SelectService],
     changeDetection: ChangeDetectionStrategy.Default,
-    standalone: true,
-    imports: [ChartComponent],
+    imports: [ChartComponent]
 })
 export class BarComponent extends ParentChart implements OnInit {
   enabled: boolean;

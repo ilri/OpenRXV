@@ -19,23 +19,22 @@ import { MatFormField, MatError, MatLabel } from '@angular/material/form-field';
     selector: 'app-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.scss'],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogContent,
-    MatFormField,
-    MatInput,
-    MatError,
-    MatCheckbox,
-    MatLabel,
-    MatSelect,
-    MatOption,
-    MatDialogActions,
-    MatButton,
-    MatIcon
-],
+        MatDialogTitle,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogContent,
+        MatFormField,
+        MatInput,
+        MatError,
+        MatCheckbox,
+        MatLabel,
+        MatSelect,
+        MatOption,
+        MatDialogActions,
+        MatButton,
+        MatIcon
+    ]
 })
 export class FormIndexComponent implements OnInit {
   form: FormGroup = new FormGroup({});

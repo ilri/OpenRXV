@@ -13,14 +13,13 @@ import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
     selector: 'app-counter',
     templateUrl: './counter.component.html',
     styleUrls: ['./counter.component.scss'],
-    standalone: true,
     imports: [
         CdkDragPlaceholder,
         MatCard,
         MatCardTitle,
         MatIconButton,
         MatIcon,
-    ],
+    ]
 })
 export class CounterComponent implements OnInit {
   @Output() edited: EventEmitter<any> = new EventEmitter();

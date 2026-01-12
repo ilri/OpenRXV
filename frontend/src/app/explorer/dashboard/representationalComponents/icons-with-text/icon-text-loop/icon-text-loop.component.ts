@@ -7,10 +7,9 @@ import { MatIcon } from '@angular/material/icon';
     templateUrl: './icon-text-loop.component.html',
     styleUrls: ['./icon-text-loop.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
-    MatIcon
-],
+        MatIcon
+    ]
 })
 export class IconTextLoopComponent {
   @Input() strWithIcons: string[];

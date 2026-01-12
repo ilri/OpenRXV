@@ -20,7 +20,6 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-indexes',
     templateUrl: './indexes.component.html',
     styleUrls: ['./indexes.component.scss'],
-    standalone: true,
     imports: [
         MatCard,
         MatCardTitle,
@@ -43,7 +42,7 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
         MatRowDef,
         MatRow,
         MatPaginator,
-    ],
+    ]
 })
 export class IndexesComponent implements OnInit {
   constructor(

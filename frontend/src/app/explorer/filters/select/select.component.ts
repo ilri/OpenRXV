@@ -30,8 +30,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     templateUrl: './select.component.html',
     styleUrls: ['./select.component.scss'],
     providers: [SelectService],
-    standalone: true,
-    imports: [NgSelectModule, FormsModule],
+    imports: [NgSelectModule, FormsModule]
 })
 export class SelectComponent extends ParentComponent implements OnInit {
   filterOptions: Bucket[];

@@ -24,20 +24,19 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
     templateUrl: './export.component.html',
     styleUrls: ['./export.component.scss'],
     providers: [ExportService],
-    standalone: true,
     imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatList,
-    NgClass,
-    NgTemplateOutlet,
-    MatListItem,
-    MatProgressBar,
-    MatButton,
-    MatIcon,
-    MatDivider,
-    MatDialogActions
-],
+        MatDialogTitle,
+        MatDialogContent,
+        MatList,
+        NgClass,
+        NgTemplateOutlet,
+        MatListItem,
+        MatProgressBar,
+        MatButton,
+        MatIcon,
+        MatDivider,
+        MatDialogActions
+    ]
 })
 export class ExportComponent implements OnInit {
   @Input() type: FileType;

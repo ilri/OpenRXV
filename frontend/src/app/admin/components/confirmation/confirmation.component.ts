@@ -7,7 +7,6 @@ import { MatButton } from '@angular/material/button';
     selector: 'app-confirmation',
     templateUrl: './confirmation.component.html',
     styleUrls: ['./confirmation.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
@@ -15,7 +14,7 @@ import { MatButton } from '@angular/material/button';
         MatButton,
         MatDialogClose,
         MatIcon,
-    ],
+    ]
 })
 export class ConfirmationComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
