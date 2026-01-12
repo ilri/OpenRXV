@@ -49,6 +49,7 @@ export class ChartComponent {
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   @Output() resetFilter: EventEmitter<boolean>;
   @Input() filterd = false;
+  popoverIsOpen = false;
 
   Highcharts = Highcharts;
   constructor() {

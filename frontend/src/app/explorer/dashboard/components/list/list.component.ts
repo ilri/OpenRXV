@@ -46,6 +46,8 @@ export class ListComponent extends ParentComponent implements OnInit {
   isPaginatedList: boolean; // determine if we should display the hits or not
   paginationAtt: PageEvent;
   filterd = false;
+  popoverIsOpen = false;
+
   constructor(
     public readonly store: Store<fromStore.AppState>,
     public readonly scrollHelperService: ScrollHelperService,

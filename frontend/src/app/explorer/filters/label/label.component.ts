@@ -10,4 +10,5 @@ import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.regis
 })
 export class LabelComponent {
   @Input() componentConfigs: ComponentLabelConfigs;
+  popoverIsOpen = false;
 }

@@ -51,7 +51,6 @@ import { NgxLoadingModule } from 'ngx-loading';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { WelcomeComponent } from './dashboard/representationalComponents/welcome/welcome.component';
-import { MdePopoverModule } from '@material-extended/mde';
 import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';
 import { IconTextLoopComponent } from './dashboard/representationalComponents/icons-with-text/icon-text-loop/icon-text-loop.component';
 import { TagsComponent } from './dashboard/components/list/paginated-list/link-text/tags/tags.component';
@@ -87,6 +86,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { IntersectionObserverDirective } from './directives/intersection-observer.directive';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -170,7 +170,6 @@ import { IntersectionObserverDirective } from './directives/intersection-observe
     NouisliderModule,
     TourMatMenuModule,
     ExplorerRoutingModule, // for TourMatMenuModule,
-    MdePopoverModule, // https://github.com/angular/material2/issues/2691
     MatSnackBarModule,
     MatProgressSpinnerModule,
     LayoutModule,
@@ -180,6 +179,7 @@ import { IntersectionObserverDirective } from './directives/intersection-observe
     ClipboardModule,
     GoogleMapsModule,
     NgxSpinnerModule,
+    OverlayModule,
   ],
   providers: [],
 })

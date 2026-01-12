@@ -201,8 +201,10 @@
               (click)="addRemoveOrOperator()"
               color="primary"
               class="w-100 andOrOperatorButton"
-              [mdePopoverTriggerFor]="appPopover"
-              mdePopoverTriggerOn="hover"
+              cdkOverlayOrigin
+              #trigger="cdkOverlayOrigin"
+              (mouseenter)="popoverIsOpen = true"
+              (mouseleave)="popoverIsOpen = false"
             >
               Operator
               <ng-container *ngIf="orOperator; else and">
@@ -212,16 +214,16 @@
                 <strong>AND</strong>
               </ng-template>
               <mat-icon> error </mat-icon>
-              <mde-popover
-                #appPopover="mdePopover"
-                [mdePopoverOverlapTrigger]="false"
-                mdePopoverTriggerOn="hover"
-              >
-                <app-icons-with-text
-                  [text]="orAndToolTip"
-                ></app-icons-with-text>
-              </mde-popover>
             </button>
+            <ng-template
+              cdkConnectedOverlay
+              [cdkConnectedOverlayOrigin]="trigger"
+              [cdkConnectedOverlayOpen]="popoverIsOpen"
+            >
+              <app-icons-with-text
+                [text]="orAndToolTip"
+              ></app-icons-with-text>
+            </ng-template>
           </div>
           <div class="col-6">
             <button

@@ -1,8 +1,10 @@
 <mat-card
   appearance="raised"
   matRipple
-  [mdePopoverTriggerFor]="appPopover"
-  mdePopoverTriggerOn="hover"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  (mouseenter)="popoverIsOpen = true"
+  (mouseleave)="popoverIsOpen = false"
   matRippleCentered="centered"
   class="border-bottom-light center-text w-xs-100 primary-hover"
 >
@@ -27,8 +29,12 @@
   <ngx-loading [show]="!(loadingHits$ | async) && loading"></ngx-loading>
 </mat-card>
 
-<mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="popoverIsOpen"
+>
   <app-icons-with-text
     [text]="componentConfigs.description"
   ></app-icons-with-text>
-</mde-popover>
+</ng-template>

@@ -53,6 +53,8 @@ export class ExplorerComponent implements OnInit {
     top: 0,
   };
   dashboard_name: string;
+  popoverIsOpen = false;
+
   async share() {
     this.openDialog(
       location.href.match(/(.*)shared.*/)

@@ -23,6 +23,7 @@ export class CounterComponent implements OnInit {
   count: number;
   loading: boolean;
   loadingHits$: Observable<boolean>;
+  popoverIsOpen = false;
 
   constructor(private readonly store: Store<fromStore.AppState>) {
     this.oldCount = 0;

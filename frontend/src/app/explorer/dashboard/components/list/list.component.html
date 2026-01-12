@@ -31,16 +31,22 @@
       <mat-icon
         aria-label="Button that displays
             a tooltip when focused or hovered over"
-        [mdePopoverTriggerFor]="appPopover"
-        mdePopoverTriggerOn="hover"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        (mouseenter)="popoverIsOpen = true"
+        (mouseleave)="popoverIsOpen = false"
       >
         error
       </mat-icon>
-      <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="popoverIsOpen"
+      >
         <app-icons-with-text
           [text]="componentConfigs.description"
         ></app-icons-with-text>
-      </mde-popover>
+      </ng-template>
     </mat-panel-title>
   </mat-expansion-panel-header>
   <ng-container *ngIf="!isPaginatedList; else displayPaginatedList">
