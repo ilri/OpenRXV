@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { ComponentLookup } from '../../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { ListComponent } from '../list.component';
 import { Store } from '@ngrx/store';
 import { ScrollHelperService } from '../../services/scrollTo/scroll-helper.service';
@@ -16,7 +16,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-@ComponentLookup('MainListComponent')
+// // @ComponentLookup('MainListComponent')
 @Component({
     selector: 'app-main-list',
     templateUrl: '../list.component.html',

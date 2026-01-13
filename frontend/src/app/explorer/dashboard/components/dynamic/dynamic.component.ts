@@ -3,7 +3,6 @@ import {
   Component,
   OnInit,
   Input,
-  ComponentFactoryResolver,
   ViewContainerRef,
 } from '@angular/core';
 import { ComponentLookupRegistry } from './lookup.registry';
@@ -17,15 +16,13 @@ export class DynamicComponent implements OnInit {
   @Input() comp: string;
   @Input() componentConfigs: any;
   constructor(
-    private resolver: ComponentFactoryResolver,
     private vcRef: ViewContainerRef,
   ) {}
 
   ngOnInit() {
-    const factoryClass = <Type<any>>ComponentLookupRegistry.get(this.comp);
+    const factoryClass = <Type<any>>ComponentLookupRegistry(this.comp);
     if (factoryClass) {
-      const factory = this.resolver.resolveComponentFactory(factoryClass);
-      const compRef = this.vcRef.createComponent(factory);
+      const compRef = this.vcRef.createComponent(factoryClass);
       compRef.instance.componentConfigs = this.componentConfigs;
     }
   }

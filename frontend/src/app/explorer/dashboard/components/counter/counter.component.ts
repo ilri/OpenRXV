@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComponentCounterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { MatIcon } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatRipple } from '@angular/material/core';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
-@ComponentLookup('CounterComponent')
+// // @ComponentLookup('CounterComponent')
 @Component({
     selector: 'app-counter',
     templateUrl: './counter.component.html',

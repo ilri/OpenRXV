@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  api: '#CONFIG_OpenRXV_BASE_HREF#api',
+  api: '/explorer/api',
 };
 
 /*

@@ -7,14 +7,14 @@ import {
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-@ComponentLookup('PackedBubbleComponent')
+// // @ComponentLookup('PackedBubbleComponent')
 @Component({
     selector: 'app-packed-bubble',
     templateUrl: './packed-bubble.component.html',
@@ -71,8 +71,8 @@ export class PackedBubbleComponent extends ParentChart implements OnInit {
         return a - b;
       });
 
-    const min = sorted[0];
-    const max = sorted.reduce((a, b) => a + b) / sorted.length;
+    const min = sorted.length ? sorted[0] : 0;
+    const max = sorted.length ? (sorted.reduce((a, b) => a + b) / sorted.length) : 0;
     return {
       chart: {
         type: 'packedbubble',

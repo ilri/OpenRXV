@@ -19,7 +19,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import { first } from 'rxjs/operators';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
@@ -40,7 +40,7 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
  * externalModule to hint to the TypeScript compiler that externalModule has already been set up
  */
 declare function _altmetric_embed_init(): any;
-@ComponentLookup('ListComponent')
+// // @ComponentLookup('ListComponent')
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',

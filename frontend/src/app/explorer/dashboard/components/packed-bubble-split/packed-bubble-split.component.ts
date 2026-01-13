@@ -7,7 +7,7 @@ import {
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -15,7 +15,7 @@ import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
-@ComponentLookup('PackedBubbleSplitComponent')
+// // @ComponentLookup('PackedBubbleSplitComponent')
 @Component({
     selector: 'app-packed-bubble-split',
     templateUrl: './packed-bubble-split.component.html',

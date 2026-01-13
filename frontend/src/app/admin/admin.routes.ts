@@ -1,21 +1,19 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
+import {RootComponent} from "./root/root.component";
+import {IndexesComponent} from "./indexes/indexes.component";
+import {AdminGuard} from "./admin.guard";
+import {DashboardComponent} from "./dashboard/dashboard.component";
+import {MappingValuesComponent} from "./components/mapping-values/mapping-values.component";
+import {SetupComponent} from "./components/setup/setup.component";
+import {PluginsComponent} from "./plugins/plugins.component";
+import {IndexesDashboardComponent} from "./indexes-dashboard/indexes-dashboard.component";
+import {AppearanceComponent} from "./appearance/appearance.component";
+import {DesignComponent} from "./design/design.component";
+import {ReportingComponent} from "./reporting/reporting.component";
+import {SharedComponent} from "./components/shared/shared.component";
+import {UsersComponent} from "./components/users/users.component";
 
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { RootComponent } from './root/root.component';
-import { AdminGuard } from './admin.guard';
-import { UsersComponent } from './components/users/users.component';
-import { MappingValuesComponent } from './components/mapping-values/mapping-values.component';
-import { SetupComponent } from './components/setup/setup.component';
-import { SharedComponent } from './components/shared/shared.component';
-import { DesignComponent } from './design/design.component';
-import { AppearanceComponent } from './appearance/appearance.component';
-import { PluginsComponent } from './plugins/plugins.component';
-import { ReportingComponent } from './reporting/reporting.component';
-import { IndexesComponent } from './indexes/indexes.component';
-import { IndexesDashboardComponent } from './indexes-dashboard/indexes-dashboard.component';
-
-const routes: Routes = [
+export const adminRoutes: Routes = [
   {
     path: 'admin',
     component: RootComponent,
@@ -89,11 +87,5 @@ const routes: Routes = [
         canActivate: [AdminGuard],
       },
     ],
-  },
+  }
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class AdminRoutingModule {}

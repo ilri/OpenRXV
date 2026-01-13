@@ -138,8 +138,8 @@ export class RangeService {
         ),
         map((d: ElasticsearchResponse) => {
           const obj = {};
-          obj[`min_${this.source}`] = d.aggregations[`min_${this.source}`];
-          obj[`max_${this.source}`] = d.aggregations[`max_${this.source}`];
+          obj[`min_${this.source}`] = d.aggregations?.[`min_${this.source}`] ? d.aggregations[`min_${this.source}`] : 0;
+          obj[`max_${this.source}`] = d.aggregations?.[`max_${this.source}`] ? d.aggregations[`max_${this.source}`] : 0;
           return obj;
         }),
       );

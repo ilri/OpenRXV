@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -141,6 +141,7 @@ export class SettingsService {
       .toPromise();
   }
 
+  // here
   async readExplorerSettings(dashboard_name = 'DEFAULT_DASHBOARD') {
     if (dashboard_name == null) dashboard_name = 'DEFAULT_DASHBOARD';
     return await this.http

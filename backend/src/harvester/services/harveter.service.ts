@@ -9,7 +9,7 @@ import { AddMissingItems } from '../../plugins/dspace_add_missing_items';
 import { DSpaceAltmetrics } from '../../plugins/dspace_altmetrics';
 import { DSpaceDownloadsAndViews } from '../../plugins/dspace_downloads_and_views';
 import { MELDownloadsAndViews } from '../../plugins/mel_downloads_and_views';
-import * as dayjs from 'dayjs';
+const dayjs = require('dayjs');
 import {
   SearchResponse,
   SearchRequest,

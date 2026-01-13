@@ -12,7 +12,7 @@ import { fromEvent } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
+// import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { ActivatedRoute } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
@@ -21,7 +21,7 @@ import { MatButton } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
-@ComponentLookup('SearchComponent')
+// @ComponentLookup('SearchComponent')
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',

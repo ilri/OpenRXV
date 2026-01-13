@@ -20,7 +20,7 @@ import { readdirSync } from 'fs';
 import { IndexMetadataService } from 'src/shared/services/index-metadata.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ElasticService } from 'src/shared/services/elastic/elastic.service';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 @Controller('settings')
 export class SettingsController {
   constructor(

@@ -9,18 +9,18 @@ const mapWorld = require('@highcharts/map-collection/custom/world-robinson-highr
 import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
-import CountryISO from '@mohammad231/iso_3166-1';
+import * as CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { ChartComponent } from '../chart/chart.component';
-@ComponentLookup('MapComponent')
+// // @ComponentLookup('MapComponent')
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',

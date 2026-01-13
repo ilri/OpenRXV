@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
-const bodybuilder = require('bodybuilder');
+import bodybuilder from 'bodybuilder';
 import {
   QuerySearchAttribute,
   QueryYearAttribute,
@@ -175,7 +175,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
   }
 
   private sortHitsQuery(b: bodybuilder.Bodybuilder, from: number): void {
-    const { sort, value } = this.hitsAttributes;
+    const { sort, value } = this.hitsAttributes ?? {};
 
     b.sort('_score', {
       order: 'desc',

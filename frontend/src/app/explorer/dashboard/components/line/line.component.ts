@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { BarService } from './../bar/services/bar/bar.service';
@@ -18,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
 
-@ComponentLookup('LineComponent')
+// // @ComponentLookup('LineComponent')
 @Component({
     selector: 'app-line',
     templateUrl: './line.component.html',

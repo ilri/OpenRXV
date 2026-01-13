@@ -21,12 +21,12 @@
     </p>
   }
   <section class="publication-text">
-    @for (tag of content.tags; track tag; let i = $index) {
-      @if (tags(tag.metadata)) {
+    @for (item of content.tags | keyvalue; track item.key) {
+      @if (tags(item.value.metadata)) {
         <app-tags
-          [ngClass]="{ 'simulate-p-tag': i === 0 || i === 1 }"
-          [label]="tag.disply_name"
-          [labelData]="tags(tag.metadata)"
+          [ngClass]="{ 'simulate-p-tag': item.key === '0' || item.key === '1' }"
+          [label]="item.value.disply_name"
+          [labelData]="tags(item.value.metadata)"
         ></app-tags>
       }
     }

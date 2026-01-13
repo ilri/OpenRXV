@@ -4,7 +4,7 @@ import {
   ElementRef,
   HostListener,
   Input,
-  OnInit,
+  OnInit, signal,
   ViewChild,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -22,7 +22,7 @@ import {
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
@@ -33,24 +33,28 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
+import {SettingsService} from "../../../../admin/services/settings.service";
+import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
 
-@ComponentLookup('GoogleMapsComponent')
+// // @ComponentLookup('GoogleMapsComponent')
 @Component({
     selector: 'app-google-maps',
     templateUrl: './googlemaps.component.html',
     providers: [ChartMathodsService, ScrollHelperService, SelectService],
     styleUrls: ['./googlemaps.component.scss'],
-    imports: [
-        MatExpansionPanel,
-        NgClass,
-        MatIcon,
-        MatTooltip,
-        MatExpansionPanelHeader,
-        MatExpansionPanelTitle,
-        IconsWithTextComponent,
-        GoogleMapsModule,
-        NgxLoadingModule
-    ]
+  imports: [
+    MatExpansionPanel,
+    NgClass,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    IconsWithTextComponent,
+    GoogleMapsModule,
+    NgxLoadingModule,
+    CdkConnectedOverlay,
+    CdkOverlayOrigin,
+  ]
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
   @Input() expandedStatus: boolean;
@@ -76,6 +80,8 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     zoomControl: false,
     disableDefaultUI: false,
   };
+  popoverIsOpen = false;
+  loaded = signal(false);
 
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
@@ -88,6 +94,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly bodyBuilderService: BodyBuilderService,
     activeRoute: ActivatedRoute,
+    private readonly settingsService: SettingsService,
   ) {
     super(cms, selectService, store, activeRoute);
   }
@@ -181,11 +188,18 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.init('google-maps');
-    this.scrollHelperService.storeVal = this.store;
-    this.seeIfThisCompInView();
-    this.subToDataFromStore();
+  async ngOnInit(): Promise<void> {
+    const dashboard_name =
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
+    const apiKey = appearance?.google_maps_api_key ? appearance.google_maps_api_key : '';
+    if (await this.appendGoogleMapsScript(apiKey)) {
+      this.loaded.set(true);
+      this.init('google-maps');
+      this.scrollHelperService.storeVal = this.store;
+      this.seeIfThisCompInView();
+      this.subToDataFromStore();
+    }
   }
 
   hideClickToEnable(): void {
@@ -237,5 +251,27 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     }
     const len: number | boolean = arr && arr.length;
     return len || 0;
+  }
+
+  private async appendGoogleMapsScript(apiKey: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (document.getElementById('googleMapsScript')) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.id = `googleMapsScript`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        console.error('Google Maps API failed to load');
+        resolve(false);
+      };
+      document.head.appendChild(script);
+    });
   }
 }

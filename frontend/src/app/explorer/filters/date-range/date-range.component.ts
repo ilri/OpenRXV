@@ -5,10 +5,10 @@ import * as fromStore from '../../store';
 import { ElasticsearchQuery, BuildQueryObj } from '../services/interfaces';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
+// import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { RangeService } from '../services/range/range.service';
 
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 import { ActivatedRoute } from '@angular/router';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
@@ -17,7 +17,7 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 // eslint-disable-next-line no-duplicate-imports
 
-@ComponentLookup('DateRangeComponent')
+// @ComponentLookup('DateRangeComponent')
 @Component({
     selector: 'app-date-range',
     templateUrl: './date-range.component.html',

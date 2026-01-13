@@ -24,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { NgxSpinnerService, NgxSpinnerModule } from 'ngx-spinner';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NgxLoadingModule } from 'ngx-loading';

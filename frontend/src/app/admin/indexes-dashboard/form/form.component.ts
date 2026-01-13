@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';

@@ -9,7 +9,7 @@ import { ChartMathodsService } from '../../services/chartCommonMethods/chart-mat
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { BarService } from './../services/bar/bar.service';
-import { ComponentLookup } from '../../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ import * as fromStore from '../../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
 
-@ComponentLookup('SingleBarComponent')
+// // @ComponentLookup('SingleBarComponent')
 @Component({
     selector: 'app-rotated-lables',
     templateUrl: './rotated-lables.component.html',

@@ -11,6 +11,7 @@ import {
   QueryFilterAttribute,
   QueryBlock,
 } from 'src/app/explorer/filters/services/interfaces';
+import bodybuilder from 'bodybuilder';
 
 export class BuilderUtilities {
   protected dashboardConfig = [];
@@ -21,7 +22,7 @@ export class BuilderUtilities {
     const configs = await JSON.parse(localStorage.getItem('configs'));
     return configs;
   }
-  private querySourceBucketsFilter: QueryBlock[];
+  private querySourceBucketsFilter: QueryBlock[] = [];
   protected aggAttributes:
     | QueryYearAttribute
     | QuerySearchAttribute

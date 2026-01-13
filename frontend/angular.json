@@ -72,7 +72,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {},
+          "options": {
+            "allowedHosts": ["dev.openrxv.codeobia.com"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "RES:build:production"

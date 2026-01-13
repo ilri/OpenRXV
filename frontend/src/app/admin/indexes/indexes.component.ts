@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationComponent } from '../components/confirmation/confirmation.component';
 import { CommonService } from '../../common.service';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';

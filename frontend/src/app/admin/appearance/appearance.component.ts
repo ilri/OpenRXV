@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
 
 import { MatCheckbox } from '@angular/material/checkbox';
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerDirective} from 'ngx-color-picker';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -19,22 +19,22 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     selector: 'app-appearance',
     templateUrl: './appearance.component.html',
     styleUrls: ['./appearance.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        ColorPickerModule,
-        MatIconButton,
-        MatSuffix,
-        MatCheckbox
-    ]
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatIconButton,
+    MatSuffix,
+    MatCheckbox,
+    ColorPickerDirective
+  ]
 })
 export class AppearanceComponent implements OnInit {
   dashboard_name: string;

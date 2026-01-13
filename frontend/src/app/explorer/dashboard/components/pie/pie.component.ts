@@ -8,7 +8,7 @@ import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathod
 import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
+// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-@ComponentLookup('PieComponent')
+// // @ComponentLookup('PieComponent')
 @Component({
     selector: 'app-pie',
     templateUrl: './pie.component.html',

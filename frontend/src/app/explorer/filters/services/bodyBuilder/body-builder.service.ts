@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
-const bodybuilder = require('bodybuilder');
+import bodybuilder from 'bodybuilder';
 import { Subject } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
 import {
@@ -26,9 +26,11 @@ export class BodyBuilderService {
   private from: number;
 
   constructor(private readonly mainBodyBuilderService: MainBodyBuilderService) {
+    console.log('contructing...')
     this.reset = new Subject();
     this.from = 0;
     this.mainBodyBuilderService.start();
+    console.log('starting...')
   }
 
   get shouldReset(): Subject<ResetOptions> {
