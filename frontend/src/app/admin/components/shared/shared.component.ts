@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,13 +35,16 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class SharedComponent implements OnInit {
+  private sharedService = inject(SharedService);
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   currenRoute: any;
 
-  constructor(
-    private sharedService: SharedService,
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   displayedColumns: string[] = [
     'id',

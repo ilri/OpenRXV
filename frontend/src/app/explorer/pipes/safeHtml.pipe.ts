@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -9,6 +9,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     standalone: true,
 })
 export class SafeHtmlPipe implements PipeTransform {
+  private sanitized = inject(DomSanitizer);
+
   icons(value) {
     const regex = /[]*ICONS:\s*([^\n\ ]*)/gim;
     let matches;
@@ -28,7 +30,10 @@ export class SafeHtmlPipe implements PipeTransform {
 
     return value;
   }
-  constructor(private sanitized: DomSanitizer) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   transform(value: string, args?: any): SafeHtml {
     if (value) {

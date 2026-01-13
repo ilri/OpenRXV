@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener, inject } from '@angular/core';
 import {
   FileType,
   ExporterResponse,
@@ -39,6 +39,11 @@ import { NgClass, NgTemplateOutlet } from '@angular/common';
     ]
 })
 export class ExportComponent implements OnInit {
+  private exportService = inject(ExportService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private settingsService = inject(SettingsService);
+
   @Input() type: FileType;
   @Input() query: Observable<ElasticsearchQuery>;
   @Input() file: any;
@@ -62,12 +67,10 @@ export class ExportComponent implements OnInit {
     );
   }
 
-  constructor(
-    private exportService: ExportService,
-    private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar,
-    private settingsService: SettingsService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.installing = false;
     this.indexToToggleLoaded = 0;
     this.exportPoint = environment.api + '/export';

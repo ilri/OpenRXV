@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
 import bodybuilder from 'bodybuilder';
 import { Subject } from 'rxjs';
@@ -16,6 +16,8 @@ import {
   providedIn: 'root',
 })
 export class BodyBuilderService {
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+
   /**
    * `reset Subject` is used to till other components
    * if they should rebuild their query and get new
@@ -25,7 +27,10 @@ export class BodyBuilderService {
   private readonly reset: Subject<ResetOptions>;
   private from: number;
 
-  constructor(private readonly mainBodyBuilderService: MainBodyBuilderService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     console.log('contructing...')
     this.reset = new Subject();
     this.from = 0;

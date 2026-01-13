@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { UsersService } from '../../services/users.service';
@@ -35,12 +35,15 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class UsersComponent implements OnInit {
-  constructor(
-    private usersService: UsersService,
-    public dialog: MatDialog,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+  private usersService = inject(UsersService);
+  dialog = inject(MatDialog);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(FormComponent, {

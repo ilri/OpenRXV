@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
@@ -35,6 +35,11 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     ]
 })
 export class DateRangeComponent extends ParentComponent implements OnInit {
+  private readonly rangeService = inject(RangeService);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  activeRoute = inject(ActivatedRoute);
+
   fromDate = null;
   toDate = null;
   fromMinDate = null;
@@ -43,12 +48,10 @@ export class DateRangeComponent extends ParentComponent implements OnInit {
   toMaxDate = null;
   searchTerm: string;
   range: number[];
-  constructor(
-    private readonly rangeService: RangeService,
-    private readonly bodyBuilderService: BodyBuilderService,
-    private readonly store: Store<fromStore.AppState>,
-    public activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     super();
     this.rangeService.storeVal = this.store;
   }

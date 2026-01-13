@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
@@ -22,6 +22,9 @@ import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
     ]
 })
 export class CounterComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<boolean> = new EventEmitter();
 
@@ -87,10 +90,10 @@ export class CounterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   ngOnInit(): void {
     if (!this.configs.componentConfigs.source) this.openDialog();

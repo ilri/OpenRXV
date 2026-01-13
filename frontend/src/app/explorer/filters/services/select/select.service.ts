@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -14,14 +14,17 @@ import { BodyBuilderService } from '../bodyBuilder/body-builder.service';
 
 @Injectable()
 export class SelectService {
+  private readonly http = inject(HttpClient);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+
   private source: string;
   private readonly api_end_point: string = environment.api + '/search';
   total: number;
   subjetData: Subject<Bucket[]>;
-  constructor(
-    private readonly http: HttpClient,
-    private readonly bodyBuilderService: BodyBuilderService,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     this.subjetData = new Subject();
   }
 

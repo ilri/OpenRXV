@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  HostListener,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
@@ -62,6 +54,13 @@ declare function _altmetric_embed_init(): any;
     ]
 })
 export class ListComponent extends ParentComponent implements OnInit {
+  readonly store = inject<Store<fromStore.AppState>>(Store);
+  readonly scrollHelperService = inject(ScrollHelperService);
+  readonly cdr = inject(ChangeDetectorRef);
+  private readonly selectService = inject(SelectService);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private activeRoute = inject(ActivatedRoute);
+
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   hits: Hits; // for the paginated list
   listData: Bucket[]; // for aggrigiation list
@@ -70,14 +69,10 @@ export class ListComponent extends ParentComponent implements OnInit {
   filterd = false;
   popoverIsOpen = false;
 
-  constructor(
-    public readonly store: Store<fromStore.AppState>,
-    public readonly scrollHelperService: ScrollHelperService,
-    public readonly cdr: ChangeDetectorRef,
-    private readonly selectService: SelectService,
-    private readonly bodyBuilderService: BodyBuilderService,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
   resetQ() {

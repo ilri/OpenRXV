@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
@@ -25,14 +20,18 @@ import { ChartComponent } from '../chart/chart.component';
     imports: [ChartComponent]
 })
 export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
-  constructor(
-    cms: ChartMathodsService,
-    private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    activatedRoute: ActivatedRoute,
-  ) {
+  private readonly cdr = inject(ChangeDetectorRef);
+  private settingsService = inject(SettingsService);
+  readonly selectService = inject(SelectService);
+  readonly store = inject<Store<fromStore.AppState>>(Store);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, null, null, activatedRoute);
   }
   colors: string[];

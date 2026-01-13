@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, Input, ViewChild, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { hits } from 'src/app/explorer/filters/services/interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
@@ -40,6 +34,11 @@ import { FilterPaginatedListComponent } from './filter-paginated-list/filter-pag
     ]
 })
 export class PaginatedListComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() hits: hits[];
   @Input() paginationAtt: PageEvent;
   @Input() loadingHits: boolean;
@@ -56,12 +55,10 @@ export class PaginatedListComponent implements OnInit {
    * value
    */
   private flag: boolean;
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     this.flag = true;
   }
 

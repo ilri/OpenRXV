@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDrawer, MatSidenavContainer, MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
 import * as fromStore from './store';
 import { Store } from '@ngrx/store';
@@ -69,6 +69,15 @@ import { NgClass, AsyncPipe } from '@angular/common';
     ]
 })
 export class ExplorerComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly tourService = inject(TourService);
+  private readonly screenSizeService = inject(ScreenSizeService);
+  private readonly itemsService = inject(ItemsService);
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+  private spinner = inject(NgxSpinnerService);
+
   @ViewChild('drawer') sidenav: MatDrawer;
   @ViewChild('sidenavContent', { read: ElementRef }) sidenavContent: ElementRef;
   loading$: Observable<boolean>;
@@ -109,16 +118,10 @@ export class ExplorerComponent implements OnInit {
     return this.screenSizeService.isSmallScreen;
   }
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly tourService: TourService,
-    private readonly screenSizeService: ScreenSizeService,
-    private readonly itemsService: ItemsService,
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-    private spinner: NgxSpinnerService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.orOperator = false;
     this.orAndToolTip = orAndToolTip;
     this.options = {

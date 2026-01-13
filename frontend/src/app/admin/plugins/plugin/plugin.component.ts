@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnChanges,
-  Input,
-  Output,
-  EventEmitter,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
@@ -43,6 +35,10 @@ import { MatCard, MatCardTitle, MatCardSubtitle, MatCardContent } from '@angular
     ]
 })
 export class PluginComponent implements OnInit, OnChanges {
+  private fb = inject(UntypedFormBuilder);
+  private settingService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() plugins: any = null;
   @Input() pluginIndex = 0;
   plugin: any = null;
@@ -52,11 +48,10 @@ export class PluginComponent implements OnInit, OnChanges {
   repositoriesList: [] = [];
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private fb: UntypedFormBuilder,
-    private settingService: SettingsService,
-    private activeRoute: ActivatedRoute,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   activeChange() {
     if (!this.active) this.formdata = new UntypedFormArray([]);
     else if (

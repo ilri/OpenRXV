@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
@@ -27,16 +22,25 @@ import { ChartComponent } from '../chart/chart.component';
     imports: [ChartComponent]
 })
 export class WordcloudComponent extends ParentChart implements OnInit {
-  constructor(
-    cms: ChartMathodsService,
-    private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute: ActivatedRoute,
-  ) {
+  private readonly cdr = inject(ChangeDetectorRef);
+  private settingsService = inject(SettingsService);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+  
+    this.selectService = selectService;
+    this.store = store;
   }
   colors: string[];
   async ngOnInit() {

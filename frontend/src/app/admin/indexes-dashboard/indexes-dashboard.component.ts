@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -44,13 +44,16 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class IndexesDashboardComponent implements OnInit {
-  constructor(
-    private settingsService: SettingsService,
-    public dialog: MatDialog,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+  private settingsService = inject(SettingsService);
+  dialog = inject(MatDialog);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   dashboards: any;
   exportLink: string;

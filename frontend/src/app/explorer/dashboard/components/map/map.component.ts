@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 const mapWorld = require('@highcharts/map-collection/custom/world-robinson-highres.geo.json');
 import * as Highcharts from 'highcharts';
@@ -30,16 +25,25 @@ import { ChartComponent } from '../chart/chart.component';
     imports: [ChartComponent]
 })
 export class MapComponent extends ParentChart implements OnInit {
-  constructor(
-    cms: ChartMathodsService,
-    private readonly cdr: ChangeDetectorRef,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute: ActivatedRoute,
-    private settingsService: SettingsService,
-  ) {
+  private readonly cdr = inject(ChangeDetectorRef);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private settingsService = inject(SettingsService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+  
+    this.selectService = selectService;
+    this.store = store;
   }
   filterd = false;
   items_label = 'Information Products';

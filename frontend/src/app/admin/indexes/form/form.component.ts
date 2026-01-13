@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -37,6 +37,13 @@ import { MatFormField, MatError, MatLabel } from '@angular/material/form-field';
     ]
 })
 export class FormIndexComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<FormIndexComponent>>(MatDialogRef);
+  private fb = inject(FormBuilder);
+  private settingsService = inject(SettingsService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: FormGroup = new FormGroup({});
   selectedInterval = '';
   autoHarvest = false;
@@ -130,14 +137,10 @@ export class FormIndexComponent implements OnInit {
     e.preventDefault();
     this.dialogRef.close();
   }
-  constructor(
-    public dialogRef: MatDialogRef<FormIndexComponent>,
-    private fb: FormBuilder,
-    private settingsService: SettingsService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   populateForm(
     data = {

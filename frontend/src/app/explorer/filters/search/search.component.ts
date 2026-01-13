@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import {
   searchOptions,
   ComponentSearchConfigs,
@@ -38,14 +38,17 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     ]
 })
 export class SearchComponent extends ParentComponent implements OnInit {
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private activeRoute = inject(ActivatedRoute);
+
   @ViewChild('search') searchInput: ElementRef;
   searchTerm: string;
 
-  constructor(
-    private readonly bodyBuilderService: BodyBuilderService,
-    private readonly store: Store<fromStore.AppState>,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
 

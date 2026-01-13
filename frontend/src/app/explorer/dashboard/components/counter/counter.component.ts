@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/explorer/store';
 import { Observable } from 'rxjs';
@@ -33,6 +33,8 @@ import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class CounterComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+
   @Input() componentConfigs: ComponentCounterConfigs;
   private oldCount: number;
   private newCount: number;
@@ -45,7 +47,10 @@ export class CounterComponent implements OnInit {
   loadingHits$: Observable<boolean>;
   popoverIsOpen = false;
 
-  constructor(private readonly store: Store<fromStore.AppState>) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.oldCount = 0;
   }
 

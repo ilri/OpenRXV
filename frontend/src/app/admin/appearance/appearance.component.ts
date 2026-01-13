@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -37,6 +37,12 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
   ]
 })
 export class AppearanceComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
   dashboard_name: string;
   exportLink: string;
   primary_color = '';
@@ -60,13 +66,10 @@ export class AppearanceComponent implements OnInit {
     chartColors: new UntypedFormArray([]),
   });
 
-  constructor(
-    private settingsService: SettingsService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   src(value) {
     try {
       return new URL(value);

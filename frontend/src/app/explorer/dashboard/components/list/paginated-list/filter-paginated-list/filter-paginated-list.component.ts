@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  Input,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { SortOption } from 'src/app/explorer/configs/generalConfig.interface';
 import { FileType } from './types.interface';
 import { SettingsService } from 'src/app/admin/services/settings.service';
@@ -33,6 +26,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ]
 })
 export class FilterPaginatedListComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+
   @Output() filterChanged: EventEmitter<SortOption>;
   @Output() startExporting: EventEmitter<any>;
   @Input() filterOptions: SortOption[];
@@ -40,10 +36,10 @@ export class FilterPaginatedListComponent implements OnInit {
   ascDesc: SortOption[];
   reverseOption: string;
   files: [];
-  constructor(
-    private settingsService: SettingsService,
-    private activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     this.filterChanged = new EventEmitter();
     this.startExporting = new EventEmitter();
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -28,6 +28,12 @@ import { MatFormField } from '@angular/material/form-field';
     ]
 })
 export class ValuesForm implements OnInit {
+  dialogRef = inject<MatDialogRef<ValuesForm>>(MatDialogRef);
+  private valuesService = inject(ValuesService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     find: new UntypedFormControl(''),
     replace: new UntypedFormControl(''),
@@ -73,13 +79,10 @@ export class ValuesForm implements OnInit {
     await this.spinner.hide();
   }
 
-  constructor(
-    public dialogRef: MatDialogRef<ValuesForm>,
-    private valuesService: ValuesService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     if (this.data) {

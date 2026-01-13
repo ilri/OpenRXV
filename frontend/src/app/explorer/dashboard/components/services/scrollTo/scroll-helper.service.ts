@@ -1,4 +1,4 @@
-import { Injectable, ChangeDetectorRef } from '@angular/core';
+import { Injectable, ChangeDetectorRef, inject } from '@angular/core';
 import { ViewState } from 'src/app/explorer/store/reducers/items.reducer';
 import { InView } from 'src/app/explorer/store/actions/actions.interfaces';
 import { GeneralConfigs } from 'src/app/explorer/configs/generalConfig.interface';
@@ -9,6 +9,8 @@ import { ViewChild } from '../../list/paginated-list/filter-paginated-list/types
 
 @Injectable()
 export class ScrollHelperService {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   viewState: ViewState;
   private expanded: boolean;
   private store: Store<fromStore.ItemsState>;
@@ -38,7 +40,10 @@ export class ScrollHelperService {
     return this.loading;
   }
 
-  constructor(private readonly cdr: ChangeDetectorRef) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.expanded = true;
     this.dataIsReadyArrived = new Subject();
     const { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -12,8 +12,13 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ItemsService {
+  private http = inject(HttpClient);
+
   private readonly api_end_point: string = environment.api + '/search';
-  constructor(private http: HttpClient) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   getItems(
     query: ElasticsearchQuery,

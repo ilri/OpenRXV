@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 // import { ComponentLookup } from '../dynamic/lookup.registry';
@@ -18,15 +18,24 @@ import { ChartComponent } from '../chart/chart.component';
     imports: [ChartComponent]
 })
 export class SimiCircleComponent extends ParentChart implements OnInit {
+  private settingsService = inject(SettingsService);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+
   colors: string[];
-  constructor(
-    cms: ChartMathodsService,
-    private settingsService: SettingsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    activatedRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+  
+    this.selectService = selectService;
+    this.store = store;
   }
 
   async ngOnInit() {

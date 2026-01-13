@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../store';
 import { SetQuery } from '../store';
@@ -37,21 +37,24 @@ import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/materi
     ]
 })
 export class DashboardComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly itemsService = inject(ItemsService);
+  private activeRoute = inject(ActivatedRoute);
+  private settingsService = inject(SettingsService);
+  private route = inject(Router);
+
   dashboardConfig: Array<GeneralConfigs> = [];
   countersConfig: Array<GeneralConfigs> = [];
   tourConfig: Array<GeneralConfigs> = [];
   oldViewState: Map<string, boolean>;
   dashboard_name: string;
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly snackBar: MatSnackBar,
-    private readonly itemsService: ItemsService,
-    private activeRoute: ActivatedRoute,
-    private settingsService: SettingsService,
-    private route: Router,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.oldViewState = new Map<string, boolean>();
   }
   async getCounters() {

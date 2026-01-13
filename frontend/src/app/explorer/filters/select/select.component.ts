@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { Subject, of, Observable } from 'rxjs';
 import {
@@ -33,6 +33,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
     imports: [NgSelectModule, FormsModule]
 })
 export class SelectComponent extends ParentComponent implements OnInit {
+  private readonly selectService = inject(SelectService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private activeRoute = inject(ActivatedRoute);
+
   filterOptions: Bucket[];
   selectedOptions: Bucket[];
   searchTerms$: Subject<string>;
@@ -43,12 +48,10 @@ export class SelectComponent extends ParentComponent implements OnInit {
   private typedTerm: string;
   private opened: boolean;
 
-  constructor(
-    private readonly selectService: SelectService,
-    private readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
     this.filterOptions = [];
     this.searchTerms$ = new Subject();

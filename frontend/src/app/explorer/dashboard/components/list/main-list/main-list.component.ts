@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
 // // import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { ListComponent } from '../list.component';
 import { Store } from '@ngrx/store';
@@ -37,14 +37,21 @@ import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } fr
     ]
 })
 export class MainListComponent extends ListComponent {
-  constructor(
-    public readonly store: Store<fromStore.AppState>,
-    public readonly scrollHelperService: ScrollHelperService,
-    public readonly cdr: ChangeDetectorRef,
-    selectService: SelectService,
-    bodyBuilderService: BodyBuilderService,
-    activatedRoute: ActivatedRoute,
-  ) {
+  readonly store: Store<fromStore.AppState>;
+  readonly scrollHelperService: ScrollHelperService;
+  readonly cdr: ChangeDetectorRef;
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const scrollHelperService = inject(ScrollHelperService);
+    const cdr = inject(ChangeDetectorRef);
+    const selectService = inject(SelectService);
+    const bodyBuilderService = inject(BodyBuilderService);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(
       store,
       scrollHelperService,
@@ -53,5 +60,9 @@ export class MainListComponent extends ListComponent {
       bodyBuilderService,
       activatedRoute,
     );
+  
+    this.store = store;
+    this.scrollHelperService = scrollHelperService;
+    this.cdr = cdr;
   }
 }

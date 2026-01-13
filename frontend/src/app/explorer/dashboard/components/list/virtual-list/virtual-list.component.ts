@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  OnInit,
-} from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import * as fromStore from '../../../../store';
 import { Store } from '@ngrx/store';
@@ -36,18 +31,21 @@ import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
     ]
 })
 export class VirtualListComponent extends ParentComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly screenSizeService = inject(ScreenSizeService);
+  readonly selectService = inject(SelectService);
+  activeRoute = inject(ActivatedRoute);
+
   @Input() listData: Bucket[];
   totalItems: number;
   get isSmall(): boolean {
     return this.screenSizeService.isSmallScreen;
   }
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly screenSizeService: ScreenSizeService,
-    public readonly selectService: SelectService,
-    public activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   ElasticsearchQuery,
   ElasticsearchResponse,
@@ -19,13 +19,16 @@ import * as fromStore from '../../../store';
 
 @Injectable()
 export class RangeService {
+  private readonly http = inject(HttpClient);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+
   private store: Store<fromStore.ItemsState>;
   private source: string;
   private readonly api_end_point: string = environment.api + '/search';
-  constructor(
-    private readonly http: HttpClient,
-    private readonly bodyBuilderService: BodyBuilderService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   set sourceVal(s: string) {
     this.source = s;

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
@@ -26,17 +21,26 @@ import { ChartComponent } from '../chart/chart.component';
     imports: [ChartComponent]
 })
 export class WheelComponent extends ParentChart implements OnInit {
+  private settingsService = inject(SettingsService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+
   colors: string[];
-  constructor(
-    cms: ChartMathodsService,
-    private settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+  
+    this.selectService = selectService;
+    this.store = store;
   }
   filterd = false;
   resetFilter(value = false) {

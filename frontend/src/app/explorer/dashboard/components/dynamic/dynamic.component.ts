@@ -1,10 +1,4 @@
-import {
-  Type,
-  Component,
-  OnInit,
-  Input,
-  ViewContainerRef,
-} from '@angular/core';
+import { Type, Component, OnInit, Input, ViewContainerRef, inject } from '@angular/core';
 import { ComponentLookupRegistry } from './lookup.registry';
 
 @Component({
@@ -13,11 +7,14 @@ import { ComponentLookupRegistry } from './lookup.registry';
     standalone: true,
 })
 export class DynamicComponent implements OnInit {
+  private vcRef = inject(ViewContainerRef);
+
   @Input() comp: string;
   @Input() componentConfigs: any;
-  constructor(
-    private vcRef: ViewContainerRef,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   ngOnInit() {
     const factoryClass = <Type<any>>ComponentLookupRegistry(this.comp);

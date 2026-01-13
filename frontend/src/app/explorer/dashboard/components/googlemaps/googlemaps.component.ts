@@ -1,12 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnInit, signal,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit, signal, ViewChild, inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
 import {
@@ -57,6 +49,13 @@ import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
   ]
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
+  readonly store: Store<fromStore.AppState>;
+  readonly scrollHelperService = inject(ScrollHelperService);
+  readonly selectService: SelectService;
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private readonly settingsService = inject(SettingsService);
+
   @Input() expandedStatus: boolean;
   hits: Hits; // for the paginated list
   listData: Bucket[] = []; // for aggrigiation list
@@ -86,17 +85,19 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   @ViewChild('panel') elementView: ElementRef;
-  constructor(
-    cms: ChartMathodsService,
-    public readonly store: Store<fromStore.AppState>,
-    public readonly scrollHelperService: ScrollHelperService,
-    public readonly selectService: SelectService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activeRoute: ActivatedRoute,
-    private readonly settingsService: SettingsService,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const selectService = inject(SelectService);
+    const activeRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activeRoute);
+  
+    this.store = store;
+    this.selectService = selectService;
   }
 
   resetQ() {

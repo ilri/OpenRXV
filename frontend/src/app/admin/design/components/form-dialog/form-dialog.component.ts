@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
@@ -35,6 +35,11 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     ]
 })
 export class FormDialogComponent implements OnInit {
+  private metadataService = inject(MetadataService);
+  dialogRef = inject<MatDialogRef<FormDialogComponent>>(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA);
+  private activeRoute = inject(ActivatedRoute);
+
   controls = [];
   form: UntypedFormGroup = new UntypedFormGroup({
     icon: new UntypedFormControl(''),
@@ -43,12 +48,10 @@ export class FormDialogComponent implements OnInit {
   formControls = [];
   metadata = [];
 
-  constructor(
-    private metadataService: MetadataService,
-    public dialogRef: MatDialogRef<FormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private activeRoute: ActivatedRoute,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   onNoClick(value): void {
     this.dialogRef.close(false);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { RangeService } from '../services/range/range.service';
 import {
@@ -34,6 +34,11 @@ import { MatLabel } from '@angular/material/form-field';
     ]
 })
 export class RangeComponent extends ParentComponent implements OnInit {
+  private readonly rangeService = inject(RangeService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  activeRoute = inject(ActivatedRoute);
+
   range: number[];
   max: number;
   min: number;
@@ -44,12 +49,10 @@ export class RangeComponent extends ParentComponent implements OnInit {
   private firstMin: number;
   private orOperator: boolean;
 
-  constructor(
-    private readonly rangeService: RangeService,
-    private readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    public activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
     this.disabled = false;
     this.rangeService.storeVal = this.store;

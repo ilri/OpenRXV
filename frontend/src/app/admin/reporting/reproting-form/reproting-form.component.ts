@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { SettingsService } from '../../../admin/services/settings.service';
 import { FormDialogComponent } from '../../design/components/form-dialog/form-dialog.component';
@@ -39,14 +39,17 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     ]
 })
 export class ReprotingFormComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  dialogRef = inject<MatDialogRef<FormDialogComponent>>(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA);
+  private metadataService = inject(MetadataService);
+  private spinner = inject(NgxSpinnerService);
+
   openDialogs: MatDialogRef<any>;
-  constructor(
-    private settingsService: SettingsService,
-    public dialogRef: MatDialogRef<FormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private metadataService: MetadataService,
-    private spinner: NgxSpinnerService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
   preReport: any;
   preform: any;
   formValues: any;

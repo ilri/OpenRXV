@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { UntypedFormGroup, UntypedFormControl, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
@@ -44,6 +44,12 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
     ]
 })
 export class FormComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
+  private userService = inject(UsersService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     name: new UntypedFormControl(''),
     email: new UntypedFormControl(
@@ -73,13 +79,10 @@ export class FormComponent implements OnInit {
     await this.spinner.hide();
   }
 
-  constructor(
-    public dialogRef: MatDialogRef<FormComponent>,
-    private userService: UsersService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     if (this.data) {

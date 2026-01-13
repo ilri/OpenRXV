@@ -1,4 +1,4 @@
-import { EventEmitter, Directive } from '@angular/core';
+import { EventEmitter, Directive, inject } from '@angular/core';
 import {
   ComponentDashboardConfigs,
   ComponentFilterConfigs,
@@ -14,14 +14,17 @@ import { ActivatedRoute } from '@angular/router';
 
 @Directive()
 export class ParentChart extends ParentComponent {
+  readonly cms = inject(ChartMathodsService);
+  readonly selectService = inject(SelectService);
+  readonly store = inject<Store<fromStore.AppState>>(Store);
+  activeRoute = inject(ActivatedRoute);
+
   chartOptions: Highcharts.Options;
   protected buildOptions: EventEmitter<Array<Bucket> | MergedSelect>;
-  constructor(
-    public readonly cms: ChartMathodsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    public activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     super();
     this.buildOptions = new EventEmitter<Array<Bucket>>();
     this.chartOptions = {};

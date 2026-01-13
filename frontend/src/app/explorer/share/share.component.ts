@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatIcon } from '@angular/material/icon';
@@ -24,11 +24,16 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     ]
 })
 export class ShareComponent implements OnInit {
-  constructor(
-    public dialogRef: MatDialogRef<ShareComponent>,
-    private clipboard: Clipboard,
-    @Inject(MAT_DIALOG_DATA) public data: { link: string },
-  ) {}
+  dialogRef = inject<MatDialogRef<ShareComponent>>(MatDialogRef);
+  private clipboard = inject(Clipboard);
+  data = inject<{
+    link: string;
+}>(MAT_DIALOG_DATA);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

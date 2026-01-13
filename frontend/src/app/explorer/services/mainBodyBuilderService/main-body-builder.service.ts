@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
 import bodybuilder from 'bodybuilder';
 import {
@@ -18,9 +18,14 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
   providedIn: 'root',
 })
 export class MainBodyBuilderService extends BuilderUtilities {
+  private settings = inject(SettingsService);
+
   private rawOptions: string[];
 
-  constructor(private settings: SettingsService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
   async start() {

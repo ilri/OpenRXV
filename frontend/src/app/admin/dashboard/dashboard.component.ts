@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -30,13 +30,16 @@ import { MatCard, MatCardTitle, MatCardContent, MatCardSubtitle } from '@angular
     ]
 })
 export class DashboardComponent implements OnInit {
-  constructor(
-    private settingsService: SettingsService,
-    private activeRoute: ActivatedRoute,
-    public dialog: MatDialog,
-    private toastr: ToastrService,
-    private commonService: CommonService,
-  ) {}
+  private settingsService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+  dialog = inject(MatDialog);
+  private toastr = inject(ToastrService);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   availableSections = [];
   tablesData: any = {};

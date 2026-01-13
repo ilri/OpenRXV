@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { icons_list } from './icons';
@@ -23,6 +23,9 @@ import { MatIconButton, MatButton } from '@angular/material/button';
     ]
 })
 export class StructureComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() onAdd: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<boolean> = new EventEmitter();
@@ -284,10 +287,10 @@ export class StructureComponent implements OnInit {
       });
     }
   }
-  constructor(
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   oldcomponent = [];
 

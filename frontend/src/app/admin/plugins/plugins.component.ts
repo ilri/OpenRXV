@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SettingsService } from '../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -25,17 +25,20 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
     ]
 })
 export class PluginsComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
   plugins = [];
   pluginsForms = {};
   index_name: string;
   exportLink: string;
-  constructor(
-    private settingsService: SettingsService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     await this.spinner.show();

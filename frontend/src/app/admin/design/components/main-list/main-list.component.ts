@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
@@ -32,6 +32,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ]
 })
 export class MainListComponent implements OnInit {
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() baseForm: UntypedFormGroup = null;
   @Input() dashbard_name: string = null;
   content;
@@ -74,10 +77,10 @@ export class MainListComponent implements OnInit {
       disply_name: new UntypedFormControl(element ? element.disply_name : ''),
     };
   }
-  constructor(
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     if (this.baseForm.get('content'))

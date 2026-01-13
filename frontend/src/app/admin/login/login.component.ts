@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
@@ -25,15 +25,18 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
     ]
 })
 export class LoginComponent implements OnInit {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     email: new UntypedFormControl(''),
     password: new UntypedFormControl(''),
     submit: new UntypedFormControl(''),
   });
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   ngOnInit(): void {}
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -61,6 +61,12 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class SetupComponent implements OnInit {
+  private settingService = inject(SettingsService);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private activeRoute = inject(ActivatedRoute);
+  private commonService = inject(CommonService);
+
   plugins: any = [];
   activePluginName: Array<BehaviorSubject<any>> = [];
   activePlugin: Array<any> = [];
@@ -105,13 +111,10 @@ export class SetupComponent implements OnInit {
       ),
     });
   }
-  constructor(
-    private settingService: SettingsService,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private activeRoute: ActivatedRoute,
-    private commonService: CommonService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     await this.spinner.show();

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReprotingFormComponent } from './reproting-form/reproting-form.component';
 import { DialogComponent } from './dialog/dialog.component';
@@ -48,6 +48,14 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class ReportingComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  dialog = inject(MatDialog);
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
   reports: any;
   tableData = new MatTableDataSource<any>([]);
   fileName;
@@ -74,15 +82,10 @@ export class ReportingComponent implements OnInit {
     },
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  constructor(
-    private settingsService: SettingsService,
-    public dialog: MatDialog,
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     this.dashboard_name =

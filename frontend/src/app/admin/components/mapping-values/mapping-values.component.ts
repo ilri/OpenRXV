@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { ValuesService } from '../../services/values.service';
@@ -46,15 +46,18 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class MappingValuesComponent implements OnInit {
-  constructor(
-    private valuesService: ValuesService,
-    public dialog: MatDialog,
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+  private valuesService = inject(ValuesService);
+  dialog = inject(MatDialog);
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   term = '';
   metadataFields: any;

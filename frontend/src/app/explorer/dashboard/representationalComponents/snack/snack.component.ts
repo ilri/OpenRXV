@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIcon } from '@angular/material/icon';
 
@@ -15,13 +10,18 @@ import { MatIcon } from '@angular/material/icon';
     imports: [MatIcon]
 })
 export class SnackComponent {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() set error(e: HttpErrorResponse) {
     this.messageFromStatus(e);
   }
   message: string;
   icon: string;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   private messageFromStatus({ status }: HttpErrorResponse): void {
     if (status === 400 || status === 404) {

@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Injectable, EventEmitter, ChangeDetectorRef, inject } from '@angular/core';
 import {
   ComponentDashboardConfigs,
   MergedSelect,
@@ -14,6 +14,8 @@ import { ViewState } from 'src/app/explorer/store/reducers/items.reducer';
 
 @Injectable()
 export class ChartMathodsService extends ChartHelper {
+  private readonly store = inject<Store<fromStore.ItemsState>>(Store);
+
   private loadingHits$: Observable<boolean>;
   private cc: ComponentDashboardConfigs;
   private readonly shs: ScrollHelperService;
@@ -39,10 +41,12 @@ export class ChartMathodsService extends ChartHelper {
     return this.shs.getLoading;
   }
 
-  constructor(
-    private readonly store: Store<fromStore.ItemsState>,
-    cdr: ChangeDetectorRef,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cdr = inject(ChangeDetectorRef);
+
     super();
     this.shs = new ScrollHelperService(cdr);
     this.goBuildDataSeries = new EventEmitter();

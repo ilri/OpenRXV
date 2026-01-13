@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { InView } from 'src/app/explorer/store/actions/actions.interfaces';
@@ -25,16 +25,19 @@ import { NgClass } from '@angular/common';
     ]
 })
 export class ScrollToComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly scrollHelperService = inject(ScrollHelperService);
+
   dashboardConfig: GeneralConfigs[];
   btnStatus: Map<string, boolean>;
   id: string;
   linking: Map<string, string[]>;
   private idsToHide: Set<string>;
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly scrollHelperService: ScrollHelperService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.dashboardConfig = this.scrollHelperService.getNotSiblings();
     this.idsToHide = new Set<string>();
     this.linking = new Map<string, string[]>(); // <'pie' => ['pie', 'chart2', ...]>

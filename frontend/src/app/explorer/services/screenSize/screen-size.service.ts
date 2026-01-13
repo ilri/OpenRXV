@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   BreakpointObserver,
   Breakpoints,
@@ -9,9 +9,14 @@ import {
   providedIn: 'root',
 })
 export class ScreenSizeService {
+  private readonly breakpointObserver = inject(BreakpointObserver);
+
   isSmallScreen: boolean;
 
-  constructor(private readonly breakpointObserver: BreakpointObserver) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.subToScreenSize();
   }
 

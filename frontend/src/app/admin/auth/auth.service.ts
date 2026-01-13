@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { jwtDecode } from "jwt-decode";
 import { HttpClient } from '@angular/common/http';
@@ -9,11 +9,14 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
+  jwtHelper = inject(JwtHelperService);
+  private httpService = inject(HttpClient);
+
   isLoggedIn = false;
-  constructor(
-    public jwtHelper: JwtHelperService,
-    private httpService: HttpClient,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     if (token) {

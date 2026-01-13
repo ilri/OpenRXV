@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { MatNavList, MatListItem } from '@angular/material/list';
@@ -22,14 +22,19 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
     ]
 })
 export class RootComponent implements OnInit {
+  private router = inject(Router);
+  private activeRoute = inject(ActivatedRoute);
+
   currentRouteParent: string;
   index_name: string;
   dashboard_name: string;
 
-  constructor(
-    private router: Router,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const router = this.router;
+
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.setCurrentRoutSettings();

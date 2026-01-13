@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   ComponentCounterConfigs,
   ComponentFilterConfigs,
@@ -56,14 +56,17 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     ]
 })
 export class DesignComponent implements OnInit {
-  constructor(
-    public dialog: MatDialog,
-    private settingsService: SettingsService,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private activeRoute: ActivatedRoute,
-    private commonService: CommonService,
-  ) {}
+  dialog = inject(MatDialog);
+  private settingsService = inject(SettingsService);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private activeRoute = inject(ActivatedRoute);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   counters: Array<any> = [];
   filters: Array<any> = [];
   dashboard: Array<any> = [];
