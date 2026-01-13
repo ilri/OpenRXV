@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
-import { NotfoundComponent } from './components/notfound/notfound.component';
 import {adminRoutes} from "./admin/admin.routes";
 import {explorerRoutes} from "./explorer/explorer.routes";
 
 export const appRoutes: Routes = [
-  { path: 'notfound', component: NotfoundComponent },
+  { path: 'notfound', loadComponent: () => import('./components/notfound/notfound.component').then(m => m.NotfoundComponent) },
   ...adminRoutes,
   ...explorerRoutes,
-  { path: '**', component: NotfoundComponent },
+  { path: '**', loadComponent: () => import('./components/notfound/notfound.component').then(m => m.NotfoundComponent) },
 ];

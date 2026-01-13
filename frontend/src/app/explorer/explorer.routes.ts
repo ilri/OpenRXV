@@ -1,11 +1,9 @@
 import { Routes } from '@angular/router';
-import {ExplorerComponent} from "./explorer.component";
-import {LoginComponent} from "../admin/login/login.component";
 
 export const explorerRoutes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'shared/:id', component: ExplorerComponent },
-  { path: ':dashboard_name/shared/:id', component: ExplorerComponent },
-  { path: ':dashboard_name', component: ExplorerComponent },
-  { path: '', component: ExplorerComponent },
+  { path: 'login', loadComponent: () => import('../admin/login/login.component').then(m => m.LoginComponent) },
+  { path: 'shared/:id', loadComponent: () => import('./explorer.component').then(m => m.ExplorerComponent) },
+  { path: ':dashboard_name/shared/:id', loadComponent: () => import('./explorer.component').then(m => m.ExplorerComponent) },
+  { path: ':dashboard_name', loadComponent: () => import('./explorer.component').then(m => m.ExplorerComponent) },
+  { path: '', loadComponent: () => import('./explorer.component').then(m => m.ExplorerComponent) },
 ];

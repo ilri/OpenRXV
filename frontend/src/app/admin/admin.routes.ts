@@ -1,89 +1,77 @@
 import { Routes } from '@angular/router';
-import {RootComponent} from "./root/root.component";
-import {IndexesComponent} from "./indexes/indexes.component";
 import {AdminGuard} from "./admin.guard";
-import {DashboardComponent} from "./dashboard/dashboard.component";
-import {MappingValuesComponent} from "./components/mapping-values/mapping-values.component";
-import {SetupComponent} from "./components/setup/setup.component";
-import {PluginsComponent} from "./plugins/plugins.component";
-import {IndexesDashboardComponent} from "./indexes-dashboard/indexes-dashboard.component";
-import {AppearanceComponent} from "./appearance/appearance.component";
-import {DesignComponent} from "./design/design.component";
-import {ReportingComponent} from "./reporting/reporting.component";
-import {SharedComponent} from "./components/shared/shared.component";
-import {UsersComponent} from "./components/users/users.component";
 
 export const adminRoutes: Routes = [
   {
     path: 'admin',
-    component: RootComponent,
+    loadComponent: () => import('./root/root.component').then(m => m.RootComponent),
     children: [
       {
         path: '',
-        component: IndexesComponent,
+        loadComponent: () => import('./indexes/indexes.component').then(m => m.IndexesComponent),
         canActivate: [AdminGuard],
       },
       {
         path: 'indexes',
-        component: IndexesComponent,
+        loadComponent: () => import('./indexes/indexes.component').then(m => m.IndexesComponent),
         canActivate: [AdminGuard],
       },
       {
         path: 'harvester/:index_name',
-        component: DashboardComponent,
+        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes' },
       },
       {
         path: 'mapping-values/:index_name',
-        component: MappingValuesComponent,
+        loadComponent: () => import('./components/mapping-values/mapping-values.component').then(m => m.MappingValuesComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes' },
       },
       {
         path: 'setup/:index_name',
-        component: SetupComponent,
+        loadComponent: () => import('./components/setup/setup.component').then(m => m.SetupComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes' },
       },
       {
         path: 'plugins/:index_name',
-        component: PluginsComponent,
+        loadComponent: () => import('./plugins/plugins.component').then(m => m.PluginsComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes' },
       },
       {
         path: 'indexes-dashboards',
-        component: IndexesDashboardComponent,
+        loadComponent: () => import('./indexes-dashboard/indexes-dashboard.component').then(m => m.IndexesDashboardComponent),
         canActivate: [AdminGuard],
       },
       {
         path: 'appearance/:dashboard_name',
-        component: AppearanceComponent,
+        loadComponent: () => import('./appearance/appearance.component').then(m => m.AppearanceComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes-dashboards' },
       },
       {
         path: 'design/:dashboard_name',
-        component: DesignComponent,
+        loadComponent: () => import('./design/design.component').then(m => m.DesignComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes-dashboards' },
       },
       {
         path: 'reporting/:dashboard_name',
-        component: ReportingComponent,
+        loadComponent: () => import('./reporting/reporting.component').then(m => m.ReportingComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes-dashboards' },
       },
       {
         path: 'sharedlinks/:dashboard_name',
-        component: SharedComponent,
+        loadComponent: () => import('./components/shared/shared.component').then(m => m.SharedComponent),
         canActivate: [AdminGuard],
         data: { parentRoute: 'indexes-dashboards' },
       },
       {
         path: 'users',
-        component: UsersComponent,
+        loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent),
         canActivate: [AdminGuard],
       },
     ],
