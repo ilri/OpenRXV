@@ -38,7 +38,7 @@
     "@tinymce/tinymce-angular": "^9.1.1",
     "@types/scriptjs": "0.0.5",
     "bodybuilder": "^2.5.1",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^4.6.2",
     "dayjs": "^1.11.19",
     "highcharts": "^12.5.0",
     "highcharts-angular": "^5.2.0",

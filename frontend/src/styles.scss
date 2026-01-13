@@ -271,9 +271,9 @@ mat-paginator .mat-mdc-select-trigger {
 }
 
 .mat-expansion-panel-header {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
 }
 
 .mat-mdc-form-field:not(.mat-form-field-no-animations) .mdc-floating-label {
