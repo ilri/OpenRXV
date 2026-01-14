@@ -21,7 +21,7 @@ import { InViewState } from './store/reducers/items.reducer';
 import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { NgxSpinnerService, NgxSpinnerModule } from 'ngx-spinner';
 import dayjs from 'dayjs';
