@@ -19,14 +19,14 @@ import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathod
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
-import { NgxLoadingModule } from 'ngx-loading';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
+import {AsyncPipe, NgClass} from '@angular/common';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import {SettingsService} from "../../../../admin/services/settings.service";
 import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
+import {NgxSpinnerComponent} from "ngx-spinner";
 
 // // @ComponentLookup('GoogleMapsComponent')
 @Component({
@@ -43,9 +43,10 @@ import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
     MatExpansionPanelTitle,
     IconsWithTextComponent,
     GoogleMapsModule,
-    NgxLoadingModule,
     CdkConnectedOverlay,
     CdkOverlayOrigin,
+    AsyncPipe,
+    NgxSpinnerComponent,
   ]
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
@@ -95,7 +96,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     const activeRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activeRoute);
-  
+
     this.store = store;
     this.selectService = selectService;
   }

@@ -23,11 +23,10 @@ import { FooterComponent } from './dashboard/components/footer/footer.component'
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
-import { NgxSpinnerService, NgxSpinnerModule } from 'ngx-spinner';
+import { NgxSpinnerService, NgxSpinnerComponent } from 'ngx-spinner';
 import dayjs from 'dayjs';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { NgxLoadingModule } from 'ngx-loading';
 import { FiltersComponent } from './filters/filters.component';
 import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
@@ -60,11 +59,10 @@ import { NgClass, AsyncPipe } from '@angular/common';
         CdkConnectedOverlay,
         IconsWithTextComponent,
         FiltersComponent,
-        NgxLoadingModule,
         MatSidenavContent,
         LoadingBarModule,
         DashboardComponent,
-        NgxSpinnerModule,
+        NgxSpinnerComponent,
         AsyncPipe
     ]
 })
@@ -323,7 +321,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   async exportDashboard() {
-    this.spinner.show();
+    this.spinner.show('exportSpinner');
     const container = this.sidenavContent.nativeElement as HTMLElement;
     const charts = document.querySelectorAll(
       'mat-sidenav-content > app-dashboard > mat-drawer-container > mat-drawer-content > section > section:last-child > div',
@@ -353,12 +351,12 @@ export class ExplorerComponent implements OnInit {
         doc.save(fileName + '.pdf');
         container.style.removeProperty('height');
         container.style.removeProperty('scroll-behavior');
-        this.spinner.hide();
+        this.spinner.hide('exportSpinner');
       })
       .catch((e) => {
         container.style.removeProperty('height');
         container.style.removeProperty('scroll-behavior');
-        this.spinner.hide();
+        this.spinner.hide('exportSpinner');
       });
   }
 

@@ -250,7 +250,14 @@
               </div>
               <div class="col-12">
                 <app-filters></app-filters>
-                <ngx-loading [show]="loading$ | async"></ngx-loading>
+                <ngx-spinner
+                  bdColor="rgba(0, 0, 0, 0.8)"
+                  size="medium"
+                  color="var(--theme-primary-500)"
+                  type="ball-clip-rotate"
+                  [fullScreen]="false"
+                  [showSpinner]="loading$ | async"
+                ></ngx-spinner>
               </div>
             </div>
           </mat-nav-list>
@@ -259,7 +266,8 @@
       <mat-sidenav-content class="mb-0 pb-0" #sidenavContent>
         <div class="xxxloading">
           {{ primaryColor
-          }}<ngx-loading-bar
+          }}
+          <ngx-loading-bar
           [color]="primaryColor"
           fixed
           ref="http"
@@ -270,6 +278,7 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
   <ngx-spinner
+    name="exportSpinner"
     data-html2canvas-ignore="true"
     bdColor="rgba(0, 0, 0, 0.1)"
     size="medium"

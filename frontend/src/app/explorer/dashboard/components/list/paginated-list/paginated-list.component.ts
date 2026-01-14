@@ -14,24 +14,25 @@ import {
 import { skip } from 'rxjs/operators';
 import { ExportComponent } from '../export/export.component';
 import { ActivatedRoute } from '@angular/router';
-import { NgxLoadingModule } from 'ngx-loading';
 import { LinkTextComponent } from './link-text/link-text.component';
 import { PubImageComponent } from './pub-image/pub-image.component';
 
 import { FilterPaginatedListComponent } from './filter-paginated-list/filter-paginated-list.component';
+import {AsyncPipe} from "@angular/common";
+import {NgxSpinnerComponent} from "ngx-spinner";
 
 @Component({
     selector: 'app-paginated-list',
     templateUrl: './paginated-list.component.html',
     styleUrls: ['./paginated-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        FilterPaginatedListComponent,
-        PubImageComponent,
-        LinkTextComponent,
-        MatPaginator,
-        NgxLoadingModule
-    ]
+  imports: [
+    FilterPaginatedListComponent,
+    PubImageComponent,
+    LinkTextComponent,
+    MatPaginator,
+    NgxSpinnerComponent
+  ]
 })
 export class PaginatedListComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

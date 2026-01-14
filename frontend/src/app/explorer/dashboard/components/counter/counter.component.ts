@@ -7,30 +7,30 @@ import { ComponentCounterConfigs } from 'src/app/explorer/configs/generalConfig.
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
 // // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
-import { NgxLoadingModule } from 'ngx-loading';
 import { MatIcon } from '@angular/material/icon';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatRipple } from '@angular/material/core';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import {NgxSpinnerComponent} from "ngx-spinner";
 // // @ComponentLookup('CounterComponent')
 @Component({
     selector: 'app-counter',
     templateUrl: './counter.component.html',
     styleUrls: ['./counter.component.scss'],
-    imports: [
-        MatCard,
-        MatRipple,
-        CdkOverlayOrigin,
-        MatCardContent,
-        MatIcon,
-        MatCardTitle,
-        NgxLoadingModule,
-        CdkConnectedOverlay,
-        IconsWithTextComponent,
-        AsyncPipe,
-        DecimalPipe
-    ]
+  imports: [
+    MatCard,
+    MatRipple,
+    CdkOverlayOrigin,
+    MatCardContent,
+    MatIcon,
+    MatCardTitle,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    AsyncPipe,
+    DecimalPipe,
+    NgxSpinnerComponent
+  ]
 })
 export class CounterComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

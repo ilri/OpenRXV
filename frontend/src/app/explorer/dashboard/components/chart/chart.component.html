@@ -76,5 +76,12 @@
 
   <ng-content></ng-content>
 
-  <ngx-loading [show]="!(loadingHits$ | async) && loading"></ngx-loading>
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="var(--theme-primary-500)"
+    type="ball-clip-rotate"
+    [fullScreen]="false"
+    [showSpinner]="!(loadingHits$ | async) && loading"
+  ></ngx-spinner>
 </mat-expansion-panel>
