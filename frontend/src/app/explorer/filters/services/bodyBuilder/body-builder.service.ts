@@ -31,11 +31,9 @@ export class BodyBuilderService {
   constructor(...args: unknown[]);
 
   constructor() {
-    console.log('contructing...')
     this.reset = new Subject();
     this.from = 0;
     this.mainBodyBuilderService.start();
-    console.log('starting...')
   }
 
   get shouldReset(): Subject<ResetOptions> {
