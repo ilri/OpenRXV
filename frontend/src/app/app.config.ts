@@ -2,13 +2,12 @@ import {
   enableProdMode,
   provideZoneChangeDetection,
   ApplicationConfig,
-  Injectable, importProvidersFrom, provideAppInitializer, inject,
+  Injectable, importProvidersFrom,
 } from '@angular/core';
 
 import { environment } from '../environments/environment';
 import {
   HTTP_INTERCEPTORS,
-  HttpClient,
   provideHttpClient,
   withFetch,
   withInterceptorsFromDi,
@@ -34,6 +33,7 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import {efficts, reducers} from "./explorer/store";
+import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 
 export const ISO_8601_DATE_FORMAT = {
   parse: { dateInput: { month: 'short', year: 'numeric', day: 'numeric' } },
@@ -111,6 +111,7 @@ export const appConfig: ApplicationConfig = {
       maxAge: 25,
       logOnly: false,
     }),
+    importProvidersFrom(LoadingBarHttpClientModule)
   ],
 };
 
