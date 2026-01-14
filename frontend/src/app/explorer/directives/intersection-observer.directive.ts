@@ -18,20 +18,10 @@ export class IntersectionObserverDirective implements OnInit, OnDestroy {
 
   constructor() {}
 
-  firstIntersectionEmitted = false;
   ngOnInit() {
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        let timeout = 0;
-        // Delay the first intersection a bit until the layout is well loaded
-        console.log('this.firstIntersectionEmitted => ', this.firstIntersectionEmitted)
-        if (entry.isIntersecting && !this.firstIntersectionEmitted) {
-          this.firstIntersectionEmitted = true;
-          timeout = 200;
-        }
-        setTimeout(() => {
-          this.visibilityChange.emit(entry.isIntersecting);
-        }, timeout);
+        this.visibilityChange.emit(entry.isIntersecting);
       });
     }, this.options);
 
