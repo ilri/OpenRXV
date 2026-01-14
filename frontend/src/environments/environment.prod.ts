@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: '/explorer/api',
+  api: '#CONFIG_OpenRXV_BASE_HREF#api',
 };
