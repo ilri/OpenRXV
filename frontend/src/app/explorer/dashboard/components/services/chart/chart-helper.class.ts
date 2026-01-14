@@ -126,6 +126,9 @@ export class ChartHelper {
           if (Number(this.point.value) > 0) return this.point.name;
           else return '';
         },
+        style: {
+          textOutline: 'none'
+        }
       };
 
       const dataLabelsEnabled = componentConfigs?.data_labels;
