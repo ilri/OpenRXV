@@ -1,4 +1,4 @@
-@import '../../scss/responsive.scss';
+@use '../../scss/responsive.scss' as *;
 
 .mat-toolbar-row {
   display: flex !important;

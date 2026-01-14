@@ -1,17 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
-@import './app/explorer/configs/customTheme.scss';
-@import '@ng-select/ng-select/themes/material.theme.css';
-@import 'bootstrap/scss/bootstrap-reboot';
-@import 'bootstrap/scss/bootstrap-grid';
-// @import 'highcharts/css/themes/dark-unica.scss';
+@use './app/explorer/configs/customTheme.scss' as *;
+@use '@ng-select/ng-select/themes/material.theme.css' as *;
+@use 'bootstrap/scss/bootstrap-reboot' as *;
+@use 'bootstrap/scss/bootstrap-grid' as *;
+// @use 'highcharts/css/themes/dark-unica.scss' as *;
 
-@import 'ngx-toastr/toastr';
+@use 'ngx-toastr/toastr' as *;
 
-@import './scss/responsive.scss';
+@use './scss/responsive.scss' as *;
 
-$material-design-icons-font-directory-path: 'material-design-icons-iconfont/dist/fonts/';
-
-@import 'material-design-icons-iconfont/src/material-design-icons';
+@use 'material-design-icons-iconfont/src/material-design-icons' with (
+  $material-design-icons-font-directory-path: 'material-design-icons-iconfont/dist/fonts/'
+);
 
 html,
 body {

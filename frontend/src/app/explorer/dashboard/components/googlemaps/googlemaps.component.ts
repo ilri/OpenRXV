@@ -22,7 +22,7 @@ import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import {AsyncPipe, NgClass} from '@angular/common';
+import {NgClass} from '@angular/common';
 import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import {SettingsService} from "../../../../admin/services/settings.service";
 import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
@@ -45,7 +45,6 @@ import {NgxSpinnerComponent} from "ngx-spinner";
     GoogleMapsModule,
     CdkConnectedOverlay,
     CdkOverlayOrigin,
-    AsyncPipe,
     NgxSpinnerComponent,
   ]
 })
