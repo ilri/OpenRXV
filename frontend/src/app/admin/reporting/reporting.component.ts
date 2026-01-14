@@ -3,7 +3,19 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReprotingFormComponent } from './reproting-form/reproting-form.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { MetadataService } from '../services/metadata.service';
 import { DocComponent } from './doc/doc.component';
@@ -20,32 +32,32 @@ import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-reporting',
-    templateUrl: './reporting.component.html',
-    styleUrls: ['./reporting.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        MatMenuTrigger,
-        MatMenu,
-        MatMenuItem,
-        MatTooltip,
-        MatTable,
-        MatColumnDef,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatCellDef,
-        MatCell,
-        MatIconButton,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        MatPaginator
-    ]
+  selector: 'app-reporting',
+  templateUrl: './reporting.component.html',
+  styleUrls: ['./reporting.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+    MatTooltip,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+  ],
 })
 export class ReportingComponent implements OnInit {
   private settingsService = inject(SettingsService);

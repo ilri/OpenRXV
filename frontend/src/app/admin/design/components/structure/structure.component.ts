@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+} from '@angular/core';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { icons_list } from './icons';
@@ -9,18 +16,18 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton, MatButton } from '@angular/material/button';
 
 @Component({
-    selector: 'app-structure',
-    templateUrl: './structure.component.html',
-    styleUrls: ['./structure.component.scss'],
-    imports: [
-        MatIconButton,
-        MatIcon,
-        NgClass,
-        MatCard,
-        MatButton,
-        MatCardTitle,
-        MatCardContent
-    ]
+  selector: 'app-structure',
+  templateUrl: './structure.component.html',
+  styleUrls: ['./structure.component.scss'],
+  imports: [
+    MatIconButton,
+    MatIcon,
+    NgClass,
+    MatCard,
+    MatButton,
+    MatCardTitle,
+    MatCardContent,
+  ],
 })
 export class StructureComponent implements OnInit {
   dialog = inject(MatDialog);

@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 import { Observable } from 'rxjs';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-// import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -19,19 +18,18 @@ import { FormsModule } from '@angular/forms';
 import { MatSlider, MatSliderRangeThumb } from '@angular/material/slider';
 import { MatLabel } from '@angular/material/form-field';
 
-// @ComponentLookup('RangeComponent')
 @Component({
-    selector: 'app-range',
-    templateUrl: './range.component.html',
-    styleUrls: ['./range.component.scss'],
-    providers: [RangeService],
-    imports: [
-        MatLabel,
-        MatSlider,
-        MatSliderRangeThumb,
-        FormsModule,
-        MatProgressBar
-    ]
+  selector: 'app-range',
+  templateUrl: './range.component.html',
+  styleUrls: ['./range.component.scss'],
+  providers: [RangeService],
+  imports: [
+    MatLabel,
+    MatSlider,
+    MatSliderRangeThumb,
+    FormsModule,
+    MatProgressBar,
+  ],
 })
 export class RangeComponent extends ParentComponent implements OnInit {
   private readonly rangeService = inject(RangeService);

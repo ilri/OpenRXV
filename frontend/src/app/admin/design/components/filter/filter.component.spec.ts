@@ -8,8 +8,8 @@ describe('FilterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [FilterComponent],
-}).compileComponents();
+      imports: [FilterComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

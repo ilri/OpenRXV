@@ -1,6 +1,18 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
@@ -16,25 +28,25 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatError, MatLabel } from '@angular/material/form-field';
 
 @Component({
-    selector: 'app-form',
-    templateUrl: './form.component.html',
-    styleUrls: ['./form.component.scss'],
-    imports: [
-        MatDialogTitle,
-        FormsModule,
-        ReactiveFormsModule,
-        MatDialogContent,
-        MatFormField,
-        MatInput,
-        MatError,
-        MatCheckbox,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        MatDialogActions,
-        MatButton,
-        MatIcon
-    ]
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    MatError,
+    MatCheckbox,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDialogActions,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class FormIndexComponent implements OnInit {
   dialogRef = inject<MatDialogRef<FormIndexComponent>>(MatDialogRef);

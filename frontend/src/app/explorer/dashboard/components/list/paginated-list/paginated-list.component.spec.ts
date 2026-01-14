@@ -8,8 +8,8 @@ describe('PaginatedListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [PaginatedListComponent],
-}).compileComponents();
+      imports: [PaginatedListComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

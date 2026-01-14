@@ -1,13 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { Route, UrlSegment, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import {
+  Route,
+  UrlSegment,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  UrlTree,
+  Router,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth/auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AdminGuard
-  
-{
+export class AdminGuard {
   private authService = inject(AuthService);
   private router = inject(Router);
 

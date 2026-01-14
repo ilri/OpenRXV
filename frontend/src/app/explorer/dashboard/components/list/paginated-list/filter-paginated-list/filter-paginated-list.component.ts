@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Output, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { SortOption } from 'src/app/explorer/configs/generalConfig.interface';
 import { FileType } from './types.interface';
 import { SettingsService } from 'src/app/admin/services/settings.service';
@@ -11,19 +19,19 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
-    selector: 'app-filter-paginated-list',
-    templateUrl: './filter-paginated-list.component.html',
-    styleUrls: ['./filter-paginated-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        NgSelectModule,
-        FormsModule,
-        MatIconButton,
-        MatMenuTrigger,
-        MatIcon,
-        MatMenu,
-        MatMenuItem
-    ]
+  selector: 'app-filter-paginated-list',
+  templateUrl: './filter-paginated-list.component.html',
+  styleUrls: ['./filter-paginated-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgSelectModule,
+    FormsModule,
+    MatIconButton,
+    MatMenuTrigger,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+  ],
 })
 export class FilterPaginatedListComponent implements OnInit {
   private settingsService = inject(SettingsService);

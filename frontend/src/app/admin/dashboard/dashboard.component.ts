@@ -12,22 +12,27 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardTitle, MatCardContent, MatCardSubtitle } from '@angular/material/card';
+import {
+  MatCard,
+  MatCardTitle,
+  MatCardContent,
+  MatCardSubtitle,
+} from '@angular/material/card';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatButton,
-        MatIcon,
-        MatCardContent,
-        MatCardSubtitle,
-        MatProgressBar,
-        InfoTableComponent
-    ]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatButton,
+    MatIcon,
+    MatCardContent,
+    MatCardSubtitle,
+    MatProgressBar,
+    InfoTableComponent,
+  ],
 })
 export class DashboardComponent implements OnInit {
   private settingsService = inject(SettingsService);

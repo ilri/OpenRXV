@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
-// import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -9,13 +8,12 @@ import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
-// @ComponentLookup('SimiCircleComponent')
 @Component({
-    selector: 'app-simi-circle',
-    templateUrl: './simi-circle.component.html',
-    styleUrls: ['./simi-circle.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    imports: [ChartComponent]
+  selector: 'app-simi-circle',
+  templateUrl: './simi-circle.component.html',
+  styleUrls: ['./simi-circle.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  imports: [ChartComponent],
 })
 export class SimiCircleComponent extends ParentChart implements OnInit {
   private settingsService = inject(SettingsService);
@@ -33,7 +31,7 @@ export class SimiCircleComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }

@@ -9,9 +9,9 @@ import {
   Bucket,
   ResetOptions,
 } from 'src/app/explorer/filters/services/interfaces';
-import {MergedSelect} from 'src/app/explorer/configs/generalConfig.interface';
-import {RangeService} from 'src/app/explorer/filters/services/range/range.service';
-import {EventEmitter} from '@angular/core';
+import { MergedSelect } from 'src/app/explorer/configs/generalConfig.interface';
+import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
+import { EventEmitter } from '@angular/core';
 import bodybuilder from 'bodybuilder';
 
 /**
@@ -62,7 +62,7 @@ export class BarServiceComposer {
       .aggregation(
         'terms',
         this.secondFilterKeyWord,
-        {size: yearsLen},
+        { size: yearsLen },
         'y',
         (query) =>
           query.aggregation(
@@ -82,7 +82,7 @@ export class BarServiceComposer {
 
     const finalQuery: ElasticsearchQuery = {
       ...(q.build() as ElasticsearchQuery),
-      query: {...(queryToMerge.build() as ElasticsearchQuery).query},
+      query: { ...(queryToMerge.build() as ElasticsearchQuery).query },
     };
     if (!Object.keys(finalQuery.query).length) {
       delete finalQuery.query;
@@ -134,7 +134,7 @@ export class BarServiceComposer {
   protected updateNgSelectOptions(): void {
     if (this.buckets[this.firstSourceKey]) {
       this.barTypes = this.buckets[this.firstSourceKey].map(
-        ({key}: Bucket) => key,
+        ({ key }: Bucket) => key,
       );
     }
     if (this.buckets[this.secondSourceKey]) {
@@ -147,9 +147,9 @@ export class BarServiceComposer {
 
   protected subToShouldReset(composer: BarComposerHelper, source: string) {
     this.rangeService.shouldReset.subscribe(
-      ({caller, data}: ResetOptions) => {
+      ({ caller, data }: ResetOptions) => {
         if (caller === 'range' && data) {
-          const {min, max} = data;
+          const { min, max } = data;
           const filterdYearsRange = [];
           for (let i = min; i <= max; i++) {
             filterdYearsRange.push(i);
@@ -202,11 +202,11 @@ export class BarServiceComposer {
     }
     const catSet: Set<string> = new Set<string>();
     series
-      .flatMap(({data}) => data)
-      .forEach(({name}: { y: number; name: string }) => catSet.add(name));
+      .flatMap(({ data }) => data)
+      .forEach(({ name }: { y: number; name: string }) => catSet.add(name));
     this.selectedCategories = Array.from(catSet);
     this.selectedYears = series.map(
-      ({name}: Highcharts.SeriesColumnOptions) => name,
+      ({ name }: Highcharts.SeriesColumnOptions) => name,
     );
   }
 }

@@ -10,23 +10,24 @@ import {
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as Highcharts from 'highcharts';
-
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HighchartsChartComponent } from 'highcharts-angular';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatIcon } from '@angular/material/icon';
 import { AsyncPipe } from '@angular/common';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import {NgxSpinnerComponent} from "ngx-spinner";
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
-// // @ComponentLookup('ChartComponent')
 @Component({
-    selector: 'app-chart',
-    templateUrl: './chart.component.html',
-    styleUrls: ['./chart.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-chart',
+  templateUrl: './chart.component.html',
+  styleUrls: ['./chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,
@@ -38,8 +39,8 @@ import {NgxSpinnerComponent} from "ngx-spinner";
     HighchartsChartComponent,
     MatTooltip,
     AsyncPipe,
-    NgxSpinnerComponent
-  ]
+    NgxSpinnerComponent,
+  ],
 })
 export class ChartComponent {
   @Input() isMap = false;

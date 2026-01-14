@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  inject,
+} from '@angular/core';
 import {
   searchOptions,
   ComponentSearchConfigs,
@@ -12,7 +18,6 @@ import { fromEvent } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-// import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { ActivatedRoute } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 
@@ -20,22 +25,26 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatButton } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
-// @ComponentLookup('SearchComponent')
+import {
+  MatFormField,
+  MatLabel,
+  MatSuffix,
+} from '@angular/material/form-field';
+
 @Component({
-    selector: 'app-search',
-    templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
-    imports: [
-        MatFormField,
-        MatLabel,
-        MatInput,
-        FormsModule,
-        MatButton,
-        MatSuffix,
-        MatTooltip,
-        MatIcon
-    ]
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss'],
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    MatButton,
+    MatSuffix,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class SearchComponent extends ParentComponent implements OnInit {
   private readonly bodyBuilderService = inject(BodyBuilderService);

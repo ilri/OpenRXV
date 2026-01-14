@@ -1,9 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-// import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -12,14 +17,14 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-// @ComponentLookup('WordcloudComponent')
+
 @Component({
-    selector: 'app-wordcloud',
-    templateUrl: './wordcloud.component.html',
-    styleUrls: ['./wordcloud.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChartComponent]
+  selector: 'app-wordcloud',
+  templateUrl: './wordcloud.component.html',
+  styleUrls: ['./wordcloud.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
 export class WordcloudComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
@@ -38,7 +43,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }

@@ -8,8 +8,8 @@ describe('ScrollToComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [ScrollToComponent],
-}).compileComponents();
+      imports: [ScrollToComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

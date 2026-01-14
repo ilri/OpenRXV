@@ -1,24 +1,24 @@
-import {WelcomeComponent} from "../../representationalComponents/welcome/welcome.component";
-import {CounterComponent} from "../counter/counter.component";
-import {MapComponent} from "../map/map.component";
-import {BarComponent} from "../bar/bar.component";
-import {RotatedLablesComponent} from "../bar/rotated-lables/rotated-lables.component";
-import {ChartComponent} from "../chart/chart.component";
-import {GooglemapsComponent} from "../googlemaps/googlemaps.component";
-import {LineComponent} from "../line/line.component";
-import {ListComponent} from "../list/list.component";
-import {MainListComponent} from "../list/main-list/main-list.component";
-import {PackedBubbleComponent} from "../packed-bubble/packed-bubble.component";
-import {PackedBubbleSplitComponent} from "../packed-bubble-split/packed-bubble-split.component";
-import {PieComponent} from "../pie/pie.component";
-import {SimiCircleComponent} from "../simi-circle/simi-circle.component";
-import {WheelComponent} from "../wheel/wheel.component";
-import {WordcloudComponent} from "../wordcloud/wordcloud.component";
-import {DateRangeComponent} from "../../../filters/date-range/date-range.component";
-import {LabelComponent} from "../../../filters/label/label.component";
-import {RangeComponent} from "../../../filters/range/range.component";
-import {SearchComponent} from "../../../filters/search/search.component";
-import {SelectComponent} from "../../../filters/select/select.component";
+import { WelcomeComponent } from '../../representationalComponents/welcome/welcome.component';
+import { CounterComponent } from '../counter/counter.component';
+import { MapComponent } from '../map/map.component';
+import { BarComponent } from '../bar/bar.component';
+import { RotatedLablesComponent } from '../bar/rotated-lables/rotated-lables.component';
+import { ChartComponent } from '../chart/chart.component';
+import { GooglemapsComponent } from '../googlemaps/googlemaps.component';
+import { LineComponent } from '../line/line.component';
+import { ListComponent } from '../list/list.component';
+import { MainListComponent } from '../list/main-list/main-list.component';
+import { PackedBubbleComponent } from '../packed-bubble/packed-bubble.component';
+import { PackedBubbleSplitComponent } from '../packed-bubble-split/packed-bubble-split.component';
+import { PieComponent } from '../pie/pie.component';
+import { SimiCircleComponent } from '../simi-circle/simi-circle.component';
+import { WheelComponent } from '../wheel/wheel.component';
+import { WordcloudComponent } from '../wordcloud/wordcloud.component';
+import { DateRangeComponent } from '../../../filters/date-range/date-range.component';
+import { LabelComponent } from '../../../filters/label/label.component';
+import { RangeComponent } from '../../../filters/range/range.component';
+import { SearchComponent } from '../../../filters/search/search.component';
+import { SelectComponent } from '../../../filters/select/select.component';
 
 export const ComponentLookupRegistry = (key: string): any => {
   const components = {

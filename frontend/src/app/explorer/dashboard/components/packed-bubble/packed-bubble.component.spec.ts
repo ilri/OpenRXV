@@ -8,8 +8,8 @@ describe('PackedBubbleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [PackedBubbleComponent],
-}).compileComponents();
+      imports: [PackedBubbleComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

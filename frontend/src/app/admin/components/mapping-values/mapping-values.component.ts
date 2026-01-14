@@ -1,6 +1,18 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import { ValuesService } from '../../services/values.service';
 import { MetadataService } from '../../services/metadata.service';
 import { ValuesForm } from './form/values-form.component';
@@ -18,32 +30,32 @@ import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-mapping-values',
-    templateUrl: './mapping-values.component.html',
-    styleUrls: ['./mapping-values.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        FormsModule,
-        MatTable,
-        MatColumnDef,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatCellDef,
-        MatCell,
-        MatIconButton,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        MatPaginator,
-    ]
+  selector: 'app-mapping-values',
+  templateUrl: './mapping-values.component.html',
+  styleUrls: ['./mapping-values.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+  ],
 })
 export class MappingValuesComponent implements OnInit {
   private valuesService = inject(ValuesService);
@@ -203,31 +215,31 @@ export class MappingValuesComponent implements OnInit {
         importedItem: { find: string; replace: string; metadataField: string },
         index,
       ) => {
-      const item = {
-        find: importedItem?.find.trim(),
-        replace: importedItem?.replace.trim(),
-        metadataField: importedItem?.metadataField,
-      };
-      const missingRequiredFields = [];
-      if (item.find === '' || item.find == null) {
-        missingRequiredFields.push('find');
-      }
-      if (item.replace === '' || item.replace == null) {
-        missingRequiredFields.push('replace');
-      }
-      if (missingRequiredFields.length > 0) {
-        const message =
-          'Mapping #' +
+        const item = {
+          find: importedItem?.find.trim(),
+          replace: importedItem?.replace.trim(),
+          metadataField: importedItem?.metadataField,
+        };
+        const missingRequiredFields = [];
+        if (item.find === '' || item.find == null) {
+          missingRequiredFields.push('find');
+        }
+        if (item.replace === '' || item.replace == null) {
+          missingRequiredFields.push('replace');
+        }
+        if (missingRequiredFields.length > 0) {
+          const message =
+            'Mapping #' +
             (index + 1) +
-          ' is missing required fields: ' +
-          missingRequiredFields.join(' and ');
+            ' is missing required fields: ' +
+            missingRequiredFields.join(' and ');
           invalidItems.push({
-          item,
+            item,
             message,
           });
         } else {
           validItems.push(item);
-      }
+        }
       },
     );
 
@@ -257,20 +269,20 @@ export class MappingValuesComponent implements OnInit {
       });
 
       this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(
-      importStatus,
-      data.length,
-      'Value mapping(s)',
-    );
-    if (message.type === 'success') {
-      this.toastr.success(message.message, null, { enableHtml: true });
-      this.refreshData();
-    } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, { enableHtml: true });
-      this.refreshData();
-    } else {
-      this.toastr.error(message.message, null, { enableHtml: true });
-    }
+      const message = this.commonService.importJSONResponseMessage(
+        importStatus,
+        data.length,
+        'Value mapping(s)',
+      );
+      if (message.type === 'success') {
+        this.toastr.success(message.message, null, { enableHtml: true });
+        this.refreshData();
+      } else if (message.type === 'warning') {
+        this.toastr.warning(message.message, null, { enableHtml: true });
+        this.refreshData();
+      } else {
+        this.toastr.error(message.message, null, { enableHtml: true });
+      }
     });
   }
 }

@@ -5,16 +5,11 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { NgClass, NgStyle } from '@angular/common';
 
 @Component({
-    selector: 'app-pub-image',
-    templateUrl: './pub-image.component.html',
-    styleUrls: ['./pub-image.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatProgressSpinner,
-        NgClass,
-        NgStyle,
-        GetFirstImage
-    ]
+  selector: 'app-pub-image',
+  templateUrl: './pub-image.component.html',
+  styleUrls: ['./pub-image.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatProgressSpinner, NgClass, NgStyle, GetFirstImage],
 })
 export class PubImageComponent {
   @Input() source: ESSource;

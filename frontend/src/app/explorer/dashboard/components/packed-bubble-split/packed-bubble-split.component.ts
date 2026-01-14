@@ -1,8 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -10,14 +15,13 @@ import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
-// // @ComponentLookup('PackedBubbleSplitComponent')
 @Component({
-    selector: 'app-packed-bubble-split',
-    templateUrl: './packed-bubble-split.component.html',
-    styleUrls: ['./packed-bubble-split.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChartComponent]
+  selector: 'app-packed-bubble-split',
+  templateUrl: './packed-bubble-split.component.html',
+  styleUrls: ['./packed-bubble-split.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
 export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);

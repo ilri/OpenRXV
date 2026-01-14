@@ -1,6 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormControl, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+  AsyncValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -25,23 +40,23 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
 }
 
 @Component({
-    selector: 'app-form',
-    templateUrl: './form.component.html',
-    styleUrls: ['./form.component.scss'],
-    imports: [
-        MatDialogTitle,
-        FormsModule,
-        ReactiveFormsModule,
-        MatDialogContent,
-        MatFormField,
-        MatInput,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        MatDialogActions,
-        MatButton,
-        MatIcon
-    ]
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDialogActions,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class FormComponent implements OnInit {
   dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);

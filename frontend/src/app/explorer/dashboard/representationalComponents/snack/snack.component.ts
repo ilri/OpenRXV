@@ -1,13 +1,19 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-snack',
-    templateUrl: './snack.component.html',
-    styleUrls: ['./snack.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatIcon]
+  selector: 'app-snack',
+  templateUrl: './snack.component.html',
+  styleUrls: ['./snack.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIcon],
 })
 export class SnackComponent {
   private readonly cdr = inject(ChangeDetectorRef);

@@ -5,19 +5,18 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComponentCounterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatIcon } from '@angular/material/icon';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatRipple } from '@angular/material/core';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
-import {NgxSpinnerComponent} from "ngx-spinner";
-// // @ComponentLookup('CounterComponent')
+import { NgxSpinnerComponent } from 'ngx-spinner';
+
 @Component({
-    selector: 'app-counter',
-    templateUrl: './counter.component.html',
-    styleUrls: ['./counter.component.scss'],
+  selector: 'app-counter',
+  templateUrl: './counter.component.html',
+  styleUrls: ['./counter.component.scss'],
   imports: [
     MatCard,
     MatRipple,
@@ -29,8 +28,8 @@ import {NgxSpinnerComponent} from "ngx-spinner";
     IconsWithTextComponent,
     AsyncPipe,
     DecimalPipe,
-    NgxSpinnerComponent
-  ]
+    NgxSpinnerComponent,
+  ],
 })
 export class CounterComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

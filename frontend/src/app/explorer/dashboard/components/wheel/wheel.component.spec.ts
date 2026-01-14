@@ -8,8 +8,8 @@ describe('WheelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [WheelComponent],
-}).compileComponents();
+      imports: [WheelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

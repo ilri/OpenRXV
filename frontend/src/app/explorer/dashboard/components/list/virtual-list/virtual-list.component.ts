@@ -1,4 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ChangeDetectionStrategy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import * as fromStore from '../../../../store';
 import { Store } from '@ngrx/store';
@@ -9,26 +15,30 @@ import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.i
 import { ActivatedRoute } from '@angular/router';
 import { NgStyle, DecimalPipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
-import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import {
+  CdkVirtualScrollViewport,
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+} from '@angular/cdk/scrolling';
 import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
 
 @Component({
-    selector: 'app-virtual-list',
-    templateUrl: './virtual-list.component.html',
-    styleUrls: ['./virtual-list.component.scss'],
-    providers: [SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatList,
-        CdkVirtualScrollViewport,
-        CdkFixedSizeVirtualScroll,
-        CdkVirtualForOf,
-        MatListItem,
-        MatListItemLine,
-        MatTooltip,
-        NgStyle,
-        DecimalPipe
-    ]
+  selector: 'app-virtual-list',
+  templateUrl: './virtual-list.component.html',
+  styleUrls: ['./virtual-list.component.scss'],
+  providers: [SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatList,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatListItem,
+    MatListItemLine,
+    MatTooltip,
+    NgStyle,
+    DecimalPipe,
+  ],
 })
 export class VirtualListComponent extends ParentComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

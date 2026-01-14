@@ -19,18 +19,17 @@ import { SelectService } from '../services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-// // import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-// // @ComponentLookup('SelectComponent')
+
 @Component({
-    selector: 'app-select',
-    templateUrl: './select.component.html',
-    styleUrls: ['./select.component.scss'],
-    providers: [SelectService],
-    imports: [NgSelectModule, FormsModule]
+  selector: 'app-select',
+  templateUrl: './select.component.html',
+  styleUrls: ['./select.component.scss'],
+  providers: [SelectService],
+  imports: [NgSelectModule, FormsModule],
 })
 export class SelectComponent extends ParentComponent implements OnInit {
   private readonly selectService = inject(SelectService);

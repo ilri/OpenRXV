@@ -32,7 +32,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
     await this.init();
     const { dashboard, counters, filters, defaultWithinFiltersOperator } =
       await this.configs();
-    console.log('dashboard => ', dashboard)
+    console.log('dashboard => ', dashboard);
     this.dashboardConfig = dashboard.flat(1);
     this.countersConfig = counters;
     this.filtersConfig = filters;

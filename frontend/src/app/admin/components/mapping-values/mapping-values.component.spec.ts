@@ -8,8 +8,8 @@ describe('MappingValuesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [MappingValuesComponent],
-}).compileComponents();
+      imports: [MappingValuesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,8 +8,8 @@ describe('GridComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [GridComponent],
-}).compileComponents();
+      imports: [GridComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -5,12 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { DynamicComponent } from '../dashboard/components/dynamic/dynamic.component';
 
 @Component({
-    selector: 'app-filters',
-    templateUrl: './filters.component.html',
-    styleUrls: ['./filters.component.scss'],
-    imports: [
-        DynamicComponent
-    ]
+  selector: 'app-filters',
+  templateUrl: './filters.component.html',
+  styleUrls: ['./filters.component.scss'],
+  imports: [DynamicComponent],
 })
 export class FiltersComponent implements OnInit {
   private settings = inject(SettingsService);

@@ -8,8 +8,8 @@ describe('VirtualListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [VirtualListComponent],
-}).compileComponents();
+      imports: [VirtualListComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

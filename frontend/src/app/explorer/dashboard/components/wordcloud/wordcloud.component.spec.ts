@@ -8,8 +8,8 @@ describe('WordcloudComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [WordcloudComponent],
-}).compileComponents();
+      imports: [WordcloudComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

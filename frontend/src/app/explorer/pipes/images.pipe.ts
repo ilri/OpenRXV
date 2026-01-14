@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'getFirstImage',
-    standalone: true
+  name: 'getFirstImage',
+  standalone: true,
 })
 export class GetFirstImage implements PipeTransform {
   transform(value: any): number {

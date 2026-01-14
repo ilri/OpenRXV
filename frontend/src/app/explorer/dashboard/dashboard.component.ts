@@ -18,23 +18,27 @@ import { DynamicComponent } from './components/dynamic/dynamic.component';
 import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
 import { ScrollToComponent } from './components/scroll-to/scroll-to.component';
 import { NgClass, JsonPipe } from '@angular/common';
-import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
+import {
+  MatDrawerContainer,
+  MatDrawer,
+  MatDrawerContent,
+} from '@angular/material/sidenav';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    imports: [
-        MatDrawerContainer,
-        MatDrawer,
-        ScrollToComponent,
-        MatDrawerContent,
-        TourAnchorMatMenuDirective,
-        DynamicComponent,
-        IntersectionObserverDirective,
-        NgClass,
-        JsonPipe
-    ]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  imports: [
+    MatDrawerContainer,
+    MatDrawer,
+    ScrollToComponent,
+    MatDrawerContent,
+    TourAnchorMatMenuDirective,
+    DynamicComponent,
+    IntersectionObserverDirective,
+    NgClass,
+    JsonPipe,
+  ],
 })
 export class DashboardComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

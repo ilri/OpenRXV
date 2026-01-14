@@ -1,5 +1,11 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 import { MatOption } from '@angular/material/core';
@@ -13,23 +19,23 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
-    selector: 'app-main-list',
-    templateUrl: './main-list.component.html',
-    styleUrls: ['./main-list.component.scss'],
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgSelectModule,
-        MatFormField,
-        MatInput,
-        MatCheckbox,
-        MatLabel,
-        MatIconButton,
-        MatIcon,
-        MatButton,
-        MatSelect,
-        MatOption
-    ]
+  selector: 'app-main-list',
+  templateUrl: './main-list.component.html',
+  styleUrls: ['./main-list.component.scss'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    MatFormField,
+    MatInput,
+    MatCheckbox,
+    MatLabel,
+    MatIconButton,
+    MatIcon,
+    MatButton,
+    MatSelect,
+    MatOption,
+  ],
 })
 export class MainListComponent implements OnInit {
   private metadataService = inject(MetadataService);

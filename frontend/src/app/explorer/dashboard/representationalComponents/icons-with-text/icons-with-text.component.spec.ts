@@ -8,8 +8,8 @@ describe('IconsWithTextComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [IconsWithTextComponent],
-}).compileComponents();
+      imports: [IconsWithTextComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

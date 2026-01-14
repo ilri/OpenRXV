@@ -1,4 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, Input, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
@@ -10,16 +17,10 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
 import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 
 @Component({
-    selector: 'app-counter',
-    templateUrl: './counter.component.html',
-    styleUrls: ['./counter.component.scss'],
-    imports: [
-        CdkDragPlaceholder,
-        MatCard,
-        MatCardTitle,
-        MatIconButton,
-        MatIcon,
-    ]
+  selector: 'app-counter',
+  templateUrl: './counter.component.html',
+  styleUrls: ['./counter.component.scss'],
+  imports: [CdkDragPlaceholder, MatCard, MatCardTitle, MatIconButton, MatIcon],
 })
 export class CounterComponent implements OnInit {
   dialog = inject(MatDialog);

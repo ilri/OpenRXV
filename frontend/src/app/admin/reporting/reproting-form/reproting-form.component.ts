@@ -1,10 +1,26 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { SettingsService } from '../../../admin/services/settings.service';
 import { FormDialogComponent } from '../../design/components/form-dialog/form-dialog.component';
 import { MetadataService } from '../../services/metadata.service';
-import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  CdkDropList,
+  CdkDrag,
+} from '@angular/cdk/drag-drop';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatIcon } from '@angular/material/icon';
@@ -16,27 +32,27 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 @Component({
-    selector: 'app-reproting-form',
-    templateUrl: './reproting-form.component.html',
-    styleUrls: ['./reproting-form.component.scss'],
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        MatSelect,
-        MatOption,
-        MatIconButton,
-        MatIcon,
-        CdkDropList,
-        CdkDrag,
-        NgSelectModule,
-        MatButton,
-        MatDialogActions
-    ]
+  selector: 'app-reproting-form',
+  templateUrl: './reproting-form.component.html',
+  styleUrls: ['./reproting-form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatIconButton,
+    MatIcon,
+    CdkDropList,
+    CdkDrag,
+    NgSelectModule,
+    MatButton,
+    MatDialogActions,
+  ],
 })
 export class ReprotingFormComponent implements OnInit {
   private settingsService = inject(SettingsService);

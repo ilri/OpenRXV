@@ -8,8 +8,8 @@ describe('BarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [BarComponent],
-}).compileComponents();
+      imports: [BarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

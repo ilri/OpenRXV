@@ -1,4 +1,9 @@
-import { Injectable, EventEmitter, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Injectable,
+  EventEmitter,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import {
   ComponentDashboardConfigs,
   MergedSelect,

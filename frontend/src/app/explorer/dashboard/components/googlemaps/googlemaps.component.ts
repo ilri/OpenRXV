@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit, signal, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  signal,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
 import {
@@ -14,7 +24,6 @@ import {
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
@@ -22,18 +31,21 @@ import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import {NgClass} from '@angular/common';
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import {SettingsService} from "../../../../admin/services/settings.service";
-import {CdkConnectedOverlay, CdkOverlayOrigin} from "@angular/cdk/overlay";
-import {NgxSpinnerComponent} from "ngx-spinner";
+import { NgClass } from '@angular/common';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { SettingsService } from '../../../../admin/services/settings.service';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
-// // @ComponentLookup('GoogleMapsComponent')
 @Component({
-    selector: 'app-google-maps',
-    templateUrl: './googlemaps.component.html',
-    providers: [ChartMathodsService, ScrollHelperService, SelectService],
-    styleUrls: ['./googlemaps.component.scss'],
+  selector: 'app-google-maps',
+  templateUrl: './googlemaps.component.html',
+  providers: [ChartMathodsService, ScrollHelperService, SelectService],
+  styleUrls: ['./googlemaps.component.scss'],
   imports: [
     MatExpansionPanel,
     NgClass,
@@ -46,7 +58,7 @@ import {NgxSpinnerComponent} from "ngx-spinner";
     CdkConnectedOverlay,
     CdkOverlayOrigin,
     NgxSpinnerComponent,
-  ]
+  ],
 })
 export class GooglemapsComponent extends ParentChart implements OnInit {
   readonly store: Store<fromStore.AppState>;
@@ -155,7 +167,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
   loopThroughMarkersText(chunks) {
     if (typeof google === 'undefined') {
-        return;
+      return;
     }
     const markers = this.makeChunks(chunks);
     const bounds = new google.maps.LatLngBounds();
@@ -169,12 +181,12 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
               this.listData.push(markers[i][z]);
               const keyParts = markers[i][z].key.split(',');
               if (keyParts.length >= 2) {
-                 const lng = parseFloat(keyParts[0]);
-                 const lat = parseFloat(keyParts[1]);
-                 if (!isNaN(lat) && !isNaN(lng)) {
-                    bounds.extend({ lat, lng });
-                    hasMarkers = true;
-                 }
+                const lng = parseFloat(keyParts[0]);
+                const lat = parseFloat(keyParts[1]);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                  bounds.extend({ lat, lng });
+                  hasMarkers = true;
+                }
               }
             }
             if (i == markers.length - 1) {
@@ -192,8 +204,11 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   async ngOnInit(): Promise<void> {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
-    const appearance = await this.settingsService.readAppearanceSettings(dashboard_name);
-    const apiKey = appearance?.google_maps_api_key ? appearance.google_maps_api_key : '';
+    const appearance =
+      await this.settingsService.readAppearanceSettings(dashboard_name);
+    const apiKey = appearance?.google_maps_api_key
+      ? appearance.google_maps_api_key
+      : '';
     if (await this.appendGoogleMapsScript(apiKey)) {
       this.loaded.set(true);
       this.init('google-maps');

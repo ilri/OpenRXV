@@ -1,10 +1,25 @@
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
-import { MatDrawer, MatSidenavContainer, MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import {
+  MatDrawer,
+  MatSidenavContainer,
+  MatSidenav,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
 import * as fromStore from './store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
-import { TourService, IStepOption, TourStepTemplateComponent } from 'ngx-ui-tour-md-menu';
+import {
+  TourService,
+  IStepOption,
+  TourStepTemplateComponent,
+} from 'ngx-ui-tour-md-menu';
 import {
   GeneralConfigs,
   ComponentCounterConfigs,
@@ -39,32 +54,32 @@ import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
 import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'explorer-root',
-    templateUrl: './explorer.component.html',
-    styleUrls: ['./explorer.component.scss'],
-    imports: [
-        MatToolbar,
-        MatToolbarRow,
-        MatIconButton,
-        MatTooltip,
-        MatIcon,
-        ScrollToComponent,
-        NgClass,
-        TourStepTemplateComponent,
-        MatSidenavContainer,
-        MatSidenav,
-        MatNavList,
-        MatButton,
-        CdkOverlayOrigin,
-        CdkConnectedOverlay,
-        IconsWithTextComponent,
-        FiltersComponent,
-        MatSidenavContent,
-        LoadingBarModule,
-        DashboardComponent,
-        NgxSpinnerComponent,
-        AsyncPipe
-    ]
+  selector: 'explorer-root',
+  templateUrl: './explorer.component.html',
+  styleUrls: ['./explorer.component.scss'],
+  imports: [
+    MatToolbar,
+    MatToolbarRow,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    ScrollToComponent,
+    NgClass,
+    TourStepTemplateComponent,
+    MatSidenavContainer,
+    MatSidenav,
+    MatNavList,
+    MatButton,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    FiltersComponent,
+    MatSidenavContent,
+    LoadingBarModule,
+    DashboardComponent,
+    NgxSpinnerComponent,
+    AsyncPipe,
+  ],
 })
 export class ExplorerComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

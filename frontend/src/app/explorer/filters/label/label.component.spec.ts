@@ -8,8 +8,8 @@ describe('LabelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [LabelComponent],
-}).compileComponents();
+      imports: [LabelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

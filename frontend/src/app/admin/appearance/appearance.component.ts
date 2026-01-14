@@ -1,5 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  UntypedFormArray,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SettingsService } from '../services/settings.service';
@@ -8,17 +14,21 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
 
 import { MatCheckbox } from '@angular/material/checkbox';
-import { ColorPickerDirective} from 'ngx-color-picker';
+import { ColorPickerDirective } from 'ngx-color-picker';
 import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import {
+  MatFormField,
+  MatLabel,
+  MatSuffix,
+} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-appearance',
-    templateUrl: './appearance.component.html',
-    styleUrls: ['./appearance.component.scss'],
+  selector: 'app-appearance',
+  templateUrl: './appearance.component.html',
+  styleUrls: ['./appearance.component.scss'],
   imports: [
     MatCard,
     MatCardTitle,
@@ -33,8 +43,8 @@ import { MatCard, MatCardTitle } from '@angular/material/card';
     MatIconButton,
     MatSuffix,
     MatCheckbox,
-    ColorPickerDirective
-  ]
+    ColorPickerDirective,
+  ],
 })
 export class AppearanceComponent implements OnInit {
   private settingsService = inject(SettingsService);

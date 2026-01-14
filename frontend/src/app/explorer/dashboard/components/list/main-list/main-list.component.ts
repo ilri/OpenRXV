@@ -1,5 +1,4 @@
 import { Component, ChangeDetectorRef, inject } from '@angular/core';
-// // import { ComponentLookup } from '../../dynamic/lookup.registry';
 import { ListComponent } from '../list.component';
 import { Store } from '@ngrx/store';
 import { ScrollHelperService } from '../../services/scrollTo/scroll-helper.service';
@@ -14,27 +13,31 @@ import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import {NgxSpinnerComponent} from "ngx-spinner";
-// // @ComponentLookup('MainListComponent')
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { NgxSpinnerComponent } from 'ngx-spinner';
+
 @Component({
-    selector: 'app-main-list',
-    templateUrl: '../list.component.html',
-    styleUrls: ['../list.component.scss'],
-    providers: [ScrollHelperService, SelectService],
-    imports: [
-        MatExpansionPanel,
-        MatIcon,
-        MatTooltip,
-        MatExpansionPanelHeader,
-        MatExpansionPanelTitle,
-        CdkOverlayOrigin,
-        CdkConnectedOverlay,
-        IconsWithTextComponent,
-        VirtualListComponent,
-        PaginatedListComponent,
-        NgxSpinnerComponent
-    ]
+  selector: 'app-main-list',
+  templateUrl: '../list.component.html',
+  styleUrls: ['../list.component.scss'],
+  providers: [ScrollHelperService, SelectService],
+  imports: [
+    MatExpansionPanel,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    VirtualListComponent,
+    PaginatedListComponent,
+    NgxSpinnerComponent,
+  ],
 })
 export class MainListComponent extends ListComponent {
   readonly store: Store<fromStore.AppState>;

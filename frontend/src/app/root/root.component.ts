@@ -1,7 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
 import tinycolor from 'tinycolor2';
-import { Router, NavigationEnd, ActivatedRoute, RouterOutlet } from '@angular/router';
+import {
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+  RouterOutlet,
+} from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
 import { get } from 'scriptjs';
@@ -18,13 +23,10 @@ declare let window: any;
 declare let dataLayer: any;
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './root.component.html',
-    styleUrls: ['./root.component.scss'],
-    imports: [
-        RouterOutlet,
-        NgxSpinnerModule
-    ]
+  selector: 'app-root',
+  templateUrl: './root.component.html',
+  styleUrls: ['./root.component.scss'],
+  imports: [RouterOutlet, NgxSpinnerModule],
 })
 export class RootComponent implements OnInit {
   private titleService = inject(Title);

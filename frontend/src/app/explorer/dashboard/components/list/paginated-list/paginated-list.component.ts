@@ -1,4 +1,11 @@
-import { Component, Input, ViewChild, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewChild,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { hits } from 'src/app/explorer/filters/services/interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
@@ -18,21 +25,21 @@ import { LinkTextComponent } from './link-text/link-text.component';
 import { PubImageComponent } from './pub-image/pub-image.component';
 
 import { FilterPaginatedListComponent } from './filter-paginated-list/filter-paginated-list.component';
-import {AsyncPipe} from "@angular/common";
-import {NgxSpinnerComponent} from "ngx-spinner";
+import { AsyncPipe } from '@angular/common';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
-    selector: 'app-paginated-list',
-    templateUrl: './paginated-list.component.html',
-    styleUrls: ['./paginated-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-paginated-list',
+  templateUrl: './paginated-list.component.html',
+  styleUrls: ['./paginated-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FilterPaginatedListComponent,
     PubImageComponent,
     LinkTextComponent,
     MatPaginator,
-    NgxSpinnerComponent
-  ]
+    NgxSpinnerComponent,
+  ],
 })
 export class PaginatedListComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

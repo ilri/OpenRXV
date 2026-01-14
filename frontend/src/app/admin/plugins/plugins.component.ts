@@ -11,18 +11,18 @@ import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 
 @Component({
-    selector: 'app-plugins',
-    templateUrl: './plugins.component.html',
-    styleUrls: ['./plugins.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        MatCardContent,
-        PluginComponent
-    ]
+  selector: 'app-plugins',
+  templateUrl: './plugins.component.html',
+  styleUrls: ['./plugins.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatCardContent,
+    PluginComponent,
+  ],
 })
 export class PluginsComponent implements OnInit {
   private settingsService = inject(SettingsService);

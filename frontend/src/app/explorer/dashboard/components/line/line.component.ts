@@ -1,7 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { BarService } from './../bar/services/bar/bar.service';
@@ -12,15 +17,13 @@ import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
-
-// // @ComponentLookup('LineComponent')
 @Component({
-    selector: 'app-line',
-    templateUrl: './line.component.html',
-    styleUrls: ['./line.component.scss'],
-    providers: [ChartMathodsService, RangeService, BarService, SelectService],
-    changeDetection: ChangeDetectionStrategy.Default,
-    imports: [ChartComponent]
+  selector: 'app-line',
+  templateUrl: './line.component.html',
+  styleUrls: ['./line.component.scss'],
+  providers: [ChartMathodsService, RangeService, BarService, SelectService],
+  changeDetection: ChangeDetectionStrategy.Default,
+  imports: [ChartComponent],
 })
 export class LineComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
@@ -38,7 +41,7 @@ export class LineComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }
@@ -86,7 +89,7 @@ export class LineComponent extends ParentChart implements OnInit {
       })
       .flat(1);
     data.map((a, i) => {
-      (a.name = categories[i]), (a.data = []);
+      ((a.name = categories[i]), (a.data = []));
     });
     buckets.forEach((element) => {
       element.related.buckets.forEach((element, index) => {

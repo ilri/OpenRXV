@@ -1,22 +1,27 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-// // @ComponentLookup('PackedBubbleComponent')
+
 @Component({
-    selector: 'app-packed-bubble',
-    templateUrl: './packed-bubble.component.html',
-    styleUrls: ['./packed-bubble.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChartComponent]
+  selector: 'app-packed-bubble',
+  templateUrl: './packed-bubble.component.html',
+  styleUrls: ['./packed-bubble.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
 export class PackedBubbleComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
@@ -34,7 +39,7 @@ export class PackedBubbleComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }
@@ -76,7 +81,9 @@ export class PackedBubbleComponent extends ParentChart implements OnInit {
       });
 
     const min = sorted.length ? sorted[0] : 0;
-    const max = sorted.length ? (sorted.reduce((a, b) => a + b) / sorted.length) : 0;
+    const max = sorted.length
+      ? sorted.reduce((a, b) => a + b) / sorted.length
+      : 0;
     return {
       chart: {
         type: 'packedbubble',

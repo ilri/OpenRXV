@@ -1,4 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  HostListener,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
@@ -11,7 +20,6 @@ import { PageEvent } from '@angular/material/paginator';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import { first } from 'rxjs/operators';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
@@ -22,8 +30,12 @@ import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import {NgxSpinnerComponent} from "ngx-spinner";
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 /**
  * declare is used to tell TypeScript compiler that the variable has been created elsewhere.
@@ -32,13 +44,12 @@ import {NgxSpinnerComponent} from "ngx-spinner";
  * externalModule to hint to the TypeScript compiler that externalModule has already been set up
  */
 declare function _altmetric_embed_init(): any;
-// // @ComponentLookup('ListComponent')
 @Component({
-    selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss'],
-    providers: [ScrollHelperService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-list',
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
+  providers: [ScrollHelperService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatExpansionPanel,
     MatIcon,
@@ -50,8 +61,8 @@ declare function _altmetric_embed_init(): any;
     IconsWithTextComponent,
     VirtualListComponent,
     PaginatedListComponent,
-    NgxSpinnerComponent
-  ]
+    NgxSpinnerComponent,
+  ],
 })
 export class ListComponent extends ParentComponent implements OnInit {
   readonly store = inject<Store<fromStore.AppState>>(Store);

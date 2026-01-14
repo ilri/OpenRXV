@@ -1,10 +1,17 @@
-import { Type, Component, OnInit, Input, ViewContainerRef, inject } from '@angular/core';
+import {
+  Type,
+  Component,
+  OnInit,
+  Input,
+  ViewContainerRef,
+  inject,
+} from '@angular/core';
 import { ComponentLookupRegistry } from './lookup.registry';
 
 @Component({
-    selector: 'app-dynamic',
-    template: '',
-    standalone: true,
+  selector: 'app-dynamic',
+  template: '',
+  standalone: true,
 })
 export class DynamicComponent implements OnInit {
   private vcRef = inject(ViewContainerRef);

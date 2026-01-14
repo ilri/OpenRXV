@@ -2,7 +2,8 @@ import {
   enableProdMode,
   provideZoneChangeDetection,
   ApplicationConfig,
-  Injectable, importProvidersFrom,
+  Injectable,
+  importProvidersFrom,
 } from '@angular/core';
 
 import { environment } from '../environments/environment';
@@ -26,14 +27,14 @@ import dayjs from 'dayjs';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHighcharts } from 'highcharts-angular';
 import { JwtModule } from '@auth0/angular-jwt';
-import {CommonService} from "./common.service";
-import {TokenInterceptor} from "./admin/auth/token.interceptor";
-import {TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
+import { CommonService } from './common.service';
+import { TokenInterceptor } from './admin/auth/token.interceptor';
+import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import {efficts, reducers} from "./explorer/store";
-import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
+import { efficts, reducers } from './explorer/store';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 export const ISO_8601_DATE_FORMAT = {
   parse: { dateInput: { month: 'short', year: 'numeric', day: 'numeric' } },
@@ -91,11 +92,13 @@ export const appConfig: ApplicationConfig = {
         ];
       },
     }),
-    importProvidersFrom(JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-      },
-    })),
+    importProvidersFrom(
+      JwtModule.forRoot({
+        config: {
+          tokenGetter: tokenGetter,
+        },
+      }),
+    ),
     { provide: DateAdapter, useClass: PickDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: ISO_8601_DATE_FORMAT },
     CommonService,
@@ -111,7 +114,6 @@ export const appConfig: ApplicationConfig = {
       maxAge: 25,
       logOnly: false,
     }),
-    importProvidersFrom(LoadingBarHttpClientModule)
+    importProvidersFrom(LoadingBarHttpClientModule),
   ],
 };
-

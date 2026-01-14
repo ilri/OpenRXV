@@ -1,4 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, Input, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  inject,
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
@@ -7,16 +14,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-filter',
-    templateUrl: './filter.component.html',
-    styleUrls: ['./filter.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatIcon,
-        MatIconButton,
-        MatCardSubtitle,
-    ]
+  selector: 'app-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss'],
+  imports: [MatCard, MatCardTitle, MatIcon, MatIconButton, MatCardSubtitle],
 })
 export class FilterComponent implements OnInit {
   dialog = inject(MatDialog);

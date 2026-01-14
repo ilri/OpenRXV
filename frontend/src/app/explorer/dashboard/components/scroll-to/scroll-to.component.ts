@@ -14,15 +14,11 @@ import { MatRipple } from '@angular/material/core';
 import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-scroll-to',
-    templateUrl: './scroll-to.component.html',
-    styleUrls: ['./scroll-to.component.scss'],
-    providers: [ScrollHelperService],
-    imports: [
-        MatRipple,
-        NgClass,
-        MatIcon
-    ]
+  selector: 'app-scroll-to',
+  templateUrl: './scroll-to.component.html',
+  styleUrls: ['./scroll-to.component.scss'],
+  providers: [ScrollHelperService],
+  imports: [MatRipple, NgClass, MatIcon],
 })
 export class ScrollToComponent implements OnInit {
   private readonly store = inject<Store<fromStore.AppState>>(Store);

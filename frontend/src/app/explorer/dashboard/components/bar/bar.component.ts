@@ -1,10 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { ParentChart } from '../parent-chart';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { BarService } from './services/bar/bar.service';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
@@ -12,15 +17,13 @@ import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
-
-// // @ComponentLookup('BarComponent')
 @Component({
-    selector: 'app-bar',
-    templateUrl: './bar.component.html',
-    styleUrls: ['./bar.component.scss'],
-    providers: [ChartMathodsService, RangeService, BarService, SelectService],
-    changeDetection: ChangeDetectionStrategy.Default,
-    imports: [ChartComponent]
+  selector: 'app-bar',
+  templateUrl: './bar.component.html',
+  styleUrls: ['./bar.component.scss'],
+  providers: [ChartMathodsService, RangeService, BarService, SelectService],
+  changeDetection: ChangeDetectionStrategy.Default,
+  imports: [ChartComponent],
 })
 export class BarComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
@@ -39,7 +42,7 @@ export class BarComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }

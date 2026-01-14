@@ -8,8 +8,8 @@ describe('ExportComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [ExportComponent],
-}).compileComponents();
+      imports: [ExportComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

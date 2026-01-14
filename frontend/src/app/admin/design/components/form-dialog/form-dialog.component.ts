@@ -1,6 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatButton } from '@angular/material/button';
@@ -12,27 +23,26 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 
-
 @Component({
-    selector: 'app-form-dialog',
-    templateUrl: './form-dialog.component.html',
-    styleUrls: ['./form-dialog.component.scss'],
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        NgSelectModule,
-        MatIcon,
-        MatCheckbox,
-        MatTooltip,
-        MainListComponent,
-        MatDialogActions,
-        MatButton
-    ]
+  selector: 'app-form-dialog',
+  templateUrl: './form-dialog.component.html',
+  styleUrls: ['./form-dialog.component.scss'],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgSelectModule,
+    MatIcon,
+    MatCheckbox,
+    MatTooltip,
+    MainListComponent,
+    MatDialogActions,
+    MatButton,
+  ],
 })
 export class FormDialogComponent implements OnInit {
   private metadataService = inject(MetadataService);

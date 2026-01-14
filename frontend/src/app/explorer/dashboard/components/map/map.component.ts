@@ -1,10 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
-const mapWorld = require('@highcharts/map-collection/custom/world-robinson-highres.geo.json');
+import mapWorld from '@highcharts/map-collection/custom/world-robinson-highres.geo.json';
 import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-// // import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { Store } from '@ngrx/store';
@@ -15,14 +20,14 @@ import * as CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { ChartComponent } from '../chart/chart.component';
-// // @ComponentLookup('MapComponent')
+
 @Component({
-    selector: 'app-map',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChartComponent]
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
 export class MapComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
@@ -41,7 +46,7 @@ export class MapComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }

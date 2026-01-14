@@ -8,7 +8,12 @@ import {
 import { SettingsService } from '../services/settings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GridComponent } from './components/grid/grid.component';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  CdkDropList,
+  CdkDrag,
+} from '@angular/cdk/drag-drop';
 import { SortComponent } from './components/sort/sort.component';
 import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
@@ -31,29 +36,29 @@ import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-design',
-    templateUrl: './design.component.html',
-    styleUrls: ['./design.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        MatIconButton,
-        EditorComponent,
-        FormsModule,
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        CdkDropList,
-        FilterComponent,
-        CdkDrag,
-        CounterComponent,
-        StructureComponent,
-        MatInput
-    ]
+  selector: 'app-design',
+  templateUrl: './design.component.html',
+  styleUrls: ['./design.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    EditorComponent,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    CdkDropList,
+    FilterComponent,
+    CdkDrag,
+    CounterComponent,
+    StructureComponent,
+    MatInput,
+  ],
 })
 export class DesignComponent implements OnInit {
   dialog = inject(MatDialog);
@@ -299,8 +304,8 @@ export class DesignComponent implements OnInit {
           componentConfigs: result as Tour,
           tour: true,
         };
-        (obj.componentConfigs['id'] = 'welcome'),
-          (obj.componentConfigs['text'] = this.welcome_text);
+        ((obj.componentConfigs['id'] = 'welcome'),
+          (obj.componentConfigs['text'] = this.welcome_text));
         this.welcome = obj;
       }
     });

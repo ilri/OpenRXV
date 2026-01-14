@@ -1,5 +1,19 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, inject } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
 import { MainListComponent } from '../../design/components/main-list/main-list.component';
@@ -9,30 +23,34 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatCard, MatCardTitle, MatCardSubtitle, MatCardContent } from '@angular/material/card';
-
+import {
+  MatCard,
+  MatCardTitle,
+  MatCardSubtitle,
+  MatCardContent,
+} from '@angular/material/card';
 
 @Component({
-    selector: 'app-plugin',
-    templateUrl: './plugin.component.html',
-    styleUrls: ['./plugin.component.scss'],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatCheckbox,
-        FormsModule,
-        MatCardSubtitle,
-        MatCardContent,
-        MatButton,
-        MatIcon,
-        ReactiveFormsModule,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        NgSelectModule,
-        MainListComponent,
-        MatIconButton
-    ]
+  selector: 'app-plugin',
+  templateUrl: './plugin.component.html',
+  styleUrls: ['./plugin.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatCheckbox,
+    FormsModule,
+    MatCardSubtitle,
+    MatCardContent,
+    MatButton,
+    MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgSelectModule,
+    MainListComponent,
+    MatIconButton,
+  ],
 })
 export class PluginComponent implements OnInit, OnChanges {
   private fb = inject(UntypedFormBuilder);

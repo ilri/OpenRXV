@@ -1,8 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  inject,
+} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-// import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
@@ -11,14 +16,14 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-// @ComponentLookup('WheelComponent')
+
 @Component({
-    selector: 'app-wheel',
-    templateUrl: './wheel.component.html',
-    styleUrls: ['./wheel.component.scss'],
-    providers: [ChartMathodsService, SelectService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChartComponent]
+  selector: 'app-wheel',
+  templateUrl: './wheel.component.html',
+  styleUrls: ['./wheel.component.scss'],
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
 export class WheelComponent extends ParentChart implements OnInit {
   private settingsService = inject(SettingsService);
@@ -38,7 +43,7 @@ export class WheelComponent extends ParentChart implements OnInit {
     const activatedRoute = inject(ActivatedRoute);
 
     super(cms, selectService, store, activatedRoute);
-  
+
     this.selectService = selectService;
     this.store = store;
   }

@@ -1,6 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  UntypedFormArray,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import {
   trigger,
   transition,
@@ -26,39 +32,45 @@ import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
-    selector: 'app-setup',
-    templateUrl: './setup.component.html',
-    styleUrls: ['./setup.component.scss'],
-    animations: [
-        trigger('openClose', [
-            state('true', style({
-                'max-height': '*',
-                opacity: 1,
-            })),
-            state('false', style({
-                'max-height': '60px',
-                'overflow-y': 'hidden',
-            })),
-            transition('true <=> false', [animate('.5s')]),
-        ]),
-    ],
-    imports: [
-        MatCard,
-        MatCardTitle,
-        MatAnchor,
-        MatIcon,
-        MatButton,
-        FormsModule,
-        ReactiveFormsModule,
-        MatIconButton,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        MatSelect,
-        MatOption,
-        MatRadioGroup,
-        MatRadioButton
-    ]
+  selector: 'app-setup',
+  templateUrl: './setup.component.html',
+  styleUrls: ['./setup.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state(
+        'true',
+        style({
+          'max-height': '*',
+          opacity: 1,
+        }),
+      ),
+      state(
+        'false',
+        style({
+          'max-height': '60px',
+          'overflow-y': 'hidden',
+        }),
+      ),
+      transition('true <=> false', [animate('.5s')]),
+    ]),
+  ],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatRadioGroup,
+    MatRadioButton,
+  ],
 })
 export class SetupComponent implements OnInit {
   private settingService = inject(SettingsService);

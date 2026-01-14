@@ -8,8 +8,8 @@ describe('MainListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-    imports: [MainListComponent],
-}).compileComponents();
+      imports: [MainListComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
