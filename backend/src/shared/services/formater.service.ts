@@ -1,7 +1,7 @@
 import * as _ from 'underscore';
 import CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { Injectable } from '@nestjs/common';
 import { ValuesService } from './values.service';
 const langISO = require('iso-639-1');
