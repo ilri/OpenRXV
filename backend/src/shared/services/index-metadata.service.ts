@@ -21,11 +21,15 @@ export class IndexMetadataService extends ElasticService {
         index: index,
       });
 
-    return mappings[index]
-      ? Object.keys(mappings[index].mappings.properties)
-      : mappings[index + '_final']
-        ? Object.keys(mappings[index + '_final'].mappings.properties)
-        : [];
+    if (mappings[index]) {
+      return Object.keys(mappings[index].mappings.properties);
+    } else if (mappings[index + '_final']) {
+      return Object.keys(mappings[index + '_final'].mappings.properties);
+    } else if (mappings['final-' + index]) {
+      return Object.keys(mappings['final-' + index].mappings.properties);
+    } else {
+      return [];
+    }
   }
 
   async DSpaceMetadataAutoRetrieve(link) {
