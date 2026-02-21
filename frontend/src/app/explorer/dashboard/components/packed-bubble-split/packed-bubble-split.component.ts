@@ -39,6 +39,7 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
     super(cms, null, null, activatedRoute);
   }
   colors: string[];
+  enabled: boolean;
 
   async ngOnInit() {
     const dashboard_name =
@@ -49,13 +50,13 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
     this.init('packed-bubble-split');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       if (buckets) {
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
 
-  private setOptions(buckets: Array<Bucket>): any {
+  private setOptions(buckets: Array<Bucket>) {
     const data = buckets
       .map((b: Bucket) => {
         return {
@@ -76,10 +77,10 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
         return a - b;
       });
 
-    const min = sorted[0];
+    // const min = sorted[0];
     const max = sorted.reduce((a, b) => a + b) / sorted.length;
 
-    return {
+    this.chartOptions = {
       chart: {
         type: 'packedbubble',
         animation: false,
@@ -97,8 +98,8 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
         packedbubble: {
           minSize: '30%',
           maxSize: '100%',
-          zMin: min,
-          zMax: max,
+          // zMin: min,
+          // zMax: max,
           layoutAlgorithm: {
             gravitationalConstant: 0.05,
             splitSeries: true,
@@ -125,5 +126,8 @@ export class PackedBubbleSplitComponent extends ParentChart implements OnInit {
       series: data,
       ...this.cms.commonProperties(),
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 }

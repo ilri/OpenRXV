@@ -33,6 +33,7 @@ export class WheelComponent extends ParentChart implements OnInit {
   private readonly bodyBuilderService = inject(BodyBuilderService);
 
   colors: string[];
+  enabled: boolean;
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -69,12 +70,12 @@ export class WheelComponent extends ParentChart implements OnInit {
           );
         if (filters.length) this.filterd = true;
         else this.filterd = false;
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  private setOptions(buckets: Array<Bucket>): any {
+  private setOptions(buckets: Array<Bucket>) {
     const data = buckets
       .map((b: Bucket) =>
         b.related.buckets
@@ -82,7 +83,7 @@ export class WheelComponent extends ParentChart implements OnInit {
           .map((d) => [b.key.substr(0, 50), d.key.substr(0, 50), d.doc_count]),
       )
       .flat(1);
-    return {
+    this.chartOptions = {
       accessibility: {
         point: {
           valueDescriptionFormat:
@@ -122,5 +123,8 @@ export class WheelComponent extends ParentChart implements OnInit {
       ],
       ...this.cms.commonProperties(),
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {Component, OnInit, inject, ChangeDetectorRef} from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { SettingsService } from 'src/app/admin/services/settings.service';
@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
+import { UnknownSeriesOptions } from 'highcharts';
 
 @Component({
   selector: 'app-simi-circle',
@@ -16,11 +17,13 @@ import { ChartComponent } from '../chart/chart.component';
   imports: [ChartComponent],
 })
 export class SimiCircleComponent extends ParentChart implements OnInit {
+  private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
 
   colors: string[];
+  enabled: boolean;
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -43,11 +46,14 @@ export class SimiCircleComponent extends ParentChart implements OnInit {
       await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('pie');
-    this.buildOptions.subscribe(() => (this.chartOptions = this.setOptions()));
+    this.buildOptions.subscribe(() => {
+      this.setOptions();
+      this.cdr.detectChanges();
+    });
   }
 
-  private setOptions(): any {
-    return {
+  private setOptions() {
+    this.chartOptions = {
       chart: {
         type: 'pie',
         animation: true,
@@ -69,8 +75,11 @@ export class SimiCircleComponent extends ParentChart implements OnInit {
           },
         },
       },
-      series: [{ innerSize: '70%', ...this.chartOptions.series[0] }],
+      series: [{ innerSize: '70%', ...this.chartOptions.series[0] } as UnknownSeriesOptions],
       ...this.cms.commonProperties(),
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 }

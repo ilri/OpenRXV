@@ -6,7 +6,6 @@ import {
   inject,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
-import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { SettingsService } from 'src/app/admin/services/settings.service';
@@ -49,6 +48,7 @@ export class PieComponent extends ParentChart implements OnInit {
   }
   colors: string[];
   filterd = false;
+  enabled: boolean;
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     const dashboard_name =
@@ -66,7 +66,7 @@ export class PieComponent extends ParentChart implements OnInit {
       if (filters.length) this.filterd = true;
       else this.filterd = false;
       if (buckets) {
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
@@ -74,7 +74,7 @@ export class PieComponent extends ParentChart implements OnInit {
   resetFilter(value = false) {
     this.resetQ();
   }
-  private setOptions(buckets: Array<Bucket>): Highcharts.Options {
+  private setOptions(buckets: Array<Bucket>) {
     const commonProperties = this.cms.commonProperties();
     commonProperties.legend.labelFormatter = function () {
       const label = `${this.name} (${(this as any).y})`;
@@ -90,7 +90,7 @@ export class PieComponent extends ParentChart implements OnInit {
       'pie',
     );
 
-    return {
+    this.chartOptions = {
       chart: {
         type: 'pie',
         animation: true,
@@ -140,5 +140,8 @@ export class PieComponent extends ParentChart implements OnInit {
       ],
       ...commonProperties,
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 }

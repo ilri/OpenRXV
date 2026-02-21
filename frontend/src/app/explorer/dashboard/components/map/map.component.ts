@@ -52,6 +52,7 @@ export class MapComponent extends ParentChart implements OnInit {
   }
   filterd = false;
   items_label = 'Information Products';
+  enabled: boolean;
   async ngOnInit() {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
@@ -70,7 +71,7 @@ export class MapComponent extends ParentChart implements OnInit {
       if (filters.length) this.filterd = true;
       else this.filterd = false;
       if (buckets) {
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
@@ -78,13 +79,13 @@ export class MapComponent extends ParentChart implements OnInit {
   resetFilter(value = false) {
     this.resetQ();
   }
-  private setOptions(buckets: Array<Bucket>): Highcharts.Options {
+  private setOptions(buckets: Array<Bucket>) {
     const dataLabelsSettings = this.cms.getDataLabelAttributes(
       this.componentConfigs,
       'map',
     );
 
-    return {
+    this.chartOptions = {
       chart: {
         map: mapWorld,
       },
@@ -154,6 +155,9 @@ export class MapComponent extends ParentChart implements OnInit {
       ],
       ...this.cms.commonProperties(),
     } as Highcharts.Options;
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 
   mapCountryToIsoAlpha2(value: string) {

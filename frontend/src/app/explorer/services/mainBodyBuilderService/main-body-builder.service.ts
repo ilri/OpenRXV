@@ -152,6 +152,7 @@ export class MainBodyBuilderService extends BuilderUtilities {
         if (typeof content[key] === 'string') {
           rows = [...rows, content[key]];
         } else if (
+          content[key] &&
           typeof content[key] === 'object' &&
           !Array.isArray(content[key])
         ) {

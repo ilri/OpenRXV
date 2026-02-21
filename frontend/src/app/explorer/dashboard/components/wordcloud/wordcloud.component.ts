@@ -48,6 +48,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     this.store = store;
   }
   colors: string[];
+  enabled: boolean;
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentFilterConfigs;
     const dashboard_name =
@@ -65,7 +66,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       if (filters.length) this.filterd = true;
       else this.filterd = false;
       if (buckets) {
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
@@ -74,8 +75,8 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   resetFilter(value = false) {
     this.resetQ();
   }
-  private setOptions(buckets: Array<Bucket>): Highcharts.Options {
-    return {
+  private setOptions(buckets: Array<Bucket>) {
+    this.chartOptions = {
       chart: {
         type: 'wordcloud',
         animation: true,
@@ -120,5 +121,8 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       ],
       ...this.cms.commonProperties(),
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
   }
 }
