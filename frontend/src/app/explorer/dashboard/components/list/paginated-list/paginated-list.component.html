@@ -9,18 +9,21 @@
     style="min-height: 140px"
     class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3"
     >
-    <div class="col-md-2 col-xs-12 text-center">
-      <app-pub-image [content]="content" [source]="h._source"></app-pub-image>
-    </div>
+
+    @if (columns?.thumbnail) {
+      <div class="col-xs-12 text-center" [ngClass]="'col-md-' + columns.thumbnail">
+        <app-pub-image [content]="content" [source]="h._source"></app-pub-image>
+      </div>
+    }
     <!--
     TODO: this only works when it's md-7
     TODO: but it should be md-8
     -->
-    <div class="col-md-8 col-xs-12 muted-text">
+    <div class="col-xs-12 muted-text" [ngClass]="'col-md-' + columns.main">
       <app-link-text [source]="h._source" [content]="content"></app-link-text>
     </div>
-    @if (content.altmetric) {
-      <div class="col-md-1 col-xs-12">
+    @if (columns?.altmetric) {
+      <div class="col-xs-12" [ngClass]="'col-md-' + columns.altmetric">
         @if (h._source.DOI) {
           <div
             data-badge-popover="left"

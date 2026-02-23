@@ -85,6 +85,10 @@ export interface PaginatedListConfigs {
   identifierUri: string;
   altmetric: boolean;
   filterOptions: SortOption[];
+  thumbnail: string;
+  thumbnail_prefix: string;
+  image_tag_options: string;
+  tagOnImage: string;
 }
 
 export enum searchOptions {

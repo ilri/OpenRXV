@@ -2,15 +2,6 @@
   <mat-spinner [strokeWidth]="1"></mat-spinner>
 }
 
-@if (!source[content.thumbnail]) {
-  <img
-    class="publication-placeholder-image"
-    src="assets/application-x-zerosize.svg"
-    [hidden]="loading"
-    (load)="onLoad()"
-    />
-}
-
 @if (source[content.thumbnail]) {
   <img
     [src]="content.thumbnail_prefix + (source[content.thumbnail] | getFirstImage)"

@@ -1,20 +1,32 @@
 <article class="w-100 break-word">
-  <a
-    target="_blank"
-    href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
-    class="primary-text"
-    rel="noopener"
+  @if (content?.identifierUri) {
+    <a
+      target="_blank"
+      href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
+      class="primary-text"
+      rel="noopener"
     >
+      @if (source[content.icon] && appearance.icons[content.icon] != null) {
+        <img
+          style="max-width: 30px"
+          [src]="getIcon(source[content.icon])"
+        />
+      }
+      <strong>
+        {{ source[content.title] }}
+      </strong>
+    </a>
+  } @else {
     @if (source[content.icon] && appearance.icons[content.icon] != null) {
       <img
         style="max-width: 30px"
         [src]="getIcon(source[content.icon])"
-        />
+      />
     }
     <strong>
       {{ source[content.title] }}
     </strong>
-  </a>
+  }
   @if (source[content.description]) {
     <p>
       {{ source[content.description] }}

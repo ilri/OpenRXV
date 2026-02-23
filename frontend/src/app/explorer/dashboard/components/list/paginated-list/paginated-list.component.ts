@@ -25,7 +25,7 @@ import { LinkTextComponent } from './link-text/link-text.component';
 import { PubImageComponent } from './pub-image/pub-image.component';
 
 import { FilterPaginatedListComponent } from './filter-paginated-list/filter-paginated-list.component';
-import { AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
@@ -39,6 +39,7 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
     LinkTextComponent,
     MatPaginator,
     NgxSpinnerComponent,
+    NgClass,
   ],
 })
 export class PaginatedListComponent implements OnInit {
@@ -70,8 +71,22 @@ export class PaginatedListComponent implements OnInit {
     this.flag = true;
   }
 
+  columns = {
+    thumbnail: 2,
+    main: 8,
+    altmetric: 1,
+  };
   ngOnInit(): void {
     this.resetPaginationWhenQueryChanges();
+
+    if (!this.content?.thumbnail) {
+      this.columns.main += this.columns.thumbnail;
+      delete this.columns.thumbnail;
+    }
+    if (!this.content?.altmetric) {
+      this.columns.main += this.columns.altmetric;
+      delete this.columns.altmetric;
+    }
   }
 
   changePage(e: PageEvent): void {
