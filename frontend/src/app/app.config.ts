@@ -35,6 +35,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { efficts, reducers } from './explorer/store';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { provideUiTour } from 'ngx-ui-tour-md-menu';
 
 export const ISO_8601_DATE_FORMAT = {
   parse: { dateInput: { month: 'short', year: 'numeric', day: 'numeric' } },
@@ -115,5 +116,6 @@ export const appConfig: ApplicationConfig = {
       logOnly: false,
     }),
     importProvidersFrom(LoadingBarHttpClientModule),
+    provideUiTour(),
   ],
 };
