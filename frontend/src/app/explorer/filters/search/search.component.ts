@@ -62,17 +62,16 @@ export class SearchComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
+    const { dashboard } = JSON.parse(localStorage.getItem('configs'));
     const sorcue =
       (() => {
         const [conf] = dashboard
           .flat(1)
           .filter(
             ({ componentConfigs }: GeneralConfigs) =>
-              (componentConfigs as ComponentDashboardConfigs).content,
+              (componentConfigs as ComponentDashboardConfigs)?.content,
           );
-        return (conf.componentConfigs as ComponentDashboardConfigs).content
-          .title;
+        return (conf.componentConfigs as ComponentDashboardConfigs)?.content?.title;
       })() || 'dc_title';
     this.subToSearchTerms();
     this.subToOrOperator();

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
 import bodybuilder from 'bodybuilder';
 import {
@@ -13,12 +13,10 @@ import {
   GeneralConfigs,
   ComponentDashboardConfigs,
 } from 'src/app/explorer/configs/generalConfig.interface';
-import { SettingsService } from 'src/app/admin/services/settings.service';
 @Injectable({
   providedIn: 'root',
 })
 export class MainBodyBuilderService extends BuilderUtilities {
-  private settings = inject(SettingsService);
 
   private rawOptions: string[];
 
@@ -140,11 +138,12 @@ export class MainBodyBuilderService extends BuilderUtilities {
   }
 
   private buildRawOptions(): Array<string> {
+    if (!this.dashboardConfig) return [];
     let rows: Array<string> = [];
     const { content } = this.dashboardConfig.find(
       (curr: GeneralConfigs) =>
-        !!(curr.componentConfigs as ComponentDashboardConfigs).content,
-    ).componentConfigs as ComponentDashboardConfigs;
+        !!(curr.componentConfigs as ComponentDashboardConfigs)?.content,
+    )?.componentConfigs as ComponentDashboardConfigs || {};
 
     for (const key in content) {
       if (content.hasOwnProperty(key)) {
@@ -197,5 +196,8 @@ export class MainBodyBuilderService extends BuilderUtilities {
 
   private addRawOptions(b: bodybuilder.Bodybuilder): void {
     b.rawOption('_source', this.rawOptions);
+    if (this.rawOptions.length === 0) {
+      b.size(0);
+    }
   }
 }

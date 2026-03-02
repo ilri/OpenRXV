@@ -54,11 +54,10 @@ export class BuilderUtilities {
       (() => {
         const [conf] = this.dashboardConfig.filter(
           ({ componentConfigs }: GeneralConfigs) =>
-            (componentConfigs as ComponentDashboardConfigs).content,
+            (componentConfigs as ComponentDashboardConfigs)?.content,
         );
         if (conf)
-          return (conf.componentConfigs as ComponentDashboardConfigs).content
-            .title;
+          return (conf.componentConfigs as ComponentDashboardConfigs)?.content?.title;
         else '';
       })() || 'dc_title';
   }
