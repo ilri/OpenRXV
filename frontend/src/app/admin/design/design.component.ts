@@ -7,7 +7,6 @@ import {
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { SettingsService } from '../services/settings.service';
 import { MatDialog } from '@angular/material/dialog';
-import { GridComponent } from './components/grid/grid.component';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -101,13 +100,7 @@ export class DesignComponent implements OnInit {
       'code| undo redo | bold italic underline strikethrough | forecolor backcolor casechange permanentpen formatpainter removeformat |fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
   };
   newRow(): void {
-    const dialogRef = this.dialog.open(GridComponent, {
-      width: '450px',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.dashboard.push(result);
-    });
+    this.dashboard.push([{ class: 'col-md-12' }]);
   }
 
   sortCounter() {
@@ -222,11 +215,20 @@ export class DesignComponent implements OnInit {
     this.dashboard[index][index2] = this.createDashboardItem({}, index, index2);
   }
   dashboardEdited(event, index) {
-    this.dashboard[index][event.index] = this.createDashboardItem(
-      event.result,
-      index,
-      event.index,
-    );
+    if (event.isFullGrid) {
+      this.dashboard[index] = event.result.map((item, i) => {
+        if (!item.component) {
+          return this.createDashboardItem(item, index, i);
+        }
+        return item;
+      });
+    } else {
+      this.dashboard[index][event.index] = this.createDashboardItem(
+        event.result,
+        index,
+        event.index,
+      );
+    }
   }
 
   filtersEdited(value, index) {
@@ -418,13 +420,23 @@ export class DesignComponent implements OnInit {
     )
       temp['related'] = true;
 
-    let class_name: null;
+    if (obj.componentConfigs && obj.componentConfigs.id) {
+      temp['id'] = obj.componentConfigs.id;
+    } else if (obj.id) {
+      temp['id'] = obj.id;
+    }
 
-    if (typeof obj.class == 'string') class_name = obj.class;
+    let class_name = null;
 
-    this.dashboard[index][index1].class = [...new Set((this.dashboard[index][index1].class + ' no-side-padding').split(' '))].join(' ');
+    if (obj.class && typeof obj.class == 'string') {
+      class_name = obj.class;
+    }
+
+    const currentGridItem = this.dashboard[index][index1] || {};
+    const baseClass = obj.class || currentGridItem.class || 'col-md-3';
+    this.dashboard[index][index1].class = [...new Set((baseClass + ' no-side-padding').split(' '))].join(' ');
     return {
-      class: this.dashboard[index][index1].class,
+      class: class_name || this.dashboard[index][index1].class,
       show: true,
       component: obj.component ? obj.component : null,
       componentConfigs: temp as ComponentFilterConfigs,

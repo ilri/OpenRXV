@@ -14,6 +14,7 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton, MatButton } from '@angular/material/button';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-structure',
@@ -27,6 +28,9 @@ import { MatIconButton, MatButton } from '@angular/material/button';
     MatButton,
     MatCardTitle,
     MatCardContent,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
   ],
 })
 export class StructureComponent implements OnInit {
@@ -84,6 +88,11 @@ export class StructureComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   form_data = [];
   @Input() grid;
+  resizingIndex: number = -1;
+  startX: number = 0;
+  startWidthLeft: number = 0;
+  startWidthRight: number = 0;
+  containerWidth: number = 0;
 
   dialogReficons: MatDialogRef<any>;
   iconConfigs = {
@@ -307,9 +316,33 @@ export class StructureComponent implements OnInit {
     this.iconConfigs.componentConfigs.icon = this.grid[0]?.scroll?.icon || null;
   }
 
-  addComponent(event) {
-    this.onAdd.emit(event);
-    this.openDialog(event);
+  addComponent(index) {
+    if (this.grid.length < 4) {
+      this.grid.splice(index + 1, 0, { class: 'col-md-3' });
+      this.redistributeWidths();
+      this.edited.emit({ result: this.grid, isFullGrid: true });
+    }
+  }
+
+  redistributeWidths() {
+    const count = this.grid.length;
+    const baseWidth = Math.floor(12 / count);
+    const extra = 12 % count;
+
+    this.grid.forEach((element, i) => {
+      const width = i < extra ? baseWidth + 1 : baseWidth;
+      element.class = `col-md-${width} no-side-padding`;
+      this.class_names[i] = element.class;
+    });
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.grid, event.previousIndex, event.currentIndex);
+    this.grid.forEach((element, index) => {
+      this.class_names[index] = element.class;
+      this.oldcomponent[index] = element.component;
+    });
+    this.edited.emit({ result: this.grid, isFullGrid: true });
   }
 
   icon(component) {
@@ -323,22 +356,86 @@ export class StructureComponent implements OnInit {
   }
 
   delete(index) {
-    this.onDelete.emit(index);
+    this.grid.splice(index, 1);
+    if (this.grid.length === 0) {
+      this.grid.push({ class: 'col-md-12' });
+    } else {
+      this.redistributeWidths();
+    }
+    this.edited.emit({ result: this.grid, isFullGrid: true });
   }
+
+  onMouseDown(event: MouseEvent, index: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (index >= this.grid.length - 1) return;
+
+    this.resizingIndex = index;
+    this.startX = event.clientX;
+
+    (event.target as HTMLElement).classList.add('resizing');
+
+    const leftClass = this.grid[index].class || 'col-md-3';
+    const leftMatch = leftClass.match(/col-md-(\d+)/);
+    this.startWidthLeft = leftMatch ? parseInt(leftMatch[1], 10) : 3;
+
+    const rightClass = this.grid[index + 1].class || 'col-md-3';
+    const rightMatch = rightClass.match(/col-md-(\d+)/);
+    this.startWidthRight = rightMatch ? parseInt(rightMatch[1], 10) : 3;
+
+    const element = (event.target as HTMLElement).closest('.position-relative');
+
+    if (element) {
+      // containerWidth represents the pixel width of one bootstrap column
+      this.containerWidth = (element as HTMLElement).offsetWidth / this.startWidthLeft;
+    }
+
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+  }
+
+  onMouseMove = (event: MouseEvent) => {
+    if (this.resizingIndex === -1) return;
+
+    const deltaX = event.clientX - this.startX;
+    const deltaColumns = Math.round(deltaX / this.containerWidth);
+
+    // Enforce min 3 columns per component
+    let newWidthLeft = this.startWidthLeft + deltaColumns;
+    let newWidthRight = this.startWidthRight - deltaColumns;
+
+    if (newWidthLeft < 3) {
+      newWidthLeft = 3;
+      newWidthRight = this.startWidthLeft + this.startWidthRight - 3;
+    } else if (newWidthRight < 3) {
+      newWidthRight = 3;
+      newWidthLeft = this.startWidthLeft + this.startWidthRight - 3;
+    }
+
+    const currentLeftMatch = (this.grid[this.resizingIndex].class || '').match(/col-md-(\d+)/);
+    const currentLeftWidth = currentLeftMatch ? parseInt(currentLeftMatch[1], 10) : 0;
+
+    if (newWidthLeft !== currentLeftWidth) {
+      this.grid[this.resizingIndex].class = `col-md-${newWidthLeft} no-side-padding`;
+      this.class_names[this.resizingIndex] = this.grid[this.resizingIndex].class;
+
+      this.grid[this.resizingIndex + 1].class = `col-md-${newWidthRight} no-side-padding`;
+      this.class_names[this.resizingIndex + 1] = this.grid[this.resizingIndex + 1].class;
+    }
+  };
+
+  onMouseUp = (event: MouseEvent) => {
+    if (this.resizingIndex !== -1) {
+      this.edited.emit({ result: this.grid, isFullGrid: true });
+    }
+    this.resizingIndex = -1;
+    (event.target as HTMLElement).classList.remove('resizing');
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+  };
 
   rowDelete() {
     this.rowDeleted.emit(true);
-  }
-
-  contentChange(content, i) {
-    this.grid[i].componentConfigs['content'] = content;
-    const cat = {
-      class: this.class_names[i],
-      scroll: this.grid[i].scroll,
-      component: this.grid[i].component,
-      ...this.grid[i].componentConfigs,
-    };
-    this.edited.emit({ result: cat, index: i });
   }
 
   setIcon() {
