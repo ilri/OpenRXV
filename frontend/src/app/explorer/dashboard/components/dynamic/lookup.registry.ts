@@ -7,11 +7,7 @@ import { GooglemapsComponent } from '../googlemaps/googlemaps.component';
 import { LineComponent } from '../line/line.component';
 import { ListComponent } from '../list/list.component';
 import { MainListComponent } from '../list/main-list/main-list.component';
-import { PackedBubbleComponent } from '../packed-bubble/packed-bubble.component';
-import { PackedBubbleSplitComponent } from '../packed-bubble-split/packed-bubble-split.component';
 import { PieComponent } from '../pie/pie.component';
-import { SimiCircleComponent } from '../simi-circle/simi-circle.component';
-import { WheelComponent } from '../wheel/wheel.component';
 import { WordcloudComponent } from '../wordcloud/wordcloud.component';
 import { SunburstComponent } from '../sunburst/sunburst.component';
 import { DateRangeComponent } from '../../../filters/date-range/date-range.component';
@@ -22,38 +18,23 @@ import { SelectComponent } from '../../../filters/select/select.component';
 
 export const ComponentLookupRegistry = (key: string): any => {
   const components = {
-    WelcomeComponent: WelcomeComponent,
-    CounterComponent: CounterComponent,
-    MapComponent: MapComponent,
-    BarComponent: BarComponent,
-    ChartComponent: ChartComponent,
-    GoogleMapsComponent: GooglemapsComponent,
-    LineComponent: LineComponent,
-    ListComponent: ListComponent,
-    MainListComponent: MainListComponent,
-    PackedBubbleComponent: PackedBubbleComponent,
-    PackedBubbleSplitComponent: PackedBubbleSplitComponent,
-    PieComponent: PieComponent,
-    SimiCircleComponent: SimiCircleComponent,
-    WheelComponent: WheelComponent,
-    WordcloudComponent: WordcloudComponent,
-    SunburstComponent: SunburstComponent,
     DateRangeComponent: DateRangeComponent,
     LabelComponent: LabelComponent,
     RangeComponent: RangeComponent,
     SearchComponent: SearchComponent,
     SelectComponent: SelectComponent,
+    WelcomeComponent: WelcomeComponent,
+    CounterComponent: CounterComponent,
+    ChartComponent: ChartComponent,
+    PieComponent: PieComponent,
+    BarComponent: BarComponent,
+    LineComponent: LineComponent,
+    WordcloudComponent: WordcloudComponent,
+    SunburstComponent: SunburstComponent,
+    MapComponent: MapComponent,
+    GoogleMapsComponent: GooglemapsComponent,
+    ListComponent: ListComponent,
+    MainListComponent: MainListComponent,
   };
   return components[key];
 };
-
-// MapComponent undefined dynamic.component.ts:24:13
-// ListComponent undefined 10 dynamic.component.ts:24:13
-// WordcloudComponent undefined dynamic.component.ts:24:13
-// ListComponent undefined dynamic.component.ts:24:13
-// PieComponent undefined dynamic.component.ts:24:13
-// ListComponent undefined dynamic.component.ts:24:13
-// MainListComponent undefined dynamic.component.ts:24:13
-// WordcloudComponent undefined dynamic.component.ts:24:13
-// PieComponent undefined dynamic.component.ts:24:13
-// ListComponent undefined
