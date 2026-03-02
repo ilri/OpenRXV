@@ -69,14 +69,11 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   private readonly settingsService = inject(SettingsService);
 
   @Input() expandedStatus: boolean;
-  hits: Hits; // for the paginated list
   listData: Bucket[] = []; // for aggrigiation list
-  isPaginatedList: boolean; // determine if we should display the hits or not
-  paginationAtt: PageEvent;
   isFullscreen = false;
   fitBounds = false;
   refreshMap = true;
-  filterd = false;
+  filtered = '';
   myStyles = {
     height: '430px',
     width: '100%',
@@ -112,10 +109,10 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.selectService = selectService;
   }
 
-  resetQ() {
-    this.filterd = false;
+  resetQ(filtered: string) {
+    this.filtered = '';
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery('id');
+      this.selectService.resetValueAttributetoMainQuery(filtered);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -128,9 +125,9 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.selectService.resetNotification();
   }
   filterMarker(code) {
-    this.filterd = true;
+    this.filtered = 'id';
     const query: bodybuilder.Bodybuilder =
-      this.selectService.addNewValueAttributetoMainQuery('id', code);
+      this.selectService.addNewValueAttributetoMainQuery(this.filtered, code);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -240,18 +237,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
 
   private subToDataFromStore(): void {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       this.timeout.forEach((element) => {
         clearTimeout(element);
       });
@@ -262,14 +248,6 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
 
       this.cdr.detectChanges();
     });
-  }
-
-  private safeCheckLength(arr: Array<Bucket> | Array<hits> | boolean): number {
-    if (typeof arr === 'boolean') {
-      return 0;
-    }
-    const len: number | boolean = arr && arr.length;
-    return len || 0;
   }
 
   private async appendGoogleMapsScript(apiKey: string): Promise<boolean> {

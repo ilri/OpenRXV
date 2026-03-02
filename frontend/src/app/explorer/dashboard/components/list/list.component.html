@@ -13,7 +13,7 @@
     </div>
   }
   <div class="panel-header-icons">
-    @if (filterd) {
+    @if (filtered.length > 0) {
       <mat-icon
         class="mr-2"
         matTooltip="Reset Filter"
@@ -56,6 +56,8 @@
     <app-virtual-list
       [componentConfigs]="componentConfigs"
       [listData]="listData"
+      [sourceString]="sourceString"
+      (filteredChange)="handleFilteredChange($event)"
     ></app-virtual-list>
   } @else {
     <app-paginated-list

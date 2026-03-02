@@ -12,7 +12,6 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import {
   ComponentDashboardConfigs,
   SourceLevel,
@@ -33,7 +32,6 @@ export class PieComponent extends ParentChart implements OnInit {
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
-  private readonly bodyBuilderService = inject(BodyBuilderService);
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -50,11 +48,9 @@ export class PieComponent extends ParentChart implements OnInit {
     this.store = store;
   }
   colors: string[];
-  filterd = false;
+  filtered: string = '';
   enabled: boolean;
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -62,22 +58,15 @@ export class PieComponent extends ParentChart implements OnInit {
     this.colors = appearance.chartColors;
     this.init('pie');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       if (buckets) {
         this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  resetFilter() {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
   private setOptions(buckets: Array<Bucket>) {
     const commonProperties = this.cms.commonProperties();
@@ -130,7 +119,8 @@ export class PieComponent extends ParentChart implements OnInit {
               click: (e: any) => {
                 // Only filter on click when it is allowed, the point exists and has no drilldown
                 if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
-                   this.Query(e.point.name);
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
                 }
               },
             },
@@ -160,7 +150,7 @@ export class PieComponent extends ParentChart implements OnInit {
     buckets: any[],
     drilldownSeries: any[],
     levelIndex: number,
-    innerSize: any
+    innerSize: any,
   ): any[] {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
     const isMultiLevel = Array.isArray(source) && source.length > 1;
@@ -169,6 +159,7 @@ export class PieComponent extends ParentChart implements OnInit {
       const point: any = {
         name: b.key.substr(0, 50),
         y: b.metric ? b.metric.value : b.doc_count,
+        source: source[levelIndex].field,
       };
 
       if (isMultiLevel) {
@@ -189,6 +180,7 @@ export class PieComponent extends ParentChart implements OnInit {
               name: b.key,
               type: 'pie',
               innerSize: innerSize,
+              source: nextLevelSource.field,
               data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex, innerSize),
             });
           }

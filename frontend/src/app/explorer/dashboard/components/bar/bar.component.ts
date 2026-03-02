@@ -16,8 +16,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-import {ComponentDashboardConfigs, SourceLevel} from "../../../configs/generalConfig.interface";
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import {ComponentDashboardConfigs} from "../../../configs/generalConfig.interface";
 
 @Component({
   selector: 'app-bar',
@@ -30,7 +29,6 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 export class BarComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
-  private readonly bodyBuilderService = inject(BodyBuilderService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
 
@@ -51,11 +49,8 @@ export class BarComponent extends ParentChart implements OnInit {
   }
   colors: string[];
   items_label = 'Information Products';
-  filterd = false;
+  filtered: string = '';
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -64,23 +59,15 @@ export class BarComponent extends ParentChart implements OnInit {
     this.items_label = appearance.items_label;
     this.init('column');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
-
       if (buckets) {
         this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  resetFilter() {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
   setOptions(buckets: Array<Bucket>) {
     const { source, direction, stacking } = this.componentConfigs as ComponentDashboardConfigs;
@@ -124,7 +111,8 @@ export class BarComponent extends ParentChart implements OnInit {
 
           const point: any = {
             name: b.key, // Category name from Level 1
-            y: value
+            y: value,
+            source: nextLevelSource.field,
           };
 
           // Drilldown from level 2 to level 3+
@@ -149,7 +137,8 @@ export class BarComponent extends ParentChart implements OnInit {
           name: name,
           data: data,
           type: chartType,
-          stacking: isStacked ? 'normal' : undefined
+          stacking: isStacked ? 'normal' : undefined,
+          source: source[0].field,
         };
       });
     } else {
@@ -158,7 +147,8 @@ export class BarComponent extends ParentChart implements OnInit {
         const value = b.metric ? b.metric.value : b.doc_count;
         const point: any = {
           name: b.key,
-          y: value
+          y: value,
+          source: source[0].field,
         };
 
         // If it's multi-level and "plain", Level 2 is the first drilldown
@@ -183,7 +173,8 @@ export class BarComponent extends ParentChart implements OnInit {
         name: 'Main',
         showInLegend: isMultiLevel && !isPlain,
         data: data,
-        type: chartType
+        type: chartType,
+        source: source[0].field,
       }];
     }
 
@@ -202,7 +193,7 @@ export class BarComponent extends ParentChart implements OnInit {
       yAxis: {
         min: 0,
         title: {
-          text: this?.items_label ? this.items_label : 'Information Products',
+          text: this?.items_label ? this.items_label : '',
         },
       },
       colors: this.colors,
@@ -227,8 +218,13 @@ export class BarComponent extends ParentChart implements OnInit {
           point: {
             events: {
               click: (e: any) => {
-                if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
-                  this.Query(e.point.name);
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
                 }
               },
             },
@@ -273,7 +269,8 @@ export class BarComponent extends ParentChart implements OnInit {
     const data = buckets.map(b => {
       const point: any = {
         name: b.key,
-        y: b.metric ? b.metric.value : b.doc_count
+        y: b.metric ? b.metric.value : b.doc_count,
+        source: source[levelIndex].field,
       };
 
       const nextLevelIndex = levelIndex + 1;

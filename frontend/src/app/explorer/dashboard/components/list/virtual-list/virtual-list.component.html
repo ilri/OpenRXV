@@ -15,7 +15,7 @@
       class="item listHover"
       [class.no-percentage]="componentConfigs?.hide_percentage"
       >
-        <mat-list-item class="pt-1 pb-1 pr-1 pl-0" (click)="itemClicked(item.key)">
+        <mat-list-item class="pt-1 pb-1 pr-1 pl-0" (click)="itemClicked(item.key, sourceString)">
           <span matListItemLine class="item-list-row">
             <div class="w-100 d-flex flex-column">
               <div class="d-flex align-items-center">
@@ -66,6 +66,8 @@
                [componentConfigs]="componentConfigs"
                [listData]="getNestedBuckets(item)"
                [level]="level + 1"
+               [sourceString]="source[level + 1].field"
+               (filteredChange)="handleFilteredChange($event)"
              ></app-virtual-list>
           </div>
         }

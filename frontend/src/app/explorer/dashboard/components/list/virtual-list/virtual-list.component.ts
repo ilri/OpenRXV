@@ -3,7 +3,7 @@ import {
   Input,
   ChangeDetectionStrategy,
   OnInit,
-  inject,
+  inject, Output, EventEmitter,
 } from '@angular/core';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import * as fromStore from '../../../../store';
@@ -53,8 +53,11 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
 
   @Input() listData: Bucket[];
   @Input() level: number = 0;
+  @Input() sourceString: string = '';
+  @Output() filteredChange = new EventEmitter<string>();
   totalItems: number;
   expandedItems: { [key: string]: boolean } = {};
+  source: SourceLevel[];
 
   get isSmall(): boolean {
     return this.screenSizeService.isSmallScreen;
@@ -71,6 +74,8 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     this.store
       .select<number>(fromStore.getTotal)
       .subscribe((total: number) => (this.totalItems = total));
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    this.source = source;
   }
   toggleExpand(item: Bucket, event: Event) {
     event.stopPropagation();
@@ -81,16 +86,14 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     return !!this.expandedItems[item.key];
   }
 
-  itemClicked(value) {
+  itemClicked(value, filtered: string) {
     if (
       this.componentConfigs.allowFilterOnClick != undefined &&
       this.componentConfigs.allowFilterOnClick != false
     ) {
-      const { source } = this.componentConfigs as ComponentDashboardConfigs;
-      const sourceString = (source[this.level] as SourceLevel).field;
-
+      this.filteredChange.emit(filtered);
       const query: bodybuilder.Bodybuilder =
-        this.selectService.addNewValueAttributetoMainQuery(sourceString, value);
+        this.selectService.addNewValueAttributetoMainQuery(filtered, value);
       const dashboard_name =
         this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -124,5 +127,9 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
     nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
     return b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+  }
+
+  handleFilteredChange(filtered: string) {
+    this.filteredChange.emit(filtered);
   }
 }

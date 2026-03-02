@@ -12,7 +12,6 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import {
   ComponentDashboardConfigs,
   SourceLevel,
@@ -33,7 +32,6 @@ export class SunburstComponent extends ParentChart implements OnInit {
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
-  private readonly bodyBuilderService = inject(BodyBuilderService);
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -51,12 +49,10 @@ export class SunburstComponent extends ParentChart implements OnInit {
   }
   colors: string[];
   enabled: boolean;
-  filterd = false;
+  filtered: string = '';
 
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -64,15 +60,6 @@ export class SunburstComponent extends ParentChart implements OnInit {
     this.colors = appearance.chartColors;
     this.init('sunburst');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
-
       if (buckets) {
         this.setOptions(buckets, source);
       }
@@ -80,8 +67,9 @@ export class SunburstComponent extends ParentChart implements OnInit {
     });
   }
 
-  resetFilter() {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
 
   private setOptions(buckets: Array<Bucket>, source: SourceLevel[]) {
@@ -153,7 +141,8 @@ export class SunburstComponent extends ParentChart implements OnInit {
                   e.point.id !== '0.0' &&
                   !e.point.hasChildren
                 ) {
-                  this.Query(e.point.name);
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
                 }
               },
             },
@@ -190,16 +179,17 @@ export class SunburstComponent extends ParentChart implements OnInit {
       const bucketWithMetric = b as Bucket & { metric?: { value: number } };
       const value = bucketWithMetric.metric ? bucketWithMetric.metric.value : b.doc_count;
 
-      const point: { id: string; parent: string; name: string; value?: number; hasChildren?: boolean } = {
+      const point: { id: string; parent: string; name: string; value?: number; hasChildren?: boolean, source: string } = {
         id: id,
         parent: parentId,
         name: b.key,
+        source: source[levelIndex].field
       };
 
       const nextLevelIndex = levelIndex + 1;
       let hasChildren = false;
 
-      if (Array.isArray(source) && source.length > nextLevelIndex) {
+      if (source.length > nextLevelIndex) {
         const nextLevelSource = source[nextLevelIndex];
         let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
         nextLevelAggName = b[nextLevelAggName]

@@ -14,8 +14,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-import {ComponentDashboardConfigs, SourceLevel} from "../../../configs/generalConfig.interface";
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
+import {ComponentDashboardConfigs} from "../../../configs/generalConfig.interface";
 
 @Component({
   selector: 'app-line',
@@ -28,7 +27,6 @@ import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilde
 export class LineComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
-  private readonly bodyBuilderService = inject(BodyBuilderService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
 
@@ -48,12 +46,9 @@ export class LineComponent extends ParentChart implements OnInit {
   }
   enabled: boolean;
   colors: string[];
-  filterd = false;
+  filtered: string = '';
 
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -61,15 +56,6 @@ export class LineComponent extends ParentChart implements OnInit {
     this.colors = appearance.chartColors;
     this.init('line');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
-
       if (buckets) {
         this.setOptions(buckets);
       }
@@ -84,6 +70,7 @@ export class LineComponent extends ParentChart implements OnInit {
     const data = buckets.map((b: any) => ({
       name: b.key,
       y: b.metric ? b.metric.value : b.doc_count,
+      source: source[0].field
     }));
 
     const series = [
@@ -120,9 +107,11 @@ export class LineComponent extends ParentChart implements OnInit {
               click: (e: any) => {
                 if (
                   !e.point.destroyed &&
+                  !e.point.drilldown &&
                   this.componentConfigs.allowFilterOnClick
                 ) {
-                  this.Query(e.point.name);
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
                 }
               },
             },
@@ -160,8 +149,9 @@ export class LineComponent extends ParentChart implements OnInit {
     this.reloadComponent();
   }
 
-  resetFilter() {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
 
   reloadComponent() {

@@ -11,13 +11,9 @@ import * as Highcharts from 'highcharts';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import {
-  ComponentDashboardConfigs,
-  SourceLevel,
-} from 'src/app/explorer/configs/generalConfig.interface';
+import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import * as CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
@@ -36,7 +32,6 @@ export class MapComponent extends ParentChart implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
-  private readonly bodyBuilderService = inject(BodyBuilderService);
   private settingsService = inject(SettingsService);
 
   /** Inserted by Angular inject() migration for backwards compatibility */
@@ -54,7 +49,7 @@ export class MapComponent extends ParentChart implements OnInit {
     this.store = store;
   }
   colors: string[] = [];
-  filterd = false;
+  filtered: string = '';
   items_label = 'Information Products';
   enabled: boolean;
   async ngOnInit() {
@@ -66,26 +61,16 @@ export class MapComponent extends ParentChart implements OnInit {
     this.colors = appearance.chartColors;
 
     this.init('map');
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) =>
-            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       if (buckets) {
         this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  resetFilter() {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
   private setOptions(buckets: Array<Bucket>) {
     const { source, map_type } = this.componentConfigs as ComponentDashboardConfigs;
@@ -100,6 +85,7 @@ export class MapComponent extends ParentChart implements OnInit {
       name: b.key,
       path: this.mapCountryToIsoAlpha2(b.key),
       value: b.metric ? b.metric.value : b.doc_count,
+      source: source[0].field,
     }))
       .filter(v => v.value > 0);
 
@@ -111,6 +97,7 @@ export class MapComponent extends ParentChart implements OnInit {
           path: d.path,
           value: d.value,
           name: d.name,
+          source: d.source,
         })),
         joinBy: ['hc-key', 'id'],
         mapData: mapWorld,
@@ -141,22 +128,15 @@ export class MapComponent extends ParentChart implements OnInit {
       },
     ];
 
-    if (map_type === 'pie') {
+    if (map_type === 'pie' && isMultiLevel) {
       const pieSeries = buckets.map((b: any) => {
         const countryIso = this.mapCountryToIsoAlpha2(b.key);
         if (!countryIso) return null;
 
-        let subBuckets = [];
-        if (isMultiLevel) {
-          const nextLevelSource = source[1];
-          let nextLevelAggName = nextLevelSource.field + '_level_1';
-          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
-          subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
-        }
-
-        if (subBuckets.length === 0) {
-          subBuckets = [{ key: b.key, doc_count: b.doc_count, metric: b.metric }];
-        }
+        const nextLevelSource = source[1];
+        let nextLevelAggName = nextLevelSource.field + '_level_1';
+        nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
+        const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
 
         return {
           type: 'pie',
@@ -179,6 +159,7 @@ export class MapComponent extends ParentChart implements OnInit {
           data: subBuckets.map((sb: any) => ({
             name: sb.key,
             y: sb.metric ? sb.metric.value : sb.doc_count,
+            source: nextLevelSource.field,
           })),
           colors: this.colors,
           center: [0, 0],
@@ -232,12 +213,16 @@ export class MapComponent extends ParentChart implements OnInit {
         series: {
           point: {
             events: {
-              click: this.componentConfigs.allowFilterOnClick
-                ? (e: any) => {
-                    const name = e.point.name || e.point.series.name;
-                    this.Query(name);
-                  }
-                : null,
+              click: (e: any) => {
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
+                }
+              },
             },
           },
         },

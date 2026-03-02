@@ -13,10 +13,8 @@ import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import {
   ComponentDashboardConfigs,
-  ComponentFilterConfigs,
   SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -35,7 +33,6 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
-  private readonly bodyBuilderService = inject(BodyBuilderService);
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -54,8 +51,6 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   colors: string[];
   enabled: boolean;
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -63,22 +58,16 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) => Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       if (buckets) {
         this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  filterd = false;
-  resetFilter() {
-    this.resetQ();
+  filtered: string = '';
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
   private setOptions(buckets: Array<Bucket>) {
     const drilldownSeries = [];
@@ -99,8 +88,13 @@ export class WordcloudComponent extends ParentChart implements OnInit {
           point: {
             events: {
               click: (e: any) => {
-                if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
-                   this.Query(e.point.name);
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
+                  this.filtered = e.point.source;
+                  this.Query(e.point.name, e.point.source);
                 }
               },
             },
@@ -147,6 +141,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       const point: any = {
         name: b.key,
         weight: b.metric ? b.metric.value : b.doc_count,
+        source: source[levelIndex].field,
       };
 
       if (isMultiLevel) {
@@ -166,6 +161,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
               id: drilldownId,
               name: b.key,
               type: 'wordcloud',
+              source: nextLevelSource.field,
               data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex),
             });
           }

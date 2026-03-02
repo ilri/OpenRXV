@@ -41,18 +41,9 @@ export class ParentChart extends ParentComponent {
     });
   }
 
-  private checkExpandedForObject(bu: MergedSelect): boolean {
-    const arr: Array<Bucket> = [];
-    for (const key in bu) {
-      if (bu.hasOwnProperty(key)) {
-        arr.push(...bu[key]);
-      }
-    }
-    return arr.length >= 1;
-  }
-  Query(name: any) {
+  Query(name: any, sourceString?: string) {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
+    sourceString = sourceString ?? (source[0] as SourceLevel).field;
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery(sourceString, name);
     const dashboard_name =
@@ -66,12 +57,11 @@ export class ParentChart extends ParentComponent {
     );
     this.selectService.resetNotification();
   }
-  resetQ() {
+  resetQ(filtered?: string) {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const sourceString = (source[0] as SourceLevel).field;
-
+    filtered = filtered ?? (source[0] as SourceLevel).field;
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(sourceString);
+      this.selectService.resetValueAttributetoMainQuery(filtered);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -84,13 +74,5 @@ export class ParentChart extends ParentComponent {
     setTimeout(() => {
       this.selectService.resetNotification();
     }, 5000);
-  }
-  setQ() {
-    const _self = this;
-    return function (e: any) {
-      if (!e?.point?.drilldown) {
-        _self.Query(this.name);
-      }
-    };
   }
 }

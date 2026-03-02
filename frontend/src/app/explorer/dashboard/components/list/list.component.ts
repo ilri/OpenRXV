@@ -10,10 +10,7 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import {
-  ComponentDashboardConfigs,
-  SourceLevel,
-} from 'src/app/explorer/configs/generalConfig.interface';
+import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import {
   Bucket,
   Hits,
@@ -24,7 +21,6 @@ import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service'
 import { first } from 'rxjs/operators';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
 import { PaginatedListComponent } from './paginated-list/paginated-list.component';
 import { VirtualListComponent } from './virtual-list/virtual-list.component';
@@ -72,7 +68,6 @@ export class ListComponent extends ParentComponent implements OnInit {
   readonly scrollHelperService = inject(ScrollHelperService);
   readonly cdr = inject(ChangeDetectorRef);
   private readonly selectService = inject(SelectService);
-  private readonly bodyBuilderService = inject(BodyBuilderService);
   private activeRoute = inject(ActivatedRoute);
 
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
@@ -80,8 +75,9 @@ export class ListComponent extends ParentComponent implements OnInit {
   listData: Bucket[]; // for aggrigiation list
   isPaginatedList: boolean; // determine if we should display the hits or not
   paginationAtt: PageEvent;
-  filterd = false;
+  filtered: string[] = [];
   popoverIsOpen = false;
+  sourceString: string = '';
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -90,12 +86,13 @@ export class ListComponent extends ParentComponent implements OnInit {
     super();
   }
   resetQ() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    this.filterd = false;
-    const sourceString = (source[0] as SourceLevel).field;
+    if (this.filtered.length === 0) return;
 
-    const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(sourceString);
+    let query: bodybuilder.Bodybuilder;
+    this.filtered.map(filtered => {
+      query = this.selectService.resetValueAttributetoMainQuery(filtered);
+    });
+    this.filtered = [];
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -137,13 +134,13 @@ export class ListComponent extends ParentComponent implements OnInit {
   }
 
   private subToDataFromStore(): void {
-    const { source, size } = this.componentConfigs as ComponentDashboardConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
     const isMultiLevel = Array.isArray(source) && source.length > 1;
-    const sourceString = source?.[0]?.field as string;
+    this.sourceString = source?.[0]?.field;
 
-    if (this.shouldWePaginate(sourceString)) {
+    if (this.shouldWePaginate(this.sourceString)) {
        this.store.select(fromStore.getHits).subscribe((h: Hits) => {
-          this.initPagination(sourceString, h);
+          this.initPagination(h);
           this.cdr.detectChanges();
           this.expandOrStay(this.safeCheckLength(h && h.hits));
         });
@@ -151,7 +148,7 @@ export class ListComponent extends ParentComponent implements OnInit {
       this.store
         .select(isMultiLevel ? fromStore.getNestedBuckets : fromStore.getBuckets, this.componentConfigs.id)
         .subscribe((b: Bucket[]) => {
-          this.handleListData(b, source);
+          this.handleListData(b);
         });
     }
 
@@ -161,29 +158,20 @@ export class ListComponent extends ParentComponent implements OnInit {
     });
   }
 
-  private handleListData(b: Bucket[], source: SourceLevel[]) {
-    const sourceString = (source[0] as SourceLevel).field;
-    const filters = this.bodyBuilderService
-      .getFiltersFromQuery()
-      .filter(
-        (element) =>
-          Object.keys(element).indexOf(sourceString + '.keyword') != -1,
-      );
-    if (filters.length) this.filterd = true;
-    else this.filterd = false;
+  private handleListData(b: Bucket[]) {
     this.listData = b;
     this.cdr.detectChanges();
     this.expandOrStay(this.safeCheckLength(b));
   }
 
-  private initPagination(source: string, h: Hits): void {
+  private initPagination(h: Hits): void {
     if (
       h &&
       h.total.value !== (this.paginationAtt && this.paginationAtt.length)
     ) {
       this.createPageEvent(h.total.value);
     }
-    this.isPaginatedList = this.shouldWePaginate(source);
+    this.isPaginatedList = true;
     this.hits = h;
     setTimeout(() => _altmetric_embed_init(), 500);
   }
@@ -216,5 +204,9 @@ export class ListComponent extends ParentComponent implements OnInit {
     }
     const len: number | boolean = arr && arr.length;
     return len || 0;
+  }
+
+  handleFilteredChange(filtered: string) {
+    this.filtered.push(filtered);
   }
 }
