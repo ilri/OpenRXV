@@ -13,7 +13,10 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
-import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
@@ -50,7 +53,8 @@ export class PieComponent extends ParentChart implements OnInit {
   filterd = false;
   enabled: boolean;
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -61,7 +65,8 @@ export class PieComponent extends ParentChart implements OnInit {
       const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
+          (element) =>
+            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
         );
       if (filters.length) this.filterd = true;
       else this.filterd = false;
@@ -71,7 +76,7 @@ export class PieComponent extends ParentChart implements OnInit {
       this.cdr.detectChanges();
     });
   }
-  resetFilter(value = false) {
+  resetFilter() {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>) {
@@ -89,6 +94,14 @@ export class PieComponent extends ParentChart implements OnInit {
       this.componentConfigs,
       'pie',
     );
+
+    const innerSize = !this.componentConfigs?.inner_size ||
+    this.componentConfigs.inner_size <= 0 ||
+    this.componentConfigs.inner_size > 100
+      ? 0
+      : this.componentConfigs.inner_size + '%';
+    const drilldownSeries = [];
+    const mainData = this.prepareData(buckets, drilldownSeries, 0, innerSize);
 
     this.chartOptions = {
       chart: {
@@ -114,34 +127,74 @@ export class PieComponent extends ParentChart implements OnInit {
         series: {
           point: {
             events: {
-              click:
-                this.componentConfigs.allowFilterOnClick == true
-                  ? this.setQ()
-                  : null,
+              click: (e: any) => {
+                // Only filter on click when it is allowed, the point exists and has no drilldown
+                if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
+                   this.Query(e.point.name);
+                }
+              },
             },
           },
         },
       },
       series: [
         {
-          innerSize:
-            !this.componentConfigs?.inner_size ||
-            this.componentConfigs.inner_size <= 0 ||
-            this.componentConfigs.inner_size > 100
-              ? 0
-              : this.componentConfigs.inner_size + '%',
+          innerSize: innerSize,
           animation: true,
           type: 'pie',
-          data: buckets.map((b: Bucket) => ({
-            name: b.key.substr(0, 50),
-            y: b.doc_count,
-          })),
-        },
+          name: 'Main',
+          data: mainData,
+        } as any,
       ],
+      drilldown: {
+        series: drilldownSeries,
+      },
       ...commonProperties,
     };
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  private prepareData(
+    buckets: any[],
+    drilldownSeries: any[],
+    levelIndex: number,
+    innerSize: any
+  ): any[] {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+
+    return buckets.map((b: any) => {
+      const point: any = {
+        name: b.key.substr(0, 50),
+        y: b.metric ? b.metric.value : b.doc_count,
+      };
+
+      if (isMultiLevel) {
+        const nextLevelIndex = levelIndex + 1;
+        const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
+
+        if (nextLevelSource) {
+          let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
+          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
+          const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : null);
+
+          if (subBuckets && subBuckets.length > 0) {
+            const drilldownId = `${b.key}_${levelIndex}`;
+            point.drilldown = drilldownId;
+
+            drilldownSeries.push({
+              id: drilldownId,
+              name: b.key,
+              type: 'pie',
+              innerSize: innerSize,
+              data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex, innerSize),
+            });
+          }
+        }
+      }
+      return point;
+    });
   }
 }

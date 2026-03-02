@@ -10,7 +10,10 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import {
   Bucket,
   Hits,
@@ -89,8 +92,10 @@ export class ListComponent extends ParentComponent implements OnInit {
   resetQ() {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
     this.filterd = false;
+    const sourceString = (source[0] as SourceLevel).field;
+
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(source as string);
+      this.selectService.resetValueAttributetoMainQuery(sourceString);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -133,36 +138,42 @@ export class ListComponent extends ParentComponent implements OnInit {
 
   private subToDataFromStore(): void {
     const { source, size } = this.componentConfigs as ComponentDashboardConfigs;
-    this.shouldWePaginate(source as string)
-      ? this.store.select(fromStore.getHits).subscribe((h: Hits) => {
-          this.initPagination(source as string, h);
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+    const sourceString = source?.[0]?.field as string;
+
+    if (this.shouldWePaginate(sourceString)) {
+       this.store.select(fromStore.getHits).subscribe((h: Hits) => {
+          this.initPagination(sourceString, h);
           this.cdr.detectChanges();
           this.expandOrStay(this.safeCheckLength(h && h.hits));
-        })
-      : this.store
-          .select(
-            fromStore.getBuckets,
-            size ? size + '_' + source : '10000_' + source,
-          )
-          .subscribe((b: Bucket[]) => {
-            const { source } = this
-              .componentConfigs as ComponentDashboardConfigs;
-            const filters = this.bodyBuilderService
-              .getFiltersFromQuery()
-              .filter(
-                (element) =>
-                  Object.keys(element).indexOf(source + '.keyword') != -1,
-              );
-            if (filters.length) this.filterd = true;
-            else this.filterd = false;
-            this.listData = b;
-            this.cdr.detectChanges();
-            this.expandOrStay(this.safeCheckLength(b));
-          });
+        });
+    } else {
+      this.store
+        .select(isMultiLevel ? fromStore.getNestedBuckets : fromStore.getBuckets, this.componentConfigs.id)
+        .subscribe((b: Bucket[]) => {
+          this.handleListData(b, source);
+        });
+    }
+
     this.store.select(fromStore.getLoadingOnlyHits).subscribe((b: boolean) => {
       this.loadingHits = b;
       this.cdr.detectChanges();
     });
+  }
+
+  private handleListData(b: Bucket[], source: SourceLevel[]) {
+    const sourceString = (source[0] as SourceLevel).field;
+    const filters = this.bodyBuilderService
+      .getFiltersFromQuery()
+      .filter(
+        (element) =>
+          Object.keys(element).indexOf(sourceString + '.keyword') != -1,
+      );
+    if (filters.length) this.filterd = true;
+    else this.filterd = false;
+    this.listData = b;
+    this.cdr.detectChanges();
+    this.expandOrStay(this.safeCheckLength(b));
   }
 
   private initPagination(source: string, h: Hits): void {

@@ -13,7 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
 import {
   ComponentDashboardConfigs,
-  ComponentFilterConfigs,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import {
@@ -240,12 +240,15 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
 
   private subToDataFromStore(): void {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
+
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
+          (element) =>
+            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
         );
       if (filters.length) this.filterd = true;
       else this.filterd = false;

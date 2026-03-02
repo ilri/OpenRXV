@@ -362,19 +362,24 @@ export class DesignComponent implements OnInit {
     if (obj.title) temp['title'] = obj.title;
 
     if (obj.description) temp['description'] = obj.description;
-    if (obj.source)
-      temp['source'] = obj.source == 'total' ? obj.source : obj.source;
+    if (obj.source) temp['source'] = obj.source;
     if (obj.sort != undefined) temp['sort'] = obj.sort;
 
-    if (obj.source) temp['id'] = temp['source'] + '_' + index + '_' + index1;
+    if (obj.source) temp['id'] = temp['source'].map(s => s.field).join('_') + '_' + index + '_' + index1;
     if (obj.size) temp['size'] = obj.size;
-
-    if (obj.agg_on) temp['agg_on'] = obj.agg_on;
 
     if (obj.allowFilterOnClick)
       temp['allowFilterOnClick'] = obj.allowFilterOnClick;
 
     if (obj.inner_size) temp['inner_size'] = obj.inner_size;
+
+    if (obj.direction) temp['direction'] = obj.direction;
+    if (obj.stacking) temp['stacking'] = obj.stacking;
+    if (obj.line_type) temp['line_type'] = obj.line_type;
+    if (obj.map_type) temp['map_type'] = obj.map_type;
+
+    if (obj.metric) temp['metric'] = obj.metric;
+    if (obj.metric_field) temp['metric_field'] = obj.metric_field;
 
     if (obj.data_labels) temp['data_labels'] = obj.data_labels;
 
@@ -405,12 +410,11 @@ export class DesignComponent implements OnInit {
     if (obj.component == 'MainListComponent')
       temp['id'] = 'main_list' + '_' + index + '_' + index1;
 
-    if (
-      obj.component == 'WheelComponent' ||
+    if (obj.component == 'WheelComponent' ||
       obj.component == 'BarComponent' ||
       obj.component == 'PackedBubbleComponent' ||
       obj.component == 'PackedBubbleSplitComponent' ||
-      obj.component == 'LineComponent'
+      obj.component == 'SunburstComponent'
     )
       temp['related'] = true;
 
@@ -418,8 +422,9 @@ export class DesignComponent implements OnInit {
 
     if (typeof obj.class == 'string') class_name = obj.class;
 
+    this.dashboard[index][index1].class = [...new Set((this.dashboard[index][index1].class + ' no-side-padding').split(' '))].join(' ');
     return {
-      class: this.dashboard[index][index1].class + ' no-side-padding',
+      class: this.dashboard[index][index1].class,
       show: true,
       component: obj.component ? obj.component : null,
       componentConfigs: temp as ComponentFilterConfigs,
@@ -466,12 +471,13 @@ export class DesignComponent implements OnInit {
     if (obj.description) temp['description'] = obj.description;
 
     if (obj.source) {
-      temp['source'] =
-        obj.source == 'total' ? obj.source : obj.source + '.keyword';
+      if(obj.type == 'cardinality')
+        obj.source[0].field = obj.source[0].field + '.keyword';
+      temp['source'] = obj.source;
 
-      temp['id'] = 'counter_' + obj.source;
+      temp['id'] = 'counter_' + obj.source[0].field;
       if (obj.filter) {
-        temp['id'] = 'counter_' + obj.source + obj.filter.replace(/\s/g, '');
+        temp['id'] = 'counter_' + obj.source[0].field + obj.filter.replace(/\s/g, '');
       }
     }
 

@@ -22,16 +22,27 @@ export class LinkTextComponent {
     this.appearance = appearance;
   }
 
-  tags(value: string) {
+  tags(value: string, check = false) {
     const splited = value.split('.');
     if (
       splited.length > 1 &&
-      this.source[splited[0]] &&
-      this.source[splited[0]][splited[1]]
-    )
-      return this.source[splited[0]][splited[1]];
-    else if (this.source[splited[0]]) return this.source[value];
-    else return false;
+      this.source?.[splited[0]] &&
+      Object.hasOwn(this.source[splited[0]], splited[1]) &&
+      this.source[splited[0]][splited[1]] !== '' &&
+      this.source[splited[0]][splited[1]] !== null &&
+      this.source[splited[0]][splited[1]] !== undefined
+    ) {
+      return check ? true : this.source[splited[0]][splited[1]] as string;
+    } else if (
+      Object.hasOwn(this.source, splited[0]) &&
+      this.source[splited[0]] !== '' &&
+      this.source[splited[0]] !== null &&
+      this.source[splited[0]] !== undefined
+    ) {
+      return check ? true : this.source[value] as string;
+    } else {
+      return check ? false : '';
+    }
   }
 
   getIcon(repo) {

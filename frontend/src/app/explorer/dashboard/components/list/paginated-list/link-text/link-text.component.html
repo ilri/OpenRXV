@@ -34,7 +34,7 @@
   }
   <section class="publication-text">
     @for (item of content.tags | keyvalue; track item.key) {
-      @if (tags(item.value.metadata)) {
+      @if (tags(item.value.metadata, true)) {
         <app-tags
           [ngClass]="{ 'simulate-p-tag': item.key === '0' || item.key === '1' }"
           [label]="item.value.disply_name"

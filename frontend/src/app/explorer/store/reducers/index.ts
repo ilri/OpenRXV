@@ -75,6 +75,16 @@ export const getBuckets = createSelector(
   },
 );
 
+export const getNestedBuckets = createSelector(
+  getItems,
+  (items: ElasticsearchResponse, id: string) => {
+    if (items.aggregations !== undefined) {
+      const aggs = items.aggregations;
+      return aggs[id] && aggs[id].buckets;
+    }
+  },
+);
+
 export const getHits = createSelector(getItems, fromItems.getHits);
 
 export const getAggregation = createSelector(
@@ -90,11 +100,20 @@ export const getAggregation = createSelector(
     // will ask the store only when the request is finished and the
     // loading is false
     if (items.aggregations !== undefined) {
-      return (
-        items.aggregations[
-          sourceFilter.source.concat(`_${sourceFilter.filter}`) // limited & open access !
-        ] || items.aggregations[sourceFilter.source]
-      );
+      let key: string;
+      if (sourceFilter.filter) { // Filtered counter values
+        key = `${sourceFilter.source}_${sourceFilter.filter}`;
+        if (!items.aggregations?.[key]) {
+          key = `${sourceFilter.source}.keyword_${sourceFilter.filter}`;
+        }
+      } else {
+        key = sourceFilter.source;
+        if (!items.aggregations?.[key]) {
+          key = `${sourceFilter.source}.keyword`;
+        }
+      }
+
+      return items.aggregations[key] || 0;
     }
   },
 );

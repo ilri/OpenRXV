@@ -30,7 +30,8 @@ export class ChartHelper {
         this.chartType === 'map' ||
         this.chartType === 'packed-bubble' ||
         this.chartType === 'packed-bubble-split' ||
-        this.chartType === 'column'
+        this.chartType === 'column' ||
+        this.chartType === 'line'
           ? 'bottom'
           : 'middle',
       navigation: {
@@ -149,7 +150,7 @@ export class ChartHelper {
         };
       }
       return dataLabelsSettings;
-    } else if (chartType === 'bar') {
+    } else if (chartType === 'bar' || chartType === 'column') {
       return {
         enabled: componentConfigs?.data_labels_count,
         formatter: function () {

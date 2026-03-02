@@ -1,0 +1,47 @@
+<div class="row mb-3">
+  <div class="col-12">
+    <label>Data Sources (Levels)</label>
+    @for (form of sourceControls; track form; let i = $index) {
+      <div [formGroup]="form" class="row mb-2 align-items-center">
+        <div class="col-5">
+          <ng-select
+            [addTag]="true"
+            [items]="metadata"
+            required="true"
+            bindValue="disply_name"
+            bindLabel="disply_name"
+            [clearable]="false"
+            [searchable]="true"
+            formControlName="field"
+            placeholder="Field"
+          >
+          </ng-select>
+        </div>
+        <div class="col-2">
+          <mat-form-field class="w-100">
+            <mat-label>Limit</mat-label>
+            <input type="number" matInput formControlName="limit" />
+          </mat-form-field>
+        </div>
+        <div class="col-4">
+          <ng-select
+            [items]="sortOptions"
+            bindLabel="name"
+            bindValue="value"
+            formControlName="order"
+            placeholder="Order"
+          >
+          </ng-select>
+        </div>
+        <div class="col-1">
+          <button mat-icon-button color="warn" (click)="delete(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+    <button mat-raised-button color="primary" (click)="addNewSource()">
+      Add Level <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>

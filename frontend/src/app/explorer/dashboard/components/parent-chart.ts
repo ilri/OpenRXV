@@ -1,8 +1,8 @@
 import { EventEmitter, Directive, inject } from '@angular/core';
 import {
   ComponentDashboardConfigs,
-  ComponentFilterConfigs,
   MergedSelect,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { ChartMathodsService } from './services/chartCommonMethods/chart-mathods.service';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
@@ -51,9 +51,10 @@ export class ParentChart extends ParentComponent {
     return arr.length >= 1;
   }
   Query(name: any) {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
     const query: bodybuilder.Bodybuilder =
-      this.selectService.addNewValueAttributetoMainQuery(source, name);
+      this.selectService.addNewValueAttributetoMainQuery(sourceString, name);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -66,10 +67,11 @@ export class ParentChart extends ParentComponent {
     this.selectService.resetNotification();
   }
   resetQ() {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
 
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(source);
+      this.selectService.resetValueAttributetoMainQuery(sourceString);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -86,7 +88,9 @@ export class ParentChart extends ParentComponent {
   setQ() {
     const _self = this;
     return function (e: any) {
-      _self.Query(this.name);
+      if (!e?.point?.drilldown) {
+        _self.Query(this.name);
+      }
     };
   }
 }

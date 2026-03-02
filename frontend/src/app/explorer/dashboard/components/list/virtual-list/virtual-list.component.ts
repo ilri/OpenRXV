@@ -11,7 +11,10 @@ import { Store } from '@ngrx/store';
 import { ScreenSizeService } from 'src/app/explorer/services/screenSize/screen-size.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { NgStyle, DecimalPipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -21,6 +24,7 @@ import {
   CdkVirtualForOf,
 } from '@angular/cdk/scrolling';
 import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-virtual-list',
@@ -35,6 +39,7 @@ import { MatList, MatListItem, MatListItemLine } from '@angular/material/list';
     CdkVirtualForOf,
     MatListItem,
     MatListItemLine,
+    MatIcon,
     MatTooltip,
     NgStyle,
     DecimalPipe,
@@ -47,7 +52,10 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
   activeRoute = inject(ActivatedRoute);
 
   @Input() listData: Bucket[];
+  @Input() level: number = 0;
   totalItems: number;
+  expandedItems: { [key: string]: boolean } = {};
+
   get isSmall(): boolean {
     return this.screenSizeService.isSmallScreen;
   }
@@ -64,14 +72,25 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
       .select<number>(fromStore.getTotal)
       .subscribe((total: number) => (this.totalItems = total));
   }
+  toggleExpand(item: Bucket, event: Event) {
+    event.stopPropagation();
+    this.expandedItems[item.key] = !this.expandedItems[item.key];
+  }
+
+  isExpanded(item: Bucket): boolean {
+    return !!this.expandedItems[item.key];
+  }
+
   itemClicked(value) {
     if (
       this.componentConfigs.allowFilterOnClick != undefined &&
       this.componentConfigs.allowFilterOnClick != false
     ) {
-      const { source } = this.componentConfigs as ComponentFilterConfigs;
+      const { source } = this.componentConfigs as ComponentDashboardConfigs;
+      const sourceString = (source[this.level] as SourceLevel).field;
+
       const query: bodybuilder.Bodybuilder =
-        this.selectService.addNewValueAttributetoMainQuery(source, value);
+        this.selectService.addNewValueAttributetoMainQuery(sourceString, value);
       const dashboard_name =
         this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -85,5 +104,25 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     }
   }
 
-  protected readonly parseFloat = parseFloat;
+  hasNested(b: Bucket): boolean {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    if (this.level >= source.length - 1) return false;
+
+    const nextLevelIndex = this.level + 1;
+    const nextLevelSource = source[nextLevelIndex];
+    let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
+    nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
+    const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+
+    return subBuckets && subBuckets.length > 0;
+  }
+
+  getNestedBuckets(b: Bucket): Bucket[] {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const nextLevelIndex = this.level + 1;
+    const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
+    let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
+    nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
+    return b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+  }
 }

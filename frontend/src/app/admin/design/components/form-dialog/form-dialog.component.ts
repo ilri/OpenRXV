@@ -20,6 +20,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MultiSourceComponent } from '../multi-source/multi-source.component';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 
@@ -40,6 +41,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
     MatCheckbox,
     MatTooltip,
     MainListComponent,
+    MultiSourceComponent,
     MatDialogActions,
     MatButton,
   ],
@@ -78,20 +80,26 @@ export class FormDialogComponent implements OnInit {
     this.dashbard_name = this.data.dashboard_name;
     const FormGroupControls: any = {};
     this.data.form_data.forEach((element) => {
-      if (this.data.configs.componentConfigs[element.name] != null)
-        FormGroupControls[element.name] = new UntypedFormControl(
-          element.name == 'source'
-            ? this.data.configs.componentConfigs[element.name].replace(
-                '.keyword',
-                '',
-              )
-            : this.data.configs.componentConfigs[element.name],
-        );
-      else if (this.data.configs[element.name])
-        FormGroupControls[element.name] = new UntypedFormControl(
-          this.data.configs[element.name],
-        );
-      else if (this.data.configs[element.name])
+      if (
+        this.data.configs.componentConfigs &&
+        this.data.configs.componentConfigs[element.name] != null
+      ) {
+        let val = this.data.configs.componentConfigs[element.name];
+        if (element.name == 'source') {
+          if (Array.isArray(val)) {
+            val = val.map((v) => {
+              v.field = v.field.replace('.keyword', '');
+              return v;
+            });
+            if (this.data.isCounter) {
+              val = val?.[0]?.field ? val[0].field : null;
+            }
+          } else {
+            val = val.replace('.keyword', '');
+          }
+        }
+        FormGroupControls[element.name] = new UntypedFormControl(val);
+      } else if (this.data.configs[element.name])
         FormGroupControls[element.name] = new UntypedFormControl(
           this.data.configs[element.name],
         );

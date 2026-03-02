@@ -41,33 +41,29 @@ export class StructureComponent implements OnInit {
   currentIndex;
   options = [
     { name: 'Pie Chart', value: 'PieComponent', icon: 'pie_chart' },
+    { name: 'Bars Chart', value: 'BarComponent', icon: 'bar_chart' },
+    { name: 'Line', value: 'LineComponent', icon: 'bar_chart' },
     { name: 'Word Cloud', value: 'WordcloudComponent', icon: 'filter_drama' },
+    { name: 'Sunburst Chart', value: 'SunburstComponent', icon: 'pie_chart' },
     { name: 'World Map', value: 'MapComponent', icon: 'map' },
     { name: 'Google Map', value: 'GoogleMapsComponent', icon: 'map' },
     { name: 'List', value: 'ListComponent', icon: 'list' },
-    { name: 'Bars Chart', value: 'BarComponent', icon: 'bar_chart' },
-    { name: 'Dependency Wheel', value: 'WheelComponent', icon: 'group_work' },
-    {
-      name: 'Packed Bubble',
-      value: 'PackedBubbleComponent',
-      icon: 'bubble_chart',
-    },
-    {
-      name: 'Packed Bubble Split',
-      value: 'PackedBubbleSplitComponent',
-      icon: 'bubble_chart',
-    },
     { name: 'Main Items list', value: 'MainListComponent', icon: 'view_list' },
-    {
-      name: 'Column with rotated labels',
-      value: 'SingleBarComponent',
-      icon: 'bar_chart',
-    },
-    { name: 'Line', value: 'LineComponent', icon: 'bar_chart' },
   ];
-  sortoptions = [
-    { name: 'Alphabetical', value: true },
-    { name: 'Doc_count', value: false },
+  metrics = [
+    { name: 'Count', value: 'count' },
+    { name: 'Sum', value: 'sum' },
+    { name: 'Average', value: 'avg' },
+    { name: 'Minimum', value: 'min' },
+    { name: 'Maximum', value: 'max' },
+    { name: 'Cardinality', value: 'cardinality' },
+    { name: 'Value Count', value: 'value_count' },
+    { name: 'Median Absolute Deviation', value: 'median_absolute_deviation' },
+    { name: 'Percentiles', value: 'percentiles' },
+    { name: 'Percentile Ranks', value: 'percentile_ranks' },
+    { name: 'Stats', value: 'stats' },
+    { name: 'Extended Stats', value: 'extended_stats' },
+    { name: 'Matrix Stats', value: 'matrix_stats' },
   ];
   pre;
   baseform = [
@@ -112,48 +108,6 @@ export class StructureComponent implements OnInit {
   ];
   setFormDataOptions(value) {
     switch (value) {
-      case 'PieComponent':
-      case 'WordcloudComponent':
-      case 'MapComponent':
-      case 'ListComponent':
-      case 'WheelComponent':
-        this.form_data = [
-          ...this.baseform,
-          ...[
-            {
-              name: 'title',
-              label: 'Title',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'source',
-              label: 'Data Source',
-              type: 'metadata',
-              required: true,
-            },
-            {
-              name: 'allowFilterOnClick',
-              label: 'Allow Filter on click',
-              type: 'check',
-              required: true,
-            },
-            {
-              name: 'size',
-              label: 'Number of results',
-              type: 'number',
-              required: false,
-            },
-            {
-              name: 'description',
-              label: 'Tour description',
-              type: 'textarea',
-              required: true,
-            },
-          ],
-        ];
-        break;
-
       case 'MainListComponent':
         this.form_data = [
           ...this.baseform,
@@ -190,45 +144,47 @@ export class StructureComponent implements OnInit {
         this.form_data = [
           ...this.baseform,
           ...[
-            ...[
-              {
-                name: 'title',
-                label: 'Title',
-                type: 'text',
-                required: true,
+            {
+              name: 'title',
+              label: 'Title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'source',
+              label: 'Data Source',
+              type: 'multi-source',
+              required: true,
+            },
+            {
+              name: 'metric',
+              label: 'Metric',
+              type: 'select',
+              items: this.metrics,
+              onChange: (event) => {
+                this.updateMetricField(event.value);
               },
-              {
-                name: 'source',
-                label: 'Data Source',
-                type: 'metadata',
-                required: true,
-              },
-              {
-                name: 'size',
-                label: 'Number of results',
-                type: 'number',
-                required: true,
-              },
-              {
-                name: 'agg_on',
-                label: 'Values from source (leave empty for items count)',
-                type: 'metadata',
-                required: false,
-              },
-              {
-                name: 'sort',
-                label: 'Order by',
-                type: 'select',
-                items: this.sortoptions,
-                required: true,
-              },
-              {
-                name: 'description',
-                label: 'Tour description',
-                type: 'textarea',
-                required: true,
-              },
-            ],
+              required: true,
+            },
+            {
+              name: 'metric_field',
+              label: 'Metric Field',
+              type: 'metadata',
+              required: false,
+              hidden: true,
+            },
+            {
+              name: 'allowFilterOnClick',
+              label: 'Allow Filter on click',
+              type: 'check',
+              required: true,
+            },
+            {
+              name: 'description',
+              label: 'Tour description',
+              type: 'textarea',
+              required: true,
+            },
           ],
         ];
         break;
@@ -261,6 +217,16 @@ export class StructureComponent implements OnInit {
       });
     } else if (value === 'MapComponent') {
       this.form_data.push({
+        name: 'map_type',
+        label: 'Map type',
+        type: 'select',
+        items: [
+          { name: 'Normal', value: 'normal' },
+          { name: 'Map with pies', value: 'pie' },
+        ],
+        required: true,
+      });
+      this.form_data.push({
         name: 'data_labels',
         label: 'Show data labels',
         type: 'checkbox',
@@ -274,10 +240,42 @@ export class StructureComponent implements OnInit {
       });
     } else if (value === 'BarComponent') {
       this.form_data.push({
+        name: 'direction',
+        label: 'Direction',
+        type: 'select',
+        items: [
+          { name: 'Vertical', value: 'vertical' },
+          { name: 'Horizontal', value: 'horizontal' },
+        ],
+        required: true,
+      });
+      this.form_data.push({
+        name: 'stacking',
+        label: 'Stacking',
+        type: 'select',
+        items: [
+          { name: 'Plain', value: 'plain' },
+          { name: 'Grouped', value: 'group' },
+          { name: 'Stacked', value: 'stack' },
+        ],
+        required: true,
+      });
+      this.form_data.push({
         name: 'data_labels_count',
         label: 'Show data labels count',
         type: 'checkbox',
         required: false,
+      });
+    } else if (value === 'LineComponent') {
+      this.form_data.push({
+        name: 'line_type',
+        label: 'Line type',
+        type: 'select',
+        items: [
+          {name: 'Line', value: 'line'},
+          {name: 'Area', value: 'area'},
+        ],
+        required: true,
       });
     } else if (value === 'ListComponent') {
       this.form_data.push({
@@ -362,6 +360,14 @@ export class StructureComponent implements OnInit {
     });
   }
 
+  updateMetricField(value) {
+    const metricField = this.form_data.find((d) => d.name == 'metric_field');
+    if (metricField) {
+      metricField.hidden = value == 'count';
+      metricField.required = value != 'count';
+    }
+  }
+
   openDialog(index): void {
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
@@ -369,9 +375,14 @@ export class StructureComponent implements OnInit {
 
     this.currentIndex = index;
     this.setFormDataOptions(this.grid[index].component);
+
+    // Set initial hidden state for metric_field
+    if (this.grid[index].componentConfigs && this.grid[index].componentConfigs.metric) {
+      this.updateMetricField(this.grid[index].componentConfigs.metric);
+    }
+
     this.dialogRef = this.dialog.open(FormDialogComponent, {
-      width:
-        this.grid[index].component == 'MainListComponent' ? '1100px' : '456px',
+      width: '90vw',
       data: {
         dashboard_name,
         form_data: Object.create(this.form_data),

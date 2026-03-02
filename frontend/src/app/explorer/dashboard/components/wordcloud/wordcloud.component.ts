@@ -14,7 +14,11 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
-import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  ComponentFilterConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 
@@ -50,7 +54,8 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   colors: string[];
   enabled: boolean;
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
@@ -61,7 +66,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
+          (element) => Object.keys(element).indexOf(sourceString + '.keyword') != -1,
         );
       if (filters.length) this.filterd = true;
       else this.filterd = false;
@@ -72,10 +77,13 @@ export class WordcloudComponent extends ParentChart implements OnInit {
     });
   }
   filterd = false;
-  resetFilter(value = false) {
+  resetFilter() {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>) {
+    const drilldownSeries = [];
+    const mainData = this.prepareData(buckets, drilldownSeries, 0);
+
     this.chartOptions = {
       chart: {
         type: 'wordcloud',
@@ -90,10 +98,11 @@ export class WordcloudComponent extends ParentChart implements OnInit {
         series: {
           point: {
             events: {
-              click:
-                this.componentConfigs.allowFilterOnClick == true
-                  ? this.setQ()
-                  : null,
+              click: (e: any) => {
+                if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
+                   this.Query(e.point.name);
+                }
+              },
             },
           },
         },
@@ -110,19 +119,59 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       series: [
         {
           type: 'wordcloud',
-          data: buckets.map((b: Bucket) => ({
-            name: b.key,
-            weight: b.doc_count,
-          })),
+          data: mainData,
           animation: {
             duration: 200,
           },
-        },
+        } as any,
       ],
+      drilldown: {
+        series: drilldownSeries as any,
+      },
       ...this.cms.commonProperties(),
     };
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  private prepareData(
+    buckets: any[],
+    drilldownSeries: any[],
+    levelIndex: number
+  ): any[] {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+
+    return buckets.map((b: any) => {
+      const point: any = {
+        name: b.key,
+        weight: b.metric ? b.metric.value : b.doc_count,
+      };
+
+      if (isMultiLevel) {
+        const nextLevelIndex = levelIndex + 1;
+        const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
+
+        if (nextLevelSource) {
+          let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
+          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
+          const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : null);
+
+          if (subBuckets && subBuckets.length > 0) {
+            const drilldownId = `${b.key}_${levelIndex}`;
+            point.drilldown = drilldownId;
+
+            drilldownSeries.push({
+              id: drilldownId,
+              name: b.key,
+              type: 'wordcloud',
+              data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex),
+            });
+          }
+        }
+      }
+      return point;
+    });
   }
 }

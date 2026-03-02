@@ -9,6 +9,8 @@
       [loadingHits$]="cms.getLoadingHits$"
       [chartOptions]="chartOptions"
       (expanded)="cms.disPatchSetInView($event)"
+      [filterd]="filterd"
+      (resetFilter)="resetFilter()"
       >
     </app-chart>
   </div>

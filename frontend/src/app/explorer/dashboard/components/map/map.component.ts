@@ -14,7 +14,10 @@ import { SelectService } from 'src/app/explorer/filters/services/select/select.s
 import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
 import * as CountryISO from '@mohammad231/iso_3166-1';
 import { Country } from '@mohammad231/iso_3166-1/iso_3166-1';
@@ -50,6 +53,7 @@ export class MapComponent extends ParentChart implements OnInit {
     this.selectService = selectService;
     this.store = store;
   }
+  colors: string[] = [];
   filterd = false;
   items_label = 'Information Products';
   enabled: boolean;
@@ -59,14 +63,18 @@ export class MapComponent extends ParentChart implements OnInit {
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
     this.items_label = appearance.items_label;
+    this.colors = appearance.chartColors;
 
     this.init('map');
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const sourceString = (source[0] as SourceLevel).field;
+
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
       const filters = this.bodyBuilderService
         .getFiltersFromQuery()
         .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
+          (element) =>
+            Object.keys(element).indexOf(sourceString + '.keyword') != -1,
         );
       if (filters.length) this.filterd = true;
       else this.filterd = false;
@@ -76,14 +84,116 @@ export class MapComponent extends ParentChart implements OnInit {
       this.cdr.detectChanges();
     });
   }
-  resetFilter(value = false) {
+  resetFilter() {
     this.resetQ();
   }
   private setOptions(buckets: Array<Bucket>) {
+    const { source, map_type } = this.componentConfigs as ComponentDashboardConfigs;
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+
     const dataLabelsSettings = this.cms.getDataLabelAttributes(
       this.componentConfigs,
       'map',
     );
+
+    const mapData = buckets.map((b: any) => ({
+      name: b.key,
+      path: this.mapCountryToIsoAlpha2(b.key),
+      value: b.metric ? b.metric.value : b.doc_count,
+    }))
+      .filter(v => v.value > 0);
+
+    let series: any[] = [
+      {
+        id: 'countries',
+        data: mapData.map((d) => ({
+          id: d.path,
+          path: d.path,
+          value: d.value,
+          name: d.name,
+        })),
+        joinBy: ['hc-key', 'id'],
+        mapData: mapWorld,
+        showInLegend: false,
+        cursor: 'pointer',
+        enableMouseTracking: true,
+        allowPointSelect: true,
+        tooltip: {
+          pointFormat:
+            '{point.name}: <b>{point.value} ' +
+            (this?.items_label ? this.items_label : '') +
+            '</b><br/>',
+          headerFormat: undefined,
+        },
+        dataLabels: dataLabelsSettings,
+        animation: {
+          duration: 0,
+        },
+        states: {
+          hover: {
+            color: '#427730',
+          },
+          select: {
+            color: '#427730',
+            borderColor: '#000000',
+          },
+        },
+      },
+    ];
+
+    if (map_type === 'pie') {
+      const pieSeries = buckets.map((b: any) => {
+        const countryIso = this.mapCountryToIsoAlpha2(b.key);
+        if (!countryIso) return null;
+
+        let subBuckets = [];
+        if (isMultiLevel) {
+          const nextLevelSource = source[1];
+          let nextLevelAggName = nextLevelSource.field + '_level_1';
+          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
+          subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+        }
+
+        if (subBuckets.length === 0) {
+          subBuckets = [{ key: b.key, doc_count: b.doc_count, metric: b.metric }];
+        }
+
+        return {
+          type: 'pie',
+          name: b.key,
+          zIndex: 6,
+          minSize: 20,
+          maxSize: 40,
+          onPoint: {
+            id: countryIso,position: {
+              offsetX: 0,
+              offsetY: 20
+            }
+          },
+          colorAxis: false,
+          states: {
+            hover: {
+              enabled: false,
+            },
+          },
+          data: subBuckets.map((sb: any) => ({
+            name: sb.key,
+            y: sb.metric ? sb.metric.value : sb.doc_count,
+          })),
+          colors: this.colors,
+          center: [0, 0],
+          size: Math.max(20, Math.min(50, 10 * Math.log10((b.metric ? b.metric.value : b.doc_count) + 1))),
+          dataLabels: {
+            enabled: false,
+          },
+          tooltip: {
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '<span style="color: {point.color}">{point.name}: {point.y}</span>',
+          },
+        };
+      }).filter(s => s !== null);
+      series = [...series, ...pieSeries];
+    }
 
     this.chartOptions = {
       chart: {
@@ -109,52 +219,36 @@ export class MapComponent extends ParentChart implements OnInit {
         ],
       },
       plotOptions: {
+        pie: {
+          borderWidth: 0,
+          borderRadius: 0,
+          shadow: false,
+          states: {
+            hover: {
+              enabled: false,
+            },
+          },
+        },
         series: {
           point: {
             events: {
-              click:
-                this.componentConfigs.allowFilterOnClick == true
-                  ? this.setQ()
-                  : null,
+              click: this.componentConfigs.allowFilterOnClick
+                ? (e: any) => {
+                    const name = e.point.name || e.point.series.name;
+                    this.Query(name);
+                  }
+                : null,
             },
           },
         },
       },
-      series: [
-        {
-          data: buckets.map((b: Bucket) => [
-            this.mapCountryToIsoAlpha2(b.key),
-            b.doc_count,
-          ]),
-          mapData: mapWorld,
-          showInLegend: false,
-          cursor: 'pointer',
-          enableMouseTracking: true,
-          allowPointSelect: true,
-          tooltip: {
-            pointFormat:
-              '{point.name}: <b>{point.value} ' +
-              (this?.items_label ? this.items_label : 'Information Products') +
-              '</b><br/>',
-            headerFormat: undefined,
-          },
-          dataLabels: dataLabelsSettings,
-          animation: {
-            duration: 0,
-          },
-          states: {
-            hover: {
-              color: '#427730',
-            },
-            select: {
-              color: '#427730',
-              borderColor: '#000000',
-            },
-          },
-        },
-      ],
+      series: series as any,
       ...this.cms.commonProperties(),
     } as Highcharts.Options;
+    this.reloadComponent();
+  }
+
+  reloadComponent() {
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;

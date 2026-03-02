@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/explorer/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComponentCounterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {ComponentCounterConfigs, SourceLevel} from 'src/app/explorer/configs/generalConfig.interface';
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatIcon } from '@angular/material/icon';
@@ -55,7 +55,7 @@ export class CounterComponent implements OnInit {
 
   ngOnInit() {
     const { source, filter, percentageFromTotal } = this.componentConfigs;
-    this.subToLoading(source, filter);
+    this.subToLoading((source as SourceLevel[])[0].field, filter);
     if (percentageFromTotal) {
       this.getTotal = true;
     }
@@ -80,23 +80,17 @@ export class CounterComponent implements OnInit {
   }
 
   private subToDataFromStore(source: string, filter: string): void {
-    if (source !== 'total') {
-      this.store
-        .select(fromStore.getAggregation, {
-          source,
-          filter,
-        })
-        .pipe(
-          map((ag: AggregationsValue) =>
-            ag ? ag.value || ag.doc_count : undefined,
-          ),
-        )
-        .subscribe((n: number) => this.initCounterLogic(n));
-    } else {
-      this.store
-        .select(fromStore.getTotal)
-        .subscribe((n: number) => this.initCounterLogic(n));
-    }
+    this.store
+      .select(fromStore.getAggregation, {
+        source,
+        filter,
+      })
+      .pipe(
+        map((ag: AggregationsValue) =>
+          ag ? ag.value || ag.doc_count : undefined,
+        ),
+      )
+      .subscribe((n: number) => this.initCounterLogic(n));
     this.storeFlag = false;
   }
 

@@ -79,17 +79,20 @@ export const appConfig: ApplicationConfig = {
     provideHighcharts({
       modules: () => {
         return [
+          import('highcharts/esm/highcharts-more'),
           import('highcharts/esm/modules/accessibility'),
           import('highcharts/esm/modules/exporting'),
           import('highcharts/esm/modules/gantt'),
           import('highcharts/esm/modules/stock'),
           import('highcharts/esm/modules/sunburst'),
           import('highcharts/esm/modules/wordcloud'),
+          import('highcharts/esm/modules/drilldown'),
           import('highcharts/esm/modules/map'),
           import('highcharts/esm/modules/boost'),
           import('highcharts/esm/modules/sankey'),
           import('highcharts/esm/modules/dependency-wheel'),
-          import('highcharts/esm/highcharts-more'),
+          import('highcharts/esm/modules/no-data-to-display'),
+          import('highcharts/esm/modules/series-on-point'),
         ];
       },
     }),

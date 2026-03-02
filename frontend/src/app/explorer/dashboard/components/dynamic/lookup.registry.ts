@@ -2,7 +2,6 @@ import { WelcomeComponent } from '../../representationalComponents/welcome/welco
 import { CounterComponent } from '../counter/counter.component';
 import { MapComponent } from '../map/map.component';
 import { BarComponent } from '../bar/bar.component';
-import { RotatedLablesComponent } from '../bar/rotated-lables/rotated-lables.component';
 import { ChartComponent } from '../chart/chart.component';
 import { GooglemapsComponent } from '../googlemaps/googlemaps.component';
 import { LineComponent } from '../line/line.component';
@@ -14,6 +13,7 @@ import { PieComponent } from '../pie/pie.component';
 import { SimiCircleComponent } from '../simi-circle/simi-circle.component';
 import { WheelComponent } from '../wheel/wheel.component';
 import { WordcloudComponent } from '../wordcloud/wordcloud.component';
+import { SunburstComponent } from '../sunburst/sunburst.component';
 import { DateRangeComponent } from '../../../filters/date-range/date-range.component';
 import { LabelComponent } from '../../../filters/label/label.component';
 import { RangeComponent } from '../../../filters/range/range.component';
@@ -26,7 +26,6 @@ export const ComponentLookupRegistry = (key: string): any => {
     CounterComponent: CounterComponent,
     MapComponent: MapComponent,
     BarComponent: BarComponent,
-    SingleBarComponent: RotatedLablesComponent,
     ChartComponent: ChartComponent,
     GoogleMapsComponent: GooglemapsComponent,
     LineComponent: LineComponent,
@@ -38,6 +37,7 @@ export const ComponentLookupRegistry = (key: string): any => {
     SimiCircleComponent: SimiCircleComponent,
     WheelComponent: WheelComponent,
     WordcloudComponent: WordcloudComponent,
+    SunburstComponent: SunburstComponent,
     DateRangeComponent: DateRangeComponent,
     LabelComponent: LabelComponent,
     RangeComponent: RangeComponent,

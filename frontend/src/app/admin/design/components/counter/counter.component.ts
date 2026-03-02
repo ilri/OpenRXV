@@ -109,11 +109,19 @@ export class CounterComponent implements OnInit {
         dashboard_name,
         form_data: this.form_data,
         configs: this.configs,
+        isCounter: true,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.edited.emit(result);
+      if (result) {
+        result.source = [{
+          field: result.source,
+          limit: 0,
+          order: '',
+        }]
+        this.edited.emit(result);
+      }
       if (!result && isEmpty(this.configs.componentConfigs))
         this.onDelete.emit(!result);
     });
