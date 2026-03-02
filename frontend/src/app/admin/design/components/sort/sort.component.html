@@ -5,13 +5,9 @@
       cdkDropList
       (cdkDropListDropped)="drop($event)"
       class="col-12 drag-list"
-      >
+    >
       @for (item of sortedItems; track item) {
-        <mat-card
-          appearance="raised"
-          cdkDrag
-          class="drag-item"
-          >
+        <mat-card appearance="raised" cdkDrag class="drag-item">
           <mat-card-title>{{ item.componentConfigs.title }}</mat-card-title>
         </mat-card>
       }
@@ -28,7 +24,7 @@
     (keyup.enter)="submit()"
     (click)="submit()"
     mat-raised-button
-    >
+  >
     Save <mat-icon>done</mat-icon>
   </button>
 </div>

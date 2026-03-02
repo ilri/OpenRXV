@@ -11,9 +11,17 @@
       [step]="1"
       [disabled]="disabled"
       discrete
-      >
-      <input matSliderStartThumb [(ngModel)]="range[0]" (dragEnd)="onYearSliderChange()">
-      <input matSliderEndThumb [(ngModel)]="range[1]" (dragEnd)="onYearSliderChange()">
+    >
+      <input
+        matSliderStartThumb
+        [(ngModel)]="range[0]"
+        (dragEnd)="onYearSliderChange()"
+      />
+      <input
+        matSliderEndThumb
+        [(ngModel)]="range[1]"
+        (dragEnd)="onYearSliderChange()"
+      />
     </mat-slider>
   </div>
 } @else {

@@ -89,7 +89,7 @@ export class ListComponent extends ParentComponent implements OnInit {
     if (this.filtered.length === 0) return;
 
     let query: bodybuilder.Bodybuilder;
-    this.filtered.map(filtered => {
+    this.filtered.map((filtered) => {
       query = this.selectService.resetValueAttributetoMainQuery(filtered);
     });
     this.filtered = [];
@@ -139,14 +139,17 @@ export class ListComponent extends ParentComponent implements OnInit {
     this.sourceString = source?.[0]?.field;
 
     if (this.shouldWePaginate(this.sourceString)) {
-       this.store.select(fromStore.getHits).subscribe((h: Hits) => {
-          this.initPagination(h);
-          this.cdr.detectChanges();
-          this.expandOrStay(this.safeCheckLength(h && h.hits));
-        });
+      this.store.select(fromStore.getHits).subscribe((h: Hits) => {
+        this.initPagination(h);
+        this.cdr.detectChanges();
+        this.expandOrStay(this.safeCheckLength(h && h.hits));
+      });
     } else {
       this.store
-        .select(isMultiLevel ? fromStore.getNestedBuckets : fromStore.getBuckets, this.componentConfigs.id)
+        .select(
+          isMultiLevel ? fromStore.getNestedBuckets : fromStore.getBuckets,
+          this.componentConfigs.id,
+        )
         .subscribe((b: Bucket[]) => {
           this.handleListData(b);
         });

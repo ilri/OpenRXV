@@ -17,7 +17,6 @@ import {
   providedIn: 'root',
 })
 export class MainBodyBuilderService extends BuilderUtilities {
-
   private rawOptions: string[];
 
   /** Inserted by Angular inject() migration for backwards compatibility */
@@ -140,10 +139,11 @@ export class MainBodyBuilderService extends BuilderUtilities {
   private buildRawOptions(): Array<string> {
     if (!this.dashboardConfig) return [];
     let rows: Array<string> = [];
-    const { content } = this.dashboardConfig.find(
-      (curr: GeneralConfigs) =>
-        !!(curr.componentConfigs as ComponentDashboardConfigs)?.content,
-    )?.componentConfigs as ComponentDashboardConfigs || {};
+    const { content } =
+      (this.dashboardConfig.find(
+        (curr: GeneralConfigs) =>
+          !!(curr.componentConfigs as ComponentDashboardConfigs)?.content,
+      )?.componentConfigs as ComponentDashboardConfigs) || {};
 
     for (const key in content) {
       if (content.hasOwnProperty(key)) {

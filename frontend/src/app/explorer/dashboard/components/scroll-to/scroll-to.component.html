@@ -3,17 +3,17 @@
     @if (btnStatus.get(conf.componentConfigs.id)) {
       <button
         matRipple
-      [ngClass]="
-        id === conf.componentConfigs.id ||
-        id === conf.scroll.linkedWith ||
-        linking.get(conf.componentConfigs.id)?.includes(id)
-          ? 'active bg-primary white-text'
-          : 'bg-light muted-text'
-      "
+        [ngClass]="
+          id === conf.componentConfigs.id ||
+          id === conf.scroll.linkedWith ||
+          linking.get(conf.componentConfigs.id)?.includes(id)
+            ? 'active bg-primary white-text'
+            : 'bg-light muted-text'
+        "
         (click)="scrollTo(conf.componentConfigs.id)"
         aria-label="Scroll Button"
         class="border-muted"
-        >
+      >
         <mat-icon>{{ conf.scroll.icon }}</mat-icon>
       </button>
     }

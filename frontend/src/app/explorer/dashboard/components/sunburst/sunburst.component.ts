@@ -91,15 +91,15 @@ export class SunburstComponent extends ParentChart implements OnInit {
         colorByPoint: true,
       },
     ];
-    if(source.length > 1) {
-      for(let i = 3; i <= source.length; i++) {
+    if (source.length > 1) {
+      for (let i = 3; i <= source.length; i++) {
         levels.push({
           level: i,
           colorVariation: {
             key: 'brightness',
             to: -0.5,
           },
-        })
+        });
       }
     }
 
@@ -170,20 +170,29 @@ export class SunburstComponent extends ParentChart implements OnInit {
     buckets: Bucket[],
     data: unknown[],
     parentId: string,
-    levelIndex: number
+    levelIndex: number,
   ) {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
 
     buckets.forEach((b: Bucket) => {
       const id = `${parentId}_${b.key}`;
       const bucketWithMetric = b as Bucket & { metric?: { value: number } };
-      const value = bucketWithMetric.metric ? bucketWithMetric.metric.value : b.doc_count;
+      const value = bucketWithMetric.metric
+        ? bucketWithMetric.metric.value
+        : b.doc_count;
 
-      const point: { id: string; parent: string; name: string; value?: number; hasChildren?: boolean, source: string } = {
+      const point: {
+        id: string;
+        parent: string;
+        name: string;
+        value?: number;
+        hasChildren?: boolean;
+        source: string;
+      } = {
         id: id,
         parent: parentId,
         name: b.key,
-        source: source[levelIndex].field
+        source: source[levelIndex].field,
       };
 
       const nextLevelIndex = levelIndex + 1;
@@ -191,15 +200,16 @@ export class SunburstComponent extends ParentChart implements OnInit {
 
       if (source.length > nextLevelIndex) {
         const nextLevelSource = source[nextLevelIndex];
-        let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
+        let nextLevelAggName =
+          nextLevelSource.field + '_level_' + nextLevelIndex;
         nextLevelAggName = b[nextLevelAggName]
           ? nextLevelAggName
           : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
         const subBuckets = b[nextLevelAggName]
           ? b[nextLevelAggName].buckets
           : b.buckets
-          ? b.buckets
-          : [];
+            ? b.buckets
+            : [];
 
         if (subBuckets && subBuckets.length > 0) {
           hasChildren = true;

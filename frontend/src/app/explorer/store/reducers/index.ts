@@ -101,7 +101,8 @@ export const getAggregation = createSelector(
     // loading is false
     if (items.aggregations !== undefined) {
       let key: string;
-      if (sourceFilter.filter) { // Filtered counter values
+      if (sourceFilter.filter) {
+        // Filtered counter values
         key = `${sourceFilter.source}_${sourceFilter.filter}`;
         if (!items.aggregations?.[key]) {
           key = `${sourceFilter.source}.keyword_${sourceFilter.filter}`;

@@ -3,7 +3,10 @@ import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/explorer/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {ComponentCounterConfigs, SourceLevel} from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentCounterConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
 import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
 import { MatIcon } from '@angular/material/icon';

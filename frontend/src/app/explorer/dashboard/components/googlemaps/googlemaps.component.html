@@ -4,13 +4,9 @@
   [expanded]="scrollHelperService.expandedStatus"
   (afterCollapse)="disPatchSetInView(true)"
   (afterExpand)="disPatchSetInView(false)"
-  >
+>
   @if (!isFullscreen) {
-    <div
-      class="prevent-scroll"
-      (click)="hideClickToEnable()"
-      #clickToEnable
-      >
+    <div class="prevent-scroll" (click)="hideClickToEnable()" #clickToEnable>
       <span>Click to enable</span>
     </div>
   }
@@ -21,7 +17,7 @@
         matTooltip="Reset Filter"
         matTooltipPosition="after"
         (click)="resetQ(filtered)"
-        >
+      >
         autorenew
       </mat-icon>
     }
@@ -30,7 +26,7 @@
         matTooltip="Full Screen"
         matTooltipPosition="after"
         (click)="fullscren()"
-        >
+      >
         fullscreen
       </mat-icon>
     }
@@ -39,25 +35,23 @@
         matTooltip="Exit Full Screen"
         matTooltipPosition="after"
         (click)="fullscren()"
-        >
+      >
         fullscreen_exit
       </mat-icon>
     }
   </div>
   <mat-expansion-panel-header class="border-bottom-muted">
     @if (scrollHelperService.getViewState?.userSeesMe) {
-      <mat-panel-title
-        class="icon-with-text"
-        >
+      <mat-panel-title class="icon-with-text">
         <span class="mr-1">{{ componentConfigs.title }}</span>
         <mat-icon
-        aria-label="Button that displays
+          aria-label="Button that displays
             a tooltip when focused or hovered over"
-        cdkOverlayOrigin
-        #trigger="cdkOverlayOrigin"
-        (mouseenter)="popoverIsOpen = true"
-        (mouseleave)="popoverIsOpen = false"
-          >
+          cdkOverlayOrigin
+          #trigger="cdkOverlayOrigin"
+          (mouseenter)="popoverIsOpen = true"
+          (mouseleave)="popoverIsOpen = false"
+        >
           error
         </mat-icon>
         <ng-template
@@ -80,20 +74,21 @@
           [height]="myStyles.height"
           [zoom]="zoom"
           [options]="options"
-          >
+        >
           @for (m of listData; track m) {
             @if (m.key.split(','); as aVariable) {
               <map-marker
                 (mapClick)="filterMarker(aVariable[2])"
-            [options]="{
-              icon: 'http://maps.google.com/mapfiles/ms/icons/' +
-              (aVariable[2].split('_')[0] == 'technologies'
-                ? 'green'
-                : 'orange') +
-              '-dot.png'
-            }"
-                [position]="{lat: +aVariable[1], lng: +aVariable[0]}"
-                >
+                [options]="{
+                  icon:
+                    'http://maps.google.com/mapfiles/ms/icons/' +
+                    (aVariable[2].split('_')[0] == 'technologies'
+                      ? 'green'
+                      : 'orange') +
+                    '-dot.png',
+                }"
+                [position]="{ lat: +aVariable[1], lng: +aVariable[0] }"
+              >
               </map-marker>
             }
           }

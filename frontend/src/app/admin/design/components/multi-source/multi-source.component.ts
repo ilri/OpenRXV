@@ -1,4 +1,10 @@
-import {Component, Input, OnInit, inject, ChangeDetectorRef} from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormControl,
@@ -60,12 +66,18 @@ export class MultiSourceComponent implements OnInit {
 
     if (Array.isArray(sourceValue)) {
       sourceValue.forEach((element) => {
-        this.sourceControls.push(new UntypedFormGroup(this.baseSourceGroup(element)));
+        this.sourceControls.push(
+          new UntypedFormGroup(this.baseSourceGroup(element)),
+        );
       });
     } else if (sourceValue && typeof sourceValue === 'object') {
-       this.sourceControls.push(new UntypedFormGroup(this.baseSourceGroup(sourceValue)));
+      this.sourceControls.push(
+        new UntypedFormGroup(this.baseSourceGroup(sourceValue)),
+      );
     } else if (typeof sourceValue === 'string' && sourceValue) {
-        this.sourceControls.push(new UntypedFormGroup(this.baseSourceGroup({ field: sourceValue })));
+      this.sourceControls.push(
+        new UntypedFormGroup(this.baseSourceGroup({ field: sourceValue })),
+      );
     }
 
     if (this.sourceControls.length === 0) {
@@ -77,7 +89,10 @@ export class MultiSourceComponent implements OnInit {
 
   updateBaseForm() {
     this.baseForm.removeControl('source');
-    this.baseForm.addControl('source', new UntypedFormArray(this.sourceControls));
+    this.baseForm.addControl(
+      'source',
+      new UntypedFormArray(this.sourceControls),
+    );
     this.cd.detectChanges();
   }
 

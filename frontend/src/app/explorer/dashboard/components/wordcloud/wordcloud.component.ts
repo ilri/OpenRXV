@@ -132,7 +132,7 @@ export class WordcloudComponent extends ParentChart implements OnInit {
   private prepareData(
     buckets: any[],
     drilldownSeries: any[],
-    levelIndex: number
+    levelIndex: number,
   ): any[] {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
     const isMultiLevel = Array.isArray(source) && source.length > 1;
@@ -149,9 +149,16 @@ export class WordcloudComponent extends ParentChart implements OnInit {
         const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
 
         if (nextLevelSource) {
-          let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
-          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
-          const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : null);
+          let nextLevelAggName =
+            nextLevelSource.field + '_level_' + nextLevelIndex;
+          nextLevelAggName = b[nextLevelAggName]
+            ? nextLevelAggName
+            : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+          const subBuckets = b[nextLevelAggName]
+            ? b[nextLevelAggName].buckets
+            : b.buckets
+              ? b.buckets
+              : null;
 
           if (subBuckets && subBuckets.length > 0) {
             const drilldownId = `${b.key}_${levelIndex}`;
@@ -162,7 +169,11 @@ export class WordcloudComponent extends ParentChart implements OnInit {
               name: b.key,
               type: 'wordcloud',
               source: nextLevelSource.field,
-              data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex),
+              data: this.prepareData(
+                subBuckets,
+                drilldownSeries,
+                nextLevelIndex,
+              ),
             });
           }
         }

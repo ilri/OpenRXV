@@ -7,13 +7,11 @@
   (mouseleave)="popoverIsOpen = false"
   matRippleCentered="centered"
   class="border-bottom-light center-text w-xs-100 primary-hover"
-  >
+>
   <mat-card-content>
     <ng-container>
       @if (componentConfigs?.icon) {
-        <mat-icon>{{
-          componentConfigs.icon
-        }}</mat-icon>
+        <mat-icon>{{ componentConfigs.icon }}</mat-icon>
       }
       <mat-card-title>
         <strong>{{ componentConfigs.title }}</strong>
@@ -43,7 +41,7 @@
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="popoverIsOpen"
-  >
+>
   <app-icons-with-text
     [text]="componentConfigs.description"
   ></app-icons-with-text>

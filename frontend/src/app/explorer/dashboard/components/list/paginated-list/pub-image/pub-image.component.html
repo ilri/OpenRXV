@@ -4,23 +4,25 @@
 
 @if (source[content.thumbnail]) {
   <img
-    [src]="content.thumbnail_prefix + (source[content.thumbnail] | getFirstImage)"
+    [src]="
+      content.thumbnail_prefix + (source[content.thumbnail] | getFirstImage)
+    "
     class="publication-image"
     [ngClass]="{ 'sq-image': content.square_thumbnail }"
     [hidden]="loading"
     (load)="onLoad()"
-    />
+  />
 }
 @if (content.tagOnImage) {
   <figcaption
-  [ngStyle]="{
-    'background-color': chooseColor(
-      content.image_tag_options,
-      source[content.tagOnImage]
-    )
-  }"
+    [ngStyle]="{
+      'background-color': chooseColor(
+        content.image_tag_options,
+        source[content.tagOnImage]
+      ),
+    }"
     class="tech-type"
-    >
+  >
     <span>{{ source[content.tagOnImage] }}</span>
   </figcaption>
 }

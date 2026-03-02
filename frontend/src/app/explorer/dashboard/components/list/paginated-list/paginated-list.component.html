@@ -8,10 +8,12 @@
   <div
     style="min-height: 140px"
     class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3"
-    >
-
+  >
     @if (columns?.thumbnail) {
-      <div class="col-xs-12 text-center" [ngClass]="'col-md-' + columns.thumbnail">
+      <div
+        class="col-xs-12 text-center"
+        [ngClass]="'col-md-' + columns.thumbnail"
+      >
         <app-pub-image [content]="content" [source]="h._source"></app-pub-image>
       </div>
     }
@@ -28,11 +30,12 @@
           <div
             data-badge-popover="left"
             data-badge-type="medium-donut"
-      [attr.data-doi]="
-        h._source.DOI.constructor.name === 'Array' && h._source.DOI.length > 0
-          ? h._source.DOI[0]
-          : h._source.DOI
-      "
+            [attr.data-doi]="
+              h._source.DOI.constructor.name === 'Array' &&
+              h._source.DOI.length > 0
+                ? h._source.DOI[0]
+                : h._source.DOI
+            "
             data-hide-no-mentions="true"
             class="altmetric-embed sm-text-center"
           ></div>
@@ -54,7 +57,7 @@
   [length]="paginationAtt?.length"
   [pageSize]="paginationAtt?.pageSize"
   (page)="paginationAtt = $event; changePage($event)"
-  >
+>
 </mat-paginator>
 
 <ngx-spinner

@@ -8,7 +8,7 @@
           (click)="commitIndex()"
           color="primary"
           mat-raised-button
-          >
+        >
           Commit Indexing
           <mat-icon>check</mat-icon>
         </button>
@@ -18,7 +18,7 @@
           (click)="stopAll()"
           color="warn"
           mat-raised-button
-          >
+        >
           Stop harvesting and plugins
           <mat-icon>block</mat-icon>
         </button>
@@ -27,7 +27,7 @@
           style="float: right"
           (click)="Init()"
           mat-raised-button
-          >
+        >
           Refresh
           <mat-icon>refresh</mat-icon>
         </button>
@@ -49,7 +49,7 @@
             (click)="stopHarvesting()"
             color="warn"
             mat-raised-button
-            >
+          >
             Stop
             <mat-icon>block</mat-icon>
           </button>
@@ -64,7 +64,7 @@
             (click)="stopPlugin(availableSection)"
             color="warn"
             mat-raised-button
-            >
+          >
             Stop
             <mat-icon>block</mat-icon>
           </button>
@@ -72,7 +72,7 @@
             (click)="startPlugin(availableSection)"
             color="primary"
             mat-raised-button
-            >
+          >
             Start
             <mat-icon>archive</mat-icon>
           </button>
@@ -84,112 +84,113 @@
             appearance="raised"
             class="counter border-bottom-light"
             (click)="ChangeTable('Active', 'active', availableSection.name)"
-            >
+          >
             <mat-card-content class="primary-hover">
               <mat-card-title>
                 {{ tablesData?.[availableSection.name].active_count }}
               </mat-card-title>
               <mat-card-subtitle
                 >Active ({{
-                tablesData?.[availableSection.name].stuck_count
+                  tablesData?.[availableSection.name].stuck_count
                 }})</mat-card-subtitle
-                >
-              </mat-card-content>
-            </mat-card>
-            <mat-card
-              appearance="raised"
-              class="counter border-bottom-light"
-              (click)="ChangeTable('Waiting', 'waiting', availableSection.name)"
               >
-              <mat-card-content class="primary-hover">
-                <mat-card-title>
-                  {{ tablesData?.[availableSection.name].waiting_count }}
-                </mat-card-title>
-                <mat-card-subtitle>Waiting</mat-card-subtitle>
-              </mat-card-content>
-            </mat-card>
-            <mat-card
-              appearance="raised"
-              class="counter border-bottom-light"
-              (click)="ChangeTable('Completed', 'completed', availableSection.name)"
-              >
-              <mat-card-content class="primary-hover">
-                <mat-card-title>
-                  {{ tablesData?.[availableSection.name].completed_count }}
-                </mat-card-title>
-                <mat-card-subtitle>Completed</mat-card-subtitle>
-              </mat-card-content>
-            </mat-card>
-            <mat-card
-              appearance="raised"
-              class="counter border-bottom-light"
-              (click)="ChangeTable('Failed', 'failed', availableSection.name)"
-              >
-              <mat-card-content class="primary-hover">
-                <mat-card-title>
-                  {{ tablesData?.[availableSection.name].failed_count }}
-                </mat-card-title>
-                <mat-card-subtitle>Failed</mat-card-subtitle>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </div>
-        @if (
-          progress?.[availableSection.name].estimation &&
-          progress?.[availableSection.name].estimation !== '00:00:00'
-          ) {
-          <h3
-            class="col-12 estimated-time"
-            color="primary"
-            >
-            <div>
-              <small>Estimated time</small>
-              {{ progress?.[availableSection.name].estimation }}
-            </div>
-            <mat-progress-bar
-              class="estimated-time-progress-bar"
-              mode="indeterminate"
-            ></mat-progress-bar>
-          </h3>
-        }
-        @if (progress?.[availableSection.name].totalJobs > 0) {
-          <div class="col-12">
-            <mat-progress-bar
-              class="mb-3 jobs-progress-bar"
-              mode="determinate"
-              [value]="progress?.[availableSection.name].percentage"
-            ></mat-progress-bar>
-            <h4 class="jobs-progress-bar-percentage">
-              {{ progress?.[availableSection.name].percentage.toFixed(2) }}%
-            </h4>
-          </div>
-        }
-        <div class="col-12">
-          <mat-card appearance="raised">
-            <mat-card-title>
-              {{ activeTables?.[availableSection.name]?.table }}
-            </mat-card-title>
-            <mat-card-content>
-              <app-info-table
-                [data]="tablesData?.[availableSection.name].table.data"
-                [pageIndex]="tablesData?.[availableSection.name].table.pageIndex"
-                [pageSize]="tablesData?.[availableSection.name].table.pageSize"
-                [totalPages]="tablesData?.[availableSection.name].table.totalPages"
-            [totalRecords]="
-              tablesData?.[availableSection.name].table.totalRecords
+            </mat-card-content>
+          </mat-card>
+          <mat-card
+            appearance="raised"
+            class="counter border-bottom-light"
+            (click)="ChangeTable('Waiting', 'waiting', availableSection.name)"
+          >
+            <mat-card-content class="primary-hover">
+              <mat-card-title>
+                {{ tablesData?.[availableSection.name].waiting_count }}
+              </mat-card-title>
+              <mat-card-subtitle>Waiting</mat-card-subtitle>
+            </mat-card-content>
+          </mat-card>
+          <mat-card
+            appearance="raised"
+            class="counter border-bottom-light"
+            (click)="
+              ChangeTable('Completed', 'completed', availableSection.name)
             "
-                [availableSection]="true"
-            (paginationEvent)="
-              PaginationChanged(
-                $event,
-                activeTables?.[availableSection.name]?.status,
-                availableSection.name
-              )
-            "
-              ></app-info-table>
+          >
+            <mat-card-content class="primary-hover">
+              <mat-card-title>
+                {{ tablesData?.[availableSection.name].completed_count }}
+              </mat-card-title>
+              <mat-card-subtitle>Completed</mat-card-subtitle>
+            </mat-card-content>
+          </mat-card>
+          <mat-card
+            appearance="raised"
+            class="counter border-bottom-light"
+            (click)="ChangeTable('Failed', 'failed', availableSection.name)"
+          >
+            <mat-card-content class="primary-hover">
+              <mat-card-title>
+                {{ tablesData?.[availableSection.name].failed_count }}
+              </mat-card-title>
+              <mat-card-subtitle>Failed</mat-card-subtitle>
             </mat-card-content>
           </mat-card>
         </div>
       </div>
-    }
-  </div>
+      @if (
+        progress?.[availableSection.name].estimation &&
+        progress?.[availableSection.name].estimation !== '00:00:00'
+      ) {
+        <h3 class="col-12 estimated-time" color="primary">
+          <div>
+            <small>Estimated time</small>
+            {{ progress?.[availableSection.name].estimation }}
+          </div>
+          <mat-progress-bar
+            class="estimated-time-progress-bar"
+            mode="indeterminate"
+          ></mat-progress-bar>
+        </h3>
+      }
+      @if (progress?.[availableSection.name].totalJobs > 0) {
+        <div class="col-12">
+          <mat-progress-bar
+            class="mb-3 jobs-progress-bar"
+            mode="determinate"
+            [value]="progress?.[availableSection.name].percentage"
+          ></mat-progress-bar>
+          <h4 class="jobs-progress-bar-percentage">
+            {{ progress?.[availableSection.name].percentage.toFixed(2) }}%
+          </h4>
+        </div>
+      }
+      <div class="col-12">
+        <mat-card appearance="raised">
+          <mat-card-title>
+            {{ activeTables?.[availableSection.name]?.table }}
+          </mat-card-title>
+          <mat-card-content>
+            <app-info-table
+              [data]="tablesData?.[availableSection.name].table.data"
+              [pageIndex]="tablesData?.[availableSection.name].table.pageIndex"
+              [pageSize]="tablesData?.[availableSection.name].table.pageSize"
+              [totalPages]="
+                tablesData?.[availableSection.name].table.totalPages
+              "
+              [totalRecords]="
+                tablesData?.[availableSection.name].table.totalRecords
+              "
+              [availableSection]="true"
+              (paginationEvent)="
+                PaginationChanged(
+                  $event,
+                  activeTables?.[availableSection.name]?.status,
+                  availableSection.name
+                )
+              "
+            ></app-info-table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>

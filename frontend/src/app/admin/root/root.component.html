@@ -9,7 +9,7 @@
         routerLink="/admin/indexes"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        >
+      >
         Indexes
       </a>
       @if (currentRouteParent == 'indexes') {
@@ -19,7 +19,7 @@
             [routerLink]="'/admin/harvester/' + index_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Harvest dashboard
           </a>
           <a
@@ -27,7 +27,7 @@
             [routerLink]="'/admin/setup/' + index_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Repositories
           </a>
           <a
@@ -35,7 +35,7 @@
             [routerLink]="'/admin/plugins/' + index_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Plugins
           </a>
           <a
@@ -43,7 +43,7 @@
             [routerLink]="'/admin/mapping-values/' + index_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Value Mappings
           </a>
         </mat-nav-list>
@@ -53,7 +53,7 @@
         routerLink="/admin/indexes-dashboards"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        >
+      >
         Dashboards
       </a>
       @if (currentRouteParent == 'indexes-dashboards') {
@@ -63,7 +63,7 @@
             [routerLink]="'/admin/appearance/' + dashboard_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Appearance
           </a>
           <a
@@ -71,7 +71,7 @@
             [routerLink]="'/admin/design/' + dashboard_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Design dashboard layout
           </a>
           <a
@@ -79,7 +79,7 @@
             [routerLink]="'/admin/reporting/' + dashboard_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Reporting
           </a>
           <a
@@ -87,7 +87,7 @@
             [routerLink]="'/admin/sharedlinks/' + dashboard_name"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            >
+          >
             Shared links
           </a>
           <a mat-list-item [href]="dashboard_name" target="_blank">
@@ -100,7 +100,7 @@
         routerLink="/admin/users"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        >
+      >
         Users
       </a>
     </mat-nav-list>

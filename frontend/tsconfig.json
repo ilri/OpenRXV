@@ -11,13 +11,8 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "types": [
-      "node",
-      "google.maps"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node", "google.maps"],
     "resolveJsonModule": true,
     "useDefineForClassFields": false
   }

@@ -57,7 +57,8 @@ export class BuilderUtilities {
             (componentConfigs as ComponentDashboardConfigs)?.content,
         );
         if (conf)
-          return (conf.componentConfigs as ComponentDashboardConfigs)?.content?.title;
+          return (conf.componentConfigs as ComponentDashboardConfigs)?.content
+            ?.title;
         else '';
       })() || 'dc_title';
   }
@@ -115,8 +116,7 @@ export class BuilderUtilities {
     const mainQuerySources: Array<any> = [
       ...this.getSourcesFromConfigs(this.dashboardConfig),
       ...this.getSourcesFromConfigs(this.countersConfig),
-    ]
-      .filter(s => s.source);
+    ].filter((s) => s.source);
     mainQuerySources.forEach(
       ({
         id,

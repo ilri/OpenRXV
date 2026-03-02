@@ -10,7 +10,8 @@
 @use './scss/responsive.scss' as *;
 
 @use 'material-design-icons-iconfont/src/material-design-icons' with (
-  $material-design-icons-font-directory-path: 'material-design-icons-iconfont/dist/fonts/'
+  $material-design-icons-font-directory-path:
+    'material-design-icons-iconfont/dist/fonts/'
 );
 
 html,

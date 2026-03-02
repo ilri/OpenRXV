@@ -9,10 +9,7 @@
     <section class="container-fluid">
       @for (conf of tourConfig; track conf) {
         @if (conf.show) {
-          <div
-            [tourAnchor]="conf.componentConfigs.id"
-            class="row"
-            >
+          <div [tourAnchor]="conf.componentConfigs.id" class="row">
             <app-dynamic
               [componentConfigs]="conf.componentConfigs"
               [comp]="conf.component"
@@ -25,7 +22,7 @@
       }
       <section
         class="row mb-2 d-flex justify-content-between flex-wrap counters-container"
-        >
+      >
         <!-- Counter loop START -->
         @for (conf of countersConfig; track conf) {
           @if (conf.show) {
@@ -34,13 +31,13 @@
                 [tourAnchor]="conf.componentConfigs.id"
                 [id]="conf.componentConfigs.id"
                 appIntersectionObserver
-              [options]="{
-                rootMargin: '0px 0px 0px 0px'
-              }"
-              (visibilityChange)="
-                onInViewportChange($event, conf.componentConfigs.id)
-              "
-                >
+                [options]="{
+                  rootMargin: '0px 0px 0px 0px',
+                }"
+                (visibilityChange)="
+                  onInViewportChange($event, conf.componentConfigs.id)
+                "
+              >
                 <app-dynamic
                   [componentConfigs]="conf.componentConfigs"
                   comp="CounterComponent"
@@ -58,20 +55,20 @@
           @if (conf.show) {
             <div
               appIntersectionObserver
-            [options]="{
-              rootMargin: '0px 0px 0px 0px'
-            }"
-            (visibilityChange)="
-              onInViewportChange(
-                $event,
-                conf.componentConfigs.id + '.' + conf.scroll.linkedWith
-              )
-            "
+              [options]="{
+                rootMargin: '0px 0px 0px 0px',
+              }"
+              (visibilityChange)="
+                onInViewportChange(
+                  $event,
+                  conf.componentConfigs.id + '.' + conf.scroll.linkedWith
+                )
+              "
               class="mb-2"
               [id]="conf.componentConfigs.id"
               [tourAnchor]="conf.componentConfigs.id"
               [ngClass]="conf.class"
-              >
+            >
               <app-dynamic
                 [componentConfigs]="conf.componentConfigs"
                 [comp]="conf.component"

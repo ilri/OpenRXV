@@ -8,160 +8,154 @@
         style="float: right"
         [(ngModel)]="active"
         >Active</mat-checkbox
-        >
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{ plugin.description }}
-      </mat-card-subtitle>
-      <mat-card-content>
-        <div class="row">
-          <div class="col-10">
-            <h5>Settings</h5>
-          </div>
-          <div class="col-2">
-            @if (plugin.multiple == 'true' && active) {
-              <button
-                style="float: right"
-                (click)="addNew()"
-                color="primary"
-                mat-raised-button
-                >
-                Add New Instance
-                <mat-icon>add</mat-icon>
-              </button>
-            }
-          </div>
-          <div class="col-12">
-            @for (item of formdata.controls; track item; let i = $index) {
-              <form
-                class="formd"
-                [formGroup]="item"
-                >
-                <div class="row">
-                  <div class="col-11">
-                    @for (control of plugin.params; track control) {
-                      @switch (control.type) {
-                        @case ('text') {
-                          <p>
-                            <mat-form-field>
-                              <mat-label>{{ control.label }}</mat-label>
-                              <input
-                                [type]="control.type"
-                                matInput
-                                [required]="control.required"
-                                [placeholder]="control.label"
-                                [formControlName]="control.name"
-                                />
-                            </mat-form-field>
-                          </p>
-                        }
-                        @case ('textarea') {
-                          <p>
-                            <mat-form-field>
-                              <mat-label>{{ control.label }}</mat-label>
-                              <textarea
-                                [formControlName]="control.name"
-                                [placeholder]="control.label"
-                                matInput
-                                [required]="control.required"
-                                cols="30"
-                                rows="10"
-                                >
-                              </textarea>
-                            </mat-form-field>
-                          </p>
-                        }
-                        @case ('select') {
-                          <p>
-                            <ng-select
-                              [addTag]="false"
-                              (change)="control.onChange($event)"
-                              [items]="control.items"
+      >
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{ plugin.description }}
+    </mat-card-subtitle>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-10">
+          <h5>Settings</h5>
+        </div>
+        <div class="col-2">
+          @if (plugin.multiple == 'true' && active) {
+            <button
+              style="float: right"
+              (click)="addNew()"
+              color="primary"
+              mat-raised-button
+            >
+              Add New Instance
+              <mat-icon>add</mat-icon>
+            </button>
+          }
+        </div>
+        <div class="col-12">
+          @for (item of formdata.controls; track item; let i = $index) {
+            <form class="formd" [formGroup]="item">
+              <div class="row">
+                <div class="col-11">
+                  @for (control of plugin.params; track control) {
+                    @switch (control.type) {
+                      @case ('text') {
+                        <p>
+                          <mat-form-field>
+                            <mat-label>{{ control.label }}</mat-label>
+                            <input
+                              [type]="control.type"
+                              matInput
                               [required]="control.required"
-                              bindValue="value"
-                              bindLabel="name"
-                              [clearable]="false"
-                              [searchable]="true"
+                              [placeholder]="control.label"
+                              [formControlName]="control.name"
+                            />
+                          </mat-form-field>
+                        </p>
+                      }
+                      @case ('textarea') {
+                        <p>
+                          <mat-form-field>
+                            <mat-label>{{ control.label }}</mat-label>
+                            <textarea
                               [formControlName]="control.name"
                               [placeholder]="control.label"
-                              >
-                              @if (control.icons) {
-                                <ng-template
-                                  ng-label-tmp
-                                  let-item="item"
-                                >
-                                  <mat-icon style="float: left" color="primary">{{
-                                      item.name
-                                    }}
-                                  </mat-icon>
-                                  <b style="float: left">{{ item.name }} </b>
-                                </ng-template>
-                                <ng-template
-                                  ng-option-tmp
-                                  let-item="item"
-                                  let-index="index"
-                                  let-search="searchTerm"
-                                >
-                                  <mat-icon style="float: left" color="primary">{{
-                                      item.name
-                                    }}
-                                  </mat-icon>
-                                  <b style="float: left">{{ item.name }}</b>
-                                </ng-template>
-                              }
-                            </ng-select>
-                          </p>
-                        }
-                        @case ('metadata') {
-                          <p>
-                            <ng-select
-                              [addTag]="true"
-                              [items]="metadata"
+                              matInput
                               [required]="control.required"
-                              bindValue="disply_name"
-                              bindLabel="disply_name"
-                              [clearable]="false"
-                              [searchable]="true"
-                              [formControlName]="control.name"
-                              [placeholder]="control.label"
+                              cols="30"
+                              rows="10"
+                            >
+                            </textarea>
+                          </mat-form-field>
+                        </p>
+                      }
+                      @case ('select') {
+                        <p>
+                          <ng-select
+                            [addTag]="false"
+                            (change)="control.onChange($event)"
+                            [items]="control.items"
+                            [required]="control.required"
+                            bindValue="value"
+                            bindLabel="name"
+                            [clearable]="false"
+                            [searchable]="true"
+                            [formControlName]="control.name"
+                            [placeholder]="control.label"
+                          >
+                            @if (control.icons) {
+                              <ng-template ng-label-tmp let-item="item">
+                                <mat-icon style="float: left" color="primary"
+                                  >{{ item.name }}
+                                </mat-icon>
+                                <b style="float: left">{{ item.name }} </b>
+                              </ng-template>
+                              <ng-template
+                                ng-option-tmp
+                                let-item="item"
+                                let-index="index"
+                                let-search="searchTerm"
                               >
-                            </ng-select>
-                          </p>
-                        }
-                        @case ('check') {
-                          <p>
-                            <mat-checkbox matInput [formControlName]="control.name"
-                              >{{ control.label }}
-                            </mat-checkbox>
-                          </p>
-                        }
-                        @case ('content') {
-                          <div class="row">
-                            <div class="col-12">
-                              <app-main-list [baseForm]="form"></app-main-list>
-                            </div>
+                                <mat-icon style="float: left" color="primary"
+                                  >{{ item.name }}
+                                </mat-icon>
+                                <b style="float: left">{{ item.name }}</b>
+                              </ng-template>
+                            }
+                          </ng-select>
+                        </p>
+                      }
+                      @case ('metadata') {
+                        <p>
+                          <ng-select
+                            [addTag]="true"
+                            [items]="metadata"
+                            [required]="control.required"
+                            bindValue="disply_name"
+                            bindLabel="disply_name"
+                            [clearable]="false"
+                            [searchable]="true"
+                            [formControlName]="control.name"
+                            [placeholder]="control.label"
+                          >
+                          </ng-select>
+                        </p>
+                      }
+                      @case ('check') {
+                        <p>
+                          <mat-checkbox
+                            matInput
+                            [formControlName]="control.name"
+                            >{{ control.label }}
+                          </mat-checkbox>
+                        </p>
+                      }
+                      @case ('content') {
+                        <div class="row">
+                          <div class="col-12">
+                            <app-main-list [baseForm]="form"></app-main-list>
                           </div>
-                        }
+                        </div>
                       }
                     }
-                  </div>
-                  <div class="col-1">
-                    @if (plugin.multiple == 'true') {
-                      <button
-                        (click)="delete(i)"
-                        class="card-actions"
-                        color="warn"
-                        mat-icon-button
-                        >
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    }
-                  </div>
+                  }
                 </div>
-              </form>
-            }
-          </div>
+                <div class="col-1">
+                  @if (plugin.multiple == 'true') {
+                    <button
+                      (click)="delete(i)"
+                      class="card-actions"
+                      color="warn"
+                      mat-icon-button
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  }
+                </div>
+              </div>
+            </form>
+          }
         </div>
-      </mat-card-content>
-    </mat-card>
-  }
+      </div>
+    </mat-card-content>
+  </mat-card>
+}

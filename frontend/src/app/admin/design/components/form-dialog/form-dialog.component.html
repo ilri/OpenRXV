@@ -14,7 +14,7 @@
                   [required]="control.required"
                   [placeholder]="control.label"
                   [formControlName]="control.name"
-                  />
+                />
               </mat-form-field>
             </p>
           }
@@ -29,7 +29,7 @@
                 [searchable]="true"
                 [formControlName]="control.name"
                 [placeholder]="control.label"
-                >
+              >
               </ng-select>
             </p>
           }
@@ -44,7 +44,7 @@
                   [required]="control.required"
                   cols="30"
                   rows="10"
-                  >
+                >
                 </textarea>
               </mat-form-field>
             </p>
@@ -62,7 +62,7 @@
                 [searchable]="true"
                 [formControlName]="control.name"
                 [placeholder]="control.label"
-                >
+              >
                 @if (control.icons; as item) {
                   <ng-template ng-label-tmp let-item="item">
                     <mat-icon style="float: left" color="primary">{{
@@ -78,9 +78,8 @@
                     let-index="index"
                     let-search="searchTerm"
                   >
-                    <mat-icon style="float: left" color="primary">{{
-                        item.name
-                      }}
+                    <mat-icon style="float: left" color="primary"
+                      >{{ item.name }}
                     </mat-icon>
                     <b style="float: left">{{ item.name }}</b>
                   </ng-template>
@@ -100,7 +99,7 @@
                 [searchable]="true"
                 [formControlName]="control.name"
                 [placeholder]="control.label"
-                >
+              >
               </ng-select>
             </p>
           }
@@ -114,7 +113,7 @@
                   [required]="control.required"
                   [placeholder]="control.label"
                   [formControlName]="control.name"
-                  />
+                />
               </mat-form-field>
             </p>
           }
@@ -125,66 +124,66 @@
                 [formControlName]="control.name"
                 matTooltip="when checking this box, it allows you to update the filter with your selected data"
                 >{{ control.label }}</mat-checkbox
-                >
-              </p>
-            }
-            @case ('content') {
-              <div class="row">
-                <div class="col-12">
-                  <app-main-list
-                    [dashbard_name]="dashbard_name"
-                    [baseForm]="form"
-                  ></app-main-list>
-                </div>
+              >
+            </p>
+          }
+          @case ('content') {
+            <div class="row">
+              <div class="col-12">
+                <app-main-list
+                  [dashbard_name]="dashbard_name"
+                  [baseForm]="form"
+                ></app-main-list>
               </div>
-            }
-            @case ('multi-source') {
-              <div class="row">
-                <div class="col-12">
-                  <app-multi-source
-                    [dashbard_name]="dashbard_name"
-                    [baseForm]="form"
-                  ></app-multi-source>
-                </div>
+            </div>
+          }
+          @case ('multi-source') {
+            <div class="row">
+              <div class="col-12">
+                <app-multi-source
+                  [dashbard_name]="dashbard_name"
+                  [baseForm]="form"
+                ></app-multi-source>
               </div>
-            }
-            @case ('checkbox') {
-              <p>
-                <mat-checkbox
-                  [formControlName]="control.name"
-                  [required]="control.required"
-                  >{{ control.label }}</mat-checkbox
-                >
-                @if (control.name === 'is_advanced') {
-                  <span class="alert alert-info w-100">
-                    Advanced search allows inserting special query parameters to
-                    be used in the search input.
-                  </span>
-                }
-              </p>
-            }
+            </div>
+          }
+          @case ('checkbox') {
+            <p>
+              <mat-checkbox
+                [formControlName]="control.name"
+                [required]="control.required"
+                >{{ control.label }}</mat-checkbox
+              >
+              @if (control.name === 'is_advanced') {
+                <span class="alert alert-info w-100">
+                  Advanced search allows inserting special query parameters to
+                  be used in the search input.
+                </span>
+              }
+            </p>
           }
         }
       }
-    </form>
-  </div>
+    }
+  </form>
+</div>
 <div mat-dialog-actions align="end">
-      <button
-        type="button"
-        mat-raised-button
-        color="default"
-        (click)="onNoClick(f.value)"
-        >
-        Close<mat-icon>close</mat-icon>
-      </button>
-      <button
-        type="button"
-        color="primary"
-        (keyup.enter)="submit(f.value)"
-        (click)="submit(f.value)"
-        mat-raised-button
-        [disabled]="f.invalid"
-        >
-        Save <mat-icon>done</mat-icon>
-      </button>
-    </div>
+  <button
+    type="button"
+    mat-raised-button
+    color="default"
+    (click)="onNoClick(f.value)"
+  >
+    Close<mat-icon>close</mat-icon>
+  </button>
+  <button
+    type="button"
+    color="primary"
+    (keyup.enter)="submit(f.value)"
+    (click)="submit(f.value)"
+    mat-raised-button
+    [disabled]="f.invalid"
+  >
+    Save <mat-icon>done</mat-icon>
+  </button>
+</div>

@@ -73,7 +73,8 @@ export class MapComponent extends ParentChart implements OnInit {
     this.filtered = '';
   }
   private setOptions(buckets: Array<Bucket>) {
-    const { source, map_type } = this.componentConfigs as ComponentDashboardConfigs;
+    const { source, map_type } = this
+      .componentConfigs as ComponentDashboardConfigs;
     const isMultiLevel = Array.isArray(source) && source.length > 1;
 
     const dataLabelsSettings = this.cms.getDataLabelAttributes(
@@ -81,13 +82,14 @@ export class MapComponent extends ParentChart implements OnInit {
       'map',
     );
 
-    const mapData = buckets.map((b: any) => ({
-      name: b.key,
-      path: this.mapCountryToIsoAlpha2(b.key),
-      value: b.metric ? b.metric.value : b.doc_count,
-      source: source[0].field,
-    }))
-      .filter(v => v.value > 0);
+    const mapData = buckets
+      .map((b: any) => ({
+        name: b.key,
+        path: this.mapCountryToIsoAlpha2(b.key),
+        value: b.metric ? b.metric.value : b.doc_count,
+        source: source[0].field,
+      }))
+      .filter((v) => v.value > 0);
 
     let series: any[] = [
       {
@@ -129,50 +131,66 @@ export class MapComponent extends ParentChart implements OnInit {
     ];
 
     if (map_type === 'pie' && isMultiLevel) {
-      const pieSeries = buckets.map((b: any) => {
-        const countryIso = this.mapCountryToIsoAlpha2(b.key);
-        if (!countryIso) return null;
+      const pieSeries = buckets
+        .map((b: any) => {
+          const countryIso = this.mapCountryToIsoAlpha2(b.key);
+          if (!countryIso) return null;
 
-        const nextLevelSource = source[1];
-        let nextLevelAggName = nextLevelSource.field + '_level_1';
-        nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
-        const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+          const nextLevelSource = source[1];
+          let nextLevelAggName = nextLevelSource.field + '_level_1';
+          nextLevelAggName = b[nextLevelAggName]
+            ? nextLevelAggName
+            : nextLevelSource.field + '.keyword_level_1';
+          const subBuckets = b[nextLevelAggName]
+            ? b[nextLevelAggName].buckets
+            : b.buckets
+              ? b.buckets
+              : [];
 
-        return {
-          type: 'pie',
-          name: b.key,
-          zIndex: 6,
-          minSize: 20,
-          maxSize: 40,
-          onPoint: {
-            id: countryIso,position: {
-              offsetX: 0,
-              offsetY: 20
-            }
-          },
-          colorAxis: false,
-          states: {
-            hover: {
+          return {
+            type: 'pie',
+            name: b.key,
+            zIndex: 6,
+            minSize: 20,
+            maxSize: 40,
+            onPoint: {
+              id: countryIso,
+              position: {
+                offsetX: 0,
+                offsetY: 20,
+              },
+            },
+            colorAxis: false,
+            states: {
+              hover: {
+                enabled: false,
+              },
+            },
+            data: subBuckets.map((sb: any) => ({
+              name: sb.key,
+              y: sb.metric ? sb.metric.value : sb.doc_count,
+              source: nextLevelSource.field,
+            })),
+            colors: this.colors,
+            center: [0, 0],
+            size: Math.max(
+              20,
+              Math.min(
+                50,
+                10 * Math.log10((b.metric ? b.metric.value : b.doc_count) + 1),
+              ),
+            ),
+            dataLabels: {
               enabled: false,
             },
-          },
-          data: subBuckets.map((sb: any) => ({
-            name: sb.key,
-            y: sb.metric ? sb.metric.value : sb.doc_count,
-            source: nextLevelSource.field,
-          })),
-          colors: this.colors,
-          center: [0, 0],
-          size: Math.max(20, Math.min(50, 10 * Math.log10((b.metric ? b.metric.value : b.doc_count) + 1))),
-          dataLabels: {
-            enabled: false,
-          },
-          tooltip: {
-            headerFormat: '<b>{series.name}</b><br/>',
-            pointFormat: '<span style="color: {point.color}">{point.name}: {point.y}</span>',
-          },
-        };
-      }).filter(s => s !== null);
+            tooltip: {
+              headerFormat: '<b>{series.name}</b><br/>',
+              pointFormat:
+                '<span style="color: {point.color}">{point.name}: {point.y}</span>',
+            },
+          };
+        })
+        .filter((s) => s !== null);
       series = [...series, ...pieSeries];
     }
 

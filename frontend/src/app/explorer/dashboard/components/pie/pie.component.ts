@@ -84,11 +84,12 @@ export class PieComponent extends ParentChart implements OnInit {
       'pie',
     );
 
-    const innerSize = !this.componentConfigs?.inner_size ||
-    this.componentConfigs.inner_size <= 0 ||
-    this.componentConfigs.inner_size > 100
-      ? 0
-      : this.componentConfigs.inner_size + '%';
+    const innerSize =
+      !this.componentConfigs?.inner_size ||
+      this.componentConfigs.inner_size <= 0 ||
+      this.componentConfigs.inner_size > 100
+        ? 0
+        : this.componentConfigs.inner_size + '%';
     const drilldownSeries = [];
     const mainData = this.prepareData(buckets, drilldownSeries, 0, innerSize);
 
@@ -118,7 +119,11 @@ export class PieComponent extends ParentChart implements OnInit {
             events: {
               click: (e: any) => {
                 // Only filter on click when it is allowed, the point exists and has no drilldown
-                if (!e.point.destroyed && !e.point.drilldown && this.componentConfigs.allowFilterOnClick) {
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
                   this.Query(e.point.name, e.point.source);
                   this.filtered = e.point.source;
                 }
@@ -167,9 +172,16 @@ export class PieComponent extends ParentChart implements OnInit {
         const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
 
         if (nextLevelSource) {
-          let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
-          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
-          const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : null);
+          let nextLevelAggName =
+            nextLevelSource.field + '_level_' + nextLevelIndex;
+          nextLevelAggName = b[nextLevelAggName]
+            ? nextLevelAggName
+            : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+          const subBuckets = b[nextLevelAggName]
+            ? b[nextLevelAggName].buckets
+            : b.buckets
+              ? b.buckets
+              : null;
 
           if (subBuckets && subBuckets.length > 0) {
             const drilldownId = `${b.key}_${levelIndex}`;
@@ -181,7 +193,12 @@ export class PieComponent extends ParentChart implements OnInit {
               type: 'pie',
               innerSize: innerSize,
               source: nextLevelSource.field,
-              data: this.prepareData(subBuckets, drilldownSeries, nextLevelIndex, innerSize),
+              data: this.prepareData(
+                subBuckets,
+                drilldownSeries,
+                nextLevelIndex,
+                innerSize,
+              ),
             });
           }
         }

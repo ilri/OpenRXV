@@ -14,7 +14,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-import {ComponentDashboardConfigs} from "../../../configs/generalConfig.interface";
+import { ComponentDashboardConfigs } from '../../../configs/generalConfig.interface';
 
 @Component({
   selector: 'app-line',
@@ -64,13 +64,14 @@ export class LineComponent extends ParentChart implements OnInit {
   }
 
   setOptions(buckets: Array<Bucket>) {
-    const { source, line_type } = this.componentConfigs as ComponentDashboardConfigs;
+    const { source, line_type } = this
+      .componentConfigs as ComponentDashboardConfigs;
     const chartType = line_type || 'line';
 
     const data = buckets.map((b: any) => ({
       name: b.key,
       y: b.metric ? b.metric.value : b.doc_count,
-      source: source[0].field
+      source: source[0].field,
     }));
 
     const series = [

@@ -8,7 +8,7 @@
       (change)="onFilterChanged($event)"
       [clearable]="false"
       [dropdownPosition]="'bottom'"
-      >
+    >
     </ng-select>
   </div>
   <div class="col-md-1 col-xs-12">
@@ -21,7 +21,7 @@
       [(ngModel)]="reverseOption"
       [clearable]="false"
       [dropdownPosition]="'bottom'"
-      >
+    >
     </ng-select>
   </div>
   <div class="text-right">
@@ -30,13 +30,16 @@
       mat-icon-button
       [matMenuTriggerFor]="menu"
       aria-label="Options for exporting files"
-      >
+    >
       <mat-icon>get_app</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       @for (file of files; track file; let i = $index) {
         <div>
-          <button mat-menu-item (click)="startExportingNow(file.fileType, file)">
+          <button
+            mat-menu-item
+            (click)="startExportingNow(file.fileType, file)"
+          >
             <img src="assets/export/{{ file.fileType }}.png" />
             <span>{{ file.title }}</span>
           </button>

@@ -2,11 +2,7 @@
 <!-- <p *ngIf="form">{{this.form | json}}</p> -->
 
 @if (this?.form?.value) {
-  <form
-    [formGroup]="form"
-    (ngSubmit)="submit()"
-    class=""
-    >
+  <form [formGroup]="form" (ngSubmit)="submit()" class="">
     <!-- <p >{{this.form.value | json}}</p> -->
     <div mat-dialog-content class="w-100">
       <p class="w-100">
@@ -17,67 +13,61 @@
             placeholder="Name"
             class="w-100"
             formControlName="name"
-            />
+          />
           @if (form?.controls?.name?.errors?.required) {
-            <mat-error
-              >Name is required</mat-error
-              >
+            <mat-error>Name is required</mat-error>
+          }
+          @if (form?.controls?.name?.errors?.cannotContainSpace) {
+            <mat-error>Name can not contain space.</mat-error>
+          }
+          @if (form?.controls?.name?.errors?.lowercaseValidator) {
+            <mat-error>Name can not contain lowercase.</mat-error>
+          }
+        </mat-form-field>
+      </p>
+      <p class="w-100">
+        <mat-form-field appearance="fill">
+          <mat-label>Select Index</mat-label>
+          <mat-select class="w-100" formControlName="index">
+            @for (index of indexes; track index) {
+              <mat-option [value]="index.id">
+                {{ index.name }}
+              </mat-option>
             }
-            @if (form?.controls?.name?.errors?.cannotContainSpace) {
-              <mat-error
-                >Name can not contain space.</mat-error
-                >
-              }
-              @if (form?.controls?.name?.errors?.lowercaseValidator) {
-                <mat-error
-                  >Name can not contain lowercase.</mat-error
-                  >
-                }
-              </mat-form-field>
-            </p>
-            <p class="w-100">
-              <mat-form-field appearance="fill">
-                <mat-label>Select Index</mat-label>
-                <mat-select class="w-100" formControlName="index">
-                  @for (index of indexes; track index) {
-                    <mat-option [value]="index.id">
-                      {{ index.name }}
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </p>
-            <p class="w-100">
-              <mat-form-field class="w-100">
-                <textarea
-                  type="text"
-                  matInput
-                  rows="5"
-                  class="w-100"
-                  placeholder="Description"
-                  formControlName="description"
-                ></textarea>
-              </mat-form-field>
-            </p>
-          </div>
-          <div mat-dialog-actions align="end">
-            <button
-              type="button"
-              mat-raised-button
-              color="default"
-              (click)="onNoClick($event)"
-              >
-              Close <mat-icon>close </mat-icon>
-            </button>
-            <button
-              type="button"
-              color="primary"
-              (keyup.enter)="submit()"
-              (click)="submit()"
-              mat-raised-button
-              >
-              Submit <mat-icon>done</mat-icon>
-            </button>
-          </div>
-        </form>
-      }
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p class="w-100">
+        <mat-form-field class="w-100">
+          <textarea
+            type="text"
+            matInput
+            rows="5"
+            class="w-100"
+            placeholder="Description"
+            formControlName="description"
+          ></textarea>
+        </mat-form-field>
+      </p>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button
+        type="button"
+        mat-raised-button
+        color="default"
+        (click)="onNoClick($event)"
+      >
+        Close <mat-icon>close </mat-icon>
+      </button>
+      <button
+        type="button"
+        color="primary"
+        (keyup.enter)="submit()"
+        (click)="submit()"
+        mat-raised-button
+      >
+        Submit <mat-icon>done</mat-icon>
+      </button>
+    </div>
+  </form>
+}

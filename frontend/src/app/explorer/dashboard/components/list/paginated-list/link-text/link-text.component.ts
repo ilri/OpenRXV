@@ -32,14 +32,14 @@ export class LinkTextComponent {
       this.source[splited[0]][splited[1]] !== null &&
       this.source[splited[0]][splited[1]] !== undefined
     ) {
-      return check ? true : this.source[splited[0]][splited[1]] as string;
+      return check ? true : (this.source[splited[0]][splited[1]] as string);
     } else if (
       Object.hasOwn(this.source, splited[0]) &&
       this.source[splited[0]] !== '' &&
       this.source[splited[0]] !== null &&
       this.source[splited[0]] !== undefined
     ) {
-      return check ? true : this.source[value] as string;
+      return check ? true : (this.source[value] as string);
     } else {
       return check ? false : '';
     }

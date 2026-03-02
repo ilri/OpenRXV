@@ -115,11 +115,13 @@ export class CounterComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        result.source = [{
-          field: result.source,
-          limit: 0,
-          order: '',
-        }]
+        result.source = [
+          {
+            field: result.source,
+            limit: 0,
+            order: '',
+          },
+        ];
         this.edited.emit(result);
       }
       if (!result && isEmpty(this.configs.componentConfigs))

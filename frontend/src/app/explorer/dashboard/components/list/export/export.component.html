@@ -4,9 +4,7 @@
   } @else {
     {{ installing ? 'Please wait....' : 'Export' }}
     @if (delegationArr) {
-      <small>
-        getting {{ delegationArr.length }} parts
-      </small>
+      <small> getting {{ delegationArr.length }} parts </small>
     }
   }
 </h2>
@@ -30,15 +28,15 @@
                 : ''
             "
             (click)="prevent($event, delegation)"
-            >
+          >
             <ng-container *ngTemplateOutlet="info"></ng-container>
           </a>
           <ng-template #info>
             <mat-list-item
               [ngClass]="{
-                disable: !delegation.loaded
+                disable: !delegation.loaded,
               }"
-              >
+            >
               @if (!delegation.loaded) {
                 Preparing {{ delegation.name }}
                 @if (!delegation.loaded) {
@@ -53,14 +51,10 @@
                   color="primary"
                   class="w-100"
                   (click)="markAsDownloaded(delegation)"
-                  >
+                >
                   <span mat-line>
                     @if (delegation.downloaded) {
-                      <mat-icon
-                        class="downloaded"
-                        >
-                        done_all
-                      </mat-icon>
+                      <mat-icon class="downloaded"> done_all </mat-icon>
                     }
                     Download {{ delegation.name }}
                   </span>
@@ -73,14 +67,10 @@
                     color="primary"
                     class="w-100"
                     (click)="markAsDownloaded(delegation)"
-                    >
+                  >
                     <span mat-line>
                       @if (delegation.downloaded) {
-                        <mat-icon
-                          class="downloaded"
-                          >
-                          done_all
-                        </mat-icon>
+                        <mat-icon class="downloaded"> done_all </mat-icon>
                       }
                       Download {{ delegation.name }}
                     </span>

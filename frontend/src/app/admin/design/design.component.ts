@@ -306,8 +306,8 @@ export class DesignComponent implements OnInit {
           componentConfigs: result as Tour,
           tour: true,
         };
-        ((obj.componentConfigs['id'] = 'welcome'),
-          (obj.componentConfigs['text'] = this.welcome_text));
+        (obj.componentConfigs['id'] = 'welcome'),
+          (obj.componentConfigs['text'] = this.welcome_text);
         this.welcome = obj;
       }
     });
@@ -367,7 +367,13 @@ export class DesignComponent implements OnInit {
     if (obj.source) temp['source'] = obj.source;
     if (obj.sort != undefined) temp['sort'] = obj.sort;
 
-    if (obj.source) temp['id'] = temp['source'].map(s => s.field).join('_') + '_' + index + '_' + index1;
+    if (obj.source)
+      temp['id'] =
+        temp['source'].map((s) => s.field).join('_') +
+        '_' +
+        index +
+        '_' +
+        index1;
     if (obj.size) temp['size'] = obj.size;
 
     if (obj.allowFilterOnClick)
@@ -412,7 +418,8 @@ export class DesignComponent implements OnInit {
     if (obj.component == 'MainListComponent')
       temp['id'] = 'main_list' + '_' + index + '_' + index1;
 
-    if (obj.component == 'WheelComponent' ||
+    if (
+      obj.component == 'WheelComponent' ||
       obj.component == 'BarComponent' ||
       obj.component == 'PackedBubbleComponent' ||
       obj.component == 'PackedBubbleSplitComponent' ||
@@ -434,7 +441,9 @@ export class DesignComponent implements OnInit {
 
     const currentGridItem = this.dashboard[index][index1] || {};
     const baseClass = obj.class || currentGridItem.class || 'col-md-3';
-    this.dashboard[index][index1].class = [...new Set((baseClass + ' no-side-padding').split(' '))].join(' ');
+    this.dashboard[index][index1].class = [
+      ...new Set((baseClass + ' no-side-padding').split(' ')),
+    ].join(' ');
     return {
       class: class_name || this.dashboard[index][index1].class,
       show: true,
@@ -483,13 +492,14 @@ export class DesignComponent implements OnInit {
     if (obj.description) temp['description'] = obj.description;
 
     if (obj.source) {
-      if(obj.type == 'cardinality')
+      if (obj.type == 'cardinality')
         obj.source[0].field = obj.source[0].field + '.keyword';
       temp['source'] = obj.source;
 
       temp['id'] = 'counter_' + obj.source[0].field;
       if (obj.filter) {
-        temp['id'] = 'counter_' + obj.source[0].field + obj.filter.replace(/\s/g, '');
+        temp['id'] =
+          'counter_' + obj.source[0].field + obj.filter.replace(/\s/g, '');
       }
     }
 

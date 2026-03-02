@@ -1,15 +1,8 @@
 @if (appearance?.show_tool_bar) {
-  <mat-toolbar
-    color="primary"
-    class="toolbar-style"
-    >
+  <mat-toolbar color="primary" class="toolbar-style">
     <mat-toolbar-row>
       @if (logo) {
-        <img
-          [src]="logo"
-          [attr.alt]="website_name"
-          class="nab-bar-images"
-          />
+        <img [src]="logo" [attr.alt]="website_name" class="nab-bar-images" />
       }
       @if (!logo) {
         <span class="website_name">{{ website_name }}</span>
@@ -20,18 +13,18 @@
         aria-label="refresh page button"
         class="end"
         (click)="openNavAndDisableIgnoreMouseEvent()"
-        >
+      >
         <mat-icon>search</mat-icon>
       </button>
       @if (!isSmall) {
         <button
-      [matTooltip]="
-        'Share ' + website_name + ' and your search results with others'
-      "
+          [matTooltip]="
+            'Share ' + website_name + ' and your search results with others'
+          "
           mat-icon-button
           (click)="share()"
           aria-label="refresh page button"
-          >
+        >
           <mat-icon>share</mat-icon>
         </button>
       }
@@ -40,7 +33,7 @@
         mat-icon-button
         (click)="refresh()"
         aria-label="refresh page button"
-        >
+      >
         <mat-icon>loop</mat-icon>
       </button>
       @if (!isSmall) {
@@ -49,7 +42,7 @@
           mat-icon-button
           (click)="startTour()"
           aria-label="refresh page button"
-          >
+        >
           <mat-icon>contact_support</mat-icon>
         </button>
       }
@@ -58,7 +51,7 @@
         mat-icon-button
         (click)="seeAbout()"
         aria-label="About Us"
-        >
+      >
         <mat-icon>info</mat-icon>
       </button>
       <button
@@ -66,7 +59,7 @@
         mat-icon-button
         (click)="exportDashboard()"
         aria-label="Export as PDF"
-        >
+      >
         <mat-icon>picture_as_pdf</mat-icon>
       </button>
       @if (index_last_update) {
@@ -74,7 +67,7 @@
           matTooltip="Last updated on {{ index_last_update }}"
           matTooltipClass="multiline-tooltip"
           mat-icon-button
-          >
+        >
           <mat-icon>av_timer</mat-icon>
         </button>
       }
@@ -82,14 +75,9 @@
   </mat-toolbar>
 }
 @if (appearance?.show_top_nav) {
-  <mat-toolbar
-    color="primary"
-    class="toolbar-style top_nav"
-    >
+  <mat-toolbar color="primary" class="toolbar-style top_nav">
     @if (appearance?.show_side_nav) {
-      <app-scroll-to
-        class="in-tool-bar"
-      ></app-scroll-to>
+      <app-scroll-to class="in-tool-bar"></app-scroll-to>
     }
     <button
       matTooltip="Open Filters drawer"
@@ -97,7 +85,7 @@
       aria-label="refresh page button"
       class="end"
       (click)="openNavAndDisableIgnoreMouseEvent()"
-      >
+    >
       <mat-icon>search</mat-icon>
     </button>
     <button
@@ -105,7 +93,7 @@
       mat-icon-button
       (click)="refresh()"
       aria-label="refresh page button"
-      >
+    >
       <mat-icon>loop</mat-icon>
     </button>
     @if (!isSmall) {
@@ -114,7 +102,7 @@
         mat-icon-button
         (click)="startTour()"
         aria-label="refresh page button"
-        >
+      >
         <mat-icon>contact_support</mat-icon>
       </button>
     }
@@ -123,7 +111,7 @@
       mat-icon-button
       (click)="seeAbout()"
       aria-label="About Us"
-      >
+    >
       <mat-icon>info</mat-icon>
     </button>
     <button
@@ -131,7 +119,7 @@
       mat-icon-button
       (click)="exportDashboard()"
       aria-label="Export as PDF"
-      >
+    >
       <mat-icon>picture_as_pdf</mat-icon>
     </button>
     @if (index_last_update) {
@@ -139,7 +127,7 @@
         matTooltip="Last updated on {{ index_last_update }}"
         matTooltipClass="multiline-tooltip"
         mat-icon-button
-        >
+      >
         <mat-icon>av_timer</mat-icon>
       </button>
     }
@@ -150,13 +138,12 @@
 <div
   [ngClass]="{
     show_tool_bar: appearance?.show_tool_bar,
-    show_top_nav: appearance?.show_top_nav
+    show_top_nav: appearance?.show_top_nav,
   }"
   class="flex-explorer"
-  >
+>
   @if (appearance?.show_side_nav && !appearance?.show_top_nav) {
-    <app-scroll-to
-    ></app-scroll-to>
+    <app-scroll-to></app-scroll-to>
   }
   <tour-step-template></tour-step-template>
   <mat-sidenav-container
@@ -164,11 +151,11 @@
     [hasBackdrop]="false"
     class="mb-0 pb-0 main-container"
     fullscreen
-    >
+  >
     <mat-sidenav
       [ngClass]="{
         show_tool_bar: appearance?.show_tool_bar,
-        show_top_nav: appearance?.show_top_nav
+        show_top_nav: appearance?.show_top_nav,
       }"
       #drawer
       [mode]="isSmall ? 'over' : 'over'"
@@ -177,98 +164,97 @@
       [fixedBottomGap]="options.bottom"
       [autoFocus]="false"
       id="drawer"
-      >
+    >
       @if (render) {
         <mat-nav-list class="m-2">
           <div class="row">
             <div class="col-12">
               <mat-icon style="float: left; line-height: 1.9"
                 >filter_list_alt</mat-icon
-                >
-                <h4
-                  style="float: left; height: 40px; margin: 0px; line-height: 2.8"
-                  >
-                  Filters
-                </h4>
-                <button
-                  style="float: right"
-                  (click)="sidenav.close()"
-                  mat-icon-button
-                  color="warn"
-                  aria-label="Example icon button with a heart icon"
-                  >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-              <div class="col-12">
-                <hr />
-              </div>
-              <div class="col-6">
-                <button
-                  mat-button
-                  mat-raised-button
-                  (click)="addRemoveOrOperator()"
-                  color="primary"
-                  class="w-100 andOrOperatorButton"
-                  cdkOverlayOrigin
-                  #trigger="cdkOverlayOrigin"
-                  (mouseenter)="popoverIsOpen = true"
-                  (mouseleave)="popoverIsOpen = false"
-                  >
-                  Operator
-                  @if (orOperator) {
-                    <strong>OR</strong>
-                  } @else {
-                    <strong>AND</strong>
-                  }
-                  <ng-template #and>
-                    <strong>AND</strong>
-                  </ng-template>
-                  <mat-icon> error </mat-icon>
-                </button>
-                <ng-template
-                  cdkConnectedOverlay
-                  [cdkConnectedOverlayOrigin]="trigger"
-                  [cdkConnectedOverlayOpen]="popoverIsOpen"
-                  >
-                  <app-icons-with-text
-                    [text]="orAndToolTip"
-                  ></app-icons-with-text>
-                </ng-template>
-              </div>
-              <div class="col-6">
-                <button
-                  mat-button
-                  mat-raised-button
-                  (click)="refresh()"
-                  color="primary"
-                  class="w-100"
-                  >
-                  Reset Filters
-                  <mat-icon> refresh </mat-icon>
-                </button>
-              </div>
-              <div class="col-12">
-                <app-filters></app-filters>
-                <ngx-spinner
-                  name="explorerSpinner"
-                  bdColor="rgba(0, 0, 0, 0.1)"
-                  size="medium"
-                  color="var(--theme-primary-500)"
-                  type="ball-clip-rotate"
-                  [fullScreen]="false"
-                  [showSpinner]="loading$ | async"
-                ></ngx-spinner>
-              </div>
+              >
+              <h4
+                style="float: left; height: 40px; margin: 0px; line-height: 2.8"
+              >
+                Filters
+              </h4>
+              <button
+                style="float: right"
+                (click)="sidenav.close()"
+                mat-icon-button
+                color="warn"
+                aria-label="Example icon button with a heart icon"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
             </div>
-          </mat-nav-list>
-        }
-      </mat-sidenav>
-      <mat-sidenav-content class="mb-0 pb-0" #sidenavContent>
-        <div class="xxxloading">
-          {{ primaryColor
-          }}
-          <ngx-loading-bar
+            <div class="col-12">
+              <hr />
+            </div>
+            <div class="col-6">
+              <button
+                mat-button
+                mat-raised-button
+                (click)="addRemoveOrOperator()"
+                color="primary"
+                class="w-100 andOrOperatorButton"
+                cdkOverlayOrigin
+                #trigger="cdkOverlayOrigin"
+                (mouseenter)="popoverIsOpen = true"
+                (mouseleave)="popoverIsOpen = false"
+              >
+                Operator
+                @if (orOperator) {
+                  <strong>OR</strong>
+                } @else {
+                  <strong>AND</strong>
+                }
+                <ng-template #and>
+                  <strong>AND</strong>
+                </ng-template>
+                <mat-icon> error </mat-icon>
+              </button>
+              <ng-template
+                cdkConnectedOverlay
+                [cdkConnectedOverlayOrigin]="trigger"
+                [cdkConnectedOverlayOpen]="popoverIsOpen"
+              >
+                <app-icons-with-text
+                  [text]="orAndToolTip"
+                ></app-icons-with-text>
+              </ng-template>
+            </div>
+            <div class="col-6">
+              <button
+                mat-button
+                mat-raised-button
+                (click)="refresh()"
+                color="primary"
+                class="w-100"
+              >
+                Reset Filters
+                <mat-icon> refresh </mat-icon>
+              </button>
+            </div>
+            <div class="col-12">
+              <app-filters></app-filters>
+              <ngx-spinner
+                name="explorerSpinner"
+                bdColor="rgba(0, 0, 0, 0.1)"
+                size="medium"
+                color="var(--theme-primary-500)"
+                type="ball-clip-rotate"
+                [fullScreen]="false"
+                [showSpinner]="loading$ | async"
+              ></ngx-spinner>
+            </div>
+          </div>
+        </mat-nav-list>
+      }
+    </mat-sidenav>
+    <mat-sidenav-content class="mb-0 pb-0" #sidenavContent>
+      <div class="xxxloading">
+        {{ primaryColor }}
+        <ngx-loading-bar
           [color]="primaryColor"
           fixed
           ref="http"

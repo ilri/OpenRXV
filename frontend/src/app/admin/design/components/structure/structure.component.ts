@@ -14,7 +14,13 @@ import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { NgClass } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton, MatButton } from '@angular/material/button';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  CdkDropList,
+  CdkDrag,
+  CdkDragHandle,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-structure',
@@ -281,8 +287,8 @@ export class StructureComponent implements OnInit {
         label: 'Line type',
         type: 'select',
         items: [
-          {name: 'Line', value: 'line'},
-          {name: 'Area', value: 'area'},
+          { name: 'Line', value: 'line' },
+          { name: 'Area', value: 'area' },
         ],
         required: true,
       });
@@ -387,7 +393,8 @@ export class StructureComponent implements OnInit {
 
     if (element) {
       // containerWidth represents the pixel width of one bootstrap column
-      this.containerWidth = (element as HTMLElement).offsetWidth / this.startWidthLeft;
+      this.containerWidth =
+        (element as HTMLElement).offsetWidth / this.startWidthLeft;
     }
 
     document.addEventListener('mousemove', this.onMouseMove);
@@ -412,15 +419,23 @@ export class StructureComponent implements OnInit {
       newWidthLeft = this.startWidthLeft + this.startWidthRight - 3;
     }
 
-    const currentLeftMatch = (this.grid[this.resizingIndex].class || '').match(/col-md-(\d+)/);
-    const currentLeftWidth = currentLeftMatch ? parseInt(currentLeftMatch[1], 10) : 0;
+    const currentLeftMatch = (this.grid[this.resizingIndex].class || '').match(
+      /col-md-(\d+)/,
+    );
+    const currentLeftWidth = currentLeftMatch
+      ? parseInt(currentLeftMatch[1], 10)
+      : 0;
 
     if (newWidthLeft !== currentLeftWidth) {
-      this.grid[this.resizingIndex].class = `col-md-${newWidthLeft} no-side-padding`;
-      this.class_names[this.resizingIndex] = this.grid[this.resizingIndex].class;
+      this.grid[this.resizingIndex].class =
+        `col-md-${newWidthLeft} no-side-padding`;
+      this.class_names[this.resizingIndex] =
+        this.grid[this.resizingIndex].class;
 
-      this.grid[this.resizingIndex + 1].class = `col-md-${newWidthRight} no-side-padding`;
-      this.class_names[this.resizingIndex + 1] = this.grid[this.resizingIndex + 1].class;
+      this.grid[this.resizingIndex + 1].class =
+        `col-md-${newWidthRight} no-side-padding`;
+      this.class_names[this.resizingIndex + 1] =
+        this.grid[this.resizingIndex + 1].class;
     }
   };
 
@@ -474,7 +489,10 @@ export class StructureComponent implements OnInit {
     this.setFormDataOptions(this.grid[index].component);
 
     // Set initial hidden state for metric_field
-    if (this.grid[index].componentConfigs && this.grid[index].componentConfigs.metric) {
+    if (
+      this.grid[index].componentConfigs &&
+      this.grid[index].componentConfigs.metric
+    ) {
       this.updateMetricField(this.grid[index].componentConfigs.metric);
     }
 

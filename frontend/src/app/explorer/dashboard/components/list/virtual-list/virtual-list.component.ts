@@ -3,7 +3,9 @@ import {
   Input,
   ChangeDetectionStrategy,
   OnInit,
-  inject, Output, EventEmitter,
+  inject,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import * as fromStore from '../../../../store';
@@ -114,8 +116,14 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     const nextLevelIndex = this.level + 1;
     const nextLevelSource = source[nextLevelIndex];
     let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
-    nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
-    const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+    nextLevelAggName = b[nextLevelAggName]
+      ? nextLevelAggName
+      : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+    const subBuckets = b[nextLevelAggName]
+      ? b[nextLevelAggName].buckets
+      : b.buckets
+        ? b.buckets
+        : [];
 
     return subBuckets && subBuckets.length > 0;
   }
@@ -125,8 +133,14 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
     const nextLevelIndex = this.level + 1;
     const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
     let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
-    nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
-    return b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+    nextLevelAggName = b[nextLevelAggName]
+      ? nextLevelAggName
+      : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+    return b[nextLevelAggName]
+      ? b[nextLevelAggName].buckets
+      : b.buckets
+        ? b.buckets
+        : [];
   }
 
   handleFilteredChange(filtered: string) {

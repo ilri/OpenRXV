@@ -1,4 +1,4 @@
-import {SourceLevel} from "../../configs/generalConfig.interface";
+import { SourceLevel } from '../../configs/generalConfig.interface';
 
 /**
  * **Elasticsearch** Elasticsearch response

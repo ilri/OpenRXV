@@ -21,9 +21,7 @@
               "base": "dist/RES"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
@@ -38,9 +36,7 @@
               "src/styles.scss",
               "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
             ],
-            "scripts": [
-              "src/alt.js"
-            ],
+            "scripts": ["src/alt.js"],
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,

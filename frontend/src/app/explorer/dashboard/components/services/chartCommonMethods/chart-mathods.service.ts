@@ -6,7 +6,8 @@ import {
 } from '@angular/core';
 import {
   ComponentDashboardConfigs,
-  MergedSelect, SourceLevel,
+  MergedSelect,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { Observable, combineLatest } from 'rxjs';
 import * as fromStore from '../../../../store';

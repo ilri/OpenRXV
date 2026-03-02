@@ -128,8 +128,8 @@ export class ChartHelper {
           else return '';
         },
         style: {
-          textOutline: 'none'
-        }
+          textOutline: 'none',
+        },
       };
 
       const dataLabelsEnabled = componentConfigs?.data_labels;

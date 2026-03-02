@@ -2,13 +2,9 @@
   [expanded]="scrollHelperService.expandedStatus"
   (afterCollapse)="disPatchSetInView(true)"
   (afterExpand)="disPatchSetInView(false)"
-  >
+>
   @if (!isPaginatedList) {
-    <div
-      class="prevent-scroll"
-      (click)="hideClickToEnable()"
-      #clickToEnable
-      >
+    <div class="prevent-scroll" (click)="hideClickToEnable()" #clickToEnable>
       <span>Click to enable</span>
     </div>
   }
@@ -19,32 +15,30 @@
         matTooltip="Reset Filter"
         matTooltipPosition="after"
         (click)="resetQ()"
-        >
+      >
         autorenew
       </mat-icon>
     }
   </div>
   <mat-expansion-panel-header class="border-bottom-muted">
     @if (scrollHelperService.getViewState?.userSeesMe) {
-      <mat-panel-title
-        class="icon-with-text"
-        >
+      <mat-panel-title class="icon-with-text">
         <span class="mr-1">{{ componentConfigs.title }}</span>
         <mat-icon
-        aria-label="Button that displays
+          aria-label="Button that displays
             a tooltip when focused or hovered over"
           cdkOverlayOrigin
           #trigger="cdkOverlayOrigin"
           (mouseenter)="popoverIsOpen = true"
           (mouseleave)="popoverIsOpen = false"
-          >
+        >
           error
         </mat-icon>
         <ng-template
           cdkConnectedOverlay
           [cdkConnectedOverlayOrigin]="trigger"
           [cdkConnectedOverlayOpen]="popoverIsOpen"
-          >
+        >
           <app-icons-with-text
             [text]="componentConfigs.description"
           ></app-icons-with-text>
@@ -65,7 +59,7 @@
       [paginationAtt]="paginationAtt"
       [loadingHits]="loadingHits"
       [content]="componentConfigs.content"
-      >
+    >
     </app-paginated-list>
   }
 

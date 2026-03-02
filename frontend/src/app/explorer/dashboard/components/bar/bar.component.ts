@@ -16,7 +16,7 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
-import {ComponentDashboardConfigs} from "../../../configs/generalConfig.interface";
+import { ComponentDashboardConfigs } from '../../../configs/generalConfig.interface';
 
 @Component({
   selector: 'app-bar',
@@ -70,7 +70,8 @@ export class BarComponent extends ParentChart implements OnInit {
     this.filtered = '';
   }
   setOptions(buckets: Array<Bucket>) {
-    const { source, direction, stacking } = this.componentConfigs as ComponentDashboardConfigs;
+    const { source, direction, stacking } = this
+      .componentConfigs as ComponentDashboardConfigs;
     const isMultiLevel = Array.isArray(source) && source.length > 1;
 
     const chartType = direction === 'horizontal' ? 'bar' : 'column';
@@ -89,49 +90,77 @@ export class BarComponent extends ParentChart implements OnInit {
       buckets.forEach((b: any) => {
         const nextLevelSource = source[1];
         let nextLevelAggName = nextLevelSource.field + '_level_1';
-        nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
-        const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+        nextLevelAggName = b[nextLevelAggName]
+          ? nextLevelAggName
+          : nextLevelSource.field + '.keyword_level_1';
+        const subBuckets = b[nextLevelAggName]
+          ? b[nextLevelAggName].buckets
+          : b.buckets
+            ? b.buckets
+            : [];
 
-        subBuckets.forEach(sb => {
+        subBuckets.forEach((sb) => {
           seriesNames.add(sb.key);
         });
       });
 
-      series = Array.from(seriesNames).map(name => {
-        const data = buckets.map((b: any) => {
-          const nextLevelSource = source[1];
-          let nextLevelAggName = nextLevelSource.field + '_level_1';
-          nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_1');
-          const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+      series = Array.from(seriesNames).map((name) => {
+        const data = buckets
+          .map((b: any) => {
+            const nextLevelSource = source[1];
+            let nextLevelAggName = nextLevelSource.field + '_level_1';
+            nextLevelAggName = b[nextLevelAggName]
+              ? nextLevelAggName
+              : nextLevelSource.field + '.keyword_level_1';
+            const subBuckets = b[nextLevelAggName]
+              ? b[nextLevelAggName].buckets
+              : b.buckets
+                ? b.buckets
+                : [];
 
-          const found = subBuckets.find(sb => sb.key === name);
-          if (!found) return null;
+            const found = subBuckets.find((sb) => sb.key === name);
+            if (!found) return null;
 
-          const value = found.metric ? found.metric.value : found.doc_count;
+            const value = found.metric ? found.metric.value : found.doc_count;
 
-          const point: any = {
-            name: b.key, // Category name from Level 1
-            y: value,
-            source: nextLevelSource.field,
-          };
+            const point: any = {
+              name: b.key, // Category name from Level 1
+              y: value,
+              source: nextLevelSource.field,
+            };
 
-          // Drilldown from level 2 to level 3+
-          if (source.length > 2) {
-            const nextLevelIndex = 2;
-            const drilldownSource = source[nextLevelIndex];
-            let drilldownAggName = drilldownSource.field + '_level_' + nextLevelIndex;
-            drilldownAggName = found[drilldownAggName] ? drilldownAggName : (drilldownSource.field + '.keyword_level_' + nextLevelIndex);
-            const drilldownBuckets = found[drilldownAggName] ? found[drilldownAggName].buckets : (found.buckets ? found.buckets : []);
+            // Drilldown from level 2 to level 3+
+            if (source.length > 2) {
+              const nextLevelIndex = 2;
+              const drilldownSource = source[nextLevelIndex];
+              let drilldownAggName =
+                drilldownSource.field + '_level_' + nextLevelIndex;
+              drilldownAggName = found[drilldownAggName]
+                ? drilldownAggName
+                : drilldownSource.field + '.keyword_level_' + nextLevelIndex;
+              const drilldownBuckets = found[drilldownAggName]
+                ? found[drilldownAggName].buckets
+                : found.buckets
+                  ? found.buckets
+                  : [];
 
-            if (drilldownBuckets && drilldownBuckets.length > 0) {
-              const drilldownId = `${b.key}_${name}_1`;
-              point.drilldown = drilldownId;
-              this.prepareDrilldownData(drilldownBuckets, drilldownSeries, nextLevelIndex, drilldownId, name, chartType);
+              if (drilldownBuckets && drilldownBuckets.length > 0) {
+                const drilldownId = `${b.key}_${name}_1`;
+                point.drilldown = drilldownId;
+                this.prepareDrilldownData(
+                  drilldownBuckets,
+                  drilldownSeries,
+                  nextLevelIndex,
+                  drilldownId,
+                  name,
+                  chartType,
+                );
+              }
             }
-          }
 
-          return point;
-        }).filter(p => p !== null);
+            return point;
+          })
+          .filter((p) => p !== null);
 
         return {
           name: name,
@@ -155,27 +184,43 @@ export class BarComponent extends ParentChart implements OnInit {
         if (isMultiLevel && isPlain) {
           const nextLevelIndex = 1;
           const drilldownSource = source[nextLevelIndex];
-          let drilldownAggName = drilldownSource.field + '_level_' + nextLevelIndex;
-          drilldownAggName = b[drilldownAggName] ? drilldownAggName : (drilldownSource.field + '.keyword_level_' + nextLevelIndex);
-          const drilldownBuckets = b[drilldownAggName] ? b[drilldownAggName].buckets : (b.buckets ? b.buckets : []);
+          let drilldownAggName =
+            drilldownSource.field + '_level_' + nextLevelIndex;
+          drilldownAggName = b[drilldownAggName]
+            ? drilldownAggName
+            : drilldownSource.field + '.keyword_level_' + nextLevelIndex;
+          const drilldownBuckets = b[drilldownAggName]
+            ? b[drilldownAggName].buckets
+            : b.buckets
+              ? b.buckets
+              : [];
 
           if (drilldownBuckets && drilldownBuckets.length > 0) {
             const drilldownId = `${b.key}_0`;
             point.drilldown = drilldownId;
-            this.prepareDrilldownData(drilldownBuckets, drilldownSeries, nextLevelIndex, drilldownId, b.key, chartType);
+            this.prepareDrilldownData(
+              drilldownBuckets,
+              drilldownSeries,
+              nextLevelIndex,
+              drilldownId,
+              b.key,
+              chartType,
+            );
           }
         }
 
         return point;
       });
 
-      series = [{
-        name: 'Main',
-        showInLegend: isMultiLevel && !isPlain,
-        data: data,
-        type: chartType,
-        source: source[0].field,
-      }];
+      series = [
+        {
+          name: 'Main',
+          showInLegend: isMultiLevel && !isPlain,
+          data: data,
+          type: chartType,
+          source: source[0].field,
+        },
+      ];
     }
 
     const dataLabelsSettings = this.cms.getDataLabelAttributes(
@@ -243,14 +288,14 @@ export class BarComponent extends ParentChart implements OnInit {
               '',
             )}</table>`;
           } else {
-             return `<span>${this.key}: <b>${this.y}</b></span>`;
+            return `<span>${this.key}: <b>${this.y}</b></span>`;
           }
         },
         useHTML: true,
       },
       series: series as any,
       drilldown: {
-        series: drilldownSeries as any
+        series: drilldownSeries as any,
       },
       ...this.cms.commonProperties(),
     };
@@ -263,10 +308,10 @@ export class BarComponent extends ParentChart implements OnInit {
     levelIndex: number,
     drilldownId: string,
     pointName: string,
-    chartType: string = 'column'
+    chartType: string = 'column',
   ) {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    const data = buckets.map(b => {
+    const data = buckets.map((b) => {
       const point: any = {
         name: b.key,
         y: b.metric ? b.metric.value : b.doc_count,
@@ -276,14 +321,28 @@ export class BarComponent extends ParentChart implements OnInit {
       const nextLevelIndex = levelIndex + 1;
       if (source.length > nextLevelIndex) {
         const nextLevelSource = source[nextLevelIndex];
-        let nextLevelAggName = nextLevelSource.field + '_level_' + nextLevelIndex;
-        nextLevelAggName = b[nextLevelAggName] ? nextLevelAggName : (nextLevelSource.field + '.keyword_level_' + nextLevelIndex);
-        const subBuckets = b[nextLevelAggName] ? b[nextLevelAggName].buckets : (b.buckets ? b.buckets : []);
+        let nextLevelAggName =
+          nextLevelSource.field + '_level_' + nextLevelIndex;
+        nextLevelAggName = b[nextLevelAggName]
+          ? nextLevelAggName
+          : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+        const subBuckets = b[nextLevelAggName]
+          ? b[nextLevelAggName].buckets
+          : b.buckets
+            ? b.buckets
+            : [];
 
         if (subBuckets && subBuckets.length > 0) {
           const subDrilldownId = `${drilldownId}_${b.key}_${levelIndex}`;
           point.drilldown = subDrilldownId;
-          this.prepareDrilldownData(subBuckets, drilldownSeries, nextLevelIndex, subDrilldownId, b.key, chartType);
+          this.prepareDrilldownData(
+            subBuckets,
+            drilldownSeries,
+            nextLevelIndex,
+            subDrilldownId,
+            b.key,
+            chartType,
+          );
         }
       }
       return point;
@@ -293,7 +352,7 @@ export class BarComponent extends ParentChart implements OnInit {
       id: drilldownId,
       name: pointName,
       data: data,
-      type: chartType
+      type: chartType,
     });
   }
   reloadComponent() {

@@ -7,10 +7,7 @@
       rel="noopener"
     >
       @if (source[content.icon] && appearance.icons[content.icon] != null) {
-        <img
-          style="max-width: 30px"
-          [src]="getIcon(source[content.icon])"
-        />
+        <img style="max-width: 30px" [src]="getIcon(source[content.icon])" />
       }
       <strong>
         {{ source[content.title] }}
@@ -18,10 +15,7 @@
     </a>
   } @else {
     @if (source[content.icon] && appearance.icons[content.icon] != null) {
-      <img
-        style="max-width: 30px"
-        [src]="getIcon(source[content.icon])"
-      />
+      <img style="max-width: 30px" [src]="getIcon(source[content.icon])" />
     }
     <strong>
       {{ source[content.title] }}
