@@ -57,7 +57,7 @@ export class BuilderUtilities {
             (componentConfigs as ComponentDashboardConfigs)?.content,
         );
         if (conf)
-          return (conf.componentConfigs as ComponentDashboardConfigs)?.content
+          return (conf?.componentConfigs as ComponentDashboardConfigs)?.content
             ?.title;
         else '';
       })() || 'dc_title';

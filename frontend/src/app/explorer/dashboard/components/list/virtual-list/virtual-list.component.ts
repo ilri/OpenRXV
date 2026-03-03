@@ -60,6 +60,7 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
   totalItems: number;
   expandedItems: { [key: string]: boolean } = {};
   source: SourceLevel[];
+  dashboard_name: string;
 
   get isSmall(): boolean {
     return this.screenSizeService.isSmallScreen;
@@ -97,6 +98,7 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
       const query: bodybuilder.Bodybuilder =
         this.selectService.addNewValueAttributetoMainQuery(filtered, value);
       const dashboard_name =
+        this.dashboard_name ??
         this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
       this.store.dispatch(

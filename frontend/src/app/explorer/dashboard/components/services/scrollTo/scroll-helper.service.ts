@@ -98,7 +98,7 @@ export class ScrollHelperService {
     this.store
       .select(fromStore.getInViewById, id)
       .subscribe((viewState: ViewState) => {
-        if (viewState.userSeesMe) {
+        if (viewState?.userSeesMe && viewState.userSeesMe) {
           this.subToLoaders();
           this.viewState = viewState;
         }

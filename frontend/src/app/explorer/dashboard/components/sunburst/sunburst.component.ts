@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   inject,
+  OnDestroy,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
@@ -27,7 +28,10 @@ import { ChartComponent } from '../chart/chart.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ChartComponent],
 })
-export class SunburstComponent extends ParentChart implements OnInit {
+export class SunburstComponent
+  extends ParentChart
+  implements OnInit, OnDestroy
+{
   private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
@@ -50,10 +54,12 @@ export class SunburstComponent extends ParentChart implements OnInit {
   colors: string[];
   enabled: boolean;
   filtered: string = '';
+  dashboard_name: string;
 
   async ngOnInit() {
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -231,5 +237,9 @@ export class SunburstComponent extends ParentChart implements OnInit {
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

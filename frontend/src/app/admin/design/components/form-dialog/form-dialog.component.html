@@ -1,6 +1,30 @@
 <h1 mat-dialog-title>Settings</h1>
 <div mat-dialog-content>
-  <form #f="ngForm" class="formd" [formGroup]="form">
+  @if (
+    data?.configs?.component && data.configs.component !== 'MainListComponent'
+  ) {
+    <div class="col-md-6 preview-container">
+      <div class="preview-content" [id]="liveConfigs?.componentConfigs?.id">
+        @if (previewChart) {
+          <app-dynamic
+            [componentConfigs]="liveConfigs?.componentConfigs"
+            [comp]="data.configs.component"
+            [dashboard_name]="data.dashboard_name"
+          ></app-dynamic>
+        }
+      </div>
+    </div>
+  }
+  <form
+    #f="ngForm"
+    class="formd"
+    [ngClass]="
+      data?.configs?.component && data.configs.component !== 'MainListComponent'
+        ? 'col-md-6'
+        : ''
+    "
+    [formGroup]="form"
+  >
     @for (control of formControls; track control) {
       @if (!control.hidden) {
         @switch (control.type) {

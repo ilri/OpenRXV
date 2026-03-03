@@ -94,6 +94,7 @@ export class StructureComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   form_data = [];
   @Input() grid;
+  @Input() gridRow;
   resizingIndex: number = -1;
   startX: number = 0;
   startWidthLeft: number = 0;
@@ -501,7 +502,9 @@ export class StructureComponent implements OnInit {
       data: {
         dashboard_name,
         form_data: Object.create(this.form_data),
-        configs: Object.create(this.grid[index]),
+        configs: this.grid[index],
+        index,
+        gridRow: this.gridRow,
       },
     });
 

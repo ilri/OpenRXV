@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   inject,
+  OnDestroy,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
@@ -24,7 +25,7 @@ import { ComponentDashboardConfigs } from '../../../configs/generalConfig.interf
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ChartComponent],
 })
-export class LineComponent extends ParentChart implements OnInit {
+export class LineComponent extends ParentChart implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
@@ -47,9 +48,11 @@ export class LineComponent extends ParentChart implements OnInit {
   enabled: boolean;
   colors: string[];
   filtered: string = '';
+  dashboard_name: string;
 
   async ngOnInit() {
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -159,5 +162,9 @@ export class LineComponent extends ParentChart implements OnInit {
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

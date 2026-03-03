@@ -71,7 +71,7 @@ export class SearchComponent extends ParentComponent implements OnInit {
             ({ componentConfigs }: GeneralConfigs) =>
               (componentConfigs as ComponentDashboardConfigs)?.content,
           );
-        return (conf.componentConfigs as ComponentDashboardConfigs)?.content
+        return (conf?.componentConfigs as ComponentDashboardConfigs)?.content
           ?.title;
       })() || 'dc_title';
     this.subToSearchTerms();

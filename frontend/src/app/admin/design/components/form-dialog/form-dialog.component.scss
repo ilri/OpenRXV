@@ -5,3 +5,15 @@ mat-form-field {
 .formd {
   min-height: 325px;
 }
+
+:host ::ng-deep {
+  .preview-container {
+    position: sticky;
+    top: 0;
+    float: right;
+  }
+
+  .preview-content > :last-child {
+    width: 100%;
+  }
+}

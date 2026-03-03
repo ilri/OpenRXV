@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   inject,
+  OnDestroy,
 } from '@angular/core';
 import { ParentChart } from '../parent-chart';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
@@ -26,13 +27,14 @@ import { ComponentDashboardConfigs } from '../../../configs/generalConfig.interf
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [ChartComponent],
 })
-export class BarComponent extends ParentChart implements OnInit {
+export class BarComponent extends ParentChart implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private settingsService = inject(SettingsService);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
 
   enabled: boolean;
+  dashboard_name: string;
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -52,6 +54,7 @@ export class BarComponent extends ParentChart implements OnInit {
   filtered: string = '';
   async ngOnInit() {
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -359,5 +362,9 @@ export class BarComponent extends ParentChart implements OnInit {
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

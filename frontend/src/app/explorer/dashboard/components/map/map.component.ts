@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   inject,
+  OnDestroy,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import mapWorld from '@highcharts/map-collection/custom/world-robinson-highres.geo.json';
@@ -28,7 +29,7 @@ import { ChartComponent } from '../chart/chart.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ChartComponent],
 })
-export class MapComponent extends ParentChart implements OnInit {
+export class MapComponent extends ParentChart implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   readonly selectService: SelectService;
   readonly store: Store<fromStore.AppState>;
@@ -52,8 +53,10 @@ export class MapComponent extends ParentChart implements OnInit {
   filtered: string = '';
   items_label = 'Information Products';
   enabled: boolean;
+  dashboard_name: string;
   async ngOnInit() {
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -264,5 +267,9 @@ export class MapComponent extends ParentChart implements OnInit {
       official_name: value,
     }) as Country;
     return country ? country.alpha_2.toLowerCase() : undefined;
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

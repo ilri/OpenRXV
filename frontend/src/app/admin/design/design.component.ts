@@ -216,9 +216,23 @@ export class DesignComponent implements OnInit {
   }
   dashboardEdited(event, index) {
     if (event.isFullGrid) {
+      let scrollIcon = '';
+      let scrollId = '';
       this.dashboard[index] = event.result.map((item, i) => {
         if (!item.component) {
-          return this.createDashboardItem(item, index, i);
+          item = this.createDashboardItem(item, index, i);
+        }
+        if (item?.scroll?.icon) {
+          scrollIcon = item.scroll.icon;
+          scrollId = item.componentConfigs.id;
+        }
+        return item;
+      });
+      this.dashboard[index] = this.dashboard[index].map((item, i) => {
+        if (i === 0) {
+          item['scroll'] = { icon: scrollIcon };
+        } else {
+          item['scroll'] = { linkedWith: scrollId };
         }
         return item;
       });
@@ -359,7 +373,7 @@ export class DesignComponent implements OnInit {
       this.toastr.error('Please set icons of rows before you save');
     }
   }
-  createDashboardItem(obj, index, index1) {
+  createDashboardItem(obj, gridRow, index1) {
     const temp = {};
     if (obj.title) temp['title'] = obj.title;
 
@@ -371,7 +385,7 @@ export class DesignComponent implements OnInit {
       temp['id'] =
         temp['source'].map((s) => s.field).join('_') +
         '_' +
-        index +
+        gridRow +
         '_' +
         index1;
     if (obj.size) temp['size'] = obj.size;
@@ -406,7 +420,7 @@ export class DesignComponent implements OnInit {
       temp['source_y'] = obj.source_y;
       temp['source_x'] = obj.source_x;
       temp['id'] =
-        obj.source_x + '_' + obj.source_y + '_' + index + '_' + index1;
+        obj.source_x + '_' + obj.source_y + '_' + gridRow + '_' + index1;
       temp['sort'] = obj.sort;
     }
 
@@ -416,7 +430,7 @@ export class DesignComponent implements OnInit {
     }
 
     if (obj.component == 'MainListComponent')
-      temp['id'] = 'main_list' + '_' + index + '_' + index1;
+      temp['id'] = 'main_list' + '_' + gridRow + '_' + index1;
 
     if (
       obj.component == 'WheelComponent' ||
@@ -439,13 +453,13 @@ export class DesignComponent implements OnInit {
       class_name = obj.class;
     }
 
-    const currentGridItem = this.dashboard[index][index1] || {};
+    const currentGridItem = this.dashboard[gridRow][index1] || {};
     const baseClass = obj.class || currentGridItem.class || 'col-md-3';
-    this.dashboard[index][index1].class = [
+    this.dashboard[gridRow][index1].class = [
       ...new Set((baseClass + ' no-side-padding').split(' ')),
     ].join(' ');
     return {
-      class: class_name || this.dashboard[index][index1].class,
+      class: class_name || this.dashboard[gridRow][index1].class,
       show: true,
       component: obj.component ? obj.component : null,
       componentConfigs: temp as ComponentFilterConfigs,

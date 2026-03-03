@@ -18,6 +18,7 @@ export class DynamicComponent implements OnInit {
 
   @Input() comp: string;
   @Input() componentConfigs: any;
+  @Input() dashboard_name?: string;
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -28,6 +29,7 @@ export class DynamicComponent implements OnInit {
     if (factoryClass) {
       const compRef = this.vcRef.createComponent(factoryClass);
       compRef.instance.componentConfigs = this.componentConfigs;
+      compRef.instance.dashboard_name = this.dashboard_name;
     }
   }
 }

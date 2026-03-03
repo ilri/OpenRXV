@@ -8,19 +8,11 @@ import {
   signal,
   ViewChild,
   inject,
+  OnDestroy,
 } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
-import {
-  ComponentDashboardConfigs,
-  SourceLevel,
-} from 'src/app/explorer/configs/generalConfig.interface';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
-import {
-  Hits,
-  Bucket,
-  hits,
-} from 'src/app/explorer/filters/services/interfaces';
+import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
@@ -60,12 +52,14 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
     NgxSpinnerComponent,
   ],
 })
-export class GooglemapsComponent extends ParentChart implements OnInit {
+export class GooglemapsComponent
+  extends ParentChart
+  implements OnInit, OnDestroy
+{
   readonly store: Store<fromStore.AppState>;
   readonly scrollHelperService = inject(ScrollHelperService);
   readonly selectService: SelectService;
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly bodyBuilderService = inject(BodyBuilderService);
   private readonly settingsService = inject(SettingsService);
 
   @Input() expandedStatus: boolean;
@@ -90,6 +84,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   };
   popoverIsOpen = false;
   loaded = signal(false);
+  dashboard_name: string;
 
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
@@ -114,6 +109,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     const query: bodybuilder.Bodybuilder =
       this.selectService.resetValueAttributetoMainQuery(filtered);
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
@@ -129,6 +125,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     const query: bodybuilder.Bodybuilder =
       this.selectService.addNewValueAttributetoMainQuery(this.filtered, code);
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
@@ -200,6 +197,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -270,5 +268,9 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
       };
       document.head.appendChild(script);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

@@ -17,16 +17,10 @@
             color="primary"
             mat-icon-button
           >
-            @if (!grid[0].component || !grid[0].scroll) {
-              <mat-icon>add_photo_alternate</mat-icon>
-            }
-            @if (
-              grid[0] &&
-              grid[0].component &&
-              grid[0].scroll &&
-              grid[0].scroll.icon
-            ) {
+            @if (grid?.[0].component && grid?.[0]?.scroll?.icon) {
               <mat-icon>{{ grid[0].scroll.icon }}</mat-icon>
+            } @else {
+              <mat-icon>add_photo_alternate</mat-icon>
             }
           </button>
           <button
@@ -79,9 +73,9 @@
                 <mat-card appearance="raised">
                   <mat-card-title>
                     <span>
-                      {{ this.grid[i].componentConfigs.title }} -
+                      {{ this?.grid?.[i]?.componentConfigs?.title }} -
                       <small
-                        ><i>{{ word(item.component) }}</i></small
+                        ><i>{{ word(item?.component) }}</i></small
                       >
                     </span>
                     <button
