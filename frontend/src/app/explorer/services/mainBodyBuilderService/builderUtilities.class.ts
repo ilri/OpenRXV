@@ -129,6 +129,7 @@ export class BuilderUtilities {
         sort,
         metric,
         metric_field,
+        counterIndex,
       }: any) => {
         const qb: QueryBlock = {
           filter,
@@ -146,6 +147,7 @@ export class BuilderUtilities {
           sort: sort ? sort : false,
           metric,
           metric_field: metric_field ? metric_field : undefined,
+          counterIndex
         };
         arr.push(qb);
       },
@@ -176,6 +178,9 @@ export class BuilderUtilities {
           metric_field: (componentConfigs as any).metric_field
             ? (componentConfigs as any).metric_field.replace('.keyword', '')
             : undefined,
+          counterIndex: Object.hasOwn((componentConfigs as any), 'counterIndex')
+            ? (componentConfigs as any)?.counterIndex
+            : undefined,
         };
       }),
     ];
@@ -185,8 +190,11 @@ export class BuilderUtilities {
     qb: QueryBlock,
     b: bodybuilder.Bodybuilder,
   ): void {
-    const { filter, pre_filter, source, type } = qb; // filter comes from this.convertEnumToQueryBlock
-    const sourceString = source[0].field as string;
+    const { filter, pre_filter, source, type, counterIndex } = qb; // filter comes from this.convertEnumToQueryBlock
+    if (!type) return;
+
+    const sourceString = source[0].field;
+    const aggName = `${sourceString.replace('.keyword', '')}_${counterIndex}`;
     let parsedPreFilter;
     try {
       parsedPreFilter = JSON.parse(pre_filter);
@@ -206,10 +214,10 @@ export class BuilderUtilities {
           [sourceString]: filter,
         },
       };
-      aggObject.name = `${sourceString}_${filter}`;
-    } else if (type) {
+      aggObject.name = `${aggName}_${filter}`;
+    } else {
       aggObject.type = type;
-      aggObject.name = sourceString;
+      aggObject.name = aggName;
       if (type == 'cardinality') {
         aggObject.agg = {
           field: sourceString,
@@ -221,8 +229,6 @@ export class BuilderUtilities {
           missing: 0,
         };
       }
-    } else {
-      return;
     }
 
     if (parsedPreFilter) {

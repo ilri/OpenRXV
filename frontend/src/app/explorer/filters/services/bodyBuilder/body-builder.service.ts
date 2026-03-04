@@ -182,7 +182,7 @@ export class BodyBuilderService {
   getFiltersFromQuery() {
     const query = this.buildMainQuery().build();
     const finalObj = [];
-    this.traverse(query, (obj: any, key: any, val: any) => {
+    this.traverse((query as any).query, (obj: any, key: any, val: any) => {
       if (key == 'term' && val instanceof Object) finalObj.push(val);
       if (key == 'terms' && val instanceof Object && !val?.size)
         finalObj.push(val);

@@ -52,6 +52,7 @@ export interface ComponentCounterConfigs {
   percentageFromTotal?: boolean;
   filter?: string;
   description?: string;
+  counterIndex?: number;
 }
 
 export interface ComponentLabelConfigs {

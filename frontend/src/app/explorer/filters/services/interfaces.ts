@@ -236,6 +236,7 @@ export interface QueryBlock {
   sort?: boolean;
   metric?: string;
   metric_field?: string;
+  counterIndex?: number;
 }
 
 /**

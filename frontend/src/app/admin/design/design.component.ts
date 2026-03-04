@@ -260,7 +260,7 @@ export class DesignComponent implements OnInit {
   }
 
   counterEdited(value, index) {
-    this.counters[index] = this.createCounter(value);
+    this.counters[index] = this.createCounter(value, index);
   }
   dropDashboard(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.dashboard, event.previousIndex, event.currentIndex);
@@ -274,7 +274,7 @@ export class DesignComponent implements OnInit {
 
   newCounter() {
     this.counters.push(
-      this.createCounter({ source: null, title: null, description: null }),
+      this.createCounter({ source: null, title: null, description: null }, this.counters.length + 1),
     );
   }
 
@@ -498,7 +498,7 @@ export class DesignComponent implements OnInit {
       componentConfigs: temp as ComponentFilterConfigs,
     };
   }
-  createCounter(obj) {
+  createCounter(obj, index) {
     const temp = {};
 
     if (obj.title) temp['title'] = obj.title;
@@ -514,12 +514,13 @@ export class DesignComponent implements OnInit {
         obj.source[0].field = obj.source[0].field + '.keyword';
       temp['source'] = obj.source;
 
-      temp['id'] = 'counter_' + obj.source[0].field;
+      temp['id'] = obj.source[0].field + '_' + index;
       if (obj.filter) {
         temp['id'] =
-          'counter_' + obj.source[0].field + obj.filter.replace(/\s/g, '');
+          obj.source[0].field + obj.filter.replace(/\s/g, '') + '_' + index;
       }
     }
+    temp['counterIndex'] = index;
 
     if (obj.filter) temp['filter'] = obj.filter;
     if (obj.type) temp['type'] = obj.type;

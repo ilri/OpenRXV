@@ -105,7 +105,7 @@ export const getAggregation = createSelector(
   getItems,
   (
     items: ElasticsearchResponse,
-    sourceFilter: { source: string; filter: string },
+    sourceFilter: { source: string; filter: string, counterIndex: number },
   ) => {
     // just a safe check, so no errors will be logged to the console
     // undefined won't come when the page loads for the first time
@@ -115,17 +115,12 @@ export const getAggregation = createSelector(
     // loading is false
     if (items.aggregations !== undefined) {
       let key: string;
+      sourceFilter.source = sourceFilter.source.replace('.keyword', '');
       if (sourceFilter.filter) {
         // Filtered counter values
-        key = `${sourceFilter.source}_${sourceFilter.filter}`;
-        if (!items.aggregations?.[key]) {
-          key = `${sourceFilter.source}.keyword_${sourceFilter.filter}`;
-        }
+        key = `${sourceFilter.source}_${sourceFilter.counterIndex}_${sourceFilter.filter}`;
       } else {
-        key = sourceFilter.source;
-        if (!items.aggregations?.[key]) {
-          key = `${sourceFilter.source}.keyword`;
-        }
+        key = `${sourceFilter.source}_${sourceFilter.counterIndex}`;
       }
 
       // Pre-filtered aggs will have the aggs object inside the same key {total: {total: {...}}}
