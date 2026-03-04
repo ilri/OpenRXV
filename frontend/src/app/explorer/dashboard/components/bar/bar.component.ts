@@ -79,7 +79,7 @@ export class BarComponent extends ParentChart implements OnInit, OnDestroy {
 
     const chartType = direction === 'horizontal' ? 'bar' : 'column';
     const isStacked = stacking === 'stack';
-    const isPlain = stacking === 'plain';
+    const isPlain = stacking === 'plain' || !isMultiLevel;
 
     let series = [];
     const drilldownSeries = [];
@@ -88,9 +88,8 @@ export class BarComponent extends ParentChart implements OnInit, OnDestroy {
       // Level 1: Categories
       // Level 2: Series (Groups)
       // Level 3+: Drilldown
-      const seriesNames = new Set<string>();
 
-      buckets.forEach((b: any) => {
+      series = buckets.map((b: any) => {
         const nextLevelSource = source[1];
         let nextLevelAggName = nextLevelSource.field + '_level_1';
         nextLevelAggName = b[nextLevelAggName]
@@ -102,71 +101,48 @@ export class BarComponent extends ParentChart implements OnInit, OnDestroy {
             ? b.buckets
             : [];
 
-        subBuckets.forEach((sb) => {
-          seriesNames.add(sb.key);
-        });
-      });
+        const data = subBuckets.map((sb: any) => {
+          const value = sb.metric ? sb.metric.value : sb.doc_count;
+          const point: any = {
+            name: sb.key, // Category name from Level 1
+            y: value,
+            source: nextLevelSource.field,
+          };
 
-      series = Array.from(seriesNames).map((name) => {
-        const data = buckets
-          .map((b: any) => {
-            const nextLevelSource = source[1];
-            let nextLevelAggName = nextLevelSource.field + '_level_1';
-            nextLevelAggName = b[nextLevelAggName]
-              ? nextLevelAggName
-              : nextLevelSource.field + '.keyword_level_1';
-            const subBuckets = b[nextLevelAggName]
-              ? b[nextLevelAggName].buckets
-              : b.buckets
-                ? b.buckets
+          // Drilldown from level 2 to level 3+
+          if (source.length > 2) {
+            const nextLevelIndex = 2;
+            const drilldownSource = source[nextLevelIndex];
+            let drilldownAggName =
+              drilldownSource.field + '_level_' + nextLevelIndex;
+            drilldownAggName = sb[drilldownAggName]
+              ? drilldownAggName
+              : drilldownSource.field + '.keyword_level_' + nextLevelIndex;
+            const drilldownBuckets = sb[drilldownAggName]
+              ? sb[drilldownAggName].buckets
+              : sb.buckets
+                ? sb.buckets
                 : [];
 
-            const found = subBuckets.find((sb) => sb.key === name);
-            if (!found) return null;
-
-            const value = found.metric ? found.metric.value : found.doc_count;
-
-            const point: any = {
-              name: b.key, // Category name from Level 1
-              y: value,
-              source: nextLevelSource.field,
-            };
-
-            // Drilldown from level 2 to level 3+
-            if (source.length > 2) {
-              const nextLevelIndex = 2;
-              const drilldownSource = source[nextLevelIndex];
-              let drilldownAggName =
-                drilldownSource.field + '_level_' + nextLevelIndex;
-              drilldownAggName = found[drilldownAggName]
-                ? drilldownAggName
-                : drilldownSource.field + '.keyword_level_' + nextLevelIndex;
-              const drilldownBuckets = found[drilldownAggName]
-                ? found[drilldownAggName].buckets
-                : found.buckets
-                  ? found.buckets
-                  : [];
-
-              if (drilldownBuckets && drilldownBuckets.length > 0) {
-                const drilldownId = `${b.key}_${name}_1`;
-                point.drilldown = drilldownId;
-                this.prepareDrilldownData(
-                  drilldownBuckets,
-                  drilldownSeries,
-                  nextLevelIndex,
-                  drilldownId,
-                  name,
-                  chartType,
-                );
-              }
+            if (drilldownBuckets && drilldownBuckets.length > 0) {
+              const drilldownId = `${b.key}_${sb.key}_1`;
+              point.drilldown = drilldownId;
+              this.prepareDrilldownData(
+                drilldownBuckets,
+                drilldownSeries,
+                nextLevelIndex,
+                drilldownId,
+                sb.key,
+                chartType,
+              );
             }
+          }
 
-            return point;
-          })
-          .filter((p) => p !== null);
+          return point;
+        });
 
         return {
-          name: name,
+          name: b.key,
           data: data,
           type: chartType,
           stacking: isStacked ? 'normal' : undefined,
@@ -281,15 +257,8 @@ export class BarComponent extends ParentChart implements OnInit, OnDestroy {
       },
       tooltip: {
         formatter: function () {
-          if (this.points) {
-            let total = 0;
-            const points = this.points.map((point) => {
-              total += Number(point.y);
-              return `<tr><td style="color: ${point.color}; padding: 0">${point.series.name}: </td><td style="padding:0"><b>${point.y}</b></td></tr>`;
-            });
-            return `<span>${this.x}: <b>${total}</b></span><table>${points.join(
-              '',
-            )}</table>`;
+          if (this?.series?.name && this.series.name !== 'Main') {
+            return `<span>${this.key}<br><span style="color: ${this.color}">${this.series.name}: <b>${this.y}</b></span></span>`;
           } else {
             return `<span>${this.key}: <b>${this.y}</b></span>`;
           }
