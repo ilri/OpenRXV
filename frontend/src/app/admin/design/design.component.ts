@@ -403,6 +403,8 @@ export class DesignComponent implements OnInit {
     if (obj.metric) temp['metric'] = obj.metric;
     if (obj.metric_field) temp['metric_field'] = obj.metric_field;
 
+    if (obj.pre_filter) temp['pre_filter'] = obj.pre_filter;
+
     if (obj.data_labels) temp['data_labels'] = obj.data_labels;
 
     if (obj.data_labels_count)
@@ -504,6 +506,8 @@ export class DesignComponent implements OnInit {
     if (obj.icon) temp['icon'] = obj.icon;
 
     if (obj.description) temp['description'] = obj.description;
+
+    if (obj.pre_filter) temp['pre_filter'] = obj.pre_filter;
 
     if (obj.source) {
       if (obj.type == 'cardinality')

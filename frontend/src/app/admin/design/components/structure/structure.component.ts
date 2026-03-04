@@ -307,6 +307,13 @@ export class StructureComponent implements OnInit {
         required: false,
       });
     }
+
+    this.form_data.push({
+      name: 'pre_filter',
+      label: 'Pre-filter (JSON)',
+      type: 'textarea',
+      required: false,
+    });
   }
 
   /** Inserted by Angular inject() migration for backwards compatibility */
@@ -498,7 +505,7 @@ export class StructureComponent implements OnInit {
     }
 
     this.dialogRef = this.dialog.open(FormDialogComponent, {
-      width: '90vw',
+      width: '95vw',
       data: {
         dashboard_name,
         form_data: Object.create(this.form_data),

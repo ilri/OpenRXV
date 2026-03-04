@@ -230,6 +230,7 @@ export interface QueryBlock {
   is_related?: boolean;
   buckets: string;
   filter?: string;
+  pre_filter?: string;
   size?: number;
   type?: string;
   sort?: boolean;

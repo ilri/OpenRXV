@@ -70,7 +70,14 @@ export const getBuckets = createSelector(
   (items: ElasticsearchResponse, key: string) => {
     if (items.aggregations !== undefined) {
       const aggs = items.aggregations;
-      return aggs[key] && aggs[key].buckets;
+      if (aggs[key]) {
+        if (aggs[key]?.buckets) {
+          return aggs[key] && aggs[key].buckets;
+        } else if (aggs[key]?.[key]?.buckets) {
+          return aggs[key] && aggs[key][key].buckets;
+        }
+      }
+      return false;
     }
   },
 );
@@ -80,7 +87,14 @@ export const getNestedBuckets = createSelector(
   (items: ElasticsearchResponse, id: string) => {
     if (items.aggregations !== undefined) {
       const aggs = items.aggregations;
-      return aggs[id] && aggs[id].buckets;
+      if (aggs[id]) {
+        if (aggs[id]?.buckets) {
+          return aggs[id] && aggs[id].buckets;
+        } else if (aggs[id]?.[id]?.buckets) {
+          return aggs[id] && aggs[id][id].buckets;
+        }
+      }
+      return false;
     }
   },
 );
@@ -114,7 +128,10 @@ export const getAggregation = createSelector(
         }
       }
 
-      return items.aggregations[key] || 0;
+      // Pre-filtered aggs will have the aggs object inside the same key {total: {total: {...}}}
+      return items.aggregations[key]?.[key]
+        ? items.aggregations[key][key]
+        : items.aggregations[key] || 0;
     }
   },
 );

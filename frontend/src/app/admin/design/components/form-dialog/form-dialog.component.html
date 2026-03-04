@@ -1,8 +1,6 @@
 <h1 mat-dialog-title>Settings</h1>
 <div mat-dialog-content>
-  @if (
-    data?.configs?.component && data.configs.component !== 'MainListComponent'
-  ) {
+  @if (!skipPreview) {
     <div class="col-md-6 preview-container">
       <div class="preview-content" [id]="liveConfigs?.componentConfigs?.id">
         @if (previewChart) {
@@ -19,9 +17,9 @@
     #f="ngForm"
     class="formd"
     [ngClass]="
-      data?.configs?.component && data.configs.component !== 'MainListComponent'
-        ? 'col-md-6'
-        : ''
+      skipPreview
+        ? ''
+        : 'col-md-6'
     "
     [formGroup]="form"
   >
@@ -206,7 +204,7 @@
     (keyup.enter)="submit(f.value)"
     (click)="submit(f.value)"
     mat-raised-button
-    [disabled]="f.invalid"
+    [disabled]="f.invalid || !preFilterJsonValid"
   >
     Save <mat-icon>done</mat-icon>
   </button>

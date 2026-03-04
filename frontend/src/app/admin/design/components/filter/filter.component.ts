@@ -217,6 +217,7 @@ export class FilterComponent implements OnInit {
         dashboard_name,
         form_data: this.form_data,
         configs: this.configs,
+        skipPreview: true,
       },
     });
 

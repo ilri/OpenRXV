@@ -30,6 +30,7 @@ import { debounceTime } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
 import { ComponentFilterConfigs } from '../../../../explorer/configs/generalConfig.interface';
 import * as fromStore from '../../../../explorer/store';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-form-dialog',
@@ -61,6 +62,7 @@ export class FormDialogComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   private store = inject<Store<AppState>>(Store);
   private mainBodyBuilderService = inject(MainBodyBuilderService);
+  private toastr = inject(ToastrService);
 
   controls = [];
   form: UntypedFormGroup = new UntypedFormGroup({
@@ -71,6 +73,8 @@ export class FormDialogComponent implements OnInit {
   metadata = [];
   previewChart = false;
   liveConfigs: any;
+  skipPreview = true;
+  preFilterJsonValid = true;
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
@@ -81,6 +85,17 @@ export class FormDialogComponent implements OnInit {
     this.dialogRef.close(false);
   }
   submit(value) {
+    if (
+      Object.hasOwn(this.form.value, 'pre_filter') &&
+      this.form.value['pre_filter'] !== ''
+    ) {
+      try {
+        JSON.parse(this.form.value['pre_filter']);
+      } catch (e) {
+        this.toastr.error('Invalid JSON in the field "Pre-filter"');
+        return;
+      }
+    }
     const names_exist: Array<string> = this.data.form_data.map((d) => d.name);
     Object.keys(this.form.controls).forEach((key) => {
       if (names_exist.indexOf(key) == -1) this.form.removeControl(key);
@@ -126,6 +141,14 @@ export class FormDialogComponent implements OnInit {
     this.form.valueChanges.pipe(debounceTime(500)).subscribe(() => {
       this.previewChart = false;
       if (!this.form.valid) {
+        return;
+      }
+
+      // No preview for counters or main list
+      this.skipPreview =  this.data.skipPreview ||
+        !this.form.value?.['component'] ||
+        this.form.value['component'] === 'MainListComponent';
+      if (this.skipPreview) {
         return;
       }
 
@@ -199,6 +222,8 @@ export class FormDialogComponent implements OnInit {
 
     if (obj.metric) temp['metric'] = obj.metric;
     if (obj.metric_field) temp['metric_field'] = obj.metric_field;
+
+    if (obj.pre_filter) temp['pre_filter'] = obj.pre_filter;
 
     if (obj.data_labels) temp['data_labels'] = obj.data_labels;
 

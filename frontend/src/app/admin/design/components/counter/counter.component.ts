@@ -82,6 +82,12 @@ export class CounterComponent implements OnInit {
       type: 'check',
       required: false,
     },
+    {
+      name: 'pre_filter',
+      label: 'Pre-filter (JSON)',
+      type: 'textarea',
+      required: false,
+    },
   ];
 
   @Input() configs;
@@ -110,6 +116,7 @@ export class CounterComponent implements OnInit {
         form_data: this.form_data,
         configs: this.configs,
         isCounter: true,
+        skipPreview: true,
       },
     });
 

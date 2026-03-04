@@ -121,6 +121,7 @@ export class BuilderUtilities {
       ({
         id,
         filter,
+        pre_filter,
         type,
         source,
         is_related,
@@ -131,6 +132,7 @@ export class BuilderUtilities {
       }: any) => {
         const qb: QueryBlock = {
           filter,
+          pre_filter,
           type,
           size,
           is_related,
@@ -170,6 +172,7 @@ export class BuilderUtilities {
             : 10000,
           sort: componentConfigs.sort,
           metric: (componentConfigs as any).metric,
+          pre_filter: (componentConfigs as any).pre_filter,
           metric_field: (componentConfigs as any).metric_field
             ? (componentConfigs as any).metric_field.replace('.keyword', '')
             : undefined,
@@ -182,41 +185,66 @@ export class BuilderUtilities {
     qb: QueryBlock,
     b: bodybuilder.Bodybuilder,
   ): void {
-    const { filter, source, type } = qb; // filter comes from this.convertEnumToQueryBlock
+    const { filter, pre_filter, source, type } = qb; // filter comes from this.convertEnumToQueryBlock
     const sourceString = source[0].field as string;
-    if (!filter && type == 'cardinality' && sourceString != 'total.keyword') {
-      b.aggregation(
-        'cardinality',
-        {
+    let parsedPreFilter;
+    try {
+      parsedPreFilter = JSON.parse(pre_filter);
+    } catch (e) {
+      parsedPreFilter = null;
+    }
+
+    const aggObject = {
+      type: '',
+      agg: null,
+      name: '',
+    };
+    if (filter) {
+      aggObject.type = 'filter';
+      aggObject.agg = {
+        term: {
+          [sourceString]: filter,
+        },
+      };
+      aggObject.name = `${sourceString}_${filter}`;
+    } else if (type) {
+      aggObject.type = type;
+      aggObject.name = sourceString;
+      if (type == 'cardinality') {
+        aggObject.agg = {
           field: sourceString,
           precision_threshold: 40000,
-        },
-        sourceString,
-      );
-    } else if (
-      !filter &&
-      type &&
-      type != 'cardinality' &&
-      sourceString != 'total.keyword'
-    ) {
-      b.aggregation(
-        type,
-        {
+        };
+      } else {
+        aggObject.agg = {
           field: sourceString.replace('.keyword', ''),
           missing: 0,
-        },
-        sourceString,
-      );
-    } else if (filter && type && sourceString != 'total.keyword') {
-      const obj = Object.create(null);
-      obj[sourceString] = filter;
+        };
+      }
+    } else {
+      return;
+    }
+
+    if (parsedPreFilter) {
       b.aggregation(
         'filter',
         {
-          term: obj,
+          bool: {
+            filter: {
+              bool: {
+                must: parsedPreFilter,
+              },
+            },
+          },
         },
-        `${sourceString}_${filter}`,
+        aggObject.name,
+        (a1) => {
+          a1.aggregation(aggObject.type, aggObject.agg, aggObject.name);
+          return a1;
+        },
       );
+    } else {
+      b.aggregation(aggObject.type, aggObject.agg, aggObject.name);
     }
   }
 
@@ -239,27 +267,72 @@ export class BuilderUtilities {
     const current = sources[index];
     const isLast = index === sources.length - 1;
     const name = parentName ? parentName : `${current.field}_level_${index}`;
+    let parsedPreFilter;
+    try {
+      parsedPreFilter = qb?.pre_filter ? JSON.parse(qb.pre_filter) : null;
+    } catch (e) {
+      parsedPreFilter = null;
+    }
 
-    b.aggregation(
-      'terms',
-      this.buildTermRules(
-        current.limit,
-        current.field,
-        false,
-        current.order,
-        !qb?.metric || qb.metric === 'count',
-      ),
-      name,
-      (a) => {
-        if (qb.metric && qb.metric !== 'count') {
-          a.aggregation(qb.metric, qb.metric_field, 'metric');
-        }
-        if (!isLast) {
-          this.buildNestedAggs(a, sources, index + 1, qb);
-        }
-        return a;
-      },
-    );
+    if (parsedPreFilter && index === 0) {
+      b.aggregation(
+        'filter',
+        {
+          bool: {
+            filter: {
+              bool: {
+                must: parsedPreFilter,
+              },
+            },
+          },
+        },
+        name,
+        (a1) => {
+          a1.aggregation(
+            'terms',
+            this.buildTermRules(
+              current.limit,
+              current.field,
+              false,
+              current.order,
+              !qb?.metric || qb.metric === 'count',
+            ),
+            name,
+            (a) => {
+              if (qb.metric && qb.metric !== 'count') {
+                a.aggregation(qb.metric, qb.metric_field, 'metric');
+              }
+              if (!isLast) {
+                this.buildNestedAggs(a, sources, index + 1, qb);
+              }
+              return a;
+            },
+          );
+          return a1;
+        },
+      );
+    } else {
+      b.aggregation(
+        'terms',
+        this.buildTermRules(
+          current.limit,
+          current.field,
+          false,
+          current.order,
+          !qb?.metric || qb.metric === 'count',
+        ),
+        name,
+        (a) => {
+          if (qb.metric && qb.metric !== 'count') {
+            a.aggregation(qb.metric, qb.metric_field, 'metric');
+          }
+          if (!isLast) {
+            this.buildNestedAggs(a, sources, index + 1, qb);
+          }
+          return a;
+        },
+      );
+    }
   }
 
   private buildTermRules(
