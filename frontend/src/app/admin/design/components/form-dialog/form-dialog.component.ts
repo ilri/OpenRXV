@@ -210,8 +210,8 @@ export class FormDialogComponent implements OnInit {
         index1;
     if (obj.size) temp['size'] = obj.size;
 
-    // Disable filter on click
-    temp['allowFilterOnClick'] = obj.allowFilterOnClick = false;
+    // Disable filter on click when previewing
+    temp['allowFilterOnClick'] = false;
 
     if (obj.inner_size) temp['inner_size'] = obj.inner_size;
 
