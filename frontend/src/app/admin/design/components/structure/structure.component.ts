@@ -55,6 +55,7 @@ export class StructureComponent implements OnInit {
     { name: 'Line', value: 'LineComponent', icon: 'bar_chart' },
     { name: 'Word Cloud', value: 'WordcloudComponent', icon: 'filter_drama' },
     { name: 'Sunburst Chart', value: 'SunburstComponent', icon: 'pie_chart' },
+    { name: 'Radar Chart', value: 'RadarComponent', icon: 'vignette' },
     { name: 'World Map', value: 'MapComponent', icon: 'map' },
     { name: 'Google Map', value: 'GoogleMapsComponent', icon: 'map' },
     { name: 'List', value: 'ListComponent', icon: 'list' },
@@ -292,6 +293,23 @@ export class StructureComponent implements OnInit {
           { name: 'Area', value: 'area' },
         ],
         required: true,
+      });
+    } else if (value === 'RadarComponent') {
+      this.form_data.push({
+        name: 'line_type',
+        label: 'Chart type',
+        type: 'select',
+        items: [
+          { name: 'Line', value: 'line' },
+          { name: 'Area', value: 'area' },
+        ],
+        required: true,
+      });
+      this.form_data.push({
+        name: 'data_labels_count',
+        label: 'Show data labels count',
+        type: 'checkbox',
+        required: false,
       });
     } else if (value === 'ListComponent') {
       this.form_data.push({

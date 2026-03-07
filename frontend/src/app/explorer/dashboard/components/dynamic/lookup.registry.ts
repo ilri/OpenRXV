@@ -10,6 +10,7 @@ import { MainListComponent } from '../list/main-list/main-list.component';
 import { PieComponent } from '../pie/pie.component';
 import { WordcloudComponent } from '../wordcloud/wordcloud.component';
 import { SunburstComponent } from '../sunburst/sunburst.component';
+import { RadarComponent } from '../radar/radar.component';
 import { DateRangeComponent } from '../../../filters/date-range/date-range.component';
 import { LabelComponent } from '../../../filters/label/label.component';
 import { RangeComponent } from '../../../filters/range/range.component';
@@ -31,6 +32,7 @@ export const ComponentLookupRegistry = (key: string): any => {
     LineComponent: LineComponent,
     WordcloudComponent: WordcloudComponent,
     SunburstComponent: SunburstComponent,
+    RadarComponent: RadarComponent,
     MapComponent: MapComponent,
     GoogleMapsComponent: GooglemapsComponent,
     ListComponent: ListComponent,

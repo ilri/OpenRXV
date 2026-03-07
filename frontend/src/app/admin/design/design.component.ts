@@ -439,7 +439,8 @@ export class DesignComponent implements OnInit {
       obj.component == 'BarComponent' ||
       obj.component == 'PackedBubbleComponent' ||
       obj.component == 'PackedBubbleSplitComponent' ||
-      obj.component == 'SunburstComponent'
+      obj.component == 'SunburstComponent' ||
+      obj.component == 'RadarComponent'
     )
       temp['related'] = true;
 
