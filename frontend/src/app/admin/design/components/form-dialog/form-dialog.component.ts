@@ -145,7 +145,8 @@ export class FormDialogComponent implements OnInit {
       }
 
       // No preview for counters or main list
-      this.skipPreview =  this.data.skipPreview ||
+      this.skipPreview =
+        this.data.skipPreview ||
         !this.form.value?.['component'] ||
         this.form.value['component'] === 'MainListComponent';
       if (this.skipPreview) {

@@ -105,7 +105,7 @@ export const getAggregation = createSelector(
   getItems,
   (
     items: ElasticsearchResponse,
-    sourceFilter: { source: string; filter: string, counterIndex: number },
+    sourceFilter: { source: string; filter: string; counterIndex: number },
   ) => {
     // just a safe check, so no errors will be logged to the console
     // undefined won't come when the page loads for the first time

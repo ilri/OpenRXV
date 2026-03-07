@@ -137,7 +137,7 @@ export class RadarComponent extends ParentChart implements OnInit, OnDestroy {
       series: series as any,
       ...this.cms.commonProperties(),
     };
-    console.log(this.chartOptions)
+    console.log(this.chartOptions);
     this.reloadComponent();
   }
 

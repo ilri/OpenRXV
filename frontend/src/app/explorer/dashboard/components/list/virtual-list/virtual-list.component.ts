@@ -151,16 +151,15 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
   }
 
   getTotal(): number {
-    if (this.totalItems >= 0)
-      return this.totalItems;
+    if (this.totalItems >= 0) return this.totalItems;
     if (this.componentConfigs.metric === 'count') {
       this.store
         .select<number>(fromStore.getTotal)
         .subscribe((total: number) => (this.totalItems = total));
     } else {
       this.totalItems = 0;
-      console.log(typeof this.listData)
-      this.listData.map(b => {
+      console.log(typeof this.listData);
+      this.listData.map((b) => {
         this.totalItems += b.metric.value;
       });
     }

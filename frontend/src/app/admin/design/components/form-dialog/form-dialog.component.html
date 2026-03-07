@@ -16,11 +16,7 @@
   <form
     #f="ngForm"
     class="formd"
-    [ngClass]="
-      skipPreview
-        ? ''
-        : 'col-md-6'
-    "
+    [ngClass]="skipPreview ? '' : 'col-md-6'"
     [formGroup]="form"
   >
     @for (control of formControls; track control) {

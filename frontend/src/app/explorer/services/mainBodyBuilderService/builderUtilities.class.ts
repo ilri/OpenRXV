@@ -147,7 +147,7 @@ export class BuilderUtilities {
           sort: sort ? sort : false,
           metric,
           metric_field: metric_field ? metric_field : undefined,
-          counterIndex
+          counterIndex,
         };
         arr.push(qb);
       },
@@ -178,7 +178,7 @@ export class BuilderUtilities {
           metric_field: (componentConfigs as any).metric_field
             ? (componentConfigs as any).metric_field.replace('.keyword', '')
             : undefined,
-          counterIndex: Object.hasOwn((componentConfigs as any), 'counterIndex')
+          counterIndex: Object.hasOwn(componentConfigs as any, 'counterIndex')
             ? (componentConfigs as any)?.counterIndex
             : undefined,
         };

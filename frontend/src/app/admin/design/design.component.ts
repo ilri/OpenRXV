@@ -274,7 +274,10 @@ export class DesignComponent implements OnInit {
 
   newCounter() {
     this.counters.push(
-      this.createCounter({ source: null, title: null, description: null }, this.counters.length + 1),
+      this.createCounter(
+        { source: null, title: null, description: null },
+        this.counters.length + 1,
+      ),
     );
   }
 

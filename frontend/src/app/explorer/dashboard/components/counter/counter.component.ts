@@ -57,7 +57,8 @@ export class CounterComponent implements OnInit {
   }
 
   ngOnInit() {
-    const { source, filter, percentageFromTotal, counterIndex } = this.componentConfigs;
+    const { source, filter, percentageFromTotal, counterIndex } =
+      this.componentConfigs;
     this.subToLoading((source as SourceLevel[])[0].field, filter, counterIndex);
     if (percentageFromTotal) {
       this.getTotal = true;
@@ -73,7 +74,11 @@ export class CounterComponent implements OnInit {
       );
   }
 
-  private subToLoading(source: string, filter: string, counterIndex: number): void {
+  private subToLoading(
+    source: string,
+    filter: string,
+    counterIndex: number,
+  ): void {
     this.store.select(fromStore.getLoadingStatus).subscribe((b: boolean) => {
       this.loading = b;
       if (this.storeFlag === undefined && !b) {
@@ -82,7 +87,11 @@ export class CounterComponent implements OnInit {
     });
   }
 
-  private subToDataFromStore(source: string, filter: string, counterIndex: number): void {
+  private subToDataFromStore(
+    source: string,
+    filter: string,
+    counterIndex: number,
+  ): void {
     this.store
       .select(fromStore.getAggregation, {
         source,
