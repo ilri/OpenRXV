@@ -38,13 +38,13 @@
               </span>
               @if (isSmall && !componentConfigs?.hide_percentage) {
                 <small>
-                  ( {{ ((item.doc_count / totalItems) * 100).toFixed(2) }}% )
+                  ( {{ ((getValue(item) / getTotal()) * 100).toFixed(2) }}% )
                 </small>
               }
               <span class="spacer"></span>
               @if (!componentConfigs?.hide_total) {
                 <small class="doc-count">
-                  {{ item.doc_count | number }}
+                  {{ getValue(item) | number }}
                 </small>
               }
             </div>
@@ -54,7 +54,7 @@
                   class="progress-bar bg-primary progress-bar-striped"
                   role="progressbar"
                   [ngStyle]="{
-                    width: (item.doc_count / totalItems) * 100 + '%',
+                    width: (getValue(item) / getTotal()) * 100 + '%',
                   }"
                 ></div>
               </div>
@@ -62,7 +62,7 @@
           </div>
           @if (!isSmall && !componentConfigs?.hide_percentage) {
             <span class="lists-percentage">
-              {{ ((item.doc_count / totalItems) * 100).toFixed(2)
+              {{ ((getValue(item) / getTotal()) * 100).toFixed(2)
               }}<span>%</span>
             </span>
           }

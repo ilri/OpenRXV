@@ -74,9 +74,6 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store
-      .select<number>(fromStore.getTotal)
-      .subscribe((total: number) => (this.totalItems = total));
     const { source } = this.componentConfigs as ComponentDashboardConfigs;
     this.source = source;
   }
@@ -147,5 +144,26 @@ export class VirtualListComponent extends ParentComponent implements OnInit {
 
   handleFilteredChange(filtered: string) {
     this.filteredChange.emit(filtered);
+  }
+
+  getValue(bucket: Bucket): number {
+    return bucket.metric ? bucket.metric.value : bucket.doc_count;
+  }
+
+  getTotal(): number {
+    if (this.totalItems >= 0)
+      return this.totalItems;
+    if (this.componentConfigs.metric === 'count') {
+      this.store
+        .select<number>(fromStore.getTotal)
+        .subscribe((total: number) => (this.totalItems = total));
+    } else {
+      this.totalItems = 0;
+      console.log(typeof this.listData)
+      this.listData.map(b => {
+        this.totalItems += b.metric.value;
+      });
+    }
+    return this.totalItems;
   }
 }

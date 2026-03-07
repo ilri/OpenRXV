@@ -134,6 +134,7 @@ export interface Shards {
 export interface Bucket {
   key: string;
   doc_count: number;
+  metric?: { value: number };
   related?: any;
   buckets?: Bucket[];
 }
