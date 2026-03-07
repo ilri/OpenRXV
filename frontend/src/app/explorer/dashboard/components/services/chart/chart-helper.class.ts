@@ -31,7 +31,8 @@ export class ChartHelper {
         this.chartType === 'packed-bubble' ||
         this.chartType === 'packed-bubble-split' ||
         this.chartType === 'column' ||
-        this.chartType === 'line'
+        this.chartType === 'line' ||
+        this.chartType === 'radar'
           ? 'bottom'
           : 'middle',
       navigation: {

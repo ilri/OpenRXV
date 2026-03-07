@@ -79,7 +79,7 @@ export class RadarComponent extends ParentChart implements OnInit, OnDestroy {
 
     const series = [
       {
-        name: 'Main',
+        name: this.componentConfigs.title,
         data: data,
         type: chartType,
         pointPlacement: 'on',
