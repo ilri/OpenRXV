@@ -1,9 +1,21 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ReprotingFormComponent } from './reproting-form/reproting-form.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import { SettingsService } from '../services/settings.service';
 import { MetadataService } from '../services/metadata.service';
 import { DocComponent } from './doc/doc.component';
@@ -12,13 +24,50 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../common.service';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
   selector: 'app-reporting',
   templateUrl: './reporting.component.html',
   styleUrls: ['./reporting.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+    MatTooltip,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+  ],
 })
 export class ReportingComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  dialog = inject(MatDialog);
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
   reports: any;
   tableData = new MatTableDataSource<any>([]);
   fileName;
@@ -45,15 +94,10 @@ export class ReportingComponent implements OnInit {
     },
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  constructor(
-    private settingsService: SettingsService,
-    public dialog: MatDialog,
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     this.dashboard_name =

@@ -1,10 +1,25 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
+import {
+  MatDrawer,
+  MatSidenavContainer,
+  MatSidenav,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
 import * as fromStore from './store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
-import { TourService, IStepOption } from 'ngx-ui-tour-md-menu';
+import {
+  TourService,
+  IStepOption,
+  TourStepTemplateComponent,
+} from 'ngx-ui-tour-md-menu';
 import {
   GeneralConfigs,
   ComponentCounterConfigs,
@@ -21,17 +36,61 @@ import { InViewState } from './store/reducers/items.reducer';
 import { SetQuery } from './store';
 import { FooterComponent } from './dashboard/components/footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
-import { NgxSpinnerService } from 'ngx-spinner';
-import * as dayjs from 'dayjs';
+import { NgxSpinnerService, NgxSpinnerComponent } from 'ngx-spinner';
+import dayjs from 'dayjs';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { FiltersComponent } from './filters/filters.component';
+import { IconsWithTextComponent } from './dashboard/representationalComponents/icons-with-text/icons-with-text.component';
+import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { MatNavList } from '@angular/material/list';
+import { ScrollToComponent } from './dashboard/components/scroll-to/scroll-to.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
+import { NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'explorer-root',
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.scss'],
+  imports: [
+    MatToolbar,
+    MatToolbarRow,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    ScrollToComponent,
+    NgClass,
+    TourStepTemplateComponent,
+    MatSidenavContainer,
+    MatSidenav,
+    MatNavList,
+    MatButton,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    FiltersComponent,
+    MatSidenavContent,
+    LoadingBarModule,
+    DashboardComponent,
+    NgxSpinnerComponent,
+    AsyncPipe,
+  ],
 })
 export class ExplorerComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly tourService = inject(TourService);
+  private readonly screenSizeService = inject(ScreenSizeService);
+  private readonly itemsService = inject(ItemsService);
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+  private spinner = inject(NgxSpinnerService);
+
   @ViewChild('drawer') sidenav: MatDrawer;
   @ViewChild('sidenavContent', { read: ElementRef }) sidenavContent: ElementRef;
   loading$: Observable<boolean>;
@@ -53,6 +112,8 @@ export class ExplorerComponent implements OnInit {
     top: 0,
   };
   dashboard_name: string;
+  popoverIsOpen = false;
+
   async share() {
     this.openDialog(
       location.href.match(/(.*)shared.*/)
@@ -70,16 +131,10 @@ export class ExplorerComponent implements OnInit {
     return this.screenSizeService.isSmallScreen;
   }
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly tourService: TourService,
-    private readonly screenSizeService: ScreenSizeService,
-    private readonly itemsService: ItemsService,
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-    private spinner: NgxSpinnerService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.orOperator = false;
     this.orAndToolTip = orAndToolTip;
     this.options = {
@@ -281,7 +336,7 @@ export class ExplorerComponent implements OnInit {
   }
 
   async exportDashboard() {
-    this.spinner.show();
+    this.spinner.show('exportSpinner');
     const container = this.sidenavContent.nativeElement as HTMLElement;
     const charts = document.querySelectorAll(
       'mat-sidenav-content > app-dashboard > mat-drawer-container > mat-drawer-content > section > section:last-child > div',
@@ -311,12 +366,12 @@ export class ExplorerComponent implements OnInit {
         doc.save(fileName + '.pdf');
         container.style.removeProperty('height');
         container.style.removeProperty('scroll-behavior');
-        this.spinner.hide();
+        this.spinner.hide('exportSpinner');
       })
       .catch((e) => {
         container.style.removeProperty('height');
         container.style.removeProperty('scroll-behavior');
-        this.spinner.hide();
+        this.spinner.hide('exportSpinner');
       });
   }
 

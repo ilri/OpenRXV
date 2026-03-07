@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener, inject } from '@angular/core';
 import {
   FileType,
   ExporterResponse,
@@ -9,17 +9,46 @@ import { switchMap, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ElasticsearchQuery } from 'src/app/explorer/filters/services/interfaces';
 import { environment } from 'src/environments/environment';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatList, MatListItem } from '@angular/material/list';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss'],
   providers: [ExportService],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatList,
+    NgClass,
+    NgTemplateOutlet,
+    MatListItem,
+    MatProgressBar,
+    MatButton,
+    MatIcon,
+    MatDivider,
+    MatDialogActions,
+  ],
 })
 export class ExportComponent implements OnInit {
+  private exportService = inject(ExportService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private settingsService = inject(SettingsService);
+
   @Input() type: FileType;
   @Input() query: Observable<ElasticsearchQuery>;
   @Input() file: any;
@@ -43,12 +72,10 @@ export class ExportComponent implements OnInit {
     );
   }
 
-  constructor(
-    private exportService: ExportService,
-    private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar,
-    private settingsService: SettingsService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.installing = false;
     this.indexToToggleLoaded = 0;
     this.exportPoint = environment.api + '/export';

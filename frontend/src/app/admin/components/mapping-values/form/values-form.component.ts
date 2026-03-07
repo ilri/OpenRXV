@@ -1,16 +1,50 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ValuesService } from 'src/app/admin/services/values.service';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-values-form',
   templateUrl: './values-form.component.html',
   styleUrls: ['./values-form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    NgSelectModule,
+    MatDialogActions,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class ValuesForm implements OnInit {
+  dialogRef = inject<MatDialogRef<ValuesForm>>(MatDialogRef);
+  private valuesService = inject(ValuesService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     find: new UntypedFormControl(''),
     replace: new UntypedFormControl(''),
@@ -56,13 +90,10 @@ export class ValuesForm implements OnInit {
     await this.spinner.hide();
   }
 
-  constructor(
-    public dialogRef: MatDialogRef<ValuesForm>,
-    private valuesService: ValuesService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     if (this.data) {

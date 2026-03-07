@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, inject } from '@angular/core';
 import { MergedSelect } from 'src/app/explorer/configs/generalConfig.interface';
 import { ItemsService } from 'src/app/explorer/services/itemsService/items.service';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
@@ -18,10 +18,15 @@ import { ElasticsearchResponse } from 'src/app/explorer/filters/services/interfa
  */
 @Injectable()
 export class BarService extends BarServiceComposer {
+  private readonly itemsService = inject(ItemsService);
+
   setChartOptinos: EventEmitter<Array<Highcharts.SeriesColumnOptions>>;
   barLoading: boolean;
 
-  constructor(private readonly itemsService: ItemsService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
     this.setChartOptinos = new EventEmitter<
       Array<Highcharts.SeriesColumnOptions>

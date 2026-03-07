@@ -1,18 +1,57 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  FormBuilder,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NoSapceService } from '../../components/validations/no-sapce.service';
 import { SettingsService } from '../../services/settings.service';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatError, MatLabel } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    MatError,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDialogActions,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class FormDashboardsComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<FormDashboardsComponent>>(MatDialogRef);
+  private fb = inject(FormBuilder);
+  private settingsService = inject(SettingsService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: any;
   defaultDashboard: string;
   indexes: any;
@@ -72,14 +111,10 @@ export class FormDashboardsComponent implements OnInit {
     e.preventDefault();
     this.dialogRef.close();
   }
-  constructor(
-    public dialogRef: MatDialogRef<FormDashboardsComponent>,
-    private fb: FormBuilder,
-    private settingsService: SettingsService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
   populateForm(data = { name: '', description: '', index: '', isEdit: false }) {
     this.form = this.fb.group({
       name: [

@@ -90,7 +90,7 @@ export class JsonFilesService {
 
       response.data.pipe(writer);
       await new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
+        writer.on('finish', resolve as () => void);
         writer.on('error', reject);
       });
 

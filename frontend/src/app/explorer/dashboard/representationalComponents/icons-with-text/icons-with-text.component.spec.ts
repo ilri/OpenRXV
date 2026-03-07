@@ -8,7 +8,7 @@ describe('IconsWithTextComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IconsWithTextComponent],
+      imports: [IconsWithTextComponent],
     }).compileComponents();
   }));
 

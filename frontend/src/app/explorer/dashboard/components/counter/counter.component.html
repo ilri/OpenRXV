@@ -1,34 +1,48 @@
 <mat-card
   appearance="raised"
   matRipple
-  [mdePopoverTriggerFor]="appPopover"
-  mdePopoverTriggerOn="hover"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  (mouseenter)="popoverIsOpen = true"
+  (mouseleave)="popoverIsOpen = false"
   matRippleCentered="centered"
   class="border-bottom-light center-text w-xs-100 primary-hover"
 >
   <mat-card-content>
     <ng-container>
-      <mat-icon *ngIf="componentConfigs?.icon">{{
-        componentConfigs.icon
-      }}</mat-icon>
+      @if (componentConfigs?.icon) {
+        <mat-icon>{{ componentConfigs.icon }}</mat-icon>
+      }
       <mat-card-title>
         <strong>{{ componentConfigs.title }}</strong>
         <span class="counter-number">
           {{ count | number }}
-          <ng-container *ngIf="percentage">
+          @if (percentage) {
             <small class="small-text">
               / {{ percentage | number: '1.1-2' }} %
             </small>
-          </ng-container>
+          }
         </span>
       </mat-card-title>
     </ng-container>
   </mat-card-content>
-  <ngx-loading [show]="!(loadingHits$ | async) && loading"></ngx-loading>
+  <ngx-spinner
+    name="counterSpinner"
+    bdColor="rgba(0, 0, 0, 0.1)"
+    size="medium"
+    color="var(--theme-primary-500)"
+    type="ball-clip-rotate"
+    [fullScreen]="false"
+    [showSpinner]="!(loadingHits$ | async) && loading"
+  ></ngx-spinner>
 </mat-card>
 
-<mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="popoverIsOpen"
+>
   <app-icons-with-text
     [text]="componentConfigs.description"
   ></app-icons-with-text>
-</mde-popover>
+</ng-template>

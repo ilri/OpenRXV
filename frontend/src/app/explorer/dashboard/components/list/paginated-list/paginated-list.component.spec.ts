@@ -8,7 +8,7 @@ describe('PaginatedListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PaginatedListComponent],
+      imports: [PaginatedListComponent],
     }).compileComponents();
   }));
 

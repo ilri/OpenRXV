@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,8 +9,13 @@ import {
 
 @Injectable()
 export class ExportService {
+  private readonly http = inject(HttpClient);
+
   private readonly api_end_export_point: string = environment.api + '/export';
-  constructor(private readonly http: HttpClient) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   export(d: DataForExporter): Observable<ExporterResponse> {
     return this.http.post(

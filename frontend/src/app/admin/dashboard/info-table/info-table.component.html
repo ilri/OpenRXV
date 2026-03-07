@@ -5,26 +5,33 @@
       <th mat-header-cell *matHeaderCellDef>ID.</th>
       <td mat-cell *matCellDef="let element">
         {{ element.id }}
-        <mat-icon
-          class="error-tooltip stuck-job-tooltip"
-          *ngIf="element?.isStuck"
-          matTooltip="Stuck job"
-          matTooltipHideDelay="200"
-          matTooltipPosition="above"
-          >error
-        </mat-icon>
+        @if (element?.isStuck) {
+          <mat-icon
+            class="error-tooltip stuck-job-tooltip"
+            matTooltip="Stuck job"
+            matTooltipHideDelay="200"
+            matTooltipPosition="above"
+            >error
+          </mat-icon>
+        }
       </td>
     </ng-container>
 
-    <ng-container *ngIf="!plugin" matColumnDef="repository_name">
-      <th mat-header-cell *matHeaderCellDef>Repository</th>
-      <td mat-cell *matCellDef="let element">{{ element.repository_name }}</td>
-    </ng-container>
+    @if (!plugin) {
+      <ng-container matColumnDef="repository_name">
+        <th mat-header-cell *matHeaderCellDef>Repository</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.repository_name }}
+        </td>
+      </ng-container>
+    }
 
-    <ng-container *ngIf="plugin" matColumnDef="plugin_name">
-      <th mat-header-cell *matHeaderCellDef>Plugin Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.plugin_name }}</td>
-    </ng-container>
+    @if (plugin) {
+      <ng-container matColumnDef="plugin_name">
+        <th mat-header-cell *matHeaderCellDef>Plugin Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.plugin_name }}</td>
+      </ng-container>
+    }
 
     <ng-container matColumnDef="page">
       <th mat-header-cell *matHeaderCellDef>Page</th>
@@ -50,14 +57,15 @@
       <th mat-header-cell *matHeaderCellDef>Attempts Made</th>
       <td mat-cell *matCellDef="let element">
         {{ element.attemptsMade }}
-        <mat-icon
-          class="error-tooltip"
-          *ngIf="element?.failedReason && element.failedReason !== ''"
-          [matTooltip]="element.failedReason"
-          matTooltipHideDelay="200"
-          matTooltipPosition="left"
-          >error
-        </mat-icon>
+        @if (element?.failedReason && element.failedReason !== '') {
+          <mat-icon
+            class="error-tooltip"
+            [matTooltip]="element.failedReason"
+            matTooltipHideDelay="200"
+            matTooltipPosition="left"
+            >error
+          </mat-icon>
+        }
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

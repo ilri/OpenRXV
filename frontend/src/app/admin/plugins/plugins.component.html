@@ -48,11 +48,13 @@
   </div>
 </div>
 <div class="row admin-dashboard-content">
-  <div *ngFor="let plugin of plugins; let i = index" class="col-md-12 pb-5">
-    <app-plugin
-      (onEdit)="onEdited($event, plugin.name)"
-      [plugins]="plugins"
-      [pluginIndex]="i"
-    ></app-plugin>
-  </div>
+  @for (plugin of plugins; track plugin; let i = $index) {
+    <div class="col-md-12 pb-5">
+      <app-plugin
+        (onEdit)="onEdited($event, plugin.name)"
+        [plugins]="plugins"
+        [pluginIndex]="i"
+      ></app-plugin>
+    </div>
+  }
 </div>

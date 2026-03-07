@@ -3,68 +3,83 @@ import {
   OnInit,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
+  inject,
+  OnDestroy,
 } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
-import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentDashboardConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { ActivatedRoute } from '@angular/router';
-@ComponentLookup('WordcloudComponent')
+import { ChartComponent } from '../chart/chart.component';
+
 @Component({
   selector: 'app-wordcloud',
   templateUrl: './wordcloud.component.html',
   styleUrls: ['./wordcloud.component.scss'],
   providers: [ChartMathodsService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
-export class WordcloudComponent extends ParentChart implements OnInit {
-  constructor(
-    cms: ChartMathodsService,
-    private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activatedRoute: ActivatedRoute,
-  ) {
+export class WordcloudComponent
+  extends ParentChart
+  implements OnInit, OnDestroy
+{
+  private readonly cdr = inject(ChangeDetectorRef);
+  private settingsService = inject(SettingsService);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+
+    this.selectService = selectService;
+    this.store = store;
   }
   colors: string[];
+  enabled: boolean;
+  filtered: string = '';
+  dashboard_name: string;
   async ngOnInit() {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
     this.colors = appearance.chartColors;
     this.init('wordcloud');
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       if (buckets) {
-        this.chartOptions = this.setOptions(buckets);
+        this.setOptions(buckets);
       }
       this.cdr.detectChanges();
     });
   }
-  filterd = false;
-  resetFilter(value = false) {
-    this.resetQ();
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
   }
-  private setOptions(buckets: Array<Bucket>): Highcharts.Options {
-    return {
+  private setOptions(buckets: Array<Bucket>) {
+    const drilldownSeries = [];
+    const mainData = this.prepareData(buckets, drilldownSeries, 0);
+
+    this.chartOptions = {
       chart: {
         type: 'wordcloud',
         animation: true,
@@ -78,10 +93,16 @@ export class WordcloudComponent extends ParentChart implements OnInit {
         series: {
           point: {
             events: {
-              click:
-                this.componentConfigs.allowFilterOnClick == true
-                  ? this.setQ()
-                  : null,
+              click: (e: any) => {
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
+                  this.filtered = e.point.source;
+                  this.Query(e.point.name, e.point.source);
+                }
+              },
             },
           },
         },
@@ -98,16 +119,76 @@ export class WordcloudComponent extends ParentChart implements OnInit {
       series: [
         {
           type: 'wordcloud',
-          data: buckets.map((b: Bucket) => ({
-            name: b.key,
-            weight: b.doc_count,
-          })),
+          data: mainData,
           animation: {
             duration: 200,
           },
-        },
+        } as any,
       ],
+      drilldown: {
+        series: drilldownSeries as any,
+      },
       ...this.cms.commonProperties(),
     };
+    this.enabled = false;
+    this.cdr.detectChanges();
+    this.enabled = true;
+  }
+
+  private prepareData(
+    buckets: any[],
+    drilldownSeries: any[],
+    levelIndex: number,
+  ): any[] {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+
+    return buckets.map((b: any) => {
+      const point: any = {
+        name: b.key,
+        weight: b.metric ? b.metric.value : b.doc_count,
+        source: source[levelIndex].field,
+      };
+
+      if (isMultiLevel) {
+        const nextLevelIndex = levelIndex + 1;
+        const nextLevelSource = (source as SourceLevel[])[nextLevelIndex];
+
+        if (nextLevelSource) {
+          let nextLevelAggName =
+            nextLevelSource.field + '_level_' + nextLevelIndex;
+          nextLevelAggName = b[nextLevelAggName]
+            ? nextLevelAggName
+            : nextLevelSource.field + '.keyword_level_' + nextLevelIndex;
+          const subBuckets = b[nextLevelAggName]
+            ? b[nextLevelAggName].buckets
+            : b.buckets
+              ? b.buckets
+              : null;
+
+          if (subBuckets && subBuckets.length > 0) {
+            const drilldownId = `${b.key}_${levelIndex}`;
+            point.drilldown = drilldownId;
+
+            drilldownSeries.push({
+              id: drilldownId,
+              name: b.key,
+              type: 'wordcloud',
+              source: nextLevelSource.field,
+              data: this.prepareData(
+                subBuckets,
+                drilldownSeries,
+                nextLevelIndex,
+              ),
+            });
+          }
+        }
+      }
+      return point;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

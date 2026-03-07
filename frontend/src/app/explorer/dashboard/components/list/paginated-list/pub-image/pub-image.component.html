@@ -1,30 +1,28 @@
-<mat-spinner *ngIf="loading" [strokeWidth]="1"></mat-spinner>
+@if (loading) {
+  <mat-spinner [strokeWidth]="1"></mat-spinner>
+}
 
-<img
-  *ngIf="!source[content.thumbnail]"
-  class="publication-placeholder-image"
-  src="assets/application-x-zerosize.svg"
-  [hidden]="loading"
-  (load)="onLoad()"
-/>
-
-<img
-  *ngIf="source[content.thumbnail]"
-  [src]="content.thumbnail_prefix + (source[content.thumbnail] | getFirstImage)"
-  class="publication-image"
-  [ngClass]="{ 'sq-image': content.square_thumbnail }"
-  [hidden]="loading"
-  (load)="onLoad()"
-/>
-<figcaption
-  *ngIf="content.tagOnImage"
-  [ngStyle]="{
-    'background-color': chooseColor(
-      content.image_tag_options,
-      source[content.tagOnImage]
-    )
-  }"
-  class="tech-type"
->
-  <span>{{ source[content.tagOnImage] }}</span>
-</figcaption>
+@if (source[content.thumbnail]) {
+  <img
+    [src]="
+      content.thumbnail_prefix + (source[content.thumbnail] | getFirstImage)
+    "
+    class="publication-image"
+    [ngClass]="{ 'sq-image': content.square_thumbnail }"
+    [hidden]="loading"
+    (load)="onLoad()"
+  />
+}
+@if (content.tagOnImage) {
+  <figcaption
+    [ngStyle]="{
+      'background-color': chooseColor(
+        content.image_tag_options,
+        source[content.tagOnImage]
+      ),
+    }"
+    class="tech-type"
+  >
+    <span>{{ source[content.tagOnImage] }}</span>
+  </figcaption>
+}

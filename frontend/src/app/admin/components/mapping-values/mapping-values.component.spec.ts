@@ -8,7 +8,7 @@ describe('MappingValuesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MappingValuesComponent],
+      imports: [MappingValuesComponent],
     }).compileComponents();
   }));
 

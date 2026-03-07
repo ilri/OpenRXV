@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 // use this syntax to prevent optimization bailouts during Angular build
-const bodybuilder = require('bodybuilder');
+import bodybuilder from 'bodybuilder';
 import { Subject } from 'rxjs';
 import { MainBodyBuilderService } from 'src/app/explorer/services/mainBodyBuilderService/main-body-builder.service';
 import {
@@ -16,6 +16,8 @@ import {
   providedIn: 'root',
 })
 export class BodyBuilderService {
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+
   /**
    * `reset Subject` is used to till other components
    * if they should rebuild their query and get new
@@ -25,7 +27,10 @@ export class BodyBuilderService {
   private readonly reset: Subject<ResetOptions>;
   private from: number;
 
-  constructor(private readonly mainBodyBuilderService: MainBodyBuilderService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.reset = new Subject();
     this.from = 0;
     this.mainBodyBuilderService.start();
@@ -177,7 +182,7 @@ export class BodyBuilderService {
   getFiltersFromQuery() {
     const query = this.buildMainQuery().build();
     const finalObj = [];
-    this.traverse(query, (obj: any, key: any, val: any) => {
+    this.traverse((query as any).query, (obj: any, key: any, val: any) => {
       if (key == 'term' && val instanceof Object) finalObj.push(val);
       if (key == 'terms' && val instanceof Object && !val?.size)
         finalObj.push(val);

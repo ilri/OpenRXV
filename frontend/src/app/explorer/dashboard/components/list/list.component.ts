@@ -6,6 +6,7 @@ import {
   HostListener,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
@@ -19,10 +20,21 @@ import { PageEvent } from '@angular/material/paginator';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import { first } from 'rxjs/operators';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../dynamic/lookup.registry';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
+import { PaginatedListComponent } from './paginated-list/paginated-list.component';
+import { VirtualListComponent } from './virtual-list/virtual-list.component';
+import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
+import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 /**
  * declare is used to tell TypeScript compiler that the variable has been created elsewhere.
@@ -31,36 +43,56 @@ import { ActivatedRoute } from '@angular/router';
  * externalModule to hint to the TypeScript compiler that externalModule has already been set up
  */
 declare function _altmetric_embed_init(): any;
-@ComponentLookup('ListComponent')
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   providers: [ScrollHelperService, SelectService],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatExpansionPanel,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    VirtualListComponent,
+    PaginatedListComponent,
+    NgxSpinnerComponent,
+  ],
 })
 export class ListComponent extends ParentComponent implements OnInit {
+  readonly store = inject<Store<fromStore.AppState>>(Store);
+  readonly scrollHelperService = inject(ScrollHelperService);
+  readonly cdr = inject(ChangeDetectorRef);
+  private readonly selectService = inject(SelectService);
+  private activeRoute = inject(ActivatedRoute);
+
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   hits: Hits; // for the paginated list
   listData: Bucket[]; // for aggrigiation list
   isPaginatedList: boolean; // determine if we should display the hits or not
   paginationAtt: PageEvent;
-  filterd = false;
-  constructor(
-    public readonly store: Store<fromStore.AppState>,
-    public readonly scrollHelperService: ScrollHelperService,
-    public readonly cdr: ChangeDetectorRef,
-    private readonly selectService: SelectService,
-    private readonly bodyBuilderService: BodyBuilderService,
-    private activeRoute: ActivatedRoute,
-  ) {
+  filtered: string[] = [];
+  popoverIsOpen = false;
+  sourceString: string = '';
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
   resetQ() {
-    const { source } = this.componentConfigs as ComponentDashboardConfigs;
-    this.filterd = false;
-    const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(source as string);
+    if (this.filtered.length === 0) return;
+
+    let query: bodybuilder.Bodybuilder;
+    this.filtered.map((filtered) => {
+      query = this.selectService.resetValueAttributetoMainQuery(filtered);
+    });
+    this.filtered = [];
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -102,47 +134,47 @@ export class ListComponent extends ParentComponent implements OnInit {
   }
 
   private subToDataFromStore(): void {
-    const { source, size } = this.componentConfigs as ComponentDashboardConfigs;
-    this.shouldWePaginate(source as string)
-      ? this.store.select(fromStore.getHits).subscribe((h: Hits) => {
-          this.initPagination(source as string, h);
-          this.cdr.detectChanges();
-          this.expandOrStay(this.safeCheckLength(h && h.hits));
-        })
-      : this.store
-          .select(
-            fromStore.getBuckets,
-            size ? size + '_' + source : '10000_' + source,
-          )
-          .subscribe((b: Bucket[]) => {
-            const { source } = this
-              .componentConfigs as ComponentDashboardConfigs;
-            const filters = this.bodyBuilderService
-              .getFiltersFromQuery()
-              .filter(
-                (element) =>
-                  Object.keys(element).indexOf(source + '.keyword') != -1,
-              );
-            if (filters.length) this.filterd = true;
-            else this.filterd = false;
-            this.listData = b;
-            this.cdr.detectChanges();
-            this.expandOrStay(this.safeCheckLength(b));
-          });
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    const isMultiLevel = Array.isArray(source) && source.length > 1;
+    this.sourceString = source?.[0]?.field;
+
+    if (this.shouldWePaginate(this.sourceString)) {
+      this.store.select(fromStore.getHits).subscribe((h: Hits) => {
+        this.initPagination(h);
+        this.cdr.detectChanges();
+        this.expandOrStay(this.safeCheckLength(h && h.hits));
+      });
+    } else {
+      this.store
+        .select(
+          isMultiLevel ? fromStore.getNestedBuckets : fromStore.getBuckets,
+          this.componentConfigs.id,
+        )
+        .subscribe((b: Bucket[]) => {
+          this.handleListData(b);
+        });
+    }
+
     this.store.select(fromStore.getLoadingOnlyHits).subscribe((b: boolean) => {
       this.loadingHits = b;
       this.cdr.detectChanges();
     });
   }
 
-  private initPagination(source: string, h: Hits): void {
+  private handleListData(b: Bucket[]) {
+    this.listData = b;
+    this.cdr.detectChanges();
+    this.expandOrStay(this.safeCheckLength(b));
+  }
+
+  private initPagination(h: Hits): void {
     if (
       h &&
       h.total.value !== (this.paginationAtt && this.paginationAtt.length)
     ) {
       this.createPageEvent(h.total.value);
     }
-    this.isPaginatedList = this.shouldWePaginate(source);
+    this.isPaginatedList = true;
     this.hits = h;
     setTimeout(() => _altmetric_embed_init(), 500);
   }
@@ -175,5 +207,9 @@ export class ListComponent extends ParentComponent implements OnInit {
     }
     const len: number | boolean = arr && arr.length;
     return len || 0;
+  }
+
+  handleFilteredChange(filtered: string) {
+    this.filtered.push(filtered);
   }
 }

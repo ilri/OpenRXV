@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  inject,
+} from '@angular/core';
 import {
   searchOptions,
   ComponentSearchConfigs,
@@ -12,38 +18,61 @@ import { fromEvent } from 'rxjs';
 import { map, debounceTime } from 'rxjs/operators';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { ActivatedRoute } from '@angular/router';
-@ComponentLookup('SearchComponent')
+import { MatIcon } from '@angular/material/icon';
+
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatButton } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import {
+  MatFormField,
+  MatLabel,
+  MatSuffix,
+} from '@angular/material/form-field';
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    MatButton,
+    MatSuffix,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class SearchComponent extends ParentComponent implements OnInit {
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private activeRoute = inject(ActivatedRoute);
+
   @ViewChild('search') searchInput: ElementRef;
   searchTerm: string;
 
-  constructor(
-    private readonly bodyBuilderService: BodyBuilderService,
-    private readonly store: Store<fromStore.AppState>,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
   }
 
   ngOnInit(): void {
-    const { counters, dashboard } = JSON.parse(localStorage.getItem('configs'));
+    const { dashboard } = JSON.parse(localStorage.getItem('configs'));
     const sorcue =
       (() => {
         const [conf] = dashboard
           .flat(1)
           .filter(
             ({ componentConfigs }: GeneralConfigs) =>
-              (componentConfigs as ComponentDashboardConfigs).content,
+              (componentConfigs as ComponentDashboardConfigs)?.content,
           );
-        return (conf.componentConfigs as ComponentDashboardConfigs).content
-          .title;
+        return (conf?.componentConfigs as ComponentDashboardConfigs)?.content
+          ?.title;
       })() || 'dc_title';
     this.subToSearchTerms();
     this.subToOrOperator();

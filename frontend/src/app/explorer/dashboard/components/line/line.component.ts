@@ -3,43 +3,56 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
+  OnDestroy,
 } from '@angular/core';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
-import { ComponentLookup } from '../dynamic/lookup.registry';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
-import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
-import { BarService } from './../bar/services/bar/bar.service';
 import { SettingsService } from 'src/app/admin/services/settings.service';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../../store';
 import { ActivatedRoute } from '@angular/router';
+import { ChartComponent } from '../chart/chart.component';
+import { ComponentDashboardConfigs } from '../../../configs/generalConfig.interface';
 
-@ComponentLookup('LineComponent')
 @Component({
   selector: 'app-line',
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
-  providers: [ChartMathodsService, RangeService, BarService, SelectService],
-  changeDetection: ChangeDetectionStrategy.Default,
+  providers: [ChartMathodsService, SelectService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ChartComponent],
 })
-export class LineComponent extends ParentChart implements OnInit {
-  constructor(
-    cms: ChartMathodsService,
-    private readonly cdr: ChangeDetectorRef,
-    private settingsService: SettingsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    activatedRoute: ActivatedRoute,
-  ) {
+export class LineComponent extends ParentChart implements OnInit, OnDestroy {
+  private readonly cdr = inject(ChangeDetectorRef);
+  private settingsService = inject(SettingsService);
+  readonly selectService: SelectService;
+  readonly store: Store<fromStore.AppState>;
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const selectService = inject(SelectService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const activatedRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activatedRoute);
+
+    this.selectService = selectService;
+    this.store = store;
   }
   enabled: boolean;
-
   colors: string[];
+  filtered: string = '';
+  dashboard_name: string;
+
   async ngOnInit() {
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
     const appearance =
       await this.settingsService.readAppearanceSettings(dashboard_name);
@@ -54,69 +67,104 @@ export class LineComponent extends ParentChart implements OnInit {
   }
 
   setOptions(buckets: Array<Bucket>) {
-    const categories = [];
-    buckets.forEach((b: Bucket) => {
-      b.related.buckets.forEach((d) => {
-        if (categories.indexOf(d.key.substr(0, 50)) == -1)
-          categories.push(d.key.substr(0, 50));
-      });
-    });
+    const { source, line_type } = this
+      .componentConfigs as ComponentDashboardConfigs;
+    const chartType = line_type || 'line';
 
-    const data: any = buckets
-      .map((b: Bucket) => {
-        const data = [];
-        categories.forEach((e, i) => {
-          const found: Array<any> = b.related.buckets.filter(
-            (d) => d.key.substr(0, 50) == e,
-          );
-          if (found.length) data[i] = found[0].doc_count;
-          else data[i] = 0;
-        });
-        return {
-          name: b.key,
-          data,
-        };
-      })
-      .flat(1);
-    data.map((a, i) => {
-      (a.name = categories[i]), (a.data = []);
-    });
-    buckets.forEach((element) => {
-      element.related.buckets.forEach((element, index) => {
-        data[index].data.push(element.doc_count);
-      });
-    });
-    this.chartOptions = {
-      title: {
-        text: undefined,
+    const data = buckets.map((b: any) => ({
+      name: b.key,
+      y: b.metric ? b.metric.value : b.doc_count,
+      source: source[0].field,
+    }));
+
+    const series = [
+      {
+        name: this.componentConfigs.title,
+        data: data,
+        type: chartType,
       },
+    ];
+
+    const dataLabelsSettings = this.cms.getDataLabelAttributes(
+      this.componentConfigs,
+      'column', // Use column logic for data labels count
+    );
+
+    this.chartOptions = {
       chart: {
-        type: 'line',
+        type: chartType,
+      },
+      colors: this.colors,
+      xAxis: {
+        type: 'category',
+        crosshair: true,
+      },
+      yAxis: {
+        title: {
+          text: '',
+        },
       },
       plotOptions: {
-        line: {
-          dataLabels: {
-            enabled: true,
+        series: {
+          point: {
+            events: {
+              click: (e: any) => {
+                if (
+                  !e.point.destroyed &&
+                  !e.point.drilldown &&
+                  this.componentConfigs.allowFilterOnClick
+                ) {
+                  this.Query(e.point.name, e.point.source);
+                  this.filtered = e.point.source;
+                }
+              },
+            },
           },
+        },
+        line: {
+          dataLabels: dataLabelsSettings,
           enableMouseTracking: true,
         },
-      },
-      xAxis: {
-        title: {
-          text: 'Date',
+        area: {
+          dataLabels: dataLabelsSettings,
+          stacking: 'normal',
         },
-        accessibility: {
-          description: undefined,
-        },
-        categories: buckets.map((a) => a.key),
       },
-      series: data,
+      tooltip: {
+        formatter: function () {
+          if (this.points) {
+            let total = 0;
+            const points = this.points.map((point) => {
+              total += Number(point.y);
+              return `<tr><td style="color: ${point.color}; padding: 0">${point.series.name}: </td><td style="padding:0"><b>${point.y}</b></td></tr>`;
+            });
+            return `<span>${this.x}: <b>${total}</b></span><table>${points.join(
+              '',
+            )}</table>`;
+          } else {
+            return `<span>${this.key}: <b>${this.y}</b></span>`;
+          }
+        },
+        useHTML: true,
+      },
+      series: series as any,
+      ...this.cms.commonProperties(),
     };
     this.reloadComponent();
   }
+
+  resetFilter(filtered: string) {
+    this.resetQ(filtered);
+    this.filtered = '';
+  }
+
   reloadComponent() {
     this.enabled = false;
     this.cdr.detectChanges();
     this.enabled = true;
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

@@ -26,20 +26,33 @@ export interface ComponentDashboardConfigs {
   id: string;
   title: string;
   description: string;
-  source: string | Array<string>;
+  source: SourceLevel[];
+  metric?: string;
+  metric_field?: string;
   content?: PaginatedListConfigs;
   related?: boolean;
   size?: number;
+  direction?: 'vertical' | 'horizontal';
+  stacking?: 'group' | 'stack' | 'plain';
+  map_type?: 'normal' | 'pie';
+  line_type?: 'line' | 'area';
+}
+
+export interface SourceLevel {
+  field: string;
+  limit: number;
+  order: string;
 }
 
 export interface ComponentCounterConfigs {
   id: string;
   title: string;
   icon?: string;
-  source: string;
+  source: SourceLevel[];
   percentageFromTotal?: boolean;
   filter?: string;
   description?: string;
+  counterIndex?: number;
 }
 
 export interface ComponentLabelConfigs {
@@ -85,6 +98,10 @@ export interface PaginatedListConfigs {
   identifierUri: string;
   altmetric: boolean;
   filterOptions: SortOption[];
+  thumbnail: string;
+  thumbnail_prefix: string;
+  image_tag_options: string;
+  tagOnImage: string;
 }
 
 export enum searchOptions {

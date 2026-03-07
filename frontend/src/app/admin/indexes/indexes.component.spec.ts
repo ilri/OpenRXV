@@ -8,7 +8,7 @@ describe('IndexesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IndexesComponent],
+      imports: [IndexesComponent],
     }).compileComponents();
   }));
 

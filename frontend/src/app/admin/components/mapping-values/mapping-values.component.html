@@ -36,6 +36,16 @@
         <button
           class="mr-2"
           style="float: right"
+          (click)="deleteAll()"
+          color="warn"
+          mat-raised-button
+        >
+          Delete all
+          <mat-icon aria-hidden="false" aria-label="add">delete</mat-icon>
+        </button>
+        <button
+          class="mr-2"
+          style="float: right"
           (click)="openDialog()"
           color="primary"
           mat-raised-button

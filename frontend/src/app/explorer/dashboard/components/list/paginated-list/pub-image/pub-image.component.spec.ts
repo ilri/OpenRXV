@@ -8,7 +8,7 @@ describe('PubImageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PubImageComponent],
+      imports: [PubImageComponent],
     }).compileComponents();
   }));
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../store';
 import { SetQuery } from '../store';
@@ -13,28 +13,52 @@ import {
 import { ItemsService } from '../services/itemsService/items.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SettingsService } from 'src/app/admin/services/settings.service';
+import { IntersectionObserverDirective } from '../directives/intersection-observer.directive';
+import { DynamicComponent } from './components/dynamic/dynamic.component';
+import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { ScrollToComponent } from './components/scroll-to/scroll-to.component';
+import { NgClass, JsonPipe } from '@angular/common';
+import {
+  MatDrawerContainer,
+  MatDrawer,
+  MatDrawerContent,
+} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  imports: [
+    MatDrawerContainer,
+    MatDrawer,
+    ScrollToComponent,
+    MatDrawerContent,
+    TourAnchorMatMenuDirective,
+    DynamicComponent,
+    IntersectionObserverDirective,
+    NgClass,
+    JsonPipe,
+  ],
 })
 export class DashboardComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly itemsService = inject(ItemsService);
+  private activeRoute = inject(ActivatedRoute);
+  private settingsService = inject(SettingsService);
+  private route = inject(Router);
+
   dashboardConfig: Array<GeneralConfigs> = [];
   countersConfig: Array<GeneralConfigs> = [];
   tourConfig: Array<GeneralConfigs> = [];
   oldViewState: Map<string, boolean>;
   dashboard_name: string;
 
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly snackBar: MatSnackBar,
-    private readonly itemsService: ItemsService,
-    private activeRoute: ActivatedRoute,
-    private settingsService: SettingsService,
-    private route: Router,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.oldViewState = new Map<string, boolean>();
   }
   async getCounters() {

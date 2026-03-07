@@ -34,12 +34,17 @@
       <mat-icon>get_app</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <div *ngFor="let file of files; let i = index">
-        <button mat-menu-item (click)="startExportingNow(file.fileType, file)">
-          <img src="assets/export/{{ file.fileType }}.png" />
-          <span>{{ file.title }}</span>
-        </button>
-      </div>
+      @for (file of files; track file; let i = $index) {
+        <div>
+          <button
+            mat-menu-item
+            (click)="startExportingNow(file.fileType, file)"
+          >
+            <img src="assets/export/{{ file.fileType }}.png" />
+            <span>{{ file.title }}</span>
+          </button>
+        </div>
+      }
     </mat-menu>
   </div>
 </section>

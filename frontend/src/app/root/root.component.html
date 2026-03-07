@@ -1,10 +1,11 @@
-<ng-container *ngIf="loadSettigs">
+@if (loadSettigs) {
   <router-outlet></router-outlet>
   <ngx-spinner
-    bdColor="rgba(0, 0, 0, 0.8)"
+    name="rootSpinner"
+    bdColor="rgba(0, 0, 0, 0.1)"
     size="medium"
     color="var(--theme-primary-500)"
     type="ball-clip-rotate"
     [fullScreen]="true"
   ></ngx-spinner>
-</ng-container>
+}

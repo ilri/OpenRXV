@@ -84,14 +84,15 @@
             (cdkDropListDropped)="dropFilter($event)"
             class="content drag-list d-flex align-content-center flex-wrap"
           >
-            <app-filter
-              cdkDrag
-              *ngFor="let item of filters; let i = index"
-              (onDelete)="onFilterDelete($event, i)"
-              (edited)="filtersEdited($event, i)"
-              [configs]="item"
-              class="w-100 drag-item"
-            ></app-filter>
+            @for (item of filters; track item; let i = $index) {
+              <app-filter
+                cdkDrag
+                (onDelete)="onFilterDelete($event, i)"
+                (edited)="filtersEdited($event, i)"
+                [configs]="item"
+                class="w-100 drag-item"
+              ></app-filter>
+            }
           </div>
           <button (click)="newFilter()" class="w-100" mat-button>
             Add Filter
@@ -115,13 +116,14 @@
                   </button>
                 </div>
 
-                <app-counter
-                  class="m-auto"
-                  *ngFor="let item of counters; let i = index"
-                  (onDelete)="onCounterDelete($event, i)"
-                  [configs]="item"
-                  (edited)="counterEdited($event, i)"
-                ></app-counter>
+                @for (item of counters; track item; let i = $index) {
+                  <app-counter
+                    class="m-auto"
+                    (onDelete)="onCounterDelete($event, i)"
+                    [configs]="item"
+                    (edited)="counterEdited($event, i)"
+                  ></app-counter>
+                }
               </div>
               <button (click)="newCounter()" class="w-100" mat-button>
                 Add Counter
@@ -137,16 +139,18 @@
                   (cdkDropListDropped)="dropDashboard($event)"
                   class="col-12 drag-list"
                 >
-                  <app-structure
-                    cdkDrag
-                    class="drag-item"
-                    (rowDeleted)="dashboardRawDeleted($event, i)"
-                    (onDelete)="onDashboardItemDelete($event, i)"
-                    (onAdd)="onAddDashboardComponent($event, i)"
-                    (edited)="dashboardEdited($event, i)"
-                    [grid]="item"
-                    *ngFor="let item of dashboard; let i = index"
-                  ></app-structure>
+                  @for (item of dashboard; track item; let i = $index) {
+                    <app-structure
+                      cdkDrag
+                      class="drag-item"
+                      (rowDeleted)="dashboardRawDeleted($event, i)"
+                      (onDelete)="onDashboardItemDelete($event, i)"
+                      (onAdd)="onAddDashboardComponent($event, i)"
+                      (edited)="dashboardEdited($event, i)"
+                      [grid]="item"
+                      [gridRow]="i"
+                    ></app-structure>
+                  }
                 </div>
                 <button (click)="newRow()" class="col-12" mat-button>
                   Add New Row

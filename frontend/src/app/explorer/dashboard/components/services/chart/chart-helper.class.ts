@@ -30,7 +30,9 @@ export class ChartHelper {
         this.chartType === 'map' ||
         this.chartType === 'packed-bubble' ||
         this.chartType === 'packed-bubble-split' ||
-        this.chartType === 'column'
+        this.chartType === 'column' ||
+        this.chartType === 'line' ||
+        this.chartType === 'radar'
           ? 'bottom'
           : 'middle',
       navigation: {
@@ -126,6 +128,9 @@ export class ChartHelper {
           if (Number(this.point.value) > 0) return this.point.name;
           else return '';
         },
+        style: {
+          textOutline: 'none',
+        },
       };
 
       const dataLabelsEnabled = componentConfigs?.data_labels;
@@ -146,7 +151,7 @@ export class ChartHelper {
         };
       }
       return dataLabelsSettings;
-    } else if (chartType === 'bar') {
+    } else if (chartType === 'bar' || chartType === 'column') {
       return {
         enabled: componentConfigs?.data_labels_count,
         formatter: function () {

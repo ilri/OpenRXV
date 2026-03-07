@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { Subject, of, Observable } from 'rxjs';
 import {
@@ -19,17 +19,24 @@ import { SelectService } from '../services/select/select.service';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
-@ComponentLookup('SelectComponent')
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   providers: [SelectService],
+  imports: [NgSelectModule, FormsModule],
 })
 export class SelectComponent extends ParentComponent implements OnInit {
+  private readonly selectService = inject(SelectService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  private activeRoute = inject(ActivatedRoute);
+
   filterOptions: Bucket[];
   selectedOptions: Bucket[];
   searchTerms$: Subject<string>;
@@ -40,12 +47,10 @@ export class SelectComponent extends ParentComponent implements OnInit {
   private typedTerm: string;
   private opened: boolean;
 
-  constructor(
-    private readonly selectService: SelectService,
-    private readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    private activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
     this.filterOptions = [];
     this.searchTerms$ = new Subject();

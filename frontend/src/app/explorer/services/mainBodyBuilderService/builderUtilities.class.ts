@@ -3,6 +3,7 @@ import {
   GeneralConfigs,
   ComponentCounterConfigs,
   ComponentDashboardConfigs,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { Subject } from 'rxjs';
 import {
@@ -11,6 +12,7 @@ import {
   QueryFilterAttribute,
   QueryBlock,
 } from 'src/app/explorer/filters/services/interfaces';
+import bodybuilder from 'bodybuilder';
 
 export class BuilderUtilities {
   protected dashboardConfig = [];
@@ -21,7 +23,7 @@ export class BuilderUtilities {
     const configs = await JSON.parse(localStorage.getItem('configs'));
     return configs;
   }
-  private querySourceBucketsFilter: QueryBlock[];
+  private querySourceBucketsFilter: QueryBlock[] = [];
   protected aggAttributes:
     | QueryYearAttribute
     | QuerySearchAttribute
@@ -52,11 +54,11 @@ export class BuilderUtilities {
       (() => {
         const [conf] = this.dashboardConfig.filter(
           ({ componentConfigs }: GeneralConfigs) =>
-            (componentConfigs as ComponentDashboardConfigs).content,
+            (componentConfigs as ComponentDashboardConfigs)?.content,
         );
         if (conf)
-          return (conf.componentConfigs as ComponentDashboardConfigs).content
-            .title;
+          return (conf?.componentConfigs as ComponentDashboardConfigs)?.content
+            ?.title;
         else '';
       })() || 'dc_title';
   }
@@ -111,24 +113,43 @@ export class BuilderUtilities {
 
   private convertEnumToQueryBlock(): QueryBlock[] {
     const arr: QueryBlock[] = [];
-    const mainQuerySources: Array<string> = Array.from(
-      new Set([
-        ...this.getSourcesFromConfigs(this.dashboardConfig),
-        ...this.getSourcesFromConfigs(this.countersConfig),
-      ]),
-    );
+    const mainQuerySources: Array<any> = [
+      ...this.getSourcesFromConfigs(this.dashboardConfig),
+      ...this.getSourcesFromConfigs(this.countersConfig),
+    ].filter((s) => s.source);
     mainQuerySources.forEach(
-      ({ filter, type, source, is_related, size, agg_on, sort }: any) => {
-        arr.push({
+      ({
+        id,
+        filter,
+        pre_filter,
+        type,
+        source,
+        is_related,
+        size,
+        sort,
+        metric,
+        metric_field,
+        counterIndex,
+      }: any) => {
+        const qb: QueryBlock = {
           filter,
+          pre_filter,
           type,
           size,
           is_related,
-          source: `${source}.keyword`,
-          agg_on: agg_on ? `${agg_on}.keyword` : undefined,
-          buckets: source,
+          buckets: id,
+          source: source.map((s) => ({
+            ...s,
+            field: s.field.includes('.keyword')
+              ? s.field
+              : `${s.field}.keyword`,
+          })),
           sort: sort ? sort : false,
-        });
+          metric,
+          metric_field: metric_field ? metric_field : undefined,
+          counterIndex,
+        };
+        arr.push(qb);
       },
     );
 
@@ -137,35 +158,31 @@ export class BuilderUtilities {
 
   private getSourcesFromConfigs(configs: Array<GeneralConfigs>): Array<any> {
     return [
-      ...configs
-        .filter(
-          ({ componentConfigs }: GeneralConfigs) =>
-            !Array.isArray(
-              (componentConfigs as any).source ||
-                (componentConfigs as any).source,
-            ),
-        )
-        .map(({ componentConfigs }: GeneralConfigs) => {
-          return {
-            filter: (componentConfigs as any).filter
-              ? (componentConfigs as any).filter
-              : false,
-            type: (componentConfigs as any).type,
-            is_related: (componentConfigs as any).related
-              ? (componentConfigs as any).related
-              : false,
-            source: (componentConfigs as any).source
-              ? (componentConfigs as any).source.replace('.keyword', '')
-              : undefined,
-            agg_on: (componentConfigs as any).agg_on
-              ? (componentConfigs as any).agg_on.replace('.keyword', '')
-              : undefined,
-            size: (componentConfigs as any).size
-              ? parseInt((componentConfigs as any).size)
-              : 10000,
-            sort: componentConfigs.sort,
-          };
-        }),
+      ...configs.map(({ componentConfigs }: GeneralConfigs) => {
+        return {
+          id: (componentConfigs as any).id,
+          filter: (componentConfigs as any).filter
+            ? (componentConfigs as any).filter
+            : false,
+          type: (componentConfigs as any).type,
+          is_related: (componentConfigs as any).related
+            ? (componentConfigs as any).related
+            : false,
+          source: (componentConfigs as any).source,
+          size: (componentConfigs as any).size
+            ? parseInt((componentConfigs as any).size)
+            : 10000,
+          sort: componentConfigs.sort,
+          metric: (componentConfigs as any).metric,
+          pre_filter: (componentConfigs as any).pre_filter,
+          metric_field: (componentConfigs as any).metric_field
+            ? (componentConfigs as any).metric_field.replace('.keyword', '')
+            : undefined,
+          counterIndex: Object.hasOwn(componentConfigs as any, 'counterIndex')
+            ? (componentConfigs as any)?.counterIndex
+            : undefined,
+        };
+      }),
     ];
   }
 
@@ -173,40 +190,67 @@ export class BuilderUtilities {
     qb: QueryBlock,
     b: bodybuilder.Bodybuilder,
   ): void {
-    const { filter, source, type } = qb; // filter comes from this.convertEnumToQueryBlock
-    if (!filter && type == 'cardinality' && source != 'total.keyword') {
-      b.aggregation(
-        'cardinality',
-        {
-          field: source,
+    const { filter, pre_filter, source, type, counterIndex } = qb; // filter comes from this.convertEnumToQueryBlock
+    if (!type) return;
+
+    const sourceString = source[0].field;
+    const aggName = `${sourceString.replace('.keyword', '')}_${counterIndex}`;
+    let parsedPreFilter;
+    try {
+      parsedPreFilter = JSON.parse(pre_filter);
+    } catch (e) {
+      parsedPreFilter = null;
+    }
+
+    const aggObject = {
+      type: '',
+      agg: null,
+      name: '',
+    };
+    if (filter) {
+      aggObject.type = 'filter';
+      aggObject.agg = {
+        term: {
+          [sourceString]: filter,
+        },
+      };
+      aggObject.name = `${aggName}_${filter}`;
+    } else {
+      aggObject.type = type;
+      aggObject.name = aggName;
+      if (type == 'cardinality') {
+        aggObject.agg = {
+          field: sourceString,
           precision_threshold: 40000,
-        },
-        source,
-      );
-    } else if (
-      !filter &&
-      type &&
-      type != 'cardinality' &&
-      source != 'total.keyword'
-    ) {
-      b.aggregation(
-        type,
-        {
-          field: source.replace('.keyword', ''),
+        };
+      } else {
+        aggObject.agg = {
+          field: sourceString.replace('.keyword', ''),
           missing: 0,
-        },
-        source,
-      );
-    } else if (filter && type && source != 'total.keyword') {
-      const obj = Object.create(null);
-      obj[source] = filter;
+        };
+      }
+    }
+
+    if (parsedPreFilter) {
       b.aggregation(
         'filter',
         {
-          term: obj,
+          bool: {
+            filter: {
+              bool: {
+                must: parsedPreFilter,
+              },
+            },
+          },
         },
-        `${source}_${filter}`,
+        aggObject.name,
+        (a1) => {
+          a1.aggregation(aggObject.type, aggObject.agg, aggObject.name);
+          return a1;
+        },
       );
+    } else {
+      b.aggregation(aggObject.type, aggObject.agg, aggObject.name);
     }
   }
 
@@ -214,63 +258,124 @@ export class BuilderUtilities {
     this.querySourceBucketsFilter
       .filter((d) => !d.type)
       .forEach((qb: QueryBlock) => {
-        const { size, buckets, source, is_related, agg_on, type, sort } = qb;
-        if (is_related === true)
-          b.aggregation(
-            'terms',
-            this.buildTermRules(size, source, sort),
-            `${size}_related_${buckets}`,
-            (a) => {
-              return a.aggregation(
-                'terms',
-                this.buildTermRules(size, agg_on ? agg_on : source, sort),
-                'related',
-              );
-            },
-          );
-        else
-          b.aggregation(
-            'terms',
-            this.buildTermRules(size, source, sort),
-            `${size}_${buckets}`,
-          );
+        const { source, buckets } = qb;
+        this.buildNestedAggs(b, source, 0, qb, buckets);
       });
   }
 
-  private buildTermRules(size: number, source: string, sort: boolean): object {
+  private buildNestedAggs(
+    b: bodybuilder.Bodybuilder | any,
+    sources: SourceLevel[],
+    index: number,
+    qb: QueryBlock,
+    parentName?: string,
+  ): void {
+    const current = sources[index];
+    const isLast = index === sources.length - 1;
+    const name = parentName ? parentName : `${current.field}_level_${index}`;
+    let parsedPreFilter;
+    try {
+      parsedPreFilter = qb?.pre_filter ? JSON.parse(qb.pre_filter) : null;
+    } catch (e) {
+      parsedPreFilter = null;
+    }
+
+    if (parsedPreFilter && index === 0) {
+      b.aggregation(
+        'filter',
+        {
+          bool: {
+            filter: {
+              bool: {
+                must: parsedPreFilter,
+              },
+            },
+          },
+        },
+        name,
+        (a1) => {
+          a1.aggregation(
+            'terms',
+            this.buildTermRules(
+              current.limit,
+              current.field,
+              false,
+              current.order,
+              !qb?.metric || qb.metric === 'count',
+            ),
+            name,
+            (a) => {
+              if (qb.metric && qb.metric !== 'count') {
+                a.aggregation(qb.metric, qb.metric_field, 'metric');
+              }
+              if (!isLast) {
+                this.buildNestedAggs(a, sources, index + 1, qb);
+              }
+              return a;
+            },
+          );
+          return a1;
+        },
+      );
+    } else {
+      b.aggregation(
+        'terms',
+        this.buildTermRules(
+          current.limit,
+          current.field,
+          false,
+          current.order,
+          !qb?.metric || qb.metric === 'count',
+        ),
+        name,
+        (a) => {
+          if (qb.metric && qb.metric !== 'count') {
+            a.aggregation(qb.metric, qb.metric_field, 'metric');
+          }
+          if (!isLast) {
+            this.buildNestedAggs(a, sources, index + 1, qb);
+          }
+          return a;
+        },
+      );
+    }
+  }
+
+  private buildTermRules(
+    size: number,
+    source: string,
+    sort: boolean,
+    customOrder?: string,
+    isCountMetric: boolean = true,
+  ): object {
     const temp = [];
     if (this.years) {
       for (let index = this.years.gte; index <= this.years.lte; index++) {
         temp.push(`${index}`);
       }
     }
-    if (source.includes('year') && temp.length != 0 && sort == true)
-      return {
-        field: source,
-        size,
-        order: {
-          _key: 'desc',
-        },
-        include: temp,
-      };
-    else if (source.includes('year') && temp.length == 0 && sort == true)
-      return {
-        field: source,
-        size,
-        order: {
-          _key: 'desc',
-        },
-      };
-    else if (source.includes('year') && temp.length != 0 && sort == false)
-      return {
-        field: source,
-        size,
-        include: temp,
-      };
-    else
-      return {
-        field: source,
-        size,
-      };
+
+    const rules: any = {
+      field: source,
+      size,
+    };
+
+    if (customOrder === '_key_desc') {
+      rules.order = { _key: 'desc' };
+    } else if (customOrder === '_key_asc') {
+      rules.order = { _key: 'asc' };
+    } else if (customOrder === 'metric_desc') {
+      rules.order = { [isCountMetric ? '_count' : 'metric']: 'desc' };
+    } else if (customOrder === 'metric_asc') {
+      rules.order = { [isCountMetric ? '_count' : 'metric']: 'asc' };
+    } else if (source.includes('year') && sort) {
+      rules.order = { _key: 'desc' };
+    }
+
+    if (source.includes('year') && temp.length !== 0) {
+      rules.include = temp;
+    }
+
+    return rules;
   }
 }

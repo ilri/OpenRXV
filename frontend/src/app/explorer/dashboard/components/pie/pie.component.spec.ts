@@ -8,7 +8,7 @@ describe('PieComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PieComponent],
+      imports: [PieComponent],
     }).compileComponents();
   }));
 

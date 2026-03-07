@@ -1,14 +1,28 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  inject,
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
+  imports: [MatCard, MatCardTitle, MatIcon, MatIconButton, MatCardSubtitle],
 })
 export class FilterComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<boolean> = new EventEmitter();
   dialogRef: MatDialogRef<any>;
@@ -154,10 +168,10 @@ export class FilterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
   setIcon() {
     const icons = {
       SelectComponent: 'list',
@@ -203,6 +217,7 @@ export class FilterComponent implements OnInit {
         dashboard_name,
         form_data: this.form_data,
         configs: this.configs,
+        skipPreview: true,
       },
     });
 

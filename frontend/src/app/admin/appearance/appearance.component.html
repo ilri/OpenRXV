@@ -72,7 +72,6 @@
                 matInput
                 formControlName="items_label"
                 placeholder="Information Products"
-                required
               />
             </mat-form-field>
           </div>
@@ -166,52 +165,62 @@
           </div>
           <div class="w-100">
             <mat-label>Favicon:</mat-label>
-            <input
-              *ngIf="!favIcon"
-              type="file"
-              (change)="favIconChange($event)"
-              placeholder="Favicon"
-              required
-            />
-            <div *ngIf="favIcon" class="logo">
-              <button (click)="favIcon = null" color="warn" mat-icon-button>
-                <mat-icon>delete</mat-icon>
-              </button>
-              <img [src]="src(favIcon)" alt="favIcon" />
-            </div>
+            @if (!favIcon) {
+              <input
+                type="file"
+                (change)="favIconChange($event)"
+                placeholder="Favicon"
+                required
+              />
+            }
+            @if (favIcon) {
+              <div class="logo">
+                <button (click)="favIcon = null" color="warn" mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <img [src]="src(favIcon)" alt="favIcon" />
+              </div>
+            }
           </div>
           <div class="file w-100">
             <mat-label>Logo:</mat-label>
-            <input
-              *ngIf="!logo"
-              type="file"
-              (change)="logoChange($event)"
-              placeholder="Logo"
-              required
-            />
-            <div *ngIf="logo" class="logo">
-              <button (click)="logo = null" color="warn" mat-icon-button>
-                <mat-icon>delete</mat-icon>
-              </button>
-              <img [src]="src(logo)" alt="logo" />
-            </div>
+            @if (!logo) {
+              <input
+                type="file"
+                (change)="logoChange($event)"
+                placeholder="Logo"
+                required
+              />
+            }
+            @if (logo) {
+              <div class="logo">
+                <button (click)="logo = null" color="warn" mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <img [src]="src(logo)" alt="logo" />
+              </div>
+            }
           </div>
         </div>
       </div>
       <br />
       <h4>Chart colors:</h4>
       <div formArrayName="chartColors">
-        <div *ngFor="let color of colors.controls; index as i" class="colors">
-          <mat-form-field>
-            <mat-label>{{ color.value }}</mat-label>
-            <input matInput type="color" [formControlName]="i" />
-            <div *ngIf="colors.length > 1">
-              <button mat-button (click)="deleteColor(i)">
-                <mat-icon style="color: red">delete</mat-icon>
-              </button>
-            </div>
-          </mat-form-field>
-        </div>
+        @for (color of colors.controls; track color; let i = $index) {
+          <div class="colors">
+            <mat-form-field>
+              <mat-label>{{ color.value }}</mat-label>
+              <input matInput type="color" [formControlName]="i" />
+              @if (colors.length > 1) {
+                <div>
+                  <button mat-button (click)="deleteColor(i)">
+                    <mat-icon style="color: red">delete</mat-icon>
+                  </button>
+                </div>
+              }
+            </mat-form-field>
+          </div>
+        }
       </div>
       <button mat-raised-button color="primary" (click)="addColor()">
         <mat-icon>add</mat-icon>Add color

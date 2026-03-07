@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpUrlEncodingCodec } from '@angular/common/http';
 import * as querystring from 'querystring';
 import { environment } from 'src/environments/environment';
@@ -7,7 +7,12 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ValuesService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   codec = new HttpUrlEncodingCodec();
 
   async findByTerm(term = '', index_name = '') {
@@ -61,6 +66,18 @@ export class ValuesService {
       .toPromise();
   }
 
+  async postBulk(data, index_name = '') {
+    data.index_name = index_name;
+    return await this.http
+      .post(environment.api + '/values/bulk', { data, index_name })
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
   async put(id, data, index_name = '') {
     data.index_name = index_name;
     return await this.http
@@ -77,6 +94,20 @@ export class ValuesService {
     return await this.http
       .delete(
         environment.api + `/values/${id}/${this.codec.encodeValue(index_name)}`,
+      )
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+      )
+      .toPromise();
+  }
+
+  async deleteAll(index_name = '') {
+    return await this.http
+      .delete(
+        environment.api +
+          `/values/deleteAll/${this.codec.encodeValue(index_name)}`,
       )
       .pipe(
         map((data: any) => {

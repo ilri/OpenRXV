@@ -6,17 +6,57 @@ import {
   Output,
   EventEmitter,
   SimpleChanges,
+  inject,
 } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
 import { ActivatedRoute } from '@angular/router';
+import { MainListComponent } from '../../design/components/main-list/main-list.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatCard,
+  MatCardTitle,
+  MatCardSubtitle,
+  MatCardContent,
+} from '@angular/material/card';
 
 @Component({
   selector: 'app-plugin',
   templateUrl: './plugin.component.html',
   styleUrls: ['./plugin.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatCheckbox,
+    FormsModule,
+    MatCardSubtitle,
+    MatCardContent,
+    MatButton,
+    MatIcon,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    NgSelectModule,
+    MainListComponent,
+    MatIconButton,
+  ],
 })
 export class PluginComponent implements OnInit, OnChanges {
+  private fb = inject(UntypedFormBuilder);
+  private settingService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() plugins: any = null;
   @Input() pluginIndex = 0;
   plugin: any = null;
@@ -26,11 +66,10 @@ export class PluginComponent implements OnInit, OnChanges {
   repositoriesList: [] = [];
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private fb: UntypedFormBuilder,
-    private settingService: SettingsService,
-    private activeRoute: ActivatedRoute,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   activeChange() {
     if (!this.active) this.formdata = new UntypedFormArray([]);
     else if (

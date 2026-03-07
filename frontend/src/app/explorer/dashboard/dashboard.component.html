@@ -1,78 +1,81 @@
 <mat-drawer-container>
-  <mat-drawer *ngIf="false" mode="side" opened position="end">
-    <app-scroll-to></app-scroll-to>
-  </mat-drawer>
+  @if (false) {
+    <mat-drawer mode="side" opened position="end">
+      <app-scroll-to></app-scroll-to>
+    </mat-drawer>
+  }
 
   <mat-drawer-content id="main-content-dashboard">
     <section class="container-fluid">
-      <ng-container *ngFor="let conf of tourConfig">
-        <div
-          *ngIf="conf.show"
-          [tourAnchor]="conf.componentConfigs.id"
-          class="row"
-        >
-          <app-dynamic
-            [componentConfigs]="conf.componentConfigs"
-            [comp]="conf.component"
-          ></app-dynamic>
-        </div>
-        <div>
-          {{ conf.componentConfig | json }}
-        </div>
-      </ng-container>
-      <section
-        class="row mb-2 d-flex justify-content-between flex-wrap counters-container"
-      >
-        <!-- Counter loop START -->
-        <ng-container *ngFor="let conf of countersConfig">
-          <div *ngIf="conf.show" class="w-xs-100">
-            <div
-              [tourAnchor]="conf.componentConfigs.id"
-              [id]="conf.componentConfigs.id"
-              snInViewport
-              [inViewportOptions]="{
-                rootMargin: '0px 0px 0px 0px'
-              }"
-              (inViewportChange)="
-                onInViewportChange($event, conf.componentConfigs.id)
-              "
-            >
-              <app-dynamic
-                [componentConfigs]="conf.componentConfigs"
-                comp="CounterComponent"
-              ></app-dynamic>
-            </div>
-          </div>
-        </ng-container>
-        <!-- Counter loop END -->
-      </section>
-
-      <section class="row">
-        <!-- Loop for dashboard components START -->
-        <ng-container *ngFor="let conf of dashboardConfig">
-          <div
-            *ngIf="conf.show"
-            snInViewport
-            [inViewportOptions]="{
-              rootMargin: '0px 0px 0px 0px'
-            }"
-            (inViewportChange)="
-              onInViewportChange(
-                $event,
-                conf.componentConfigs.id + '.' + conf.scroll.linkedWith
-              )
-            "
-            class="mb-2"
-            [id]="conf.componentConfigs.id"
-            [tourAnchor]="conf.componentConfigs.id"
-            [ngClass]="conf.class"
-          >
+      @for (conf of tourConfig; track conf) {
+        @if (conf.show) {
+          <div [tourAnchor]="conf.componentConfigs.id" class="row">
             <app-dynamic
               [componentConfigs]="conf.componentConfigs"
               [comp]="conf.component"
             ></app-dynamic>
           </div>
-        </ng-container>
+        }
+        <div>
+          {{ conf.componentConfig | json }}
+        </div>
+      }
+      <section
+        class="row mb-2 d-flex justify-content-between flex-wrap counters-container"
+      >
+        <!-- Counter loop START -->
+        @for (conf of countersConfig; track conf) {
+          @if (conf.show) {
+            <div class="w-xs-100">
+              <div
+                [tourAnchor]="conf.componentConfigs.id"
+                [id]="conf.componentConfigs.id"
+                appIntersectionObserver
+                [options]="{
+                  rootMargin: '0px 0px 0px 0px',
+                }"
+                (visibilityChange)="
+                  onInViewportChange($event, conf.componentConfigs.id)
+                "
+              >
+                <app-dynamic
+                  [componentConfigs]="conf.componentConfigs"
+                  comp="CounterComponent"
+                ></app-dynamic>
+              </div>
+            </div>
+          }
+        }
+        <!-- Counter loop END -->
+      </section>
+
+      <section class="row">
+        <!-- Loop for dashboard components START -->
+        @for (conf of dashboardConfig; track conf) {
+          @if (conf.show) {
+            <div
+              appIntersectionObserver
+              [options]="{
+                rootMargin: '0px 0px 0px 0px',
+              }"
+              (visibilityChange)="
+                onInViewportChange(
+                  $event,
+                  conf.componentConfigs.id + '.' + conf.scroll.linkedWith
+                )
+              "
+              class="mb-2"
+              [id]="conf.componentConfigs.id"
+              [tourAnchor]="conf.componentConfigs.id"
+              [ngClass]="conf.class"
+            >
+              <app-dynamic
+                [componentConfigs]="conf.componentConfigs"
+                [comp]="conf.component"
+              ></app-dynamic>
+            </div>
+          }
+        }
         <!-- Loop for dashboard components END -->
       </section>
     </section>

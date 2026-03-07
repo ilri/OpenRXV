@@ -1,23 +1,47 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
+import { Component, OnInit, Input, inject } from '@angular/core';
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { MatButton } from '@angular/material/button';
+
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatCardContent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+  ],
 })
 export class LoginComponent implements OnInit {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     email: new UntypedFormControl(''),
     password: new UntypedFormControl(''),
     submit: new UntypedFormControl(''),
   });
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   ngOnInit(): void {}
 

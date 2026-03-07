@@ -1,5 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, inject } from '@angular/core';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import {
   UntypedFormGroup,
   UntypedFormControl,
@@ -7,11 +13,20 @@ import {
   AsyncValidatorFn,
   AbstractControl,
   ValidationErrors,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { UsersService } from 'src/app/admin/services/users.service';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 export function existValidator(usersService: UsersService): AsyncValidatorFn {
   if (usersService)
@@ -28,8 +43,28 @@ export function existValidator(usersService: UsersService): AsyncValidatorFn {
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
+  imports: [
+    MatDialogTitle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogContent,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDialogActions,
+    MatButton,
+    MatIcon,
+  ],
 })
 export class FormComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
+  private userService = inject(UsersService);
+  data = inject(MAT_DIALOG_DATA);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+
   form: UntypedFormGroup = new UntypedFormGroup({
     name: new UntypedFormControl(''),
     email: new UntypedFormControl(
@@ -59,13 +94,10 @@ export class FormComponent implements OnInit {
     await this.spinner.hide();
   }
 
-  constructor(
-    public dialogRef: MatDialogRef<FormComponent>,
-    private userService: UsersService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     if (this.data) {

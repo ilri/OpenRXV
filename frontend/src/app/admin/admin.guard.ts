@@ -1,9 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
-  CanActivate,
-  CanActivateChild,
-  CanDeactivate,
-  CanLoad,
   Route,
   UrlSegment,
   ActivatedRouteSnapshot,
@@ -16,13 +12,14 @@ import { AuthService } from './auth/auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AdminGuard
-  implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad
-{
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+export class AdminGuard {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,

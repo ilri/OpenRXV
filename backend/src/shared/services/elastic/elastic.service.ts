@@ -6,6 +6,7 @@ import {
   SearchResponse,
   SearchRequest,
   QueryDslQueryContainer,
+  SearchHit,
 } from '@elastic/elasticsearch/lib/api/types';
 import * as bcrypt from 'bcrypt';
 import { JsonFilesService } from 'src/admin/json-files/json-files.service';
@@ -146,6 +147,14 @@ export class ElasticService {
       document: item,
     });
   }
+
+  async bulk(operations) {
+    return await this.elasticsearchService.bulk({
+      refresh: 'wait_for',
+      operations,
+    });
+  }
+
   async update(id, item, index_name = this.index) {
     const update: UpdateRequest = {
       id,
@@ -161,6 +170,16 @@ export class ElasticService {
       index: index_name,
       refresh: 'wait_for',
       id,
+    });
+  }
+
+  async deleteAll(index_name: string) {
+    return await this.elasticsearchService.deleteByQuery({
+      index: index_name,
+      refresh: true,
+      query: {
+        match_all: {},
+      },
     });
   }
 
@@ -290,5 +309,13 @@ export class ElasticService {
     query.query = predefinedQuery;
 
     return query;
+  }
+
+  async query(query: SearchRequest, index = this.index): Promise<SearchHit[]> {
+    const result = await this.elasticsearchService.search({
+      index,
+      ...query,
+    });
+    return result.hits.hits;
   }
 }

@@ -1,18 +1,46 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormControl,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MetadataService } from 'src/app/admin/services/metadata.service';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-main-list',
   templateUrl: './main-list.component.html',
   styleUrls: ['./main-list.component.scss'],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    MatFormField,
+    MatInput,
+    MatCheckbox,
+    MatLabel,
+    MatIconButton,
+    MatIcon,
+    MatButton,
+    MatSelect,
+    MatOption,
+  ],
 })
 export class MainListComponent implements OnInit {
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() baseForm: UntypedFormGroup = null;
   @Input() dashbard_name: string = null;
   content;
@@ -55,10 +83,10 @@ export class MainListComponent implements OnInit {
       disply_name: new UntypedFormControl(element ? element.disply_name : ''),
     };
   }
-  constructor(
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     if (this.baseForm.get('content'))

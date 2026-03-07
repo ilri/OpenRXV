@@ -8,7 +8,7 @@ describe('ShareComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ShareComponent],
+      imports: [ShareComponent],
     }).compileComponents();
   }));
 

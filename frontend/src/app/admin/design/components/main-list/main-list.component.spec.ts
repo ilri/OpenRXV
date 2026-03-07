@@ -8,7 +8,7 @@ describe('MainListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MainListComponent],
+      imports: [MainListComponent],
     }).compileComponents();
   }));
 

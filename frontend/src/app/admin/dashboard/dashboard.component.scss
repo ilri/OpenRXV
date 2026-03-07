@@ -9,13 +9,17 @@ app-info-table {
   min-height: 600px;
 }
 
-.jobs-progress-bar {
+:host ::ng-deep .jobs-progress-bar {
   height: 20px;
   box-shadow:
     0 2px 1px -1px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14),
     0px 1px 3px 0px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
+
+  > div {
+    height: 100%;
+  }
 }
 
 .jobs-progress-bar-percentage {

@@ -1,7 +1,13 @@
-import { Injectable, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import {
+  Injectable,
+  EventEmitter,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import {
   ComponentDashboardConfigs,
   MergedSelect,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { Observable, combineLatest } from 'rxjs';
 import * as fromStore from '../../../../store';
@@ -14,6 +20,8 @@ import { ViewState } from 'src/app/explorer/store/reducers/items.reducer';
 
 @Injectable()
 export class ChartMathodsService extends ChartHelper {
+  private readonly store = inject<Store<fromStore.ItemsState>>(Store);
+
   private loadingHits$: Observable<boolean>;
   private cc: ComponentDashboardConfigs;
   private readonly shs: ScrollHelperService;
@@ -39,10 +47,12 @@ export class ChartMathodsService extends ChartHelper {
     return this.shs.getLoading;
   }
 
-  constructor(
-    private readonly store: Store<fromStore.ItemsState>,
-    cdr: ChangeDetectorRef,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
+    const cdr = inject(ChangeDetectorRef);
+
     super();
     this.shs = new ScrollHelperService(cdr);
     this.goBuildDataSeries = new EventEmitter();
@@ -67,31 +77,28 @@ export class ChartMathodsService extends ChartHelper {
 
   private subToDataFromStore(): void {
     if (Array.isArray(this.cc.source)) {
-      this.processArraySorces();
+      this.processNestedAggs();
     } else {
-      this.store
-        .select(
-          fromStore.getBuckets,
-          this.cc.related
-            ? this.cc.size
-              ? this.cc.size + '_related_' + this.cc.source
-              : '1000_related_' + this.cc.source
-            : this.cc.size
-              ? this.cc.size + '_' + this.cc.source
-              : '10000_' + this.cc.source,
-        )
-        .subscribe((b: Bucket[]) => this.goBuildDataSeries.emit(b));
+      this.processArraySorces();
     }
     this.loadingHits$ = this.store.select(fromStore.getLoadingOnlyHits);
   }
 
+  private processNestedAggs(): void {
+    this.store
+      .select(fromStore.getNestedBuckets, this.cc.id)
+      .subscribe((buckets: Bucket[]) => {
+        this.goBuildDataSeries.emit(buckets || []);
+      });
+  }
+
   private processArraySorces(): void {
     const observableArr: Array<Observable<MergedSelect>> = [];
-    (this.cc.source as Array<string>).forEach((s: string) => {
+    (this.cc.source as Array<SourceLevel>).forEach((s: SourceLevel) => {
       observableArr.push(
         this.store
-          .select(fromStore.getBuckets, s)
-          .pipe(map((buckets: Bucket[]) => ({ [s]: buckets }))),
+          .select(fromStore.getBuckets, s.field)
+          .pipe(map((buckets: Bucket[]) => ({ [s.field]: buckets }))),
       );
     });
     this.zipObservablesAndOmit(observableArr);

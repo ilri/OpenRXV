@@ -12,7 +12,8 @@ import {
 import { MergedSelect } from 'src/app/explorer/configs/generalConfig.interface';
 import { RangeService } from 'src/app/explorer/filters/services/range/range.service';
 import { EventEmitter } from '@angular/core';
-import * as bodybuilder from 'bodybuilder';
+import bodybuilder from 'bodybuilder';
+
 /**
  * right now `buckets` will contain
  *   - `index[0] from the source confs`: `Array<Bucket>`

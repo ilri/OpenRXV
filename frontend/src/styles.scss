@@ -1,20 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
-@import './app/explorer/configs/customTheme.scss';
-@import '@ng-select/ng-select/themes/material.theme.css';
-@import 'bootstrap/scss/bootstrap-reboot';
-@import 'bootstrap/scss/bootstrap-grid';
-@import 'nouislider/dist/nouislider.min.css';
-// @import '~highcharts/css/themes/dark-unica.scss';
+@use './app/explorer/configs/customTheme.scss' as *;
+@use '@ng-select/ng-select/themes/material.theme.css' as *;
+@use 'bootstrap/scss/bootstrap-reboot' as *;
+@use 'bootstrap/scss/bootstrap-grid' as *;
+// @use 'highcharts/css/themes/dark-unica.scss' as *;
 
-@import 'ngx-toastr/toastr';
+@use 'ngx-toastr/toastr' as *;
 
-@import './scss/responsive.scss';
+@use './scss/responsive.scss' as *;
 
-$material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
+@use 'material-design-icons-iconfont/src/material-design-icons' with (
+  $material-design-icons-font-directory-path:
+    'material-design-icons-iconfont/dist/fonts/'
+);
 
-@import 'material-design-icons-iconfont/src/material-design-icons';
-
-@import 'snazzy-info-window/dist/snazzy-info-window.css';
 html,
 body {
   font-family: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -195,11 +194,6 @@ app-paginated-list app-tags {
   }
 }
 
-.noUi-horizontal .noUi-tooltip {
-  top: 120% !important;
-  bottom: unset !important;
-}
-
 .cdk-overlay-container
   .mat-mdc-menu-panel
   .mat-mdc-menu-content
@@ -209,7 +203,7 @@ app-paginated-list app-tags {
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled),
 .mat-mdc-form-field-focus-overlay {
-  background-color: white;
+  background-color: white !important;
 }
 
 .mdc-text-field--filled,
@@ -278,9 +272,9 @@ mat-paginator .mat-mdc-select-trigger {
 }
 
 .mat-expansion-panel-header {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
 }
 
 .mat-mdc-form-field:not(.mat-form-field-no-animations) .mdc-floating-label {
@@ -296,7 +290,7 @@ mat-paginator .mat-mdc-select-trigger {
 }
 
 .mat-mdc-raised-button.mat-primary {
-  --mdc-protected-button-label-text-color: var(--theme-primary-contrast-500);
+  --mat-button-protected-label-text-color: var(--theme-primary-contrast-500);
 }
 
 .mat-mdc-checkbox {

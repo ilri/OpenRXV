@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormControl,
   UntypedFormArray,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -11,12 +13,46 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
 
+import { MatCheckbox } from '@angular/material/checkbox';
+import { ColorPickerDirective } from 'ngx-color-picker';
+import { MatInput } from '@angular/material/input';
+import {
+  MatFormField,
+  MatLabel,
+  MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+
 @Component({
   selector: 'app-appearance',
   templateUrl: './appearance.component.html',
   styleUrls: ['./appearance.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatIconButton,
+    MatSuffix,
+    MatCheckbox,
+    ColorPickerDirective,
+  ],
 })
 export class AppearanceComponent implements OnInit {
+  private settingsService = inject(SettingsService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
   dashboard_name: string;
   exportLink: string;
   primary_color = '';
@@ -40,13 +76,10 @@ export class AppearanceComponent implements OnInit {
     chartColors: new UntypedFormArray([]),
   });
 
-  constructor(
-    private settingsService: SettingsService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   src(value) {
     try {
       return new URL(value);

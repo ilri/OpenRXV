@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   ComponentCounterConfigs,
   ComponentFilterConfigs,
@@ -7,8 +7,12 @@ import {
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { SettingsService } from '../services/settings.service';
 import { MatDialog } from '@angular/material/dialog';
-import { GridComponent } from './components/grid/grid.component';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  CdkDropList,
+  CdkDrag,
+} from '@angular/cdk/drag-drop';
 import { SortComponent } from './components/sort/sort.component';
 import { environment } from 'src/environments/environment';
 import { FormDialogComponent } from './components/form-dialog/form-dialog.component';
@@ -16,21 +20,57 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../common.service';
+import { MatInput } from '@angular/material/input';
+import { StructureComponent } from './components/structure/structure.component';
+import { CounterComponent } from './components/counter/counter.component';
+import { FilterComponent } from './components/filter/filter.component';
+
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { EditorComponent } from '@tinymce/tinymce-angular';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
   selector: 'app-design',
   templateUrl: './design.component.html',
   styleUrls: ['./design.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    EditorComponent,
+    FormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    CdkDropList,
+    FilterComponent,
+    CdkDrag,
+    CounterComponent,
+    StructureComponent,
+    MatInput,
+  ],
 })
 export class DesignComponent implements OnInit {
-  constructor(
-    public dialog: MatDialog,
-    private settingsService: SettingsService,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private activeRoute: ActivatedRoute,
-    private commonService: CommonService,
-  ) {}
+  dialog = inject(MatDialog);
+  private settingsService = inject(SettingsService);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private activeRoute = inject(ActivatedRoute);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   counters: Array<any> = [];
   filters: Array<any> = [];
   dashboard: Array<any> = [];
@@ -60,13 +100,7 @@ export class DesignComponent implements OnInit {
       'code| undo redo | bold italic underline strikethrough | forecolor backcolor casechange permanentpen formatpainter removeformat |fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
   };
   newRow(): void {
-    const dialogRef = this.dialog.open(GridComponent, {
-      width: '450px',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.dashboard.push(result);
-    });
+    this.dashboard.push([{ class: 'col-md-12' }]);
   }
 
   sortCounter() {
@@ -181,11 +215,34 @@ export class DesignComponent implements OnInit {
     this.dashboard[index][index2] = this.createDashboardItem({}, index, index2);
   }
   dashboardEdited(event, index) {
-    this.dashboard[index][event.index] = this.createDashboardItem(
-      event.result,
-      index,
-      event.index,
-    );
+    if (event.isFullGrid) {
+      let scrollIcon = '';
+      let scrollId = '';
+      this.dashboard[index] = event.result.map((item, i) => {
+        if (!item.component) {
+          item = this.createDashboardItem(item, index, i);
+        }
+        if (item?.scroll?.icon) {
+          scrollIcon = item.scroll.icon;
+          scrollId = item.componentConfigs.id;
+        }
+        return item;
+      });
+      this.dashboard[index] = this.dashboard[index].map((item, i) => {
+        if (i === 0) {
+          item['scroll'] = { icon: scrollIcon };
+        } else {
+          item['scroll'] = { linkedWith: scrollId };
+        }
+        return item;
+      });
+    } else {
+      this.dashboard[index][event.index] = this.createDashboardItem(
+        event.result,
+        index,
+        event.index,
+      );
+    }
   }
 
   filtersEdited(value, index) {
@@ -203,7 +260,7 @@ export class DesignComponent implements OnInit {
   }
 
   counterEdited(value, index) {
-    this.counters[index] = this.createCounter(value);
+    this.counters[index] = this.createCounter(value, index);
   }
   dropDashboard(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.dashboard, event.previousIndex, event.currentIndex);
@@ -217,7 +274,10 @@ export class DesignComponent implements OnInit {
 
   newCounter() {
     this.counters.push(
-      this.createCounter({ source: null, title: null, description: null }),
+      this.createCounter(
+        { source: null, title: null, description: null },
+        this.counters.length + 1,
+      ),
     );
   }
 
@@ -316,24 +376,37 @@ export class DesignComponent implements OnInit {
       this.toastr.error('Please set icons of rows before you save');
     }
   }
-  createDashboardItem(obj, index, index1) {
+  createDashboardItem(obj, gridRow, index1) {
     const temp = {};
     if (obj.title) temp['title'] = obj.title;
 
     if (obj.description) temp['description'] = obj.description;
-    if (obj.source)
-      temp['source'] = obj.source == 'total' ? obj.source : obj.source;
+    if (obj.source) temp['source'] = obj.source;
     if (obj.sort != undefined) temp['sort'] = obj.sort;
 
-    if (obj.source) temp['id'] = temp['source'] + '_' + index + '_' + index1;
+    if (obj.source)
+      temp['id'] =
+        temp['source'].map((s) => s.field).join('_') +
+        '_' +
+        gridRow +
+        '_' +
+        index1;
     if (obj.size) temp['size'] = obj.size;
-
-    if (obj.agg_on) temp['agg_on'] = obj.agg_on;
 
     if (obj.allowFilterOnClick)
       temp['allowFilterOnClick'] = obj.allowFilterOnClick;
 
     if (obj.inner_size) temp['inner_size'] = obj.inner_size;
+
+    if (obj.direction) temp['direction'] = obj.direction;
+    if (obj.stacking) temp['stacking'] = obj.stacking;
+    if (obj.line_type) temp['line_type'] = obj.line_type;
+    if (obj.map_type) temp['map_type'] = obj.map_type;
+
+    if (obj.metric) temp['metric'] = obj.metric;
+    if (obj.metric_field) temp['metric_field'] = obj.metric_field;
+
+    if (obj.pre_filter) temp['pre_filter'] = obj.pre_filter;
 
     if (obj.data_labels) temp['data_labels'] = obj.data_labels;
 
@@ -352,7 +425,7 @@ export class DesignComponent implements OnInit {
       temp['source_y'] = obj.source_y;
       temp['source_x'] = obj.source_x;
       temp['id'] =
-        obj.source_x + '_' + obj.source_y + '_' + index + '_' + index1;
+        obj.source_x + '_' + obj.source_y + '_' + gridRow + '_' + index1;
       temp['sort'] = obj.sort;
     }
 
@@ -362,23 +435,37 @@ export class DesignComponent implements OnInit {
     }
 
     if (obj.component == 'MainListComponent')
-      temp['id'] = 'main_list' + '_' + index + '_' + index1;
+      temp['id'] = 'main_list' + '_' + gridRow + '_' + index1;
 
     if (
       obj.component == 'WheelComponent' ||
       obj.component == 'BarComponent' ||
       obj.component == 'PackedBubbleComponent' ||
       obj.component == 'PackedBubbleSplitComponent' ||
-      obj.component == 'LineComponent'
+      obj.component == 'SunburstComponent' ||
+      obj.component == 'RadarComponent'
     )
       temp['related'] = true;
 
-    let class_name: null;
+    if (obj.componentConfigs && obj.componentConfigs.id) {
+      temp['id'] = obj.componentConfigs.id;
+    } else if (obj.id) {
+      temp['id'] = obj.id;
+    }
 
-    if (typeof obj.class == 'string') class_name = obj.class;
+    let class_name = null;
 
+    if (obj.class && typeof obj.class == 'string') {
+      class_name = obj.class;
+    }
+
+    const currentGridItem = this.dashboard[gridRow][index1] || {};
+    const baseClass = obj.class || currentGridItem.class || 'col-md-3';
+    this.dashboard[gridRow][index1].class = [
+      ...new Set((baseClass + ' no-side-padding').split(' ')),
+    ].join(' ');
     return {
-      class: this.dashboard[index][index1].class + ' no-side-padding',
+      class: class_name || this.dashboard[gridRow][index1].class,
       show: true,
       component: obj.component ? obj.component : null,
       componentConfigs: temp as ComponentFilterConfigs,
@@ -415,7 +502,7 @@ export class DesignComponent implements OnInit {
       componentConfigs: temp as ComponentFilterConfigs,
     };
   }
-  createCounter(obj) {
+  createCounter(obj, index) {
     const temp = {};
 
     if (obj.title) temp['title'] = obj.title;
@@ -424,15 +511,20 @@ export class DesignComponent implements OnInit {
 
     if (obj.description) temp['description'] = obj.description;
 
-    if (obj.source) {
-      temp['source'] =
-        obj.source == 'total' ? obj.source : obj.source + '.keyword';
+    if (obj.pre_filter) temp['pre_filter'] = obj.pre_filter;
 
-      temp['id'] = 'counter_' + obj.source;
+    if (obj.source) {
+      if (obj.type == 'cardinality')
+        obj.source[0].field = obj.source[0].field + '.keyword';
+      temp['source'] = obj.source;
+
+      temp['id'] = obj.source[0].field + '_' + index;
       if (obj.filter) {
-        temp['id'] = 'counter_' + obj.source + obj.filter.replace(/\s/g, '');
+        temp['id'] =
+          obj.source[0].field + obj.filter.replace(/\s/g, '') + '_' + index;
       }
     }
+    temp['counterIndex'] = index;
 
     if (obj.filter) temp['filter'] = obj.filter;
     if (obj.type) temp['type'] = obj.type;

@@ -6,14 +6,11 @@
       (cdkDropListDropped)="drop($event)"
       class="col-12 drag-list"
     >
-      <mat-card
-        appearance="raised"
-        cdkDrag
-        class="drag-item"
-        *ngFor="let item of sortedItems"
-      >
-        <mat-card-title>{{ item.componentConfigs.title }}</mat-card-title>
-      </mat-card>
+      @for (item of sortedItems; track item) {
+        <mat-card appearance="raised" cdkDrag class="drag-item">
+          <mat-card-title>{{ item.componentConfigs.title }}</mat-card-title>
+        </mat-card>
+      }
     </div>
   </div>
 </div>

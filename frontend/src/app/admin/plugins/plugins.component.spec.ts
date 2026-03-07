@@ -8,7 +8,7 @@ describe('PluginsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PluginsComponent],
+      imports: [PluginsComponent],
     }).compileComponents();
   }));
 

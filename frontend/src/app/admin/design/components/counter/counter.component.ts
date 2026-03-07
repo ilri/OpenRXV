@@ -1,16 +1,31 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 import { isEmpty } from 'ramda';
 import { ActivatedRoute } from '@angular/router';
 import { icons_list } from '../structure/icons';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
+import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-counter',
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.scss'],
+  imports: [CdkDragPlaceholder, MatCard, MatCardTitle, MatIconButton, MatIcon],
 })
 export class CounterComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Output() edited: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<boolean> = new EventEmitter();
 
@@ -67,6 +82,12 @@ export class CounterComponent implements OnInit {
       type: 'check',
       required: false,
     },
+    {
+      name: 'pre_filter',
+      label: 'Pre-filter (JSON)',
+      type: 'textarea',
+      required: false,
+    },
   ];
 
   @Input() configs;
@@ -76,10 +97,10 @@ export class CounterComponent implements OnInit {
   }
 
   controls = [];
-  constructor(
-    public dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   ngOnInit(): void {
     if (!this.configs.componentConfigs.source) this.openDialog();
@@ -94,11 +115,22 @@ export class CounterComponent implements OnInit {
         dashboard_name,
         form_data: this.form_data,
         configs: this.configs,
+        isCounter: true,
+        skipPreview: true,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.edited.emit(result);
+      if (result) {
+        result.source = [
+          {
+            field: result.source,
+            limit: 0,
+            order: '',
+          },
+        ];
+        this.edited.emit(result);
+      }
       if (!result && isEmpty(this.configs.componentConfigs))
         this.onDelete.emit(!result);
     });

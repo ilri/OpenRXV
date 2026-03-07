@@ -3,23 +3,31 @@ import {
   Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-snack',
   templateUrl: './snack.component.html',
   styleUrls: ['./snack.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIcon],
 })
 export class SnackComponent {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() set error(e: HttpErrorResponse) {
     this.messageFromStatus(e);
   }
   message: string;
   icon: string;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   private messageFromStatus({ status }: HttpErrorResponse): void {
     if (status === 400 || status === 404) {

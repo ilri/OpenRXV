@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ComponentFilterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
 import { RangeService } from '../services/range/range.service';
 import {
@@ -11,17 +11,32 @@ import { Store } from '@ngrx/store';
 import * as fromStore from '../../store';
 import { Observable } from 'rxjs';
 import { ParentComponent } from 'src/app/explorer/parent-component.class';
-import { ComponentLookup } from '../../dashboard/components/dynamic/lookup.registry';
 import { BodyBuilderService } from '../services/bodyBuilder/body-builder.service';
 import { ActivatedRoute } from '@angular/router';
-@ComponentLookup('RangeComponent')
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { FormsModule } from '@angular/forms';
+import { MatSlider, MatSliderRangeThumb } from '@angular/material/slider';
+import { MatLabel } from '@angular/material/form-field';
+
 @Component({
   selector: 'app-range',
   templateUrl: './range.component.html',
   styleUrls: ['./range.component.scss'],
   providers: [RangeService],
+  imports: [
+    MatLabel,
+    MatSlider,
+    MatSliderRangeThumb,
+    FormsModule,
+    MatProgressBar,
+  ],
 })
 export class RangeComponent extends ParentComponent implements OnInit {
+  private readonly rangeService = inject(RangeService);
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly bodyBuilderService = inject(BodyBuilderService);
+  activeRoute = inject(ActivatedRoute);
+
   range: number[];
   max: number;
   min: number;
@@ -32,12 +47,10 @@ export class RangeComponent extends ParentComponent implements OnInit {
   private firstMin: number;
   private orOperator: boolean;
 
-  constructor(
-    private readonly rangeService: RangeService,
-    private readonly store: Store<fromStore.AppState>,
-    private readonly bodyBuilderService: BodyBuilderService,
-    public activeRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     super();
     this.disabled = false;
     this.rangeService.storeVal = this.store;

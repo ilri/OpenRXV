@@ -1,18 +1,42 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/explorer/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComponentCounterConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import {
+  ComponentCounterConfigs,
+  SourceLevel,
+} from 'src/app/explorer/configs/generalConfig.interface';
 import { AggregationsValue } from 'src/app/explorer/filters/services/interfaces';
-import { ComponentLookup } from '../dynamic/lookup.registry';
-@ComponentLookup('CounterComponent')
+import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
+import { MatIcon } from '@angular/material/icon';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { CdkOverlayOrigin, CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { MatRipple } from '@angular/material/core';
+import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import { NgxSpinnerComponent } from 'ngx-spinner';
+
 @Component({
   selector: 'app-counter',
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.scss'],
+  imports: [
+    MatCard,
+    MatRipple,
+    CdkOverlayOrigin,
+    MatCardContent,
+    MatIcon,
+    MatCardTitle,
+    CdkConnectedOverlay,
+    IconsWithTextComponent,
+    AsyncPipe,
+    DecimalPipe,
+    NgxSpinnerComponent,
+  ],
 })
 export class CounterComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+
   @Input() componentConfigs: ComponentCounterConfigs;
   private oldCount: number;
   private newCount: number;
@@ -23,14 +47,19 @@ export class CounterComponent implements OnInit {
   count: number;
   loading: boolean;
   loadingHits$: Observable<boolean>;
+  popoverIsOpen = false;
 
-  constructor(private readonly store: Store<fromStore.AppState>) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.oldCount = 0;
   }
 
   ngOnInit() {
-    const { source, filter, percentageFromTotal } = this.componentConfigs;
-    this.subToLoading(source, filter);
+    const { source, filter, percentageFromTotal, counterIndex } =
+      this.componentConfigs;
+    this.subToLoading((source as SourceLevel[])[0].field, filter, counterIndex);
     if (percentageFromTotal) {
       this.getTotal = true;
     }
@@ -45,33 +74,36 @@ export class CounterComponent implements OnInit {
       );
   }
 
-  private subToLoading(source: string, filter: string): void {
+  private subToLoading(
+    source: string,
+    filter: string,
+    counterIndex: number,
+  ): void {
     this.store.select(fromStore.getLoadingStatus).subscribe((b: boolean) => {
       this.loading = b;
       if (this.storeFlag === undefined && !b) {
-        this.subToDataFromStore(source, filter);
+        this.subToDataFromStore(source, filter, counterIndex);
       }
     });
   }
 
-  private subToDataFromStore(source: string, filter: string): void {
-    if (source !== 'total') {
-      this.store
-        .select(fromStore.getAggregation, {
-          source,
-          filter,
-        })
-        .pipe(
-          map((ag: AggregationsValue) =>
-            ag ? ag.value || ag.doc_count : undefined,
-          ),
-        )
-        .subscribe((n: number) => this.initCounterLogic(n));
-    } else {
-      this.store
-        .select(fromStore.getTotal)
-        .subscribe((n: number) => this.initCounterLogic(n));
-    }
+  private subToDataFromStore(
+    source: string,
+    filter: string,
+    counterIndex: number,
+  ): void {
+    this.store
+      .select(fromStore.getAggregation, {
+        source,
+        filter,
+        counterIndex,
+      })
+      .pipe(
+        map((ag: AggregationsValue) =>
+          ag ? ag.value || ag.doc_count : undefined,
+        ),
+      )
+      .subscribe((n: number) => this.initCounterLogic(n));
     this.storeFlag = false;
   }
 

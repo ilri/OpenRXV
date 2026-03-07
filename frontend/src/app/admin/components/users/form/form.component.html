@@ -46,9 +46,13 @@
       </mat-form-field>
     </p>
 
-    <div *ngIf="email.invalid" class="alert alert-danger">
-      <p *ngIf="email.errors.valueExist">Email alrady exist.</p>
-    </div>
+    @if (email.invalid) {
+      <div class="alert alert-danger">
+        @if (email.errors.valueExist) {
+          <p>Email alrady exist.</p>
+        }
+      </div>
+    }
   </div>
   <div mat-dialog-actions align="end">
     <button

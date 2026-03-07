@@ -1,6 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import { ValuesService } from '../../services/values.service';
 import { MetadataService } from '../../services/metadata.service';
 import { ValuesForm } from './form/values-form.component';
@@ -10,22 +22,54 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../common.service';
+import { FormsModule } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
   selector: 'app-mapping-values',
   templateUrl: './mapping-values.component.html',
   styleUrls: ['./mapping-values.component.scss'],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+  ],
 })
 export class MappingValuesComponent implements OnInit {
-  constructor(
-    private valuesService: ValuesService,
-    public dialog: MatDialog,
-    private metadataService: MetadataService,
-    private activeRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private commonService: CommonService,
-  ) {}
+  private valuesService = inject(ValuesService);
+  dialog = inject(MatDialog);
+  private metadataService = inject(MetadataService);
+  private activeRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private commonService = inject(CommonService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   term = '';
   metadataFields: any;
@@ -67,6 +111,26 @@ export class MappingValuesComponent implements OnInit {
       }
     });
   }
+
+  async deleteAll() {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      data: {
+        title: 'Confirmation',
+        subtitle: 'Are you sure you want to delete all mappings?',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.spinner.show();
+        await this.valuesService.deleteAll(this.values_index_name);
+        await this.spinner.hide();
+        this.toastr.success('Value mappings deleted successfully');
+        this.refreshData();
+      }
+    });
+  }
+
   async toEdit(id) {
     await this.spinner.show();
     const values = await this.valuesService.findOne(id, this.values_index_name);
@@ -144,61 +208,81 @@ export class MappingValuesComponent implements OnInit {
       success: [],
     };
 
-    for (let i = 0; i < data.length; i++) {
-      const importedItem = data[i] as any;
-      const item = {
-        find: importedItem?.find.trim(),
-        replace: importedItem?.replace.trim(),
-        metadataField: importedItem?.metadataField,
-      };
-      const missingRequiredFields = [];
-      if (item.find === '' || item.find == null) {
-        missingRequiredFields.push('find');
-      }
-      if (item.replace === '' || item.replace == null) {
-        missingRequiredFields.push('replace');
-      }
-      if (missingRequiredFields.length > 0) {
-        const message =
-          'Mapping #' +
-          (i + 1) +
-          ' is missing required fields: ' +
-          missingRequiredFields.join(' and ');
-        importStatus.failed.push(message);
-      } else {
-        const response = await this.valuesService.post(
-          item,
-          this.values_index_name,
-        );
-        if (response.success === true) {
-          importStatus.success.push(item.find);
-        } else {
+    const validItems = [];
+    const invalidItems = [];
+    data.map(
+      (
+        importedItem: { find: string; replace: string; metadataField: string },
+        index,
+      ) => {
+        const item = {
+          find: importedItem?.find.trim(),
+          replace: importedItem?.replace.trim(),
+          metadataField: importedItem?.metadataField,
+        };
+        const missingRequiredFields = [];
+        if (item.find === '' || item.find == null) {
+          missingRequiredFields.push('find');
+        }
+        if (item.replace === '' || item.replace == null) {
+          missingRequiredFields.push('replace');
+        }
+        if (missingRequiredFields.length > 0) {
           const message =
             'Mapping #' +
-            (i + 1) +
-            ', failed to import with error: ' +
-            (response?.message
-              ? response.message
-              : 'Oops! something went wrong');
-          importStatus.failed.push(message);
+            (index + 1) +
+            ' is missing required fields: ' +
+            missingRequiredFields.join(' and ');
+          invalidItems.push({
+            item,
+            message,
+          });
+        } else {
+          validItems.push(item);
         }
-      }
-    }
-
-    await this.spinner.hide();
-    const message = this.commonService.importJSONResponseMessage(
-      importStatus,
-      data.length,
-      'Value mapping(s)',
+      },
     );
-    if (message.type === 'success') {
-      this.toastr.success(message.message, null, { enableHtml: true });
-      this.refreshData();
-    } else if (message.type === 'warning') {
-      this.toastr.warning(message.message, null, { enableHtml: true });
-      this.refreshData();
-    } else {
-      this.toastr.error(message.message, null, { enableHtml: true });
-    }
+
+    const chunkSize = 200;
+    const chunks = Array.from(
+      { length: Math.ceil(validItems.length / chunkSize) },
+      (v, i) => validItems.slice(i * chunkSize, i * chunkSize + chunkSize),
+    );
+
+    const promises = chunks.map((chunk) => {
+      return this.valuesService.postBulk(chunk, this.values_index_name);
+    });
+
+    invalidItems.map((invalidItem) =>
+      importStatus.failed.push(invalidItem.message),
+    );
+    Promise.all(promises).then((responses) => {
+      responses.map((response) => {
+        importStatus.failed = [
+          ...importStatus.failed,
+          ...response.failed.map((v) => v.message),
+        ];
+        importStatus.success = [
+          ...importStatus.success,
+          ...response.success.map((v) => v.message),
+        ];
+      });
+
+      this.spinner.hide();
+      const message = this.commonService.importJSONResponseMessage(
+        importStatus,
+        data.length,
+        'Value mapping(s)',
+      );
+      if (message.type === 'success') {
+        this.toastr.success(message.message, null, { enableHtml: true });
+        this.refreshData();
+      } else if (message.type === 'warning') {
+        this.toastr.warning(message.message, null, { enableHtml: true });
+        this.refreshData();
+      } else {
+        this.toastr.error(message.message, null, { enableHtml: true });
+      }
+    });
   }
 }

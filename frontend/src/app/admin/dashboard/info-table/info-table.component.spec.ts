@@ -8,7 +8,7 @@ describe('InfoTableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [InfoTableComponent],
+      imports: [InfoTableComponent],
     }).compileComponents();
   }));
 

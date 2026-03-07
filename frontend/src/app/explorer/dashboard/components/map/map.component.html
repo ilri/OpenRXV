@@ -1,14 +1,18 @@
-<app-chart
-  [isMap]="true"
-  [title]="componentConfigs.title"
-  [description]="componentConfigs.description"
-  [expandedStatus]="cms.getExpanded"
-  [userSeesMe]="cms.getViewState?.userSeesMe"
-  [loading]="cms.getLoading"
-  [loadingHits$]="cms.getLoadingHits$"
-  [chartOptions]="chartOptions"
-  (expanded)="cms.disPatchSetInView($event)"
-  [filterd]="filterd"
-  (resetFilter)="resetFilter($event)"
->
-</app-chart>
+@if (enabled) {
+  <div>
+    <app-chart
+      [isMap]="true"
+      [title]="componentConfigs.title"
+      [description]="componentConfigs.description"
+      [expandedStatus]="cms.getExpanded"
+      [userSeesMe]="cms.getViewState?.userSeesMe"
+      [loading]="cms.getLoading"
+      [loadingHits$]="cms.getLoadingHits$"
+      [chartOptions]="chartOptions"
+      (expanded)="cms.disPatchSetInView($event)"
+      [filterd]="filtered !== ''"
+      (resetFilter)="resetFilter(filtered)"
+    >
+    </app-chart>
+  </div>
+}

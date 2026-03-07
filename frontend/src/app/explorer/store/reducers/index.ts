@@ -70,7 +70,31 @@ export const getBuckets = createSelector(
   (items: ElasticsearchResponse, key: string) => {
     if (items.aggregations !== undefined) {
       const aggs = items.aggregations;
-      return aggs[key] && aggs[key].buckets;
+      if (aggs[key]) {
+        if (aggs[key]?.buckets) {
+          return aggs[key] && aggs[key].buckets;
+        } else if (aggs[key]?.[key]?.buckets) {
+          return aggs[key] && aggs[key][key].buckets;
+        }
+      }
+      return false;
+    }
+  },
+);
+
+export const getNestedBuckets = createSelector(
+  getItems,
+  (items: ElasticsearchResponse, id: string) => {
+    if (items.aggregations !== undefined) {
+      const aggs = items.aggregations;
+      if (aggs[id]) {
+        if (aggs[id]?.buckets) {
+          return aggs[id] && aggs[id].buckets;
+        } else if (aggs[id]?.[id]?.buckets) {
+          return aggs[id] && aggs[id][id].buckets;
+        }
+      }
+      return false;
     }
   },
 );
@@ -81,7 +105,7 @@ export const getAggregation = createSelector(
   getItems,
   (
     items: ElasticsearchResponse,
-    sourceFilter: { source: string; filter: string },
+    sourceFilter: { source: string; filter: string; counterIndex: number },
   ) => {
     // just a safe check, so no errors will be logged to the console
     // undefined won't come when the page loads for the first time
@@ -90,11 +114,19 @@ export const getAggregation = createSelector(
     // will ask the store only when the request is finished and the
     // loading is false
     if (items.aggregations !== undefined) {
-      return (
-        items.aggregations[
-          sourceFilter.source.concat(`_${sourceFilter.filter}`) // limited & open access !
-        ] || items.aggregations[sourceFilter.source]
-      );
+      let key: string;
+      sourceFilter.source = sourceFilter.source.replace('.keyword', '');
+      if (sourceFilter.filter) {
+        // Filtered counter values
+        key = `${sourceFilter.source}_${sourceFilter.counterIndex}_${sourceFilter.filter}`;
+      } else {
+        key = `${sourceFilter.source}_${sourceFilter.counterIndex}`;
+      }
+
+      // Pre-filtered aggs will have the aggs object inside the same key {total: {total: {...}}}
+      return items.aggregations[key]?.[key]
+        ? items.aggregations[key][key]
+        : items.aggregations[key] || 0;
     }
   },
 );

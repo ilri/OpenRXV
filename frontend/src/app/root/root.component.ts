@@ -1,11 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SettingsService } from '../admin/services/settings.service';
 import tinycolor from 'tinycolor2';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import {
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+  RouterOutlet,
+} from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
 import { get } from 'scriptjs';
 import { environment } from 'src/environments/environment';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 export interface Color {
   name: string;
   hex: string;
@@ -19,18 +26,22 @@ declare let dataLayer: any;
   selector: 'app-root',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
+  imports: [RouterOutlet, NgxSpinnerModule],
 })
 export class RootComponent implements OnInit {
+  private titleService = inject(Title);
+  private readonly settingsService = inject(SettingsService);
+  private router = inject(Router);
+  private meta = inject(Meta);
+  private activeRoute = inject(ActivatedRoute);
+
   favIcon: HTMLLinkElement = document.querySelector('#appIcon');
   loadSettigs = false;
   dashboard_name: string;
-  constructor(
-    private titleService: Title,
-    private readonly settingsService: SettingsService,
-    private router: Router,
-    private meta: Meta,
-    private activeRoute: ActivatedRoute,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   primaryColorPalette;
   async ngOnInit() {

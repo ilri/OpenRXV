@@ -1,31 +1,40 @@
 <article class="w-100 break-word">
-  <a
-    target="_blank"
-    href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
-    class="primary-text"
-    rel="noopener"
-  >
-    <img
-      *ngIf="source[content.icon] && appearance.icons[content.icon] != null"
-      style="max-width: 30px"
-      [src]="getIcon(source[content.icon])"
-    />
+  @if (content?.identifierUri) {
+    <a
+      target="_blank"
+      href="{{ content.identifierUriPrefix + source[content.identifierUri] }}"
+      class="primary-text"
+      rel="noopener"
+    >
+      @if (source[content.icon] && appearance.icons[content.icon] != null) {
+        <img style="max-width: 30px" [src]="getIcon(source[content.icon])" />
+      }
+      <strong>
+        {{ source[content.title] }}
+      </strong>
+    </a>
+  } @else {
+    @if (source[content.icon] && appearance.icons[content.icon] != null) {
+      <img style="max-width: 30px" [src]="getIcon(source[content.icon])" />
+    }
     <strong>
       {{ source[content.title] }}
     </strong>
-  </a>
-  <p *ngIf="source[content.description]">
-    {{ source[content.description] }}
-  </p>
+  }
+  @if (source[content.description]) {
+    <p>
+      {{ source[content.description] }}
+    </p>
+  }
   <section class="publication-text">
-    <ng-container *ngFor="let tag of content.tags; let i = index">
-      <ng-container *ngIf="tags(tag.metadata)">
+    @for (item of content.tags | keyvalue; track item.key) {
+      @if (tags(item.value.metadata, true)) {
         <app-tags
-          [ngClass]="{ 'simulate-p-tag': i === 0 || i === 1 }"
-          [label]="tag.disply_name"
-          [labelData]="tags(tag.metadata)"
+          [ngClass]="{ 'simulate-p-tag': item.key === '0' || item.key === '1' }"
+          [label]="item.value.disply_name"
+          [labelData]="tags(item.value.metadata)"
         ></app-tags>
-      </ng-container>
-    </ng-container>
+      }
+    }
   </section>
 </article>

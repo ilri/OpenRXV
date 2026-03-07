@@ -4,46 +4,54 @@
   [filterOptions]="content.filterOptions"
 ></app-filter-paginated-list>
 
-<div
-  style="min-height: 140px"
-  *ngFor="let h of hits"
-  class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3"
->
-  <div class="col-md-2 col-xs-12 text-center">
-    <app-pub-image [content]="content" [source]="h._source"></app-pub-image>
-  </div>
-  <!--
+@for (h of hits; track h) {
+  <div
+    style="min-height: 140px"
+    class="d-flex flex-wrap flex-row border-bottom-muted mt-4 w-100 pb-3"
+  >
+    @if (columns?.thumbnail) {
+      <div
+        class="col-xs-12 text-center"
+        [ngClass]="'col-md-' + columns.thumbnail"
+      >
+        <app-pub-image [content]="content" [source]="h._source"></app-pub-image>
+      </div>
+    }
+    <!--
     TODO: this only works when it's md-7
     TODO: but it should be md-8
-  -->
-  <div class="col-md-8 col-xs-12 muted-text">
-    <app-link-text [source]="h._source" [content]="content"></app-link-text>
+    -->
+    <div class="col-xs-12 muted-text" [ngClass]="'col-md-' + columns.main">
+      <app-link-text [source]="h._source" [content]="content"></app-link-text>
+    </div>
+    @if (columns?.altmetric) {
+      <div class="col-xs-12" [ngClass]="'col-md-' + columns.altmetric">
+        @if (h._source.DOI) {
+          <div
+            data-badge-popover="left"
+            data-badge-type="medium-donut"
+            [attr.data-doi]="
+              h._source.DOI.constructor.name === 'Array' &&
+              h._source.DOI.length > 0
+                ? h._source.DOI[0]
+                : h._source.DOI
+            "
+            data-hide-no-mentions="true"
+            class="altmetric-embed sm-text-center"
+          ></div>
+        } @else {
+          <div
+            data-badge-popover="left"
+            data-badge-type="medium-donut"
+            [attr.data-handle]="h._source.handle"
+            data-hide-no-mentions="true"
+            class="altmetric-embed sm-text-center"
+          ></div>
+        }
+      </div>
+    }
   </div>
-  <div *ngIf="content.altmetric" class="col-md-1 col-xs-12">
-    <div
-      *ngIf="h._source.DOI; else altmetricHandle"
-      data-badge-popover="left"
-      data-badge-type="medium-donut"
-      [attr.data-doi]="
-        h._source.DOI.constructor.name === 'Array' && h._source.DOI.length > 0
-          ? h._source.DOI[0]
-          : h._source.DOI
-      "
-      data-hide-no-mentions="true"
-      class="altmetric-embed sm-text-center"
-    ></div>
-
-    <ng-template #altmetricHandle>
-      <div
-        data-badge-popover="left"
-        data-badge-type="medium-donut"
-        [attr.data-handle]="h._source.handle"
-        data-hide-no-mentions="true"
-        class="altmetric-embed sm-text-center"
-      ></div>
-    </ng-template>
-  </div>
-</div>
+}
 
 <mat-paginator
   [length]="paginationAtt?.length"
@@ -52,4 +60,12 @@
 >
 </mat-paginator>
 
-<ngx-loading [show]="loadingHits"></ngx-loading>
+<ngx-spinner
+  name="paginatedListSpinner"
+  bdColor="rgba(0, 0, 0, 0.1)"
+  size="medium"
+  color="var(--theme-primary-500)"
+  type="ball-clip-rotate"
+  [fullScreen]="false"
+  [showSpinner]="loadingHits"
+></ngx-spinner>

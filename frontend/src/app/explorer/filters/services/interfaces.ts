@@ -1,3 +1,5 @@
+import { SourceLevel } from '../../configs/generalConfig.interface';
+
 /**
  * **Elasticsearch** Elasticsearch response
  */
@@ -132,7 +134,9 @@ export interface Shards {
 export interface Bucket {
   key: string;
   doc_count: number;
+  metric?: { value: number };
   related?: any;
+  buckets?: Bucket[];
 }
 
 export type BucketWithInnerBuckts = Bucket & {
@@ -223,14 +227,17 @@ export interface QueryYearAttribute {
  * * see *BuilderUtilities.convertEnumToQueryBlock()* method
  */
 export interface QueryBlock {
-  source: string;
+  source: SourceLevel[];
   is_related?: boolean;
   buckets: string;
   filter?: string;
+  pre_filter?: string;
   size?: number;
   type?: string;
-  agg_on?: string;
   sort?: boolean;
+  metric?: string;
+  metric_field?: string;
+  counterIndex?: number;
 }
 
 /**

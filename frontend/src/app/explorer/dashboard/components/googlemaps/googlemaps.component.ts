@@ -1,4 +1,3 @@
-// import { AgmMap } from "@agm/core";
 import {
   ChangeDetectorRef,
   Component,
@@ -6,79 +5,111 @@ import {
   HostListener,
   Input,
   OnInit,
+  signal,
   ViewChild,
+  inject,
+  OnDestroy,
 } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
-import {
-  ComponentDashboardConfigs,
-  ComponentFilterConfigs,
-} from 'src/app/explorer/configs/generalConfig.interface';
-import { BodyBuilderService } from 'src/app/explorer/filters/services/bodyBuilder/body-builder.service';
-import {
-  Hits,
-  Bucket,
-  hits,
-} from 'src/app/explorer/filters/services/interfaces';
+import { ComponentDashboardConfigs } from 'src/app/explorer/configs/generalConfig.interface';
+import { Bucket } from 'src/app/explorer/filters/services/interfaces';
 import { SelectService } from 'src/app/explorer/filters/services/select/select.service';
 import { ScrollHelperService } from '../services/scrollTo/scroll-helper.service';
 import * as fromStore from '../../../store';
-import { ComponentLookup } from '../dynamic/lookup.registry';
 import { ChartMathodsService } from '../services/chartCommonMethods/chart-mathods.service';
 import { ParentChart } from '../parent-chart';
 import { ActivatedRoute } from '@angular/router';
+import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
+import { IconsWithTextComponent } from '../../representationalComponents/icons-with-text/icons-with-text.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { NgClass } from '@angular/common';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { SettingsService } from '../../../../admin/services/settings.service';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
-declare function _altmetric_embed_init(): any;
-interface marker {
-  lat: number;
-  lng: number;
-  label?: string;
-  draggable: boolean;
-}
-@ComponentLookup('GoogleMapsComponent')
 @Component({
   selector: 'app-google-maps',
   templateUrl: './googlemaps.component.html',
   providers: [ChartMathodsService, ScrollHelperService, SelectService],
   styleUrls: ['./googlemaps.component.scss'],
+  imports: [
+    MatExpansionPanel,
+    NgClass,
+    MatIcon,
+    MatTooltip,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    IconsWithTextComponent,
+    GoogleMapsModule,
+    CdkConnectedOverlay,
+    CdkOverlayOrigin,
+    NgxSpinnerComponent,
+  ],
 })
-export class GooglemapsComponent extends ParentChart implements OnInit {
+export class GooglemapsComponent
+  extends ParentChart
+  implements OnInit, OnDestroy
+{
+  readonly store: Store<fromStore.AppState>;
+  readonly scrollHelperService = inject(ScrollHelperService);
+  readonly selectService: SelectService;
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly settingsService = inject(SettingsService);
+
   @Input() expandedStatus: boolean;
-  hits: Hits; // for the paginated list
   listData: Bucket[] = []; // for aggrigiation list
-  isPaginatedList: boolean; // determine if we should display the hits or not
-  paginationAtt: PageEvent;
   isFullscreen = false;
   fitBounds = false;
   refreshMap = true;
-  filterd = false;
+  filtered = '';
   myStyles = {
     height: '430px',
+    width: '100%',
   };
-  @ViewChild('agmmap') mapElement: any;
+  @ViewChild(GoogleMap) mapElement: GoogleMap;
   timeout: any = [];
   // google maps zoom level
   zoom = 2;
+  center: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
+  options: google.maps.MapOptions = {
+    mapTypeId: 'hybrid',
+    zoomControl: false,
+    disableDefaultUI: false,
+  };
+  popoverIsOpen = false;
+  loaded = signal(false);
+  dashboard_name: string;
+
   // initial center position for the map
   @ViewChild('clickToEnable') clickToEnable: ElementRef;
   @ViewChild('panel') elementView: ElementRef;
-  constructor(
-    cms: ChartMathodsService,
-    public readonly store: Store<fromStore.AppState>,
-    public readonly scrollHelperService: ScrollHelperService,
-    public readonly selectService: SelectService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly bodyBuilderService: BodyBuilderService,
-    activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
+    const cms = inject(ChartMathodsService);
+    const store = inject<Store<fromStore.AppState>>(Store);
+    const selectService = inject(SelectService);
+    const activeRoute = inject(ActivatedRoute);
+
     super(cms, selectService, store, activeRoute);
+
+    this.store = store;
+    this.selectService = selectService;
   }
 
-  resetQ() {
-    this.filterd = false;
+  resetQ(filtered: string) {
+    this.filtered = '';
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery('id');
+      this.selectService.resetValueAttributetoMainQuery(filtered);
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
@@ -90,10 +121,11 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     this.selectService.resetNotification();
   }
   filterMarker(code) {
-    this.filterd = true;
+    this.filtered = 'id';
     const query: bodybuilder.Bodybuilder =
-      this.selectService.addNewValueAttributetoMainQuery('id', code);
+      this.selectService.addNewValueAttributetoMainQuery(this.filtered, code);
     const dashboard_name =
+      this.dashboard_name ??
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
     this.store.dispatch(
@@ -128,27 +160,57 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     return temparray;
   }
   loopThroughMarkersText(chunks) {
+    if (typeof google === 'undefined') {
+      return;
+    }
     const markers = this.makeChunks(chunks);
+    const bounds = new google.maps.LatLngBounds();
+    let hasMarkers = false;
+
     for (let i = 0; i < markers.length; i++) {
       ((i) => {
         this.timeout.push(
           setTimeout(() => {
             for (let z = 0; z < markers[i].length; z++) {
               this.listData.push(markers[i][z]);
+              const keyParts = markers[i][z].key.split(',');
+              if (keyParts.length >= 2) {
+                const lng = parseFloat(keyParts[0]);
+                const lat = parseFloat(keyParts[1]);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                  bounds.extend({ lat, lng });
+                  hasMarkers = true;
+                }
+              }
             }
-            if (i == markers.length - 1)
+            if (i == markers.length - 1) {
               this.scrollHelperService.loading = false;
+            }
+            if (hasMarkers && this.mapElement) {
+              this.mapElement.fitBounds(bounds);
+            }
           }, 1000 * i),
         );
       })(i);
     }
   }
 
-  ngOnInit(): void {
-    this.init('google-maps');
-    this.scrollHelperService.storeVal = this.store;
-    this.seeIfThisCompInView();
-    this.subToDataFromStore();
+  async ngOnInit(): Promise<void> {
+    const dashboard_name =
+      this.dashboard_name ??
+      this.activeRoute.snapshot.paramMap.get('dashboard_name');
+    const appearance =
+      await this.settingsService.readAppearanceSettings(dashboard_name);
+    const apiKey = appearance?.google_maps_api_key
+      ? appearance.google_maps_api_key
+      : '';
+    if (await this.appendGoogleMapsScript(apiKey)) {
+      this.loaded.set(true);
+      this.init('google-maps');
+      this.scrollHelperService.storeVal = this.store;
+      this.seeIfThisCompInView();
+      this.subToDataFromStore();
+    }
   }
 
   hideClickToEnable(): void {
@@ -173,15 +235,7 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
   }
 
   private subToDataFromStore(): void {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
     this.buildOptions.subscribe((buckets: Array<Bucket>) => {
-      const filters = this.bodyBuilderService
-        .getFiltersFromQuery()
-        .filter(
-          (element) => Object.keys(element).indexOf(source + '.keyword') != -1,
-        );
-      if (filters.length) this.filterd = true;
-      else this.filterd = false;
       this.timeout.forEach((element) => {
         clearTimeout(element);
       });
@@ -194,11 +248,29 @@ export class GooglemapsComponent extends ParentChart implements OnInit {
     });
   }
 
-  private safeCheckLength(arr: Array<Bucket> | Array<hits> | boolean): number {
-    if (typeof arr === 'boolean') {
-      return 0;
-    }
-    const len: number | boolean = arr && arr.length;
-    return len || 0;
+  private async appendGoogleMapsScript(apiKey: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (document.getElementById('googleMapsScript')) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.id = `googleMapsScript`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        console.error('Google Maps API failed to load');
+        resolve(false);
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.buildOptions.unsubscribe();
   }
 }

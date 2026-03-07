@@ -1,22 +1,29 @@
 <!-- the  *ngIf -->
 <!-- the nouislider need to have range, min & max from the start -->
 <!-- so i will render it when we have these values -->
-<ng-container *ngIf="range; else loading">
+@if (range) {
   <mat-label>{{ componentConfigs.placeholder }}</mat-label>
-  <nouislider
-    class="pb-4"
-    (change)="onYearSliderChange()"
-    [tooltips]="[true, true]"
-    [min]="min"
-    [connect]="true"
-    [max]="max"
-    [(ngModel)]="range"
-    [step]="1"
-    [config]="config"
-    [disabled]="disabled"
-  >
-  </nouislider>
-</ng-container>
-<ng-template #loading>
+  <div class="d-flex">
+    <mat-slider
+      class="pb-4 w-100"
+      [min]="min"
+      [max]="max"
+      [step]="1"
+      [disabled]="disabled"
+      discrete
+    >
+      <input
+        matSliderStartThumb
+        [(ngModel)]="range[0]"
+        (dragEnd)="onYearSliderChange()"
+      />
+      <input
+        matSliderEndThumb
+        [(ngModel)]="range[1]"
+        (dragEnd)="onYearSliderChange()"
+      />
+    </mat-slider>
+  </div>
+} @else {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</ng-template>
+}

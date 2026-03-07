@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
   UntypedFormGroup,
   UntypedFormControl,
   UntypedFormArray,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {
   trigger,
@@ -19,6 +21,15 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../common.service';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardTitle } from '@angular/material/card';
 
 @Component({
   selector: 'app-setup',
@@ -43,8 +54,31 @@ import { CommonService } from '../../../common.service';
       transition('true <=> false', [animate('.5s')]),
     ]),
   ],
+  imports: [
+    MatCard,
+    MatCardTitle,
+    MatAnchor,
+    MatIcon,
+    MatButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatRadioGroup,
+    MatRadioButton,
+  ],
 })
 export class SetupComponent implements OnInit {
+  private settingService = inject(SettingsService);
+  private toastr = inject(ToastrService);
+  private spinner = inject(NgxSpinnerService);
+  private activeRoute = inject(ActivatedRoute);
+  private commonService = inject(CommonService);
+
   plugins: any = [];
   activePluginName: Array<BehaviorSubject<any>> = [];
   activePlugin: Array<any> = [];
@@ -89,13 +123,10 @@ export class SetupComponent implements OnInit {
       ),
     });
   }
-  constructor(
-    private settingService: SettingsService,
-    private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private activeRoute: ActivatedRoute,
-    private commonService: CommonService,
-  ) {}
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {}
 
   async ngOnInit() {
     await this.spinner.show();

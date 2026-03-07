@@ -4,6 +4,7 @@ import {
   ViewChild,
   OnInit,
   ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
 import { hits } from 'src/app/explorer/filters/services/interfaces';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,14 +21,33 @@ import {
 import { skip } from 'rxjs/operators';
 import { ExportComponent } from '../export/export.component';
 import { ActivatedRoute } from '@angular/router';
+import { LinkTextComponent } from './link-text/link-text.component';
+import { PubImageComponent } from './pub-image/pub-image.component';
+
+import { FilterPaginatedListComponent } from './filter-paginated-list/filter-paginated-list.component';
+import { NgClass } from '@angular/common';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-paginated-list',
   templateUrl: './paginated-list.component.html',
   styleUrls: ['./paginated-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FilterPaginatedListComponent,
+    PubImageComponent,
+    LinkTextComponent,
+    MatPaginator,
+    NgxSpinnerComponent,
+    NgClass,
+  ],
 })
 export class PaginatedListComponent implements OnInit {
+  private readonly store = inject<Store<fromStore.AppState>>(Store);
+  private readonly mainBodyBuilderService = inject(MainBodyBuilderService);
+  private readonly dialog = inject(MatDialog);
+  private activeRoute = inject(ActivatedRoute);
+
   @Input() hits: hits[];
   @Input() paginationAtt: PageEvent;
   @Input() loadingHits: boolean;
@@ -44,17 +64,29 @@ export class PaginatedListComponent implements OnInit {
    * value
    */
   private flag: boolean;
-  constructor(
-    private readonly store: Store<fromStore.AppState>,
-    private readonly mainBodyBuilderService: MainBodyBuilderService,
-    private readonly dialog: MatDialog,
-    private activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     this.flag = true;
   }
 
+  columns = {
+    thumbnail: 2,
+    main: 8,
+    altmetric: 1,
+  };
   ngOnInit(): void {
     this.resetPaginationWhenQueryChanges();
+
+    if (!this.content?.thumbnail) {
+      this.columns.main += this.columns.thumbnail;
+      delete this.columns.thumbnail;
+    }
+    if (!this.content?.altmetric) {
+      this.columns.main += this.columns.altmetric;
+      delete this.columns.altmetric;
+    }
   }
 
   changePage(e: PageEvent): void {

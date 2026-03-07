@@ -1,4 +1,4 @@
-@import '../../explorer/configs/customTheme.scss';
+@use '../../explorer/configs/customTheme.scss' as *;
 .container-admin {
   width: 100%;
 }

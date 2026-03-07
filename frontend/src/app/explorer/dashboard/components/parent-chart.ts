@@ -1,8 +1,8 @@
-import { EventEmitter, Directive } from '@angular/core';
+import { EventEmitter, Directive, inject } from '@angular/core';
 import {
   ComponentDashboardConfigs,
-  ComponentFilterConfigs,
   MergedSelect,
+  SourceLevel,
 } from 'src/app/explorer/configs/generalConfig.interface';
 import { ChartMathodsService } from './services/chartCommonMethods/chart-mathods.service';
 import { Bucket } from 'src/app/explorer/filters/services/interfaces';
@@ -14,14 +14,17 @@ import { ActivatedRoute } from '@angular/router';
 
 @Directive()
 export class ParentChart extends ParentComponent {
+  readonly cms = inject(ChartMathodsService);
+  readonly selectService = inject(SelectService);
+  readonly store = inject<Store<fromStore.AppState>>(Store);
+  activeRoute = inject(ActivatedRoute);
+
   chartOptions: Highcharts.Options;
   protected buildOptions: EventEmitter<Array<Bucket> | MergedSelect>;
-  constructor(
-    public readonly cms: ChartMathodsService,
-    public readonly selectService: SelectService,
-    public readonly store: Store<fromStore.AppState>,
-    public activeRoute: ActivatedRoute,
-  ) {
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+  constructor() {
     super();
     this.buildOptions = new EventEmitter<Array<Bucket>>();
     this.chartOptions = {};
@@ -38,19 +41,11 @@ export class ParentChart extends ParentComponent {
     });
   }
 
-  private checkExpandedForObject(bu: MergedSelect): boolean {
-    const arr: Array<Bucket> = [];
-    for (const key in bu) {
-      if (bu.hasOwnProperty(key)) {
-        arr.push(...bu[key]);
-      }
-    }
-    return arr.length >= 1;
-  }
-  Query(name: any) {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
+  Query(name: any, sourceString?: string) {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    sourceString = sourceString ?? (source[0] as SourceLevel).field;
     const query: bodybuilder.Bodybuilder =
-      this.selectService.addNewValueAttributetoMainQuery(source, name);
+      this.selectService.addNewValueAttributetoMainQuery(sourceString, name);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -62,11 +57,11 @@ export class ParentChart extends ParentComponent {
     );
     this.selectService.resetNotification();
   }
-  resetQ() {
-    const { source } = this.componentConfigs as ComponentFilterConfigs;
-
+  resetQ(filtered?: string) {
+    const { source } = this.componentConfigs as ComponentDashboardConfigs;
+    filtered = filtered ?? (source[0] as SourceLevel).field;
     const query: bodybuilder.Bodybuilder =
-      this.selectService.resetValueAttributetoMainQuery(source);
+      this.selectService.resetValueAttributetoMainQuery(filtered);
     const dashboard_name =
       this.activeRoute.snapshot.paramMap.get('dashboard_name');
 
@@ -79,11 +74,5 @@ export class ParentChart extends ParentComponent {
     setTimeout(() => {
       this.selectService.resetNotification();
     }, 5000);
-  }
-  setQ() {
-    const _self = this;
-    return function (e: any) {
-      _self.Query(this.name);
-    };
   }
 }

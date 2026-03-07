@@ -8,7 +8,7 @@ describe('IconTextLoopComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IconTextLoopComponent],
+      imports: [IconTextLoopComponent],
     }).compileComponents();
   }));
 

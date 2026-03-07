@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as itemsactions from '../actions/items.actions';
@@ -9,10 +9,13 @@ import { ElasticsearchResponse } from 'src/app/explorer/filters/services/interfa
 
 @Injectable()
 export class ItemsEffects {
-  constructor(
-    private actions$: Actions,
-    private itemsService: ItemsService,
-  ) {}
+  private actions$ = inject(Actions);
+  private itemsService = inject(ItemsService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
   loadItems$ = createEffect(() =>
     this.actions$.pipe(
       ofType(itemsactions.ActionTypes.getData),
